@@ -36,6 +36,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// TODO: Consider compositing from nom::Sprite instead of inheriting!
+
 /// \brief Extended sprite rendering using sprite sheets
 class SpriteBatch: public Sprite
 {

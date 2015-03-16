@@ -202,6 +202,8 @@ TEST_F(SpriteTest, SpriteInterfaceWithTextureRawPointer)
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
+
+  NOM_DELETE_PTR(sprite);
 }
 
 TEST_F(SpriteTest, SpriteInterfaceWithTextureRawPointerAsReference)
@@ -248,11 +250,10 @@ TEST_F(SpriteTest, SpriteInterfaceWithTextureUniquePointer)
 
   std::unique_ptr<Texture> tex;
   tex.reset( new Texture() );
+  ASSERT_TRUE(tex != nullptr);
 
   std::unique_ptr<Sprite> sprite;
   sprite.reset( new Sprite() );
-
-  ASSERT_TRUE(tex != nullptr);
   ASSERT_TRUE(sprite != nullptr);
 
   if( tex->load(TEX_FILE_PATH, false,
@@ -262,7 +263,7 @@ TEST_F(SpriteTest, SpriteInterfaceWithTextureUniquePointer)
   }
   ASSERT_TRUE(tex->valid() == true);
 
-  EXPECT_EQ(true, sprite->set_texture( *tex.get() ) );
+  EXPECT_EQ(true, sprite->set_texture( *tex.get()) );
   ASSERT_TRUE(sprite->valid() == true);
 
   nom::set_alignment( sprite.get(), SPRITE_POS, WINDOW_DIMS,

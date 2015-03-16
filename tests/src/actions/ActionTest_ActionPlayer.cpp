@@ -69,16 +69,16 @@ TEST_F(ActionTest, GroupActionFinishEquality)
     std::make_shared<Rectangle>(IntRect(RECT3_POS, RECT_SIZE), Color4i::Yellow);
   ASSERT_TRUE(rect3 != nullptr);
 
-  auto sprite0 = std::make_shared<Sprite>( rect0->texture() );
+  auto sprite0 = nom::make_shared_sprite( rect0->texture() );
   ASSERT_TRUE(sprite0 != nullptr);
 
-  auto sprite1 = std::make_shared<Sprite>( rect1->texture() );
+  auto sprite1 = nom::make_shared_sprite( rect1->texture() );
   ASSERT_TRUE(sprite1 != nullptr);
 
-  auto sprite2 = std::make_shared<Sprite>( rect2->texture() );
+  auto sprite2 = nom::make_shared_sprite( rect2->texture() );
   ASSERT_TRUE(sprite2 != nullptr);
 
-  auto sprite3 = std::make_shared<Sprite>( rect3->texture() );
+  auto sprite3 = nom::make_shared_sprite( rect3->texture() );
   ASSERT_TRUE(sprite3 != nullptr);
 
   auto translate0 =
@@ -266,16 +266,16 @@ TEST_F(ActionTest, ConcurrentGroupActions)
     std::make_shared<Rectangle>(IntRect(RECT3_POS, RECT_SIZE), Color4i::Yellow);
   ASSERT_TRUE(rect3 != nullptr);
 
-  auto sprite0 = std::make_shared<Sprite>( rect0->texture() );
+  auto sprite0 = nom::make_shared_sprite( rect0->texture() );
   ASSERT_TRUE(sprite0 != nullptr);
 
-  auto sprite1 = std::make_shared<Sprite>( rect1->texture() );
+  auto sprite1 = nom::make_shared_sprite( rect1->texture() );
   ASSERT_TRUE(sprite1 != nullptr);
 
-  auto sprite2 = std::make_shared<Sprite>( rect2->texture() );
+  auto sprite2 = nom::make_shared_sprite( rect2->texture() );
   ASSERT_TRUE(sprite2 != nullptr);
 
-  auto sprite3 = std::make_shared<Sprite>( rect3->texture() );
+  auto sprite3 = nom::make_shared_sprite( rect3->texture() );
   ASSERT_TRUE(sprite3 != nullptr);
 
   auto translate0 =
@@ -477,16 +477,16 @@ TEST_F(ActionTest, ConcurrentSequenceActions)
     std::make_shared<Rectangle>(IntRect(RECT3_POS, RECT_SIZE), Color4i::Yellow);
   ASSERT_TRUE(rect3 != nullptr);
 
-  auto sprite0 = std::make_shared<Sprite>( rect0->texture() );
+  auto sprite0 = nom::make_shared_sprite( rect0->texture() );
   ASSERT_TRUE(sprite0 != nullptr);
 
-  auto sprite1 = std::make_shared<Sprite>( rect1->texture() );
+  auto sprite1 = nom::make_shared_sprite( rect1->texture() );
   ASSERT_TRUE(sprite1 != nullptr);
 
-  auto sprite2 = std::make_shared<Sprite>( rect2->texture() );
+  auto sprite2 = nom::make_shared_sprite( rect2->texture() );
   ASSERT_TRUE(sprite2 != nullptr);
 
-  auto sprite3 = std::make_shared<Sprite>( rect3->texture() );
+  auto sprite3 = nom::make_shared_sprite( rect3->texture() );
   ASSERT_TRUE(sprite3 != nullptr);
 
   auto translate0 =
@@ -640,16 +640,16 @@ TEST_F(ActionTest, ConcurrentGroupAndSequenceActions)
     std::make_shared<Rectangle>(IntRect(RECT3_POS, RECT_SIZE), Color4i::Yellow);
   ASSERT_TRUE(rect3 != nullptr);
 
-  auto sprite0 = std::make_shared<Sprite>( rect0->texture() );
+  auto sprite0 = nom::make_shared_sprite( rect0->texture() );
   ASSERT_TRUE(sprite0 != nullptr);
 
-  auto sprite1 = std::make_shared<Sprite>( rect1->texture() );
+  auto sprite1 = nom::make_shared_sprite( rect1->texture() );
   ASSERT_TRUE(sprite1 != nullptr);
 
-  auto sprite2 = std::make_shared<Sprite>( rect2->texture() );
+  auto sprite2 = nom::make_shared_sprite( rect2->texture() );
   ASSERT_TRUE(sprite2 != nullptr);
 
-  auto sprite3 = std::make_shared<Sprite>( rect3->texture() );
+  auto sprite3 = nom::make_shared_sprite( rect3->texture() );
   ASSERT_TRUE(sprite3 != nullptr);
 
   auto translate0 =

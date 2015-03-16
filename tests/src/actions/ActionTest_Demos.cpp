@@ -112,7 +112,7 @@ TEST_F(ActionTest, RainingRectsStressTest)
       new Rectangle(rect_bounds, color);
     ASSERT_TRUE(rect != nullptr);
 
-    auto sprite = std::make_shared<Sprite>( rect->texture() );
+    auto sprite = nom::make_shared_sprite( rect->texture() );
     ASSERT_TRUE(sprite != nullptr);
     NOM_DELETE_PTR(rect);
 

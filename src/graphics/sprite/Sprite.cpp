@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Private headers
 #include "nomlib/graphics/shapes/Rectangle.hpp"
+#include "nomlib/core/helpers.hpp"
 
 // Forward declarations
 #include "nomlib/graphics/Texture.hpp"
@@ -38,9 +39,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 inline static
-void ReferenceDeleter(Texture* tex)
+void TextureReferenceDeleter(Texture* tex)
 {
-  // Do nothing; sprite's texture is **not** owned by us
+  // Memory management is free for us here; the sprite does not own the
+  // texture!
 }
 
 Sprite::Sprite() :
@@ -52,21 +54,6 @@ Sprite::Sprite() :
 Sprite::~Sprite()
 {
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_RENDER, NOM_LOG_PRIORITY_VERBOSE);
-}
-
-Sprite::Sprite(Texture& tex)
-{
-  this->set_texture(tex);
-}
-
-Sprite::Sprite(Texture* tex)
-{
-  this->set_texture(tex);
-}
-
-Sprite::Sprite(std::shared_ptr<Texture>& tex)
-{
-  this->set_texture(tex);
 }
 
 bool Sprite::init_with_color(const Color4i& color, const Size2i& dims)
@@ -168,7 +155,7 @@ BlendMode Sprite::color_blend_mode() const
 
 bool Sprite::set_texture(Texture& tex)
 {
-  this->texture_.reset(&tex, ReferenceDeleter);
+  this->texture_.reset(&tex, TextureReferenceDeleter);
 
   if( this->texture_ != nullptr ) {
     this->set_position( this->texture_->position() );
@@ -273,6 +260,63 @@ void Sprite::draw(RenderTarget& target, real64 degrees) const
 void Sprite::update()
 {
   // Stub
+}
+
+// Non-member factory functions
+
+std::unique_ptr<Sprite>
+make_unique_sprite(Texture& tex)
+{
+  auto sprite = nom::make_unique<Sprite>();
+  if( sprite != nullptr ) {
+    sprite->set_texture(tex);
+  }
+
+  return std::move(sprite);
+}
+
+std::unique_ptr<Sprite>
+make_unique_sprite(Texture* tex)
+{
+  auto sprite = nom::make_unique<Sprite>();
+  if( sprite != nullptr ) {
+    sprite->set_texture(tex);
+  }
+
+  return std::move(sprite);
+}
+
+std::shared_ptr<Sprite>
+make_shared_sprite(Texture& tex)
+{
+  auto sprite = std::make_shared<Sprite>();
+  if( sprite != nullptr ) {
+    sprite->set_texture(tex);
+  }
+
+  return sprite;
+}
+
+std::shared_ptr<Sprite>
+make_shared_sprite(Texture* tex)
+{
+  auto sprite = std::make_shared<Sprite>();
+  if( sprite != nullptr ) {
+    sprite->set_texture(tex);
+  }
+
+  return sprite;
+}
+
+std::shared_ptr<Sprite>
+make_shared_sprite(std::shared_ptr<Texture>& tex)
+{
+  auto sprite = std::make_shared<Sprite>();
+  if( sprite != nullptr ) {
+    sprite->set_texture(tex);
+  }
+
+  return sprite;
 }
 
 } // namespace nom

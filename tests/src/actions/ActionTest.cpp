@@ -896,7 +896,7 @@ TEST_F(ActionTest, MoveByAction)
     Rectangle( IntRect(RECT_POS, RECT_SIZE), Color4i::Green) );
   ASSERT_TRUE(rect != nullptr);
 
-  auto sprite = std::make_shared<Sprite>( rect->texture() );
+  auto sprite = nom::make_shared_sprite( rect->texture() );
   ASSERT_TRUE(sprite != nullptr);
 
   auto translate =
@@ -956,7 +956,7 @@ TEST_F(ActionTest, MoveByActionNegativeXDelta)
     Rectangle( IntRect(RECT_POS, RECT_SIZE), Color4i::Green) );
   ASSERT_TRUE(rect != nullptr);
 
-  auto sprite = std::make_shared<Sprite>( rect->texture() );
+  auto sprite = nom::make_shared_sprite( rect->texture() );
   ASSERT_TRUE(sprite != nullptr);
 
   auto translate =
@@ -1015,7 +1015,7 @@ TEST_F(ActionTest, MoveByActionWithNegativeYDelta)
     Rectangle( IntRect(RECT_POS, RECT_SIZE), Color4i::Green) );
   ASSERT_TRUE(rect != nullptr);
 
-  auto sprite = std::make_shared<Sprite>( rect->texture() );
+  auto sprite = nom::make_shared_sprite( rect->texture() );
   ASSERT_TRUE(sprite != nullptr);
 
   auto translate =

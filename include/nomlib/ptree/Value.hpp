@@ -499,10 +499,7 @@ class Value
     /// \remarks The object is unchanged if the referenced key does not exist.
     ///
     /// \note The object's type is not modified.
-    ///
-    /// \note This method will fail with an assert if the container type is
-    /// *not* either a null or object node type.
-    Value erase( const std::string& key );
+    Value erase(const std::string& key);
 
     /// \brief Remove an array object.
     ///

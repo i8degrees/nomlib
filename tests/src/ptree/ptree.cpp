@@ -331,9 +331,10 @@ TEST_F( PropertyTreeTest, ObjectValuesKeyNames )
 TEST_F( PropertyTreeTest, ValueFindEraseInterface )
 {
   Value obj;
+  const int KEY1_VALUE = -6;
 
   obj["key0"] = Value();
-  obj["key1"] = -6;
+  obj["key1"] = KEY1_VALUE;
   obj["key2"] = 66u;
   obj["key3"] = 6.806;
   obj["key4"] = "Hello, world!";
@@ -343,9 +344,9 @@ TEST_F( PropertyTreeTest, ValueFindEraseInterface )
   obj["key6"][0] = 11u;
   obj["key6"][1] = "Hello, world!";
 
-  EXPECT_NE( Value::null, obj.find( "key2" ) ) << obj;
-  EXPECT_NE( Value::null, obj.erase( "key1" ) );
-  EXPECT_EQ( Value::null, obj.erase( "key1" ) );
+  EXPECT_NE( Value::null, obj.find("key2") ) << obj;
+  EXPECT_EQ( Value(KEY1_VALUE), obj.erase("key1") );
+  EXPECT_EQ( Value::null, obj.erase("key1") );
 }
 
 TEST_F( PropertyTreeTest, OperatorConstructDuplicateMemberKeys )

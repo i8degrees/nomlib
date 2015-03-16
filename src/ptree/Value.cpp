@@ -991,26 +991,27 @@ Value Value::find( const std::string& key ) const
   return Value::null;
 }
 
-Value Value::erase( const std::string& key )
+Value Value::erase(const std::string& key)
 {
-  // Sanity check
+  VString k(key);
+  Value ret = Value::null;
+
+  // Invalid object state!
   NOM_ASSERT( this->null_type() || this->object_type() );
 
-  VString k( key );
-  auto res = this->value_.object_->find( k );
+  auto res = this->value_.object_->find(k);
 
-  if( res == this->value_.object_->end() ) // No match found
-  {
-    return Value::null;
-  }
-  else // Success -- match found; erasing found key pair!
-  {
-    this->value_.object_->erase( res );
+  if( res == this->value_.object_->end() ) {
+    // Failure; no match found
+    return ret;
+  } else {
+    // Success; matching key value found
+    ret = res->second;
 
-    return res->second;
+    this->value_.object_->erase(res);
   }
 
-  return Value::null;
+  return ret;
 }
 
 // Value Value::erase( int index )

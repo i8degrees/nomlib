@@ -7,10 +7,14 @@
 shopt -s nocasematch
 
 MKDIR_BIN=$(which mkdir) # GNU coreutils
+RM_BIN=$(which rm) # GNU coreutils
 CMAKE_BIN=$(which cmake)
 
 BUILD_TYPE_ARG=$1
 BUILD_INSTALL_DIR_ARG=$2
+
+# The absolute path to CMake's local cache of project build variables
+CMAKE_CACHE_FILE="$(pwd)/CMakeCache.txt"
 
 # Defaults for generating project files for a Debug build
 BUILD_TYPE="Debug"
@@ -42,6 +46,10 @@ else
   if [[ !( -z "${BUILD_INSTALL_DIR_ARG}" ) ]]; then
     # Custom installation dir; let CMake worry about the file path validation!
     BUILD_INSTALL_DIR=${BUILD_INSTALL_DIR_ARG}
+  fi
+
+  if [[ -f "${CMAKE_CACHE_FILE}" ]]; then
+    ${RM_BIN} ${CMAKE_CACHE_FILE}
   fi
 
   echo "Generating ${BUILD_TYPE} project files..."

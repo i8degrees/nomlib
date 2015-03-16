@@ -299,12 +299,12 @@ TEST_F(GradientTest, SharedTextureForSprite)
 #endif
 
   auto sprite_grad1 =
-    std::make_shared<Sprite>(grad1_tex);
+    nom::make_shared_sprite(grad1_tex);
   ASSERT_TRUE(sprite_grad1 != nullptr);
   ASSERT_TRUE(sprite_grad1->valid() != false);
 
   auto sprite_grad2 =
-    std::make_shared<Sprite>(grad2_tex);
+    nom::make_shared_sprite(grad2_tex);
   ASSERT_TRUE(sprite_grad2 != nullptr);
   ASSERT_TRUE(sprite_grad2->valid() != false);
 
@@ -312,7 +312,7 @@ TEST_F(GradientTest, SharedTextureForSprite)
   this->clear_render_callbacks();
   this->append_render_callback( this->default_render_callback() );
 
-  this->append_render_callback( [=] (const RenderWindow& win) {
+  this->append_render_callback( [=](const RenderWindow& win) {
 
     if( sprite_grad1 != nullptr && sprite_grad1->valid() == true ) {
       sprite_grad1->draw( this->render_window() );

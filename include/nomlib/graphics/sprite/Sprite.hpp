@@ -51,28 +51,21 @@ class Sprite: public Transformable
     typedef Sprite self_type;
     typedef Transformable derived_class;
 
-    /// Default construct for initializing instance variables to their
-    /// respective defaults.
     Sprite();
 
-    /// Destructor.
     virtual ~Sprite();
 
-    /// \brief Construct a sprite from an existing texture source.
+    /// \brief Construct a sprite from a dimension and color.
     ///
-    /// \see ::set_texture
-    Sprite(Texture& tex);
-
-    /// \brief Construct a sprite from an existing texture source.
+    /// \params color The color to fill the sprite bounds with.
+    /// \params dims The width and height, in pixels, of the sprite.
     ///
-    /// \see ::set_texture
-    Sprite(Texture* tex);
-
-    /// \brief Construct a sprite from an existing texture source.
+    /// \returns Boolean TRUE on successful construction, or boolean FALSE when
+    /// construction has failed, such as when the texture is invalid, or a
+    /// failure to allocate the necessary memory.
     ///
-    /// \see ::set_texture
-    Sprite(std::shared_ptr<Texture>& tex);
-
+    /// \remarks The position of the sprite will be initialized to
+    /// Point2i::zero.
     bool init_with_color(const Color4i& color, const Size2i& dims);
 
     /// \brief Re-implements the IObject::type method.
@@ -102,30 +95,36 @@ class Sprite: public Transformable
     /// \brief Get the alpha value of the sprite.
     uint8 alpha() const;
 
-    /// \brief Set the texture source for the sprite.
+    /// \brief Construct a sprite from an existing texture source.
     ///
-    /// \param tex  A valid nom::Texture reference.
+    /// \params tex An existing, valid nom::Texture reference.
     ///
-    /// \remarks You are responsible for ensuring that the nom::Texture object
-    /// outlives the destruction of this instance.
+    /// \returns Boolean TRUE on successful construction, or boolean FALSE when
+    /// construction has failed, such as when the texture is invalid, or a
+    /// failure to allocate the necessary memory.
     ///
-    /// \see nom::Texture::load
+    /// \remarks The passed in nom::Texture instance **must** outlive the
+    /// destruction of this sprite!
     bool set_texture(Texture& tex);
 
-    /// \brief Set the texture source for the sprite.
+    /// \brief Construct a sprite from an existing texture source.
     ///
-    /// \param tex  A valid nom::Texture pointer.
+    /// \params tex An existing, valid nom::Texture pointer.
     ///
-    /// \remarks The ownership of the pointer is transferred to this instance.
+    /// \returns Boolean TRUE on successful construction, or boolean FALSE when
+    /// construction has failed, such as when the texture is invalid, or a
+    /// failure to allocate the necessary memory.
     ///
-    /// \see nom::Texture::load
+    /// \remarks The ownership of the pointer is transferred to this sprite.
     bool set_texture(Texture* tex);
 
-    /// \brief Set the texture source for the sprite.
+    /// \brief Construct a sprite from an existing texture source.
     ///
-    /// \param tex  A valid nom::Texture std::shared_ptr.
+    /// \params tex An existing, valid nom::Texture pointer.
     ///
-    /// \see nom::Texture::load
+    /// \returns Boolean TRUE on successful construction, or boolean FALSE when
+    /// construction has failed, such as when the texture is invalid, or a
+    /// failure to allocate the necessary memory.
     bool set_texture(std::shared_ptr<Texture>& tex);
 
     bool set_alpha(uint8 opacity);
@@ -154,7 +153,49 @@ class Sprite: public Transformable
 
   private:
     virtual void update() override;
+
+    // TODO: Implement these member variables:
+
+    // nom::SpriteBatch can begin using this immediately. Long term, I would
+    // like to either re-implement some concept of rescaling, or at the very
+    // minimum, let nom::Sprite always hold a reference to a value and do
+    // calculations based off it from other APIs or what not.
+    // Size2f scale_factor_ = 1.0f;
+
+    // Render queues and z-sorting, oh my! Perhaps we could even just upgrade
+    // nom::Transformable to Point3..?
+    // real32 z_depth_;
 };
+
+/// \brief Construct a sprite from an existing texture source.
+///
+/// \relates ::set_texture
+std::unique_ptr<Sprite>
+make_unique_sprite(Texture& tex);
+
+/// \brief Construct a sprite from an existing texture source.
+///
+/// \relates ::set_texture
+std::unique_ptr<Sprite>
+make_unique_sprite(Texture* tex);
+
+/// \brief Construct a sprite from an existing texture source.
+///
+/// \relates ::set_texture
+std::shared_ptr<Sprite>
+make_shared_sprite(Texture& tex);
+
+/// \brief Construct a sprite from an existing texture source.
+///
+/// \relates ::set_texture
+std::shared_ptr<Sprite>
+make_shared_sprite(Texture* tex);
+
+/// \brief Construct a sprite from an existing texture source.
+///
+/// \relates ::set_texture
+std::shared_ptr<Sprite>
+make_shared_sprite(std::shared_ptr<Texture>& tex);
 
 } // namespace nom
 

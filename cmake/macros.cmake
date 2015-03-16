@@ -145,6 +145,25 @@ endmacro(nom_add_library)
 
 # endmacro(nom_install_dep target external_deps dest)
 
+# Helper function for adding tests through CTest
+#
+# IMPORTANT: We cannot use the GTEST_ADD_TESTS macro here for adding tests that
+# rely on the nom::VisualUnitTest framework because of the way that the macro
+# breaks up the test run -- it ends up executing each individual test in a
+# separate process, i.e.: 'SpriteTest.SpriteInterfaceWithTextureReference' and
+# 'SpriteTest.SpriteInterfaceWithTextureRawPointer' are treated as two
+# separated executable binaries.
+#  This is bad for us because our screen-dumping creates new timestamped
+# directories on every new instance of the framework, which normally is OK
+# because this yields one directory, but in the case of multiple executable
+# runs ... spawns an awful lot more than I'd prefer.
+#   I hope to one day figure out a proper solution for this work flow issue,
+# but in the mean time ... this is the best I can come up with.
+macro( nom_add_visual_test test_name executable )
+  add_test( ${test_name} ${executable}
+            --gtest_filter=${test_name}.* ${ARGN} )
+endmacro()
+
 macro(NOM_LOG_INFO msg)
   message( STATUS "INFO: ${msg}" )
 endmacro(NOM_LOG_INFO msg)

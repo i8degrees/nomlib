@@ -43,10 +43,8 @@ if( NOM_BUILD_GRADIENT_TESTS )
 
   target_link_libraries( GradientTest nomlib-graphics nomlib-visual-unit-test )
 
-  GTEST_ADD_TESTS ( ${TESTS_INSTALL_DIR}/GradientTest
-                    "" # args
-                    "GradientTest.cpp"
-                  )
+  nom_add_visual_test(  GradientTest
+                        ${TESTS_INSTALL_DIR}/GradientTest )
 
   # Copy resource files for the test
   install (
@@ -64,10 +62,8 @@ if(NOM_BUILD_BITMAP_FONT_TEST)
 
   target_link_libraries( BitmapFontTest nomlib-graphics nomlib-visual-unit-test )
 
-  GTEST_ADD_TESTS ( ${TESTS_INSTALL_DIR}/BitmapFontTest
-                    "" # args
-                    "BitmapFontTest.cpp"
-                  )
+  nom_add_visual_test(  BitmapFontTest
+                        "${TESTS_INSTALL_DIR}/BitmapFontTest" )
 
   # Copy resource files for the test
   install (
@@ -85,9 +81,8 @@ if(NOM_BUILD_TRUETYPE_FONT_TEST)
 
   target_link_libraries( TrueTypeFontTest nomlib-graphics nomlib-visual-unit-test )
 
-  GTEST_ADD_TESTS ( ${TESTS_INSTALL_DIR}/TrueTypeFontTest
-                    "" # args
-                    "TrueTypeFontTest.cpp" )
+  nom_add_visual_test(  TrueTypeFontTest
+                        "${TESTS_INSTALL_DIR}/TrueTypeFontTest" )
 
   # Copy resource files for the test
   install (
@@ -105,9 +100,9 @@ if(NOM_BUILD_BMFONT_TEST)
 
   target_link_libraries( BMFontTest nomlib-graphics nomlib-visual-unit-test )
 
-  GTEST_ADD_TESTS ( ${TESTS_INSTALL_DIR}/BMFontTest
-                    "" # args
-                    "BMFontTest.cpp" )
+  nom_add_visual_test(  BMFontTest
+                        "${TESTS_INSTALL_DIR}/BMFontTest" )
+
 
   # Copy resource files for the test
   install (
@@ -125,9 +120,8 @@ if(NOM_BUILD_SPRITE_TESTS)
 
   target_link_libraries(SpriteTest nomlib-graphics nomlib-visual-unit-test)
 
-  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/SpriteTest
-                    "" # args
-                    "SpriteTest.cpp" )
+  nom_add_visual_test(  SpriteTest
+                        ${TESTS_INSTALL_DIR}/SpriteTest )
 
   # Copy resource files for the test
   install(  FILES

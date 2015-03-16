@@ -59,8 +59,7 @@ void VisualUnitTest::initialize( const Size2i& res )
   // Use the same timestamp string across multiple object instances to prevent
   // multiple output directories for screen-shots intended for the same test
   // set.
-  if( VisualUnitTest::timestamp_initialized_ == false )
-  {
+  if( VisualUnitTest::timestamp_initialized_ == false ) {
     // Use underscore char instead of a space char (filename friendly)
     VisualUnitTest::timestamp_ = nom::file_timestamp();
 
@@ -317,19 +316,42 @@ void VisualUnitTest::SetUp( void )
   << result_msg.str();
 }
 
-VisualUnitTest::~VisualUnitTest( void )
+VisualUnitTest::~VisualUnitTest()
 {
   // NOM_LOG_TRACE( NOM );
+
+  Path p;
+  File file;
+  std::string output_dir =
+    this->output_directory();
 
   IValueSerializer* fp = new JsonCppSerializer();
 
   // Save info file only if we have one or more images successfully captured
-  if( fp != nullptr && VisualUnitTest::visual_test_.images().size() > 0 )
-  {
-    VisualUnitTest::visual_test_.save_file( fp );
+  if( fp != nullptr && VisualUnitTest::visual_test_.images().size() > 0 ) {
+    VisualUnitTest::visual_test_.save_file(fp);
   }
 
   NOM_DELETE_PTR(fp);
+
+  // Handle cleaning up of empty directories at the end of each test
+  if( VisualUnitTest::visual_test_.images().empty() == true ) {
+
+    NOM_LOG_DEBUG( NOM_LOG_CATEGORY_APPLICATION, "output_dir:", output_dir );
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_APPLICATION, "num_files:",
+                    file.num_files( this->output_directory() ) );
+
+    if( file.exists(output_dir) == true ) {
+
+      // NOTE: I don't **think** that there should ever be a case where there
+      // is an empty directory minus an info.json file, but bugs have had their
+      // way of sneaking in here before, so -- this hopefully this will catch
+      // any nasty surprises!
+      NOM_ASSERT(file.exists(output_dir + p.native() + "info.json") == false);
+      file.rmdir(output_dir);
+    }
+  }
+
 }
 
 int VisualUnitTest::on_run( void )
@@ -640,42 +662,45 @@ const std::string& VisualUnitTest::timestamp( void )
   return VisualUnitTest::timestamp_;
 }
 
-void VisualUnitTest::initialize_directories( void )
+void VisualUnitTest::initialize_directories()
 {
   Path p;
   File fp;
 
-  if( NOM_TEST_FLAG( disable_comparison ) == true )
-  {
-    // NOM_LOG_INFO( NOM, "Image set comparison has been explicitly disabled." );
-    return;
-  }
+  if( NOM_TEST_FLAG(reference_screenshot) == true ) {
+    std::string test_dir =
+      nom::test_output_directory + p.native() + this->test_set();
 
-  if( NOM_TEST_FLAG(reference_screenshot) == true )
-  {
-    std::string test_dir = nom::test_output_directory + p.native() + this->test_set();
     std::string ref_dir = test_dir + p.native() + "Reference";
 
-    if( fp.recursive_mkdir( ref_dir ) == false )
-    {
+    if( fp.recursive_mkdir(ref_dir) == false ) {
       // NOM_LOG_ERR( NOM, "Could not create directory for reference ", this->test_set(), " at: ", ref_dir );
       // exit( NOM_EXIT_FAILURE );
     }
 
-    this->set_output_directory( ref_dir );
-  }
-  else
-  {
-    std::string test_name_dir = nom::test_output_directory + p.native() + this->test_set() + p.native() + this->test_set() + "_" + VisualUnitTest::timestamp();
+    this->set_output_directory(ref_dir);
+  } else {
+    std::string test_name_dir =
+      nom::test_output_directory + p.native() + this->test_set() +
+      p.native() + this->test_set() + "_" + VisualUnitTest::timestamp();
 
-    if( fp.recursive_mkdir( test_name_dir ) == false )
-    {
+    if( fp.recursive_mkdir(test_name_dir) == false ) {
       // NOM_LOG_ERR( NOM, "Could not create directory for test name ", this->test_name(), " at: ", test_name_dir );
       // exit( NOM_EXIT_FAILURE );
     }
 
-    this->set_output_directory( test_name_dir );
+    // NOTE: This directory is "garbage collected" on class destruction when
+    // there no screen-shots have been dumped. The clean up handling depends
+    // on this output directory being available.
+    this->set_output_directory(test_name_dir);
   }
+
+  // Log a friendly reminder
+  if( NOM_TEST_FLAG( disable_comparison ) == true ) {
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
+                  "Image set comparison has been explicitly disabled." );
+  }
+
 }
 
 void VisualUnitTest::set_test_set_directory( const std::string& dir_path )

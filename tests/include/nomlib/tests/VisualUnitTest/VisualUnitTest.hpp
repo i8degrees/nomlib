@@ -49,6 +49,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// IMPORTANT: When adding new tests that use this framework, you should always
+// use the nom_add_visual_test macro. See cmake/macros.cmake for usage and
+// rationale behind why.
+
 /// \brief Base class interface for visual unit testing within Google Test
 class VisualUnitTest: public UnitTest
 {
@@ -96,8 +100,10 @@ class VisualUnitTest: public UnitTest
     /// \brief Destructor.
     ///
     /// \remarks Destruction of the object flushes the configuration file for
-    /// the visual test set when it has images in its list.
-    virtual ~VisualUnitTest( void );
+    /// the visual test set when it has images in its list. Also, output
+    /// directories that are empty -- no screen-shots taken during the test --
+    /// will automatically be deleted.
+    virtual ~VisualUnitTest();
 
     /// \brief Initialize the rendering subsystem.
     ///
@@ -331,9 +337,8 @@ class VisualUnitTest: public UnitTest
     ///
     /// \see ::set_output_directory.
     ///
-    /// \todo Clean up the logic in this method.
-    void initialize_directories( void );
-    // void initialize_directories( const std::string& dir_name );
+    /// \todo Finish err handling for file I/O.
+    void initialize_directories();
 
     /// \brief Get the timestamp string recorded for the visual unit test.
     static const std::string& timestamp( void );

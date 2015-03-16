@@ -436,4 +436,12 @@ std::string UnixFile::env( const std::string& path )
   return "\0";
 }
 
+nom::size_type UnixFile::num_files(const std::string& path)
+{
+  std::vector<std::string> num_files_per_dir =
+    this->read_dir(path);
+
+  return num_files_per_dir.size();
+}
+
 } // namespace nom

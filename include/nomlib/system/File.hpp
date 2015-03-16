@@ -101,6 +101,9 @@ class File
     /// \see UnixFile::env, WinFile::env.
     std::string env(const std::string& path) const;
 
+    /// \see UnixFile::num_files, WinFile::num_files
+    nom::size_type num_files(const std::string& path) const;
+
   private:
     std::unique_ptr<IFile> file;
 };

@@ -155,6 +155,11 @@ std::string File::env(const std::string& path) const
   return this->file->env(path);
 }
 
+nom::size_type File::num_files(const std::string& path) const
+{
+  return this->file->num_files(path);
+}
+
 namespace priv {
 
 // Static initializations

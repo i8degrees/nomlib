@@ -465,4 +465,12 @@ std::string WinFile::env( const std::string& path )
   return "\0";
 }
 
+nom::size_type WinFile::num_files(const std::string& path)
+{
+  std::vector<std::string> num_files_per_dir =
+    this->read_dir(path);
+
+  return num_files_per_dir.size();
+}
+
 } // namespace nom

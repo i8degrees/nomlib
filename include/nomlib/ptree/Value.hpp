@@ -79,7 +79,7 @@ class Value
     /// \brief Declared value of Null for this object.
     ///
     /// \remarks Value::null is the default constructor's type.
-    static const Value null;
+    static const Value& null;
 
     /// \brief Default constructor; constructs an object with NullValue data
     /// type.
@@ -88,13 +88,13 @@ class Value
     /// \brief Destructor.
     ///
     /// \todo Memory management of our pointers.
-    ~Value( void );
+    ~Value();
 
     /// \brief Copy constructor.
-    Value( const Value& copy );
+    Value(const Value& rhs);
 
     /// \brief Copy assignment operator.
-    Value::SelfType& operator =( const SelfType& other );
+    Value::SelfType& operator =(const SelfType& rhs);
 
     /// \brief Exchange the contents of the container; copy & swap idiom.
     ///
@@ -103,7 +103,7 @@ class Value
     ///
     /// \note This method is used in the implementation of the copy assignment
     /// operator.
-    void swap( Value& other );
+    void swap(Value& rhs);
 
     /// \brief Lesser than comparison operator.
     ///
@@ -182,12 +182,12 @@ class Value
     /// \endinternal
     ///
     /// \note Type 4
-    Value( const char* val );
+    Value(const char* str);
 
     /// \brief Construct an object from a C++ string value (std::string).
     ///
     /// \note Type 4
-    Value( const std::string& val );
+    Value(const std::string& str);
 
     /// \brief Construct an object from a boolean value.
     ///
@@ -197,7 +197,7 @@ class Value
     /// \brief Construct an object with either array or object node values.
     ///
     /// \note Type 6 or 7
-    Value( const Object& val );
+    Value(const Object& obj);
 
     /// \brief Internal helper method for comparing array & object node
     /// containers.
@@ -304,7 +304,7 @@ class Value
     ///
     /// ~~\remarks A copy of the stored C string is made, therefore no ownership
     /// transfers occur; you are responsible for freeing the returned C string.~~
-    const char* get_cstring( void ) const;
+    const char* get_cstring() const;
 
     /// \brief Obtain the string value stored within the container.
     ///
@@ -312,7 +312,7 @@ class Value
     /// std::string is done.
     ///
     /// \returns On err, a null-terminated std::string -- "\0" is returned.
-    const std::string get_string( void ) const;
+    std::string get_string() const;
 
     /// \brief Obtain the boolean value stored within the container.
     ///
@@ -411,11 +411,11 @@ class Value
     ///
     /// \note In contrast to the standard STL method overloads for
     /// ::operator[](int), nom::Value should always perform bounds checking.
-    Value& operator[]( ArrayIndex index );
+    Value& operator[](ArrayIndex index);
 
     /// \note In contrast to the standard STL method overloads for
     /// ::operator[](int), nom::Value should always perform bounds checking.
-    Value& operator[]( int index );
+    Value& operator[](int index);
 
     /// \brief Obtain a stored element by index number.
     ///
@@ -432,11 +432,11 @@ class Value
     ///
     /// \note In contrast to the standard STL method overloads for
     /// ::operator[](int), nom::Value should always perform bounds checking.
-    const Value& operator[]( ArrayIndex index ) const;
+    const Value& operator[](ArrayIndex index) const;
 
     /// \note In contrast to the standard STL method overloads for
     /// ::operator[](int), nom::Value should always perform bounds checking.
-    const Value& operator[]( int index ) const;
+    const Value& operator[](int index) const;
 
     /// \brief Access an object node's container.
     ///
@@ -446,13 +446,15 @@ class Value
     ///
     /// \note In contrast to the standard STL method overloads for
     /// ::operator[](int), nom::Value should always perform bounds checking.
-    /*const*/ Value& operator[]( const char* key ) /*const*/;
+    Value& operator[](const char* key);
 
-    Value& operator[]( const std::string& key );
-    // const Value& operator[]( const std::string& key ) const;
+    Value& operator[](const std::string& key);
+
+    const Value& operator[](const char* key) const;
+    const Value& operator[](const std::string& key) const;
 
     /// \brief Insert array elements.
-    Value& push_back( const Value& val );
+    Value& push_back(const Value& val);
 
     /// \brief Access an element.
     ///
@@ -490,7 +492,7 @@ class Value
     ///
     /// \note This method will fail with an assert if the container type is
     /// *not* either a null or object node type.
-    Value find( const std::string& key ) const;
+    const Value& find(const std::string& key) const;
 
     /// \brief Remove the named member.
     ///
@@ -585,14 +587,14 @@ class Value
       uint uint_;           // Type 2
       double real_;         // Type 3
       bool bool_;           // Type 4
+      // NOTE: Instance-owned pointer.
       const char* string_;  // Type 5
+      // NOTE: Instance-owned pointer.
       Object* object_;      // Type 6 and 7
     } value_;
 
     /// The type of value held in object container.
     enum ValueType type_;
-
-    bool string_allocated_ = false;
 };
 
 /// \brief Pretty print the object

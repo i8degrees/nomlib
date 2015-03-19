@@ -44,7 +44,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 // Static initializations
-const Value Value::null = Value();
+const Value& Value::null = Value();
 
 Value::Value( void )  :
   type_ ( ValueType::Null )
@@ -52,74 +52,35 @@ Value::Value( void )  :
   // NOM_LOG_TRACE(NOM);
 }
 
-// FIXME
-Value::~Value( void )
+Value::~Value()
 {
-  // NOM_LOG_TRACE(NOM);
-/*
-  if( this->array_valid() )
-  {
-    // this->value_.array_->clear();
-    for( auto itr = this->value_.object_->begin(); itr != this->value_.object_->end(); ++itr )
-    // for( auto itr = this->value_.array_->begin(); itr != this->value_.array_->end(); --itr )
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
+
+  switch( this->type() ) {
+
+    default: /* Nothing to free for most primitive types */ break;
+
+    case ValueType::String:
     {
-      if( itr->array_valid() )
-      {
-        // NOM_DUMP("a");
-        // delete itr->value_.array_;
+      if( this->value_.string_ != nullptr ) {
+        priv::free_string(this->value_.string_);
+        this->value_.string_ = nullptr;
       }
-      else if( itr->object_valid() )
-      {
-        // NOM_DUMP("o");
-        // delete this->value_.object_;
-      }
-    }
-    // delete this->value_.array_;
-    // this->value_.array_ = nullptr;
-  }
-*/
-  // else
-  if( this->object_valid() )
-  {
-    // this->value_.object_->clear();
-    // for( auto itr = this->value_.object_->end(); itr != this->value_.object_->begin(); --itr )
-    for( auto itr = this->value_.object_->begin(); itr != this->value_.object_->end(); ++itr )
+    } break;
+
+    case ValueType::ArrayValues:
+    case ValueType::ObjectValues:
     {
-      if( itr->second.array_valid() )
-      {
-        // NOM_DUMP("aa");
-        // delete itr->second.value_.array_;
-      }
-      else if( itr->second.object_valid() )
-      {
-        // NOM_DUMP("oo");
-        // delete itr->second.value_.object_;
-      }
-    }
-    // this->value_.object_->clear();
-    // delete this->value_.object_;
-    // this->value_.object_ = nullptr;
-  }
-  else if( this->string_type() )
-  {
-    if( this->string_allocated_ )
-    {
-      // See priv::duplicate_string
-      free( const_cast<char*> ( this->get_cstring() ) );
-      this->value_.string_ = nullptr;
-    }
-  }
-  else
-  {
-    // Do nothing
+      NOM_DELETE_PTR(this->value_.object_);
+    } break;
   }
 }
 
-Value::Value( const Value& copy ) :
-  type_ ( copy.type() ),
-  string_allocated_ ( false )
+Value::Value(const Value& rhs)
 {
   // NOM_LOG_TRACE(NOM);
+
+  this->type_ = rhs.type_;
 
   switch( this->type() )
   {
@@ -131,73 +92,64 @@ Value::Value( const Value& copy ) :
     }
     case ValueType::SignedInteger:
     {
-      this->value_.int_ = copy.value_.int_;
+      this->value_.int_ = rhs.value_.int_;
       break;
     }
     case ValueType::UnsignedInteger:
     {
-      this->value_.uint_ = copy.value_.uint_;
+      this->value_.uint_ = rhs.value_.uint_;
       break;
     }
     case ValueType::RealNumber:
     {
-      this->value_.real_ = copy.value_.real_;
+      this->value_.real_ = rhs.value_.real_;
       break;
     }
 
     case ValueType::Boolean:
     {
-      this->value_.bool_ = copy.value_.bool_;
+      this->value_.bool_ = rhs.value_.bool_;
       break;
     }
 
     case ValueType::String:
     {
-      if( copy.get_cstring() )
-      {
-        uint size = strlen( copy.get_cstring() );
-        this->value_.string_ = priv::duplicate_string( copy.get_cstring(), size );
-        this->string_allocated_ = true;
-        break;
+      const char* rhs_string_value = rhs.value_.string_;
+      if( rhs_string_value != nullptr ) {
+        nom::size_type str_len = priv::string_length(rhs_string_value);
+
+        this->value_.string_ =
+          priv::duplicate_string(rhs_string_value, str_len);
+      } else {
+        this->value_.string_ = rhs.value_.string_;
       }
-      else
-      {
-        this->value_.string_ = nullptr;
-        this->string_allocated_ = false;
-        break;
-      }
-    }
+    } break;
 
     case ValueType::ArrayValues:
     case ValueType::ObjectValues:
     {
-      this->value_.object_ = copy.value_.object_;
-      break;
-    }
+      this->value_.object_ = new Object(*rhs.value_.object_);
+    } break;
   } // end switch type
 }
 
-Value::SelfType& Value::operator =( const SelfType& other )
+Value::SelfType& Value::operator =(const SelfType& rhs)
 {
-  Value temp( other );
-
-  this->swap( temp );
+  if( this != &rhs ) {
+    Value temp(rhs);
+    this->swap(temp);
+  }
 
   return *this;
 }
 
-void Value::swap( Value& other )
+void Value::swap(Value& rhs)
 {
-   Value::ValueType temp = this->type();
+  Value::ValueType temp = this->type_;
 
-   this->type_ = other.type();
-   other.type_ = temp;
-   std::swap( this->value_, other.value_ );
-
-   int temp2 = this->string_allocated_;
-
-   this->string_allocated_ = other.string_allocated_;
-   other.string_allocated_ = temp2;
+  this->type_ = rhs.type_;
+  rhs.type_ = temp;
+  std::swap(this->value_, rhs.value_);
 }
 
 bool Value::operator <( const Value& other ) const
@@ -406,16 +358,11 @@ Value::Value( enum ValueType type ) :
     }
 
     case ValueType::ArrayValues:
-    {
-      this->value_.object_ = new Object();
-      break;
-    }
-
     case ValueType::ObjectValues:
     {
       this->value_.object_ = new Object();
-      break;
-    }
+      NOM_ASSERT(this->value_.object_ != nullptr);
+    } break;
   }
 }
 
@@ -440,22 +387,22 @@ Value::Value( double val ) :
   this->value_.real_ = val;
 }
 
-Value::Value( const char* val ) :
-  type_ ( ValueType::String )
+Value::Value(const char* str) :
+  type_(ValueType::String)
 {
   //NOM_LOG_TRACE(NOM);
-  uint size = strlen( val );
-  this->value_.string_ = priv::duplicate_string( val, size );
-  this->string_allocated_ = true;
+
+  nom::size_type str_len = priv::string_length(str);
+  this->value_.string_ = priv::duplicate_string(str, str_len);
 }
 
-Value::Value( const std::string& val ) :
-  type_ ( ValueType::String )
+Value::Value(const std::string& str) :
+  type_(ValueType::String)
 {
   //NOM_LOG_TRACE(NOM);
-  uint size = val.length();
-  this->value_.string_ = priv::duplicate_string( val.c_str(), size );
-  this->string_allocated_ = true;
+
+  nom::size_type str_len = priv::string_length(str);
+  this->value_.string_ = priv::duplicate_string(str, str_len);
 }
 
 Value::Value( bool val ) :
@@ -465,12 +412,11 @@ Value::Value( bool val ) :
   this->value_.bool_ = val;
 }
 
-Value::Value( const Object& val ) :
-  type_ ( ValueType::ObjectValues )
+Value::Value(const Object& obj) :
+  type_(ValueType::ObjectValues)
 {
-  //NOM_LOG_TRACE(NOM);
-  this->value_.object_ =  new Object( val );
-  // this->object_ = val;
+  // NOM_LOG_TRACE(NOM);
+  this->value_.object_ = new Object(obj);
 }
 
 // Derives from the JsonCpp library
@@ -637,31 +583,22 @@ float Value::get_float ( void ) const
   return 0; // Not found
 }
 
-const char* Value::get_cstring ( void ) const
+const char* Value::get_cstring() const
 {
-  // NOM_ASSERT( this->string_type() );
-
-  if( this->string_type() )
-  {
-    uint size = strlen( this->value_.string_ );
-    return priv::duplicate_string( this->value_.string_, size );
-    // return this->value_.string_;
+  if( this->string_type() ) {
+    return this->value_.string_;
   }
 
-  return nullptr; // If no string value is found
+  return nullptr;
 }
 
-const std::string Value::get_string ( void ) const
+std::string Value::get_string() const
 {
-  // NOM_ASSERT( this->string_type() );
-
-  if( this->string_type() )
-  {
-    // char* to std::string
-    return std::string( this->get_cstring() );
+  if( this->string_type() ) {
+    return std::string(this->value_.string_);
   }
 
-  return "\0"; // Null-terminated string if no string value is found
+  return "\0";
 }
 
 bool Value::get_bool ( void ) const
@@ -824,126 +761,114 @@ void Value::clear( void )
 }
 
 // Derives from JsonCpp implementation
-Value& Value::operator[]( ArrayIndex index )
+Value& Value::operator[](ArrayIndex index)
 {
   NOM_ASSERT( this->null_type() || this->array_type() );
 
-  if( this->null_type() )
-  {
-    *this = Value( ValueType::ArrayValues );
+  if( this->null_type() ) {
+    *this = Value(ValueType::ArrayValues);
   }
 
-  VString key( index );
+  VString key(index);
 
   // Returns an iterator pointing to the first element in the container whose
   // key is not considered to go before k -- key_type -- (i.e., either it is
   // equivalent or goes after).
-  ObjectIterator it = this->value_.object_->lower_bound( key );
+  ObjectIterator it = this->value_.object_->lower_bound(key);
 
-  if( it != this->value_.object_->end() && (*it).first == key )
-  {
+  if( it != this->value_.object_->end() && (*it).first == key ) {
     return (*it).second;
   }
 
-  ObjectPair default_value( key, Value::null );
+  ObjectPair default_value(key, Value::null);
 
-  it = this->value_.object_->insert( it, default_value );
+  it = this->value_.object_->insert(it, default_value);
 
   return (*it).second;
 }
 
-// Derives from JsonCpp implementation
-Value& Value::operator[]( int index )
+Value& Value::operator[](int index)
 {
-  NOM_ASSERT( index >= 0 );
+  NOM_ASSERT(index >= 0);
 
-  return (*this)[ ArrayIndex( index ) ];
+  return (*this)[ ArrayIndex(index) ];
 }
 
-// Derives from JsonCpp implementation
-const Value& Value::operator[]( ArrayIndex index ) const
+const Value& Value::operator[](ArrayIndex index) const
 {
   NOM_ASSERT( this->null_type() || this->array_type() );
 
-  if( this->null_type() )
-  {
-    return null;
+  if( this->null_type() ) {
+    return Value::null;
   }
 
-  VString key( index );
+  VString key(index);
 
-  ObjectConstIterator it = this->value_.object_->find( key );
+  ObjectConstIterator it = this->value_.object_->find(key);
 
-  if( it == this->value_.object_->end() )
-  {
-    return null;
+  if( it == this->value_.object_->end() ) {
+    return Value::null;
   }
 
   return (*it).second;
 }
 
-// Derives from JsonCpp implementation
-const Value& Value::operator[]( int index ) const
+const Value& Value::operator[](int index) const
 {
-  NOM_ASSERT( index >= 0 );
+  NOM_ASSERT(index >= 0);
 
-  return (*this)[ ArrayIndex( index ) ];
+  return (*this)[ ArrayIndex(index) ];
 }
 
-/*const*/ Value& Value::operator[]( const char* key ) /*const*/
+// Derives from JsonCpp implementation
+Value& Value::operator[](const char* key)
 {
   // An object node container is required for this method call.
-  if( ! this->object_valid() )
-  {
-    this->type_ = ValueType::ObjectValues;
-    this->value_.object_ = new Object();
-  }
-
-// TODO: TRY ME OUT
-/*
   NOM_ASSERT( this->null_type() || this->object_type() );
-
-  if( this->null_type() )
-  {
-    return Value::null;
-  }
-*/
-  auto res = this->value_.object_->find( key );
-
-  if( res == this->value_.object_->end() ) // No match found!
-  {
-    this->value_.object_->insert( std::pair<VString, Value>( key, Value() ) );
-
-    auto res2 = this->value_.object_->find( key );
-
-    if( res2 != this->value_.object_->end() ) // Match found!
-    {
-      return res2->second;
-    }
-    else // No match found
-    {
-      return *this;
-    }
-  }
-  else // Match found!
-  {
-    this->value_.object_->insert( std::pair<VString, Value>( key, res->second ) );
-
-    return res->second;
+  if( this->null_type() ) {
+    *this = Value(ValueType::ObjectValues);
   }
 
-  return res->second;
+  auto it = this->value_.object_->lower_bound(key);
+
+  if( it != this->value_.object_->end() && (*it).first == key ) {
+    return (*it).second;
+  }
+
+  auto default_value =
+    std::pair<VString, Value>(key, Value::null);
+  auto res = this->value_.object_->insert(it, default_value);
+
+  Value& value = (*res).second;
+  return value;
 }
 
-Value& Value::operator[]( const std::string& key )
+Value& Value::operator[](const std::string& key)
 {
   return (*this)[ key.c_str() ];
 }
 
-// const Value& Value::operator[]( const std::string& key ) const
-// {
-//   return (*this)[ key ];
-// }
+const Value& Value::operator[](const char* key) const
+{
+  const Value& found = this->find(key);
+
+  if( found == Value::null ) {
+    return Value::null;
+  }
+
+  return found;
+}
+
+const Value& Value::operator[](const std::string& key) const
+{
+  const Value& found = this->find( key.c_str() );
+
+  if( found == Value::null ) {
+    return Value::null;
+  }
+
+  return found;
+}
 
 // Implementation derives from JsonCpp
 Value& Value::push_back( const Value& val )
@@ -972,7 +897,7 @@ Value& Value::push_back( const Value& val )
 //   return *this;
 // }
 
-Value Value::find( const std::string& key ) const
+const Value& Value::find(const std::string& key) const
 {
   // Sanity check
   NOM_ASSERT( this->null_type() || this->object_type() );

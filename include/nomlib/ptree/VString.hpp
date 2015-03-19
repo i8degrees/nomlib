@@ -26,71 +26,66 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_PTREE_VSTRING_HPP
-#define NOMLIB_SYSTEM_PTREE_VSTRING_HPP
+#ifndef NOMLIB_PTREE_VSTRING_HPP
+#define NOMLIB_PTREE_VSTRING_HPP
 
 #include <cstring>
-#include <string>
 
 #include "nomlib/config.hpp"
-#include "nomlib/core/helpers.hpp" // priv::duplicate_string
-#include "nomlib/ptree/ptree_config.hpp"
-#include "nomlib/ptree/ptree_forwards.hpp"
 
 namespace nom {
 
+// TODO: Change to nom::size_type..?
 typedef uint ArrayIndex;
 
 class VString
 {
   public:
-    typedef VString SelfType;
+    typedef VString self_type;
 
-    /// \brief Default constructor.
-    VString( void );
+    /// \brief Construct an invalid member key.
+    VString();
 
-    /// \brief Destructor.
-    ~VString( void );
+    ~VString();
 
-    /// \brief Constructor for array element index.
-    VString( ArrayIndex index );
+    /// \brief Construct a member key from a C string.
+    VString(const char* key);
 
-    /// \brief Constructor for key member pair.
-    VString( const char* key );
+    /// \brief Construct a member key from a C++ string.
+    VString(const std::string& key);
 
-    /// \brief Constructor for key member pair.
-    VString( const std::string& key );
+    /// \brief Construct a member key from an array element index.
+    VString(ArrayIndex index);
 
     /// \brief Copy constructor.
-    VString( const SelfType& copy );
+    VString(const self_type& rhs);
 
     /// \brief Copy assignment operator.
-    SelfType& operator =( const SelfType& other );
+    self_type& operator =(const self_type& rhs);
 
-    void swap( VString& other );
-
-    /// \brief Short-hand for checking if class variable value_ is nullptr.
-    bool valid( void ) const;
-
-    /// \note Required implementation for usage inside a std::map template.
-    bool operator <( const VString& other ) const;
-
-    /// \note Required implementation for usage inside a std::map template.
-    bool operator ==( const VString& other ) const;
-
-    /// \brief Getter for the C string (char*) copy of the stored member key.
-    const char* c_str( void ) const;
-
-    // / \brief Getter for std::string copy of the stored member key.
-    const std::string get_string( void ) const;
-
-    /// \brief Getter for the contained array element index.
+    /// \brief Lesser than comparison operator.
     ///
-    /// \returns Index of the element.
-    ArrayIndex index( void ) const;
+    /// \note This is required for an implementation inside std::map.
+    bool operator <(const self_type& rhs) const;
+
+    /// \brief Equality comparison operator.
+    ///
+    /// \note This is required for an implementation inside std::map.
+    bool operator ==(const self_type& rhs) const;
+
+    /// \brief Get the C++ string stored for this member key.
+    std::string string() const;
+
+    /// \brief Get the C string stored for this member key.
+    const char* c_str() const;
+
+    /// \brief Get the stored array index key.
+    ArrayIndex index() const;
 
   private:
-    const char* value_;
+    void swap(self_type& rhs);
+
+    std::string cstr_;
     ArrayIndex index_;
 };
 

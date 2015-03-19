@@ -76,6 +76,7 @@ if ( DEBUG )
     # i.e.:: -fsanitize=address, -fsanitize=integer, -fsanitize=undefined,
     # -fsanitize=unsigned-integer-overflow, etc.
     # See also: http://clang.llvm.org/docs/UsersManual.html#controlling-code-generation
+    # See also: Malloc Debugging under OSX: https://developer.apple.com/library/mac/documentation/Performance/Conceptual/ManagingMemory/Articles/MallocDebug.html#//apple_ref/doc/uid/20001884-CJBJFIDD
     set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused -O0" )
 
     # Measure the time it takes per source file to build, so we can try

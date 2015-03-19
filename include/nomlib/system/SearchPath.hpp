@@ -34,12 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/File.hpp"
-
-#include "nomlib/ptree.hpp"
-#include "nomlib/serializers.hpp"
 
 namespace nom {
+
+// Forward declarations
+class IValueDeserializer;
 
 /// \brief Determine the directory location to use based on search prefixes
 ///

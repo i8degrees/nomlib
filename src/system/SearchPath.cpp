@@ -28,6 +28,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/SearchPath.hpp"
 
+#include "nomlib/system/File.hpp"
+#include "nomlib/ptree.hpp"
+
+// Forward declarations
+#include "nomlib/serializers.hpp"
+
 namespace nom {
 
 SearchPath::SearchPath() :

@@ -62,13 +62,24 @@ class JsonCppSerializerTest: public ::testing::Test
     nom::IValueDeserializer* fp_in;
     nom::IValueSerializer* fp_outs;
 
-    void expected_out( Value& in, const std::string& out )
+    void expected_out(  Value& in, const std::string& out,
+                        const std::string& scope_name = "" )
     {
       std::string ret;
 
-      ret = fp->serialize( in );
+      ret = fp->serialize(in);
 
-      EXPECT_EQ( out, ret ) << in;
+      EXPECT_EQ(out, ret) << in;
+
+      // Debugging aid; these two files are serialized with "human friendly"
+      // JSON for maximum readability
+      if( scope_name != "" ) {
+        fp_outs->save(in, "actual_" + scope_name + ".json" );
+
+        Value output;
+        output = fp_in->deserialize(out);
+        fp_outs->save(output, "expected_" + scope_name + ".json" );
+      }
     }
 
     void not_expected_out( Value& in, const std::string& out )
@@ -78,16 +89,6 @@ class JsonCppSerializerTest: public ::testing::Test
       ret = fp->serialize( in );
 
       EXPECT_NE( out, ret ) << in;
-    }
-
-    std::string pp_out( const Value& in )
-    {
-      return fp->serialize( in );
-    }
-
-    std::string pp_outs( const Value& in )
-    {
-      return fp_outs->serialize( in );
     }
 };
 
@@ -250,33 +251,40 @@ TEST_F( JsonCppSerializerTest, SerializeArrayValues_MultipleArrayValuesInObjectV
   expected_out( o, "[{\"id\":5,\"level\":4,\"name\":\"Diablos\",\"owner\":false,\"ranks\":[4,8,5,10]},{\"id\":0,\"level\":1,\"name\":\"Geezard\",\"owner\":true,\"ranks\":[5,3,1,3]}]\n" );
 }
 
-TEST_F( JsonCppSerializerTest, SerializeArrayValues_ObjectInsideArrayValues )
+TEST_F(JsonCppSerializerTest, SerializeArrayValues_ObjectInsideArrayValues)
 {
-  Value o, obj;
+  const std::string TEST_NAME = "SerializeArrayValues_ObjectInsideArrayValues";
+  const std::string EXPECTED_JSON_OUTPUT =
+    "[{\"cards\":[{\"id\":5,\"level\":4,\"name\":\"Diablos\",\"owner\":false,\"ranks\":[4,8,5,10]},{\"id\":0,\"level\":1,\"name\":\"Geezard\",\"owner\":true,\"ranks\":[5,3,1,3]}]},{\"cards\":[{\"id\":5,\"level\":4,\"name\":\"Diablos\",\"owner\":false,\"ranks\":[4,8,5,10]},{\"id\":0,\"level\":1,\"name\":\"Geezard\",\"owner\":true,\"ranks\":[5,3,1,3]}]}]\n";
 
-  obj[0]["id"] = 5u;
-  obj[0]["name"] = "Diablos";
-  obj[0]["level"] = 4u;
-  obj[0]["ranks"][0] = 4u;
-  obj[0]["ranks"][1] = 8u;
-  obj[0]["ranks"][2] = 5u;
-  obj[0]["ranks"][3] = 10u;
-  obj[0]["owner"] = false;
+  Value cards_array;
+  Value diablos_obj, geezard_obj;
 
-  o[0]["cards"] = obj;
+  diablos_obj["id"] = 5u;
+  diablos_obj["name"] = "Diablos";
+  diablos_obj["level"] = 4u;
+  diablos_obj["ranks"][0] = 4u;
+  diablos_obj["ranks"][1] = 8u;
+  diablos_obj["ranks"][2] = 5u;
+  diablos_obj["ranks"][3] = 10u;
+  diablos_obj["owner"] = false;
 
-  obj[1]["id"] = 0u;
-  obj[1]["name"] = "Geezard";
-  obj[1]["level"] = 1u;
-  obj[1]["ranks"][0] = 5u;
-  obj[1]["ranks"][1] = 3u;
-  obj[1]["ranks"][2] = 1u;
-  obj[1]["ranks"][3] = 3u;
-  obj[1]["owner"] = true;
+  geezard_obj["id"] = 0u;
+  geezard_obj["name"] = "Geezard";
+  geezard_obj["level"] = 1u;
+  geezard_obj["ranks"][0] = 5u;
+  geezard_obj["ranks"][1] = 3u;
+  geezard_obj["ranks"][2] = 1u;
+  geezard_obj["ranks"][3] = 3u;
+  geezard_obj["owner"] = true;
 
-  o[1]["cards"] = obj;
+  cards_array[0]["cards"][0] = diablos_obj;
+  cards_array[0]["cards"][1] = geezard_obj;
 
-  expected_out( o, "[{\"cards\":[{\"id\":5,\"level\":4,\"name\":\"Diablos\",\"owner\":false,\"ranks\":[4,8,5,10]},{\"id\":0,\"level\":1,\"name\":\"Geezard\",\"owner\":true,\"ranks\":[5,3,1,3]}]},{\"cards\":[{\"id\":5,\"level\":4,\"name\":\"Diablos\",\"owner\":false,\"ranks\":[4,8,5,10]},{\"id\":0,\"level\":1,\"name\":\"Geezard\",\"owner\":true,\"ranks\":[5,3,1,3]}]}]\n" );
+  cards_array[1]["cards"][0] = diablos_obj;
+  cards_array[1]["cards"][1] = geezard_obj;
+
+  expected_out(cards_array, EXPECTED_JSON_OUTPUT, TEST_NAME);
 }
 
 TEST_F( JsonCppSerializerTest, SerializeArrayValues_ComplexArrayValues )
@@ -477,33 +485,40 @@ TEST_F( JsonCppSerializerTest, SerializeObjectValues_MultipleArrayValuesInObject
   expected_out( o, "{\"obj1\":{\"id\":5,\"level\":4,\"name\":\"Diablos\",\"owner\":false,\"ranks\":[4,8,5,10]},\"obj2\":{\"id\":0,\"level\":1,\"name\":\"Geezard\",\"owner\":true,\"ranks\":[5,3,1,3]}}\n" );
 }
 
-TEST_F( JsonCppSerializerTest, SerializeObjectValues_ObjectInsideArrayValues )
+TEST_F(JsonCppSerializerTest, SerializeObjectValues_ObjectInsideArrayValues)
 {
-  Value o, obj;
+  const std::string TEST_NAME = "SerializeObjectValues_ObjectInsideArrayValues";
+  const std::string EXPECTED_JSON_OUTPUT =
+    "{\"root\":{\"cards\":[{\"obj1\":{\"id\":5,\"level\":4,\"name\":\"Diablos\",\"owner\":false,\"ranks\":[4,8,5,10]},\"obj2\":{\"id\":0,\"level\":1,\"name\":\"Geezard\",\"owner\":true,\"ranks\":[5,3,1,3]}},{\"obj1\":{\"id\":5,\"level\":4,\"name\":\"Diablos\",\"owner\":false,\"ranks\":[4,8,5,10]},\"obj2\":{\"id\":0,\"level\":1,\"name\":\"Geezard\",\"owner\":true,\"ranks\":[5,3,1,3]}}]}}\n";
 
-  obj["obj1"]["id"] = 5u;
-  obj["obj1"]["name"] = "Diablos";
-  obj["obj1"]["level"] = 4u;
-  obj["obj1"]["ranks"][0] = 4u;
-  obj["obj1"]["ranks"][1] = 8u;
-  obj["obj1"]["ranks"][2] = 5u;
-  obj["obj1"]["ranks"][3] = 10u;
-  obj["obj1"]["owner"] = false;
+  Value cards_object;
+  Value diablos_obj, geezard_obj;
 
-  o["root"]["cards"].push_back( obj );
+  diablos_obj["id"] = 5u;
+  diablos_obj["name"] = "Diablos";
+  diablos_obj["level"] = 4u;
+  diablos_obj["ranks"][0] = 4u;
+  diablos_obj["ranks"][1] = 8u;
+  diablos_obj["ranks"][2] = 5u;
+  diablos_obj["ranks"][3] = 10u;
+  diablos_obj["owner"] = false;
 
-  obj["obj2"]["id"] = 0u;
-  obj["obj2"]["name"] = "Geezard";
-  obj["obj2"]["level"] = 1u;
-  obj["obj2"]["ranks"][0] = 5u;
-  obj["obj2"]["ranks"][1] = 3u;
-  obj["obj2"]["ranks"][2] = 1u;
-  obj["obj2"]["ranks"][3] = 3u;
-  obj["obj2"]["owner"] = true;
+  geezard_obj["id"] = 0u;
+  geezard_obj["name"] = "Geezard";
+  geezard_obj["level"] = 1u;
+  geezard_obj["ranks"][0] = 5u;
+  geezard_obj["ranks"][1] = 3u;
+  geezard_obj["ranks"][2] = 1u;
+  geezard_obj["ranks"][3] = 3u;
+  geezard_obj["owner"] = true;
 
-  o["root"]["cards"].push_back( obj );
+  cards_object["root"]["cards"][0]["obj1"] = diablos_obj;
+  cards_object["root"]["cards"][0]["obj2"] = geezard_obj;
 
-  expected_out( o, "{\"root\":{\"cards\":[{\"obj1\":{\"id\":5,\"level\":4,\"name\":\"Diablos\",\"owner\":false,\"ranks\":[4,8,5,10]},\"obj2\":{\"id\":0,\"level\":1,\"name\":\"Geezard\",\"owner\":true,\"ranks\":[5,3,1,3]}},{\"obj1\":{\"id\":5,\"level\":4,\"name\":\"Diablos\",\"owner\":false,\"ranks\":[4,8,5,10]},\"obj2\":{\"id\":0,\"level\":1,\"name\":\"Geezard\",\"owner\":true,\"ranks\":[5,3,1,3]}}]}}\n" );
+  cards_object["root"]["cards"][1]["obj1"] = diablos_obj;
+  cards_object["root"]["cards"][1]["obj2"] = geezard_obj;
+
+  expected_out(cards_object, EXPECTED_JSON_OUTPUT, TEST_NAME);
 }
 
 TEST_F( JsonCppSerializerTest, SerializeObjectValues_ComplexArrayValues )
@@ -576,7 +591,7 @@ TEST_F( JsonCppSerializerTest, FileIO )
 
   o = sanity2_out();
 
-  ASSERT_TRUE( fp->save( o, "output_human-readable.json" ) ) << o;
+  ASSERT_TRUE( fp_outs->save( o, "output_human-readable.json" ) ) << o;
 
   // Just to be safe!
   o.clear();
@@ -602,20 +617,20 @@ TEST_F( JsonCppSerializerTest, FileIO )
 /// array objects, and must be implemented in order for the
 /// RESOURCE_JSON_INVENTORY JSON tests to pass.
 /// to.
-TEST_F( JsonCppSerializerTest, ExtraIO )
+TEST_F(JsonCppSerializerTest, DISABLED_ExtraIO)
 {
   Value in;
   Value os;
 
-  // ASSERT_TRUE( fp_in->load( resources.path() + RESOURCE_JSON_INVENTORY, os ) );
-  // EXPECT_EQ( 2, os.size() );
+  ASSERT_TRUE( fp_in->load( resources.path() + RESOURCE_JSON_INVENTORY, os ) );
+  EXPECT_EQ( 2, os.size() );
 
-  // ASSERT_TRUE( fp_in->load( resources.path() + RESOURCE_JSON_INVENTORY, os ) );
-  // EXPECT_EQ( 2, os.size() );
+  ASSERT_TRUE( fp_in->load( resources.path() + RESOURCE_JSON_INVENTORY, os ) );
+  EXPECT_EQ( 2, os.size() );
 
   // FIXME: This will load for us only if we use Json::Reader directly to read.
-  // ASSERT_TRUE( fp_in->load( resources.path() + RESOURCE_JSON_GAMEDATA, os ) );
-  // EXPECT_EQ( 4, os.size() );
+  ASSERT_TRUE( fp_in->load( resources.path() + RESOURCE_JSON_GAMEDATA, os ) );
+  EXPECT_EQ( 4, os.size() );
 }
 
 } // namespace nom

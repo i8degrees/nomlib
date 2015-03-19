@@ -81,15 +81,6 @@ bool RocketSDL2RenderInterface::gl_init( int width, int height )
     return false;
   }
 
-  // Try to obtain the function address of the exported symbol with SDL
-  RocketSDL2RenderInterface::ctx_ =
-    (priv::glUseProgramObjectARB_func) new priv::glUseProgramObjectARB_func;
-
-  NOM_ASSERT(RocketSDL2RenderInterface::ctx_ != nullptr);
-  if( RocketSDL2RenderInterface::ctx_ == nullptr ) {
-    return false;
-  }
-
   // It may be unsafe (CRASH) to use this function pointer when
   // SDL_GL_ExtensionSupported returns FALSE as per SDL2 wiki documentation [1]
   //
@@ -138,8 +129,14 @@ void RocketSDL2RenderInterface::Release()
   delete this;
 }
 
-void RocketSDL2RenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, const Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation)
+void RocketSDL2RenderInterface::
+RenderGeometry( Rocket::Core::Vertex* vertices, int num_vertices, int* indices,
+                int num_indices,
+                Rocket::Core::TextureHandle texture_handle,
+                const Rocket::Core::Vector2f& translation )
 {
+  SDL_Texture* sdl_texture = NULL;
+
   // Support for independent resolution scale -- SDL2 logical viewport -- we
   // translate positioning coordinates in respect to the current scale
   Point2f scale;
@@ -159,11 +156,10 @@ void RocketSDL2RenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, i
   std::vector<Rocket::Core::Vector2f> TexCoords(num_vertices);
   float texw, texh;
 
-  SDL_Texture* sdl_texture = NULL;
-  if(texture)
-  {
+  auto nom_texture = (nom::Texture*)texture_handle;
+  if( nom_texture != nullptr ) {
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    sdl_texture = (SDL_Texture *) texture;
+    sdl_texture = (SDL_Texture*) nom_texture->texture();
     SDL_GL_BindTexture(sdl_texture, &texw, &texh);
   }
 
@@ -172,13 +168,11 @@ void RocketSDL2RenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, i
     Positions[i].x = vertices[i].position.x * scale.x;
     Positions[i].y = vertices[i].position.y * scale.y;
     Colors[i] = vertices[i].colour;
-    if( sdl_texture )
-    {
+
+    if( sdl_texture != nullptr ) {
       TexCoords[i].x = vertices[i].tex_coord.x * texw;
       TexCoords[i].y = vertices[i].tex_coord.y * texh;
-    }
-    else
-    {
+    } else {
       TexCoords[i] = vertices[i].tex_coord;
     }
   }
@@ -196,8 +190,7 @@ void RocketSDL2RenderInterface::RenderGeometry(Rocket::Core::Vertex* vertices, i
   glDisableClientState(GL_VERTEX_ARRAY);
   glDisableClientState(GL_COLOR_ARRAY);
 
-  if (sdl_texture)
-  {
+  if( sdl_texture != nullptr ) {
     SDL_GL_UnbindTexture(sdl_texture);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
   }
@@ -371,8 +364,8 @@ bool RocketSDL2RenderInterface::GenerateTexture(Rocket::Core::TextureHandle& tex
 
     SDL_SetTextureBlendMode( texture->texture(), SDL_BLENDMODE_BLEND );
 
-    // ::ReleaseTexture is responsible for freeing this pointer
-    texture_handle = (Rocket::Core::TextureHandle) texture->texture();
+    // ::ReleaseTexture is responsible for freeing this pointer now
+    texture_handle = (Rocket::Core::TextureHandle) texture;
 
     return true;
   }
@@ -383,9 +376,11 @@ bool RocketSDL2RenderInterface::GenerateTexture(Rocket::Core::TextureHandle& tex
   return false;
 }
 
-void RocketSDL2RenderInterface::ReleaseTexture(Rocket::Core::TextureHandle texture_handle)
+void RocketSDL2RenderInterface::
+ReleaseTexture(Rocket::Core::TextureHandle texture_handle)
 {
-  priv::FreeTexture( (SDL_Texture*)texture_handle );
+  auto texture = (nom::Texture*)texture_handle;
+  texture->free_texture();
 }
 
 } // namespace nom

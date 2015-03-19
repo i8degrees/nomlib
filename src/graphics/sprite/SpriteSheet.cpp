@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/sprite/SpriteSheet.hpp"
 
 // Private headers
+#include "nomlib/core/helpers.hpp"
 #include "nomlib/serializers/JsonCppSerializer.hpp"
 #include "nomlib/serializers/JsonCppDeserializer.hpp"
 
@@ -114,11 +115,10 @@ int SpriteSheet::total_frames() const
 
 bool SpriteSheet::load_file(const std::string& filename)
 {
-  IValueDeserializer* serializer = new JsonCppDeserializer();
-  Value output; // Value buffer of resulting de-serialized input.
+  Value output;
+  auto deserializer = nom::create_json_deserializer();
 
-  if( serializer->load( filename, output ) == false )
-  {
+  if( deserializer->load(filename, output) == false ) {
     NOM_LOG_ERR( NOM, "Unable to parse JSON file:", filename );
     return false;
   }

@@ -564,4 +564,12 @@ bool JsonCppSerializer::write_object( const Value& object, Json::Value& dest ) c
   return true;
 }
 
+std::unique_ptr<IValueSerializer> create_json_serializer()
+{
+  std::unique_ptr<IValueSerializer> serializer =
+    nom::make_unique<JsonCppSerializer>();
+
+  return std::move(serializer);
+}
+
 } // namespace nom

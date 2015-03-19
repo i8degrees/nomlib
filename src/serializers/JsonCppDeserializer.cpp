@@ -516,4 +516,12 @@ bool JsonCppDeserializer::read_object( const Json::Value& object, Value& dest ) 
   return true;
 }
 
+std::unique_ptr<IValueDeserializer> create_json_deserializer()
+{
+  std::unique_ptr<IValueDeserializer> deserializer =
+    nom::make_unique<JsonCppDeserializer>();
+
+  return std::move(deserializer);
+}
+
 } // namespace nom

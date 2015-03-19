@@ -26,13 +26,14 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/system/SearchPath.hpp"
+#include "nomlib/serializers/SearchPath.hpp"
 
 #include "nomlib/system/File.hpp"
-#include "nomlib/ptree.hpp"
+#include "nomlib/ptree/Value.hpp"
+#include "nomlib/serializers/JsonCppDeserializer.hpp"
 
 // Forward declarations
-#include "nomlib/serializers.hpp"
+#include "nomlib/serializers/IValueDeserializer.hpp"
 
 namespace nom {
 

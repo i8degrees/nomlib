@@ -11,6 +11,7 @@
 
 #include <nomlib/config.hpp>
 #include <nomlib/system.hpp>
+#include <nomlib/serializers.hpp>
 #include <nomlib/graphics.hpp>
 #include <nomlib/gui.hpp>
 

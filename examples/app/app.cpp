@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Pubic nomlib interface headers
 #include <nomlib/math.hpp>
 #include <nomlib/system.hpp>
+#include <nomlib/serializers.hpp>
 #include <nomlib/graphics.hpp>
 #include <nomlib/actions.hpp>
 #include <nomlib/gui.hpp>

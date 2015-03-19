@@ -42,4 +42,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/serializers/MiniHTML.hpp"
 
+// Filesystem utilities
+#include <nomlib/serializers/SearchPath.hpp>
+
 #endif // include guard defined

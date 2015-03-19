@@ -43,6 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/config.hpp>
 #include <nomlib/core/SDL_assertion_helpers.hpp>
 #include <nomlib/system.hpp>
+#include <nomlib/serializers.hpp>
 #include <nomlib/graphics.hpp>
 #include <nomlib/gui.hpp>
 

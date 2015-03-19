@@ -33,9 +33,8 @@ set(  NOM_SERIALIZERS_SOURCE
       ${SRC_DIR}/serializers/RapidXmlSerializer.cpp
       ${INC_DIR}/serializers/RapidXmlSerializer.hpp
 
-      # TODO: Relocate SearchPath from system to serializers?
-      ${SRC_DIR}/system/SearchPath.cpp
-      ${INC_DIR}/system/SearchPath.hpp
+      ${SRC_DIR}/serializers/SearchPath.cpp
+      ${INC_DIR}/serializers/SearchPath.hpp
 
       ${INC_DIR}/serializers/serializers_config.hpp
 )

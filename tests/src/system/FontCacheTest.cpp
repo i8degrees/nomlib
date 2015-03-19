@@ -5,6 +5,7 @@
 
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
+#include <nomlib/serializers.hpp>
 
 using namespace nom;
 

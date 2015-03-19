@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SYSTEM_SEARCH_PATH_HPP
-#define NOMLIB_SYSTEM_SEARCH_PATH_HPP
+#ifndef NOMLIB_SERIALIZERS_SEARCH_PATH_HPP
+#define NOMLIB_SERIALIZERS_SEARCH_PATH_HPP
 
 #include <memory>
 #include <string>
@@ -95,7 +95,7 @@ class SearchPath
 
 /// Common usage:
 ///
-/// #include "nomlib/system.hpp"
+/// #include "nomlib/serializers.hpp"
 ///
 /// int main( int argc, char** argv )
 /// {

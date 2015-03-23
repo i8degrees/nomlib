@@ -29,14 +29,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SYSTEM_PTREE_VALUE_HPP
 #define NOMLIB_SYSTEM_PTREE_VALUE_HPP
 
-#include <iostream>
 #include <string>
-#include <cstring>
-#include <sstream>
 #include <vector>
 
 #include "nomlib/config.hpp"
-#include "nomlib/core/helpers.hpp" // priv::duplicate_string
 #include "nomlib/ptree/ptree_config.hpp"
 #include "nomlib/ptree/ptree_types.hpp"
 
@@ -50,7 +46,10 @@ class Value
     typedef Value* RawPtr;
     typedef Value& Reference;
 
+    // TODO: Rename to const_iterator?
     typedef ValueConstIterator ConstIterator;
+
+    // TODO: Rename to iterator?
     typedef ValueIterator Iterator;
 
     typedef std::vector<std::string> Members;
@@ -83,70 +82,14 @@ class Value
 
     /// \brief Default constructor; constructs an object with NullValue data
     /// type.
-    Value( void ); // type 0
+    Value(); // type 0
 
-    /// \brief Destructor.
-    ///
-    /// \todo Memory management of our pointers.
     ~Value();
-
-    /// \brief Copy constructor.
-    Value(const Value& rhs);
-
-    /// \brief Copy assignment operator.
-    Value::SelfType& operator =(const SelfType& rhs);
-
-    /// \brief Exchange the contents of the container; copy & swap idiom.
-    ///
-    /// \remarks In particular, one must be careful to keep track of copying our
-    /// char* strings as necessary.
-    ///
-    /// \note This method is used in the implementation of the copy assignment
-    /// operator.
-    void swap(Value& rhs);
-
-    /// \brief Lesser than comparison operator.
-    ///
-    /// \note Borrowed from JsonCpp library -- thanks!
-    bool operator <( const Value& other ) const;
-
-    /// \brief Lesser than or equal to comparison operator.
-    ///
-    /// \note Borrowed from JsonCpp library -- thanks!
-    bool operator <=( const Value& other ) const;
-
-    /// \brief Greater than or equal to comparison operator.
-    ///
-    /// \note Borrowed from JsonCpp library -- thanks!
-    bool operator >=( const Value& other ) const;
-
-    /// \brief Greater than or equal to comparison operator.
-    ///
-    /// \note Borrowed from JsonCpp library -- thanks!
-    bool operator >( const Value& other ) const;
-
-    /// \brief Equality comparison operator.
-    ///
-    /// \note Borrowed from JsonCpp library -- thanks!
-    bool operator ==( const Value& other ) const;
-
-    /// \brief Not equal comparison operator.
-    ///
-    /// \note Borrowed from JsonCpp library -- thanks!
-    bool operator !=( const Value& other ) const;
-
-    /// \brief Returns Value::null.
-    ///
-    /// \note Borrowed from JsonCpp library -- thanks!
-    bool operator!( void ) const;
-
-    /// \brief Construct a Value container node of a specified type.
-    Value( enum ValueType type );
 
     /// \brief Construct an object using a signed integer value.
     ///
     /// \note Type 1
-    Value( sint val );
+    Value(int val);
 
     /// \brief Construct an object using an unsigned (non-negative) integer
     /// value.
@@ -156,13 +99,13 @@ class Value
     /// correct constructor.
     ///
     /// \note Type 2
-    Value( uint val );
+    Value(uint val);
 
     /// \brief Construct an object using a double-precision floating point
     /// "real" number value.
     ///
     /// \note Type 3
-    Value( double val );
+    Value(real64 val);
 
     /// \brief Construct an object from a C-style string value.
     ///
@@ -192,34 +135,92 @@ class Value
     /// \brief Construct an object from a boolean value.
     ///
     /// \note Type 5
-    Value( bool val );
+    Value(bool val);
 
     /// \brief Construct an object with either array or object node values.
     ///
     /// \note Type 6 or 7
     Value(const Object& obj);
 
+    /// \brief Construct a Value container node of a specified type.
+    Value(ValueType type);
+
+    /// \brief Copy constructor.
+    Value(const Value& rhs);
+
+    /// \brief Copy assignment operator.
+    Value::SelfType& operator =(const SelfType& rhs);
+
+    /// \brief Exchange the contents of the container; copy & swap idiom.
+    ///
+    /// \remarks In particular, one must be careful to keep track of copying our
+    /// char* strings as necessary.
+    ///
+    /// \note This method is used in the implementation of the copy assignment
+    /// operator.
+    void swap(Value& rhs);
+
+    /// \brief Lesser than comparison operator.
+    ///
+    /// \note Borrowed from JsonCpp library -- thanks!
+    ///
+    /// \todo Unit testing of the operator overload logic for lesser than
+    /// equality.
+    bool operator <(const Value& rhs) const;
+
+    /// \brief Lesser than or equal to comparison operator.
+    ///
+    /// \note Borrowed from JsonCpp library -- thanks!
+    bool operator <=(const Value& rhs) const;
+
+    /// \brief Greater than or equal to comparison operator.
+    ///
+    /// \note Borrowed from JsonCpp library -- thanks!
+    bool operator >=(const Value& rhs) const;
+
+    /// \brief Greater than or equal to comparison operator.
+    ///
+    /// \note Borrowed from JsonCpp library -- thanks!
+    bool operator >(const Value& rhs) const;
+
+    /// \brief Equality comparison operator.
+    ///
+    /// \note Borrowed from JsonCpp library -- thanks!
+    ///
+    /// \todo Unit testing of the operator overload logic for equality.
+    bool operator ==(const Value& rhs) const;
+
+    /// \brief Not equal comparison operator.
+    ///
+    /// \note Borrowed from JsonCpp library -- thanks!
+    bool operator !=(const Value& rhs) const;
+
+    /// \brief Returns Value::null.
+    ///
+    /// \note Borrowed from JsonCpp library -- thanks!
+    bool operator!() const;
+
     /// \brief Internal helper method for comparing array & object node
     /// containers.
     ///
     /// \note Borrowed from JsonCpp library -- thanks!
-    int compare( const Value& other ) const;
+    int compare(const Value& rhs) const;
 
     /// \brief Obtain a pointer to the object.
     ///
     /// \returns A raw pointer to the object. No transfer of ownership is made.
-    Value::RawPtr get( void );
+    Value::RawPtr get();
 
     /// \brief Obtain a reference to the object.
     ///
     /// \returns A reference to the object.
-    const Value::Reference ref( void );
+    const Value::Reference ref();
 
     /// \brief Obtain the enumeration type of the object.
     ///
     /// \remarks The type is defined by the value type(s) set at construction.
     /// See also: Value::ValueType enumeration.
-    enum Value::ValueType type( void ) const;
+    enum Value::ValueType type() const;
 
     /// \brief Obtain the enumeration type of the object as a std::string.
     ///
@@ -227,67 +228,67 @@ class Value
     /// See also: Value::ValueType enumeration.
     ///
     /// \todo Rename to stringify_type?
-    const std::string type_name( void ) const;
+    const std::string type_name() const;
 
     /// \brief Query if the value type type stored in the object is NULL.
-    bool null_type( void ) const;
+    bool null_type() const;
 
     /// \brief Query if the value type type stored in the object is a signed
     /// integer.
-    bool int_type( void ) const;
+    bool int_type() const;
 
     /// \brief Query if the value type type stored in the object is an unsigned
     /// integer (non-negative.
-    bool uint_type( void ) const;
+    bool uint_type() const;
 
     /// \brief Query if the value type type stored in the object is a double-
     /// precision floating point real number.
-    bool double_type( void ) const;
+    bool double_type() const;
 
     /// \brief Query if the value type type stored in the object is a double-
     /// precision floating point real number.
-    bool float_type( void ) const;
+    bool float_type() const;
 
     /// \brief Query if the value type type stored in the object is a string
     /// value.
-    bool string_type( void ) const;
+    bool string_type() const;
 
     /// \brief Query if the value type type stored in the object is a boolean
     /// value.
-    bool bool_type( void ) const;
+    bool bool_type() const;
 
     /// \brief Query if the value type type stored in the object are array
     /// values.
     ///
     /// \remarks nom::Value object may be either an array OR object type at any
     /// given time.
-    bool array_type( void ) const;
+    bool array_type() const;
 
     /// \brief Query if the value type type stored in the object are object
     /// values.
     ///
     /// \remarks nom::Value object may be either an array OR object type at any
     /// given time.
-    bool object_type( void ) const;
+    bool object_type() const;
 
-    const std::string stringify( void ) const;
+    const std::string stringify() const;
 
     /// \brief Obtain the signed integer value stored within the container.
     ///
     /// \returns On err, zero (0) is returned.
-    sint get_int( void ) const;
+    int get_int() const;
 
     /// \brief Obtain the unsigned (non-negative) integer value stored within
     /// the container.
     ///
     /// \returns On err, zero (0) is returned.
-    uint get_uint( void ) const;
+    uint get_uint() const;
 
     /// \brief Obtain the double-precision floating point "real" number value
     /// stored within the container.
     ///
     /// \returns On err, zero (0) is returned.
-    double get_double( void ) const;
+    real64 get_double() const;
 
     /// \brief Obtain the double-precision floating point "real" number value
     /// stored within the container.
@@ -296,7 +297,7 @@ class Value
     ///
     /// \remarks Conversion from the internally stored double variable to a
     /// float type is done.
-    float get_float( void ) const;
+    real32 get_float() const;
 
     /// \brief Obtain the C style string value stored within the container.
     ///
@@ -317,73 +318,28 @@ class Value
     /// \brief Obtain the boolean value stored within the container.
     ///
     /// \returns On err, boolean false is returned.
-    bool get_bool( void ) const;
+    bool get_bool() const;
 
-    /// \brief Obtain the value stored within the container.
-    ///
-    /// \returns If NULL, zero (0) is returned. On error (an unknown value),
-    /// negative one (-1) is returned.
-    template <typename T>
-    inline T get_value( void ) const
-    {
-      if( this->null_type() )
-      {
-        return 0;
-      }
-      else if( this->int_type() )
-      {
-        return this->get_int();
-      }
-      else if( this->uint_type() )
-      {
-        return this->get_uint();
-      }
-      else if( this->double_type() )
-      {
-        return this->get_double();
-      }
-      else if( this->string_type() )
-      {
-        return this->get_string();
-      }
-      else if( this->bool_type() )
-      {
-        return this->get_bool();
-      }
-      else if( this->array_type() )
-      {
-        return this->array();
-      }
-      else if( this->object_type() )
-      {
-        return this->object();
-      }
-      else // Handle unknown cases
-      {
-        return Value::null;
-      }
-    }
-
-    bool array_valid( void ) const;
-    bool object_valid( void ) const;
+    bool array_valid() const;
+    bool object_valid() const;
 
     /// \brief Obtain the array values of the object.
     ///
     /// \returns ~~Return-by-value cloned copy of the nom::Array pointer held by
     /// this object.~~
-    const Object array( void ) const;
+    const Object array() const;
 
     /// \brief Obtain the object tree of the object.
     ///
     /// \returns ~~Return-by-value cloned copy of the nom::Object pointer held by
     /// this object.~~
-    const Object object( void ) const;
+    const Object object() const;
 
     /// \brief Obtain the size of the object's contained values.
     ///
     /// \returns Size of the array or object, or one (1) when not said type.
     /// On err -- when the object is ValueType::NullValue -- zero (0).
-    uint size( void ) const;
+    nom::size_type size() const;
 
     /// \brief Obtain boolean response in regards to container's empty status.
     ///
@@ -399,7 +355,7 @@ class Value
     ///
     /// \note This method has no effect unless the object's container is one of
     /// two node types: array or object.
-    void clear( void );
+    void clear();
 
     /// \brief Obtain a stored element by index number.
     ///
@@ -456,34 +412,6 @@ class Value
     /// \brief Insert array elements.
     Value& push_back(const Value& val);
 
-    /// \brief Access an element.
-    ///
-    /// \returns Returns a reference to the element at position n in the
-    /// container.
-    ///
-    /// \remarks This method is an alias for Value::operator[](int) and is
-    /// provided to help ease the porting of code from standard container
-    /// types from STL, i.e.: std::vector, std::map, ...
-    ///
-    /// \note This function automatically checks whether n is within the bounds
-    /// of valid elements in the vector, throwing an assert if it is not (i.e.,
-    /// if n is greater or equal than its size). This error handling behavior is
-    /// intended to mimic the standard container types -- less and except where
-    /// otherwise noted here in the documentation.
-    ///
-    /// \note Unlike the standard STL err handling behavior for member
-    /// method overloads ::operator[] and friends, bounds checking is **always**
-    /// unconditionally performed when using any method a part of the
-    /// nom::Value interface.
-    ///
-    /// Bounds checking err handling that may be disabled by the end-user is via
-    /// disabling assert macros -- NOM_ASSERT, albeit this alone *should not*
-    /// modify the error state logic of the method(s) in question, if the
-    /// programming is without human mistake.
-    ///
-    /// \todo Verify working state of method.
-    // Value& at( int index );
-
     /// \brief Search the object for an existing member.
     ///
     /// \returns The found member key upon success, or Value::null upon failure.
@@ -525,11 +453,11 @@ class Value
     ///
     /// \note This method will fail with an assert if the container type is
     /// *not* either a null or object node type.
-    Members member_names( void ) const;
+    Members member_names() const;
 
-    Value::ConstIterator begin( void ) const;
+    Value::ConstIterator begin() const;
 
-    Value::ConstIterator end( void ) const;
+    Value::ConstIterator end() const;
 
     /// \brief Iterator access to the beginning of the object's tree.
     ///
@@ -539,7 +467,7 @@ class Value
     ///
     /// \remarks The nom::Value object must be initialized as a nom::ArrayValue
     /// or nom::ObjectValue type.
-    Value::Iterator begin( void );
+    Value::Iterator begin();
 
     /// \brief Iterator access to the end of the object's tree.
     ///
@@ -549,7 +477,7 @@ class Value
     ///
     /// \remarks The nom::Value object must be initialized as a nom::ArrayValue
     /// or nom::ObjectValue type.
-    Value::Iterator end( void );
+    Value::Iterator end();
 
     /// \brief Dump the object's complete value tree.
     ///
@@ -557,20 +485,20 @@ class Value
     ///
     /// \note This method is used by the << overload function for nom::Value
     /// objects.
-    const std::string dump( const Value& object, int depth = 0 ) const;
+    const std::string dump(const Value& object, int depth = 0) const;
 
   private:
     /// \brief Internal helper method for nom::Value::dump.
-    const std::string dump_key( const Value& key ) const;
+    const std::string dump_key(const Value& key) const;
 
     /// \brief Internal helper method for nom::Value::dump.
-    const std::string dump_value( const Value& val ) const;
+    const std::string dump_value(const Value& val) const;
 
     /// \brief Internal helper method for nom::Value::dump_key.
-    const std::string print_key( const std::string& type, uint size ) const;
+    const std::string print_key(const std::string& type, uint size) const;
 
     /// \brief Internal helper method for nom::Value::dump_value.
-    const std::string print_value( const std::string& val ) const;
+    const std::string print_value(const std::string& val) const;
 
     /// \brief Container for the data types able to be held.
     ///
@@ -583,25 +511,28 @@ class Value
     /// \endinternal
     union ValueHolder
     {
-      sint int_;            // Type 1
+      int int_;             // Type 1
       uint uint_;           // Type 2
-      double real_;         // Type 3
+      real64 real_;         // Type 3
       bool bool_;           // Type 4
       // NOTE: Instance-owned pointer.
       const char* string_;  // Type 5
       // NOTE: Instance-owned pointer.
       Object* object_;      // Type 6 and 7
-    } value_;
+    };
 
-    /// The type of value held in object container.
+    /// \brief The type of stored value in this instance.
     enum ValueType type_;
+
+    /// \brief The stored value in this instance.
+    ValueHolder value_;
 };
 
 /// \brief Pretty print the object
 ///
 /// \todo Implement upper limit to value length dump; ideally within ~80
 /// characters or less?
-std::ostream& operator <<( std::ostream& os, const Value& val );
+std::ostream& operator <<(std::ostream& os, const Value& val);
 
 } // namespace nom
 

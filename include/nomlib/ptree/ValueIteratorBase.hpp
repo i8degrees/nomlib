@@ -56,24 +56,24 @@ class ValueIteratorBase
     };
 
     /// \brief Default constructor.
-    ValueIteratorBase( void );
+    ValueIteratorBase();
 
     /// \brief Destructor.
-    virtual ~ValueIteratorBase( void );
+    virtual ~ValueIteratorBase();
 
-    ValueIteratorBase( const ObjectIterator& itr );
+    ValueIteratorBase(const ObjectIterator& rhs);
 
     /// \brief query validity of the object.
     ///
     /// \returns The object is always assumed to be invalid when
     /// Value::ValueType::NullValue is the set type (set during construction).
-    bool valid( void ) const;
+    bool valid() const;
 
     /// \brief Obtain the index of the referenced value.
     ///
     /// \returns The array element's index on success, or -1 if the referenced
     /// value is not an array element.
-    /*ArrayIndex*/int index( void ) const;
+    ArrayIndex index() const;
 
     /// \brief Obtain the current index or member key value.
     ///
@@ -82,30 +82,28 @@ class ValueIteratorBase
     ///
     /// \todo Try handling the return of the key (string) or index (integer)
     /// more elegantly? (Presently, we are converting index values to a string).
-    const char* key( void ) const;
+    const char* key() const;
 
     /// \brief Query if the member key exists at the current position of the
     /// iterator object.
-    bool key( const std::string& member ) const;
+    bool key(const std::string& member) const;
 
-    Value key_v2( void ) const;
+    bool operator ==(const SelfType& rhs) const;
 
-    bool operator ==( const SelfType& other ) const;
+    bool operator !=(const SelfType& rhs) const;
 
-    bool operator !=( const SelfType& other ) const;
-
-    DifferenceType operator -( const SelfType& other ) const;
+    DifferenceType operator -(const SelfType& rhs) const;
 
   protected:
-    void copy( const SelfType& other );
-    ValueTypeReference dereference( void ) const;
-    ValueTypePointer pointer( void ) const;
-    void increment( void );
-    void decrement( void );
-    DifferenceType distance( const SelfType& other ) const;
+    void copy(const SelfType& rhs);
+    ValueTypeReference dereference() const;
+    ValueTypePointer pointer() const;
+    void increment();
+    void decrement();
+    DifferenceType distance(const SelfType& rhs) const;
 
   private:
-    enum IteratorType type( void ) const;
+    enum IteratorType type() const;
 
     /// \brief A pointer to the object type iterator
     ObjectIterator object_;

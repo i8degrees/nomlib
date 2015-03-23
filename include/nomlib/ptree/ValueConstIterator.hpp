@@ -52,48 +52,48 @@ class ValueConstIterator: public ValueIteratorBase
     typedef SelfType ConstIterator;
 
     /// \brief Default constructor.
-    ValueConstIterator( void );
+    ValueConstIterator();
 
     /// \brief Destructor.
-    ~ValueConstIterator( void );
+    ~ValueConstIterator();
 
     /// \brief Copy constructor
-    ValueConstIterator( const ValueConstIterator& copy );
+    ValueConstIterator(const ValueConstIterator& rhs);
 
     /// \brief Copy constructor
-    ValueConstIterator( const ObjectIterator& itr );
+    ValueConstIterator(const ObjectIterator& rhs);
 
-    SelfType& operator =( const DerivedType& other );
+    SelfType& operator =(const DerivedType& rhs);
 
     /// \brief Obtain a pointer to the iterator's object.
     ///
     /// \returns A pointer to the nom::Value object.
-    const Value::RawPtr operator ->( void ) const;
+    const Value::RawPtr operator ->() const;
 
     /// \brief Obtain a reference to the iterator's object.
     ///
     /// \returns A reference to the nom::Value object.
-    ConstReference operator *( void ) const;
+    ConstReference operator *() const;
 
     /// \brief Increment the object by one
     ///
     /// \remarks The object is not modified.
-    SelfType& operator ++( void );
+    SelfType& operator ++();
 
     /// \brief Increment by specified parameter
     ///
     /// \remarks The object is not modified.
-    SelfType operator ++( sint );
+    SelfType operator ++(int);
 
     /// \brief Decrement by one
     ///
     /// \remarks The object is not modified.
-    SelfType& operator --( void );
+    SelfType& operator --();
 
     /// \brief Decrement by specified parameter
     ///
     /// \remarks The object is not modified.
-    SelfType operator --( sint );
+    SelfType operator --(int);
 };
 
 } // namespace nom

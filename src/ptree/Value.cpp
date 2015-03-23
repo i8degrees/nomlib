@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/ptree/Value.hpp"
 
 // Private headers
+#include "nomlib/core/helpers.hpp"
 #include <cassert>
 
 // Forward declarations
@@ -46,8 +47,8 @@ namespace nom {
 // Static initializations
 const Value& Value::null = Value();
 
-Value::Value( void )  :
-  type_ ( ValueType::Null )
+Value::Value() :
+  type_(ValueType::Null)
 {
   // NOM_LOG_TRACE(NOM);
 }
@@ -56,7 +57,7 @@ Value::~Value()
 {
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
 
-  switch( this->type() ) {
+  switch(this->type_) {
 
     default: /* Nothing to free for most primitive types */ break;
 
@@ -76,13 +77,116 @@ Value::~Value()
   }
 }
 
+Value::Value(int val) :
+  type_(ValueType::SignedInteger)
+{
+  //NOM_LOG_TRACE(NOM);
+
+  this->value_.int_ = val;
+}
+
+Value::Value(uint val) :
+  type_(ValueType::UnsignedInteger)
+{
+  //NOM_LOG_TRACE(NOM);
+
+  this->value_.uint_ = val;
+}
+
+Value::Value(real64 val) :
+  type_(ValueType::RealNumber)
+{
+  //NOM_LOG_TRACE(NOM);
+
+  this->value_.real_ = val;
+}
+
+Value::Value(const char* str) :
+  type_(ValueType::String)
+{
+  //NOM_LOG_TRACE(NOM);
+
+  nom::size_type str_len = priv::string_length(str);
+  this->value_.string_ = priv::duplicate_string(str, str_len);
+}
+
+Value::Value(const std::string& str) :
+  type_(ValueType::String)
+{
+  //NOM_LOG_TRACE(NOM);
+
+  nom::size_type str_len = priv::string_length(str);
+  this->value_.string_ = priv::duplicate_string(str, str_len);
+}
+
+Value::Value(bool val) :
+  type_(ValueType::Boolean)
+{
+  //NOM_LOG_TRACE(NOM);
+
+  this->value_.bool_ = val;
+}
+
+Value::Value(const Object& obj) :
+  type_(ValueType::ObjectValues)
+{
+  // NOM_LOG_TRACE(NOM);
+
+  this->value_.object_ = new Object(obj);
+}
+
+Value::Value(ValueType type) :
+  type_(type)
+{
+  // NOM_LOG_TRACE( NOM );
+
+  switch(this->type_)
+  {
+    default:
+    case ValueType::Null:
+    break;
+
+    case ValueType::SignedInteger:
+    {
+      this->value_.int_ = 0;
+    } break;
+
+    case ValueType::UnsignedInteger:
+    {
+      this->value_.uint_ = 0;
+    } break;
+
+    case ValueType::RealNumber:
+    {
+      this->value_.real_ = 0.0f;
+    } break;
+
+    case ValueType::Boolean:
+    {
+      this->value_.bool_ = false;
+    } break;
+
+    case ValueType::String:
+    {
+      this->value_.string_ = nullptr;
+    } break;
+
+    case ValueType::ArrayValues:
+    case ValueType::ObjectValues:
+    {
+      this->value_.object_ = new Object();
+      NOM_ASSERT(this->value_.object_ != nullptr);
+    } break;
+  }
+}
+
 Value::Value(const Value& rhs)
 {
   // NOM_LOG_TRACE(NOM);
 
   this->type_ = rhs.type_;
 
-  switch( this->type() )
+  switch(this->type_)
   {
     default:
     case ValueType::Null:
@@ -120,8 +224,6 @@ Value::Value(const Value& rhs)
 
         this->value_.string_ =
           priv::duplicate_string(rhs_string_value, str_len);
-      } else {
-        this->value_.string_ = rhs.value_.string_;
       }
     } break;
 
@@ -136,8 +238,8 @@ Value::Value(const Value& rhs)
 Value::SelfType& Value::operator =(const SelfType& rhs)
 {
   if( this != &rhs ) {
-    Value temp(rhs);
-    this->swap(temp);
+    Value copy(rhs);
+    this->swap(copy);
   }
 
   return *this;
@@ -152,299 +254,189 @@ void Value::swap(Value& rhs)
   std::swap(this->value_, rhs.value_);
 }
 
-bool Value::operator <( const Value& other ) const
+bool Value::operator <(const Value& rhs) const
 {
-  int type_delta = this->type() - other.type();
+  bool comp_result = false;
 
-  if( type_delta )
-  {
-    return type_delta < 0 ? true : false;
+  int type_delta = this->type_ - rhs.type_;
+  if( type_delta > 0 ) {
+    comp_result = (type_delta < 0) ? true : false;
   }
 
-  switch( this->type() )
+  switch(this->type_)
   {
     default:
     case ValueType::Null:
     {
-      return false;
-      break;
-    }
+      comp_result = false;
+    } break;
 
     case ValueType::SignedInteger:
     {
-      return this->value_.int_ < other.value_.int_;
-      break;
-    }
+      comp_result = this->value_.int_ < rhs.value_.int_;
+    } break;
 
     case ValueType::UnsignedInteger:
     {
-      return this->value_.uint_ < other.value_.uint_;
-      break;
-    }
+      comp_result = this->value_.uint_ < rhs.value_.uint_;
+    } break;
 
     case ValueType::RealNumber:
     {
-      return this->value_.real_ < other.value_.real_;
-      break;
-    }
+      comp_result = this->value_.real_ < rhs.value_.real_;
+    } break;
 
     case ValueType::Boolean:
     {
-      return this->value_.bool_ < other.value_.bool_;
-      break;
-    }
+      comp_result = this->value_.bool_ < rhs.value_.bool_;
+    } break;
 
     case ValueType::String:
     {
-      return( this->value_.string_ == 0   && other.value_.string_ )
-              || ( other.value_.string_   &&  this->value_.string_
-                                          && strcmp
-                ( this->value_.string_, other.value_.string_ ) < 0 );
-      break;
-    }
+      if( this->value_.string_ == nullptr || rhs.value_.string_ == nullptr ) {
+
+        if( rhs.value_.string_ != nullptr ) {
+          comp_result = true;
+        } else {
+          comp_result = false;
+        }
+      } else {
+        comp_result =
+          priv::compare_string(this->value_.string_, rhs.value_.string_) < 0;
+      }
+    } break;
 
     case ValueType::ArrayValues:
-    {
-      int delta = int ( this->value_.object_->size() - other.value_.object_->size() );
-
-      if( delta ) return delta < 0;
-
-      break;
-
-      return( *this->value_.object_ ) < ( *other.value_.object_ );
-
-      break;
-    }
-
     case ValueType::ObjectValues:
     {
-      int delta = int ( this->value_.object_->size() - other.value_.object_->size() );
-
-      if( delta ) return delta < 0;
-
-      break;
-
-      return( *this->value_.object_ ) < ( *other.value_.object_ );
-
-      break;
-    }
+      int delta =
+        this->value_.object_->size() - rhs.value_.object_->size();
+      if( delta > 0 ) {
+        comp_result = delta < 0;
+      } else {
+        comp_result = *this->value_.object_ < *rhs.value_.object_;
+      }
+    } break;
   } // end switch type
 
-  return false; // Err
+  return comp_result;
 }
 
-bool Value::operator <= ( const Value& other ) const
+bool Value::operator <=(const Value& rhs) const
 {
-  return ! ( other < *this );
+  return !( rhs < *this );
 }
 
-bool Value::operator >= ( const Value& other ) const
+bool Value::operator >=(const Value& rhs) const
 {
-  return ! ( *this < other );
+  return !( *this < rhs );
 }
 
-bool Value::operator > ( const Value& other ) const
+bool Value::operator >(const Value& rhs) const
 {
-  return ( other < *this );
+  return( rhs < *this );
 }
 
-bool Value::operator == ( const Value& other ) const
+bool Value::operator ==(const Value& rhs) const
 {
-  //if ( type_ != other.type_ )
-  // GCC 2.95.3 says:
-  // attempt to take address of bit-field structure member `Json::Value::type_'
-  // Beats me, but a temp solves the problem.
-  int temp = other.type_;
+  bool comp_result = false;
 
-  if ( this->type() != temp )
-  {
-    return false;
+  if( this->type_ != rhs.type_ ) {
+    comp_result = false;
+    return comp_result;
   }
 
-  switch( type() )
+  switch(this->type_)
   {
     default:
     case ValueType::Null:
     {
-      return true;
-      break;
-    }
+      comp_result = true;
+    } break;
 
     case ValueType::SignedInteger:
     {
-      return this->value_.int_ == other.value_.int_;
-      break;
-    }
+      comp_result = this->value_.int_ == rhs.value_.int_;
+    } break;
 
     case ValueType::UnsignedInteger:
     {
-      return this->value_.uint_ == other.value_.uint_;
-      break;
-    }
+      comp_result = this->value_.uint_ == rhs.value_.uint_;
+    } break;
 
     case ValueType::RealNumber:
     {
-      return this->value_.real_ == other.value_.real_;
-      break;
-    }
+      comp_result = this->value_.real_ == rhs.value_.real_;
+    } break;
 
     case ValueType::Boolean:
     {
-      return this->value_.bool_ == other.value_.bool_;
-      break;
-    }
+      comp_result = this->value_.bool_ == rhs.value_.bool_;
+    } break;
 
     case ValueType::String:
     {
-      return( this->value_.string_  == other.value_.string_ )
-          || ( other.value_.string_ &&  this->value_.string_
-          && strcmp ( this->value_.string_, other.value_.string_ ) == 0 );
-
-      break;
-    }
+      if( this->value_.string_ == nullptr || rhs.value_.string_ == nullptr ) {
+        comp_result = this->value_.string_ == rhs.value_.string_;
+      } else {
+        comp_result =
+          priv::compare_string(this->value_.string_, rhs.value_.string_) == 0;
+      }
+    } break;
 
     case ValueType::ArrayValues:
-    {
-      return this->value_.object_->size() == other.value_.object_->size()
-      && ( *this->value_.object_ ) == ( *other.value_.object_ );
-
-      break;
-    }
-
     case ValueType::ObjectValues:
     {
-      return this->value_.object_->size() == other.value_.object_->size()
-      && ( *this->value_.object_ ) == ( *other.value_.object_ );
+      comp_result =
+        ( this->value_.object_->size() == rhs.value_.object_->size() ) &&
+        ( *this->value_.object_ ) == ( *rhs.value_.object_ );
+    } break;
+  }
 
-      break;
-    }
-  } // end switch type
-
-  return false; // Err
+  return comp_result;
 }
 
-bool Value::operator != ( const Value& other ) const
+bool Value::operator != (const Value& rhs) const
 {
-  return ! ( *this == other );
+  return !(*this == rhs);
 }
 
-bool Value::operator !( void ) const
+bool Value::operator !() const
 {
   return this->null_type();
 }
 
-Value::Value( enum ValueType type ) :
-  type_ ( type )
-{
-  // NOM_LOG_TRACE( NOM );
-
-  switch( this->type() )
-  {
-    default:
-    case ValueType::Null:
-    case ValueType::SignedInteger:
-    case ValueType::UnsignedInteger:
-    case ValueType::RealNumber:
-    case ValueType::Boolean:
-    {
-      // Do nothing extra
-      break;
-    }
-
-    case ValueType::String:
-    {
-      // TODO: Allocate string (duplicate?)
-      break;
-    }
-
-    case ValueType::ArrayValues:
-    case ValueType::ObjectValues:
-    {
-      this->value_.object_ = new Object();
-      NOM_ASSERT(this->value_.object_ != nullptr);
-    } break;
-  }
-}
-
-Value::Value( sint val ) :
-  type_ ( ValueType::SignedInteger )
-{
-  //NOM_LOG_TRACE(NOM);
-  this->value_.int_ = val;
-}
-
-Value::Value( uint val ) :
-  type_ ( ValueType::UnsignedInteger )
-{
-  //NOM_LOG_TRACE(NOM);
-  this->value_.uint_ = val;
-}
-
-Value::Value( double val ) :
-  type_ ( ValueType::RealNumber )
-{
-  //NOM_LOG_TRACE(NOM);
-  this->value_.real_ = val;
-}
-
-Value::Value(const char* str) :
-  type_(ValueType::String)
-{
-  //NOM_LOG_TRACE(NOM);
-
-  nom::size_type str_len = priv::string_length(str);
-  this->value_.string_ = priv::duplicate_string(str, str_len);
-}
-
-Value::Value(const std::string& str) :
-  type_(ValueType::String)
-{
-  //NOM_LOG_TRACE(NOM);
-
-  nom::size_type str_len = priv::string_length(str);
-  this->value_.string_ = priv::duplicate_string(str, str_len);
-}
-
-Value::Value( bool val ) :
-  type_ ( ValueType::Boolean )
-{
-  //NOM_LOG_TRACE(NOM);
-  this->value_.bool_ = val;
-}
-
-Value::Value(const Object& obj) :
-  type_(ValueType::ObjectValues)
-{
-  // NOM_LOG_TRACE(NOM);
-  this->value_.object_ = new Object(obj);
-}
-
 // Derives from the JsonCpp library
-sint Value::compare( const Value& other ) const
+int Value::compare(const Value& rhs) const
 {
-  if ( *this < other ) return -1;
+  int comp_result = 0;
+  if( *this < rhs ) {
+    comp_result = -1;
+  } else if( *this > rhs ) {
+    comp_result = 1;
+  } else {
+    comp_result = 0;
+  }
 
-  if ( *this > other ) return 1;
-
-  return 0;
+  return comp_result;
 }
 
-Value::RawPtr Value::get( void )
+Value::RawPtr Value::get()
 {
   return this;
 }
 
-const Value::Reference Value::ref( void )
+const Value::Reference Value::ref()
 {
   return *this;
 }
 
-enum Value::ValueType Value::type( void ) const
+enum Value::ValueType Value::type() const
 {
   return this->type_;
 }
 
-const std::string Value::type_name( void ) const
+const std::string Value::type_name() const
 {
   switch ( this->type() )
   {
@@ -461,47 +453,47 @@ const std::string Value::type_name( void ) const
   }
 }
 
-bool Value::null_type( void ) const
+bool Value::null_type() const
 {
   return ( this->type() == ValueType::Null );
 }
 
-bool Value::int_type( void ) const
+bool Value::int_type() const
 {
   return ( this->type() == ValueType::SignedInteger );
 }
 
-bool Value::uint_type( void ) const
+bool Value::uint_type() const
 {
   return ( this->type() == ValueType::UnsignedInteger );
 }
 
-bool Value::double_type( void ) const
+bool Value::double_type() const
 {
   return ( this->type() == ValueType::RealNumber );
 }
 
-bool Value::string_type( void ) const
+bool Value::string_type() const
 {
   return ( this->type() == ValueType::String );
 }
 
-bool Value::bool_type( void ) const
+bool Value::bool_type() const
 {
   return ( this->type() == ValueType::Boolean );
 }
 
-bool Value::array_type( void ) const
+bool Value::array_type() const
 {
   return ( this->type() == ValueType::ArrayValues );
 }
 
-bool Value::object_type( void ) const
+bool Value::object_type() const
 {
   return ( this->type() == ValueType::ObjectValues );
 }
 
-const std::string Value::stringify( void ) const
+const std::string Value::stringify() const
 {
   if( this->null_type() )
   {
@@ -544,37 +536,29 @@ const std::string Value::stringify( void ) const
   }
 }
 
-sint Value::get_int ( void ) const
+int Value::get_int() const
 {
-  // NOM_ASSERT( this->int_type() );
-
   if( this->int_type() ) return this->value_.int_;
 
   return 0; // Not found
 }
 
-uint Value::get_uint ( void ) const
+uint Value::get_uint() const
 {
-  // NOM_ASSERT( this->uint_type() );
-
   if( this->uint_type() ) return this->value_.uint_;
 
   return 0; // Not found
 }
 
-double Value::get_double ( void ) const
+real64 Value::get_double() const
 {
-  // NOM_ASSERT( this->double_type() );
-
   if( this->double_type() ) return this->value_.real_;
 
   return 0; // Not found
 }
 
-float Value::get_float ( void ) const
+real32 Value::get_float() const
 {
-  // NOM_ASSERT( this->double_type() );
-
   if( this->double_type() )
   {
     return static_cast<float> ( this->get_double() );
@@ -601,19 +585,16 @@ std::string Value::get_string() const
   return "\0";
 }
 
-bool Value::get_bool ( void ) const
+bool Value::get_bool() const
 {
-  // NOM_ASSERT( this->bool_type() );
-
-  if( this->bool_type() )
-  {
+  if( this->bool_type() ) {
     return this->value_.bool_;
   }
 
   return false;
 }
 
-bool Value::array_valid( void ) const
+bool Value::array_valid() const
 {
   if( this->array_type() )
   {
@@ -626,7 +607,7 @@ bool Value::array_valid( void ) const
   return false;
 }
 
-bool Value::object_valid( void ) const
+bool Value::object_valid() const
 {
   if( this->object_type() )
   {
@@ -639,10 +620,8 @@ bool Value::object_valid( void ) const
   return false;
 }
 
-const Object Value::array( void ) const
+const Object Value::array() const
 {
-  // NOM_ASSERT( this->array_type() );
-
   if( this->array_valid() )
   {
     return Object( *this->value_.object_ );
@@ -652,10 +631,8 @@ const Object Value::array( void ) const
   return Object();
 }
 
-const Object Value::object( void ) const
+const Object Value::object() const
 {
-  NOM_ASSERT( this->object_type() );
-
   if( this->object_valid() )
   {
     return Object( *this->value_.object_ );
@@ -665,98 +642,71 @@ const Object Value::object( void ) const
   return Object();
 }
 
-uint Value::size( void ) const
+nom::size_type Value::size() const
 {
-  switch( this->type() )
-  {
-    default: return 1; break; // Non-NULL, non-array, non-object value type
+  nom::size_type result = 0;
 
-    case ValueType::Null: return 0; break; // Empty
+  switch(this->type_)
+  {
+    default:
+    {
+      result = 1;
+    } break;
+
+    case ValueType::Null:
+    {
+      result = 0;
+    } break;
 
     case ValueType::ArrayValues:
-    {
-      if( this->array_valid() )
-      {
-        return this->value_.object_->size();
-      }
-      return 0; // Not initialized
-
-      break;
-    }
     case ValueType::ObjectValues:
     {
-      if( this->object_valid() )
-      {
-        return this->value_.object_->size();
+      if( this->array_valid() == true || this->object_valid() == true ) {
+        result = this->value_.object_->size();
       }
-      return 0; // Not initialized
-
-      break;
-    }
+    } break;
   }
+
+  return result;
 }
 
 bool Value::empty() const
 {
-  NOM_ASSERT( this->null_type() || this->array_type() || this->object_type() );
+  // NOM_ASSERT( this->null_type() || this->array_type() || this->object_type() );
 
-  switch( this->type() )
+  bool result = true;
+
+  switch(this->type_)
   {
-    // Not an array or object type
-    default: /* Do nothing */ break;
+    default: break;
 
     case ValueType::ArrayValues:
-    {
-      if( this->array_valid() )
-      {
-        return this->value_.object_->empty();
-      }
-
-      break;
-    }
-
     case ValueType::ObjectValues:
     {
-      if( this->object_valid() )
-      {
-        return this->value_.object_->empty();
+      if( this->array_valid() == true || this->object_valid() == true ) {
+        result = this->value_.object_->empty();
       }
+    } break;
+  }
 
-      break;
-    }
-  } // end switch type
-
-  return true;
+  return result;
 }
 
-void Value::clear( void )
+void Value::clear()
 {
-  NOM_ASSERT( this->null_type() || this->array_type() || this->object_type() );
+  // NOM_ASSERT( this->null_type() || this->array_type() || this->object_type() );
 
-  switch( this->type() )
+  switch(this->type_)
   {
-    // Not an array or object type
-    default: /* Do nothing */ break;
+    default: break;
 
     case ValueType::ArrayValues:
-    {
-      if( this->array_valid() )
-      {
-        this->value_.object_->clear();
-      }
-
-      break;
-    }
-
     case ValueType::ObjectValues:
     {
-      if( this->object_valid() )
-      {
+      if( this->array_valid() == true || this->object_valid() == true ) {
         this->value_.object_->clear();
       }
-
-      break;
-    }
+    } break;
   }
 }
 
@@ -823,7 +773,6 @@ const Value& Value::operator[](int index) const
 // Derives from JsonCpp implementation
 Value& Value::operator[](const char* key)
 {
-  // An object node container is required for this method call.
   NOM_ASSERT( this->null_type() || this->object_type() );
   if( this->null_type() ) {
     *this = Value(ValueType::ObjectValues);
@@ -871,31 +820,10 @@ const Value& Value::operator[](const std::string& key) const
 }
 
 // Implementation derives from JsonCpp
-Value& Value::push_back( const Value& val )
+Value& Value::push_back(const Value& val)
 {
   return (*this)[ ArrayIndex( this->size() )] = val;
 }
-
-// Value& Value::at( int index )
-// {
-//   NOM_ASSERT( index >= 0 && index > this->size() );
-//   if( index < 0 && index < this->size() )
-//   {
-//     // Valid position
-//     return( *this )[ (index) ];
-//   }
-
-//   // An object node container is required for this method call.
-//   if( ! this->object_valid() )
-//   {
-//     this->type_ = ValueType::ObjectValues;
-//     this->value_.object_ = new Object();
-//   }
-
-//   // Err; invalid position
-//   // return Value::null;
-//   return *this;
-// }
 
 const Value& Value::find(const std::string& key) const
 {
@@ -963,7 +891,7 @@ Value Value::erase(const std::string& key)
 //   return Value::null;
 // }
 
-Value::Members Value::member_names( void ) const
+Value::Members Value::member_names() const
 {
   Members keys;
 
@@ -982,7 +910,7 @@ Value::Members Value::member_names( void ) const
   return keys;
 }
 
-Value::ConstIterator Value::begin( void ) const
+Value::ConstIterator Value::begin() const
 {
   if( this->array_valid() ) // ArrayIterator
   {
@@ -999,7 +927,7 @@ Value::ConstIterator Value::begin( void ) const
   return ValueConstIterator(); // Not an array or object type
 }
 
-Value::ConstIterator Value::end( void ) const
+Value::ConstIterator Value::end() const
 {
   if( this->array_valid() ) // ArrayIterator
   {
@@ -1016,7 +944,7 @@ Value::ConstIterator Value::end( void ) const
   return ValueConstIterator(); // Not an array or object type
 }
 
-Value::Iterator Value::begin( void )
+Value::Iterator Value::begin()
 {
   if( this->array_valid() ) // ArrayIterator
   {
@@ -1032,7 +960,7 @@ Value::Iterator Value::begin( void )
   return ValueIterator(); // Error: not an array or object type
 }
 
-Value::Iterator Value::end( void )
+Value::Iterator Value::end()
 {
   if( this->array_valid() ) // ArrayIterator
   {
@@ -1048,7 +976,7 @@ Value::Iterator Value::end( void )
   return ValueIterator(); // Error: not an array or object type
 }
 
-const std::string Value::dump( const Value& object, int depth ) const
+const std::string Value::dump(const Value& object, int depth) const
 {
   std::string key;
   std::stringstream os; // Output buffer
@@ -1115,7 +1043,7 @@ const std::string Value::dump( const Value& object, int depth ) const
   return os.str();
 }
 
-const std::string Value::dump_key( const Value& key ) const
+const std::string Value::dump_key(const Value& key) const
 {
   std::stringstream os; // Output buffer
 
@@ -1159,7 +1087,7 @@ const std::string Value::dump_key( const Value& key ) const
   return os.str();
 }
 
-const std::string Value::dump_value( const Value& val ) const
+const std::string Value::dump_value(const Value& val) const
 {
   std::stringstream os; // Output buffer
 
@@ -1203,7 +1131,7 @@ const std::string Value::dump_value( const Value& val ) const
   return os.str();
 }
 
-const std::string Value::print_key( const std::string& type, uint size ) const
+const std::string Value::print_key(const std::string& type, uint size) const
 {
   std::stringstream os;
 
@@ -1212,7 +1140,7 @@ const std::string Value::print_key( const std::string& type, uint size ) const
   return os.str();
 }
 
-const std::string Value::print_value( const std::string& val ) const
+const std::string Value::print_value(const std::string& val) const
 {
   std::stringstream os;
 
@@ -1221,7 +1149,7 @@ const std::string Value::print_value( const std::string& val ) const
   return os.str();
 }
 
-std::ostream& operator <<( std::ostream& os, const Value& val )
+std::ostream& operator <<(std::ostream& os, const Value& val)
 {
   os << val.dump( val );
 

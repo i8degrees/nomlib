@@ -35,8 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-// TODO: Change to nom::size_type..?
-typedef uint ArrayIndex;
+typedef nom::size_type ArrayIndex;
 
 class VString
 {

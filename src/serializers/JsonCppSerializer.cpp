@@ -28,8 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/serializers/JsonCppSerializer.hpp"
 
-#include "nomlib/core/unique_ptr.hpp"
-#include "nomlib/core/strings.hpp"
+#include "nomlib/core/helpers.hpp"
 
 // Private headers (third-party)
 #include "jsoncpp/json.h"

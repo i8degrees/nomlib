@@ -106,8 +106,8 @@ Value::Value(const char* str) :
 {
   //NOM_LOG_TRACE(NOM);
 
-  nom::size_type str_len = nom::string_length(str);
-  this->value_.string_ = nom::duplicate_string(str, str_len);
+  nom::size_type str_len = priv::string_length(str);
+  this->value_.string_ = priv::duplicate_string(str, str_len);
 }
 
 Value::Value(const std::string& str) :
@@ -115,8 +115,8 @@ Value::Value(const std::string& str) :
 {
   //NOM_LOG_TRACE(NOM);
 
-  nom::size_type str_len = nom::string_length(str);
-  this->value_.string_ = nom::duplicate_string(str, str_len);
+  nom::size_type str_len = priv::string_length(str);
+  this->value_.string_ = priv::duplicate_string(str, str_len);
 }
 
 Value::Value(bool val) :
@@ -223,7 +223,7 @@ Value::Value(const Value& rhs)
         nom::size_type str_len = nom::string_length(rhs_string_value);
 
         this->value_.string_ =
-          nom::duplicate_string(rhs_string_value, str_len);
+          priv::duplicate_string(rhs_string_value, str_len);
       }
     } break;
 
@@ -302,7 +302,7 @@ bool Value::operator <(const Value& rhs) const
         }
       } else {
         comp_result =
-          nom::compare_cstr_sensitive(this->value_.string_, rhs.value_.string_) < 0;
+          priv::compare_string(this->value_.string_, rhs.value_.string_) < 0;
       }
     } break;
 
@@ -380,7 +380,7 @@ bool Value::operator ==(const Value& rhs) const
         comp_result = this->value_.string_ == rhs.value_.string_;
       } else {
         comp_result =
-          nom::compare_cstr_sensitive(this->value_.string_, rhs.value_.string_) == 0;
+          priv::compare_string(this->value_.string_, rhs.value_.string_) == 0;
       }
     } break;
 
@@ -426,7 +426,7 @@ Value::RawPtr Value::get()
   return this;
 }
 
-Value::Reference Value::ref()
+const Value::Reference Value::ref()
 {
   return *this;
 }

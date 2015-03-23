@@ -30,70 +30,73 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-ValueConstIterator::ValueConstIterator( void )
+ValueConstIterator::ValueConstIterator()
 {
   //NOM_LOG_TRACE(NOM);
 }
 
-ValueConstIterator::~ValueConstIterator( void )
+ValueConstIterator::~ValueConstIterator()
 {
   //NOM_LOG_TRACE(NOM);
 }
 
-ValueConstIterator::ValueConstIterator( const ValueConstIterator& copy )
+ValueConstIterator::ValueConstIterator(const ValueConstIterator& rhs)
 {
   //NOM_LOG_TRACE(NOM);
-  this->copy( copy );
+
+  this->copy(rhs);
 }
 
-ValueConstIterator::ValueConstIterator( const ObjectIterator& itr ) :
-  ValueIteratorBase ( itr )
+ValueConstIterator::ValueConstIterator(const ObjectIterator& rhs) :
+  ValueIteratorBase(rhs)
 {
   //NOM_LOG_TRACE(NOM);
 }
 
-ValueConstIterator::SelfType& ValueConstIterator::operator =( const DerivedType& other )
+ValueConstIterator::SelfType&
+ValueConstIterator::operator =(const DerivedType& rhs)
 {
-  this->copy( other );
+  this->copy(rhs);
 
   return *this;
 }
 
-ValueConstIterator::ConstReference ValueConstIterator::operator *( void ) const
+ValueConstIterator::ConstReference ValueConstIterator::operator *() const
 {
   return this->dereference(); // const nom::Value&
 }
 
-const ValueConstIterator::ValueTypePointer ValueConstIterator::operator ->( void ) const
+const ValueConstIterator::ValueTypePointer
+ValueConstIterator::operator ->() const
 {
   return this->pointer();
 }
 
-ValueConstIterator::SelfType& ValueConstIterator::operator ++( void )
+ValueConstIterator::SelfType& ValueConstIterator::operator ++()
 {
    this->increment();
 
    return *this;
 }
 
-ValueConstIterator::SelfType ValueConstIterator::operator ++( sint )
+ValueConstIterator::SelfType ValueConstIterator::operator ++(int)
 {
-   SelfType itr( *this );
+   SelfType itr(*this);
    ++*this;
 
    return itr;
 }
 
-ValueConstIterator::SelfType& ValueConstIterator::operator --( void )
+ValueConstIterator::SelfType& ValueConstIterator::operator --()
 {
    this->decrement();
 
    return *this;
 }
 
-ValueConstIterator::SelfType ValueConstIterator::operator --( sint )
+ValueConstIterator::SelfType ValueConstIterator::operator --(int)
 {
-   SelfType itr( *this );
+   SelfType itr(*this);
 
    return itr;
 }

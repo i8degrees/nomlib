@@ -30,32 +30,32 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-ValueIteratorBase::ValueIteratorBase ( void ) :
-  type_ ( IteratorType::Null )
+ValueIteratorBase::ValueIteratorBase() :
+  type_(IteratorType::Null)
 {
   //NOM_LOG_TRACE(NOM);
 }
 
-ValueIteratorBase::~ValueIteratorBase ( void )
+ValueIteratorBase::~ValueIteratorBase()
 {
   //NOM_LOG_TRACE(NOM);
 }
 
-ValueIteratorBase::ValueIteratorBase( const ObjectIterator& itr ) :
-  object_( itr ),
-  type_( IteratorType::ObjectValues )
+ValueIteratorBase::ValueIteratorBase(const ObjectIterator& rhs) :
+  object_(rhs),
+  type_(IteratorType::ObjectValues)
 {
   //NOM_LOG_TRACE(NOM);
 }
 
-bool ValueIteratorBase::valid( void ) const
+bool ValueIteratorBase::valid() const
 {
   if( this->type() != IteratorType::Null ) return true;
 
   return false;
 }
 
-const char* ValueIteratorBase::key( void ) const
+const char* ValueIteratorBase::key() const
 {
   if( this->type() == IteratorType::ObjectValues )
   {
@@ -84,7 +84,7 @@ const char* ValueIteratorBase::key( void ) const
   }
 }
 
-bool ValueIteratorBase::key( const std::string& member ) const
+bool ValueIteratorBase::key(const std::string& member) const
 {
   if( this->type() == IteratorType::ObjectValues )
   {
@@ -101,42 +101,25 @@ bool ValueIteratorBase::key( const std::string& member ) const
   }
 }
 
-/*ArrayIndex*/int ValueIteratorBase::index( void ) const
+ArrayIndex ValueIteratorBase::index() const
 {
   const VString& key = this->object_->first;
 
-  if( key.c_str() == nullptr )
-  {
-    return key.index();
-  }
-
-  return -1;
+  return key.index();
 }
 
-Value ValueIteratorBase::key_v2( void ) const
+void ValueIteratorBase::copy(const SelfType& rhs)
 {
-  VString key = this->object_->first;
-
-  if( key.c_str() != nullptr )
-  {
-    return Value( key.c_str() );
-  }
-
-  return Value( key.index() );
+  this->object_ = rhs.object_;
+  this->type_ = rhs.type();
 }
 
-void ValueIteratorBase::copy( const SelfType& other )
-{
-  this->object_ = other.object_;
-  this->type_ = other.type();
-}
-
-ValueIteratorBase::ValueTypeReference ValueIteratorBase::dereference( void ) const
+ValueIteratorBase::ValueTypeReference ValueIteratorBase::dereference() const
 {
   return this->object_->second;
 }
 
-ValueIteratorBase::ValueTypePointer ValueIteratorBase::pointer( void ) const
+ValueIteratorBase::ValueTypePointer ValueIteratorBase::pointer() const
 {
   if( this->type() == IteratorType::ObjectValues )
   {
@@ -148,36 +131,37 @@ ValueIteratorBase::ValueTypePointer ValueIteratorBase::pointer( void ) const
   }
 }
 
-bool ValueIteratorBase::operator ==( const SelfType& other ) const
+bool ValueIteratorBase::operator ==(const SelfType& rhs) const
 {
   if( this->type() == IteratorType::ObjectValues )
   {
-    return this->object_ == other.object_;
+    return this->object_ == rhs.object_;
   }
   else // IteratorType::NullValue
   {
-    return ( other.type() == IteratorType::Null );
+    return ( rhs.type() == IteratorType::Null );
   }
 }
 
-bool ValueIteratorBase::operator !=( const SelfType& other ) const
+bool ValueIteratorBase::operator !=(const SelfType& rhs) const
 {
   if( this->type() == IteratorType::ObjectValues )
   {
-    return ! ( this->object_ == other.object_ );
+    return ! ( this->object_ == rhs.object_ );
   }
   else // IteratorType::NullValue
   {
-    return ! ( other.type() == IteratorType::Null );
+    return ! ( rhs.type() == IteratorType::Null );
   }
 }
 
-ValueIteratorBase::DifferenceType ValueIteratorBase::operator -( const SelfType& other ) const
+ValueIteratorBase::DifferenceType
+ValueIteratorBase::operator -(const SelfType& rhs) const
 {
-  return distance( other );
+  return distance(rhs);
 }
 
-void ValueIteratorBase::increment( void )
+void ValueIteratorBase::increment()
 {
   if( this->type() == IteratorType::ObjectValues )
   {
@@ -189,7 +173,7 @@ void ValueIteratorBase::increment( void )
   }
 }
 
-void ValueIteratorBase::decrement( void )
+void ValueIteratorBase::decrement()
 {
   if( this->type() == IteratorType::ObjectValues )
   {
@@ -201,11 +185,12 @@ void ValueIteratorBase::decrement( void )
   }
 }
 
-ValueIteratorBase::DifferenceType ValueIteratorBase::distance( const SelfType& other ) const
+ValueIteratorBase::DifferenceType
+ValueIteratorBase::distance(const SelfType& rhs) const
 {
   if( this->type() == IteratorType::ObjectValues )
   {
-    return std::distance( this->object_, other.object_ );
+    return std::distance( this->object_, rhs.object_ );
   }
   else // IteratorType::NullValue
   {
@@ -213,7 +198,7 @@ ValueIteratorBase::DifferenceType ValueIteratorBase::distance( const SelfType& o
   }
 }
 
-enum ValueIteratorBase::IteratorType ValueIteratorBase::type( void ) const
+enum ValueIteratorBase::IteratorType ValueIteratorBase::type() const
 {
   return this->type_;
 }

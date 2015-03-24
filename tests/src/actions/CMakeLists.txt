@@ -47,7 +47,7 @@ if( NOM_BUILD_ACTION_TESTS )
   #
   #   See also: man 1 ctest, --parallel <jobs>
 
-  add_action_test(  ActionTestExtended_SpeedModifierAt0.5
+  add_action_test(  ActionTest_SpeedModifierAt0.5
                     ${ACTION_TEST_ARGS} --speed 0.5 )
 
   # NOTE: Only the standard five timing curve functions are tested here; there
@@ -55,51 +55,51 @@ if( NOM_BUILD_ACTION_TESTS )
   #
   #     See also: ActionTest --help, --timing-mode
   set( ACTION_TEST_SPEED_ARGS --speed 100.0 )
-  add_action_test(  ActionTestExtended_QuadEaseIn
+  add_action_test(  ActionTest_QuadEaseIn
                     ${ACTION_TEST_ARGS} ${ACTION_TEST_SPEED_ARGS}
                     --timing-mode quad_ease_in )
 
-  add_action_test(  ActionTestExtended_QuadEaseOut
+  add_action_test(  ActionTest_QuadEaseOut
                     ${ACTION_TEST_ARGS} ${ACTION_TEST_SPEED_ARGS}
                     --timing-mode quad_ease_out )
 
-  add_action_test(  ActionTestExtended_QuadEaseInOut
+  add_action_test(  ActionTest_QuadEaseInOut
                     ${ACTION_TEST_ARGS} ${ACTION_TEST_SPEED_ARGS}
                     --timing-mode quad_ease_in_out )
 
-  add_action_test(  ActionTestExtended_CubicEaseIn
+  add_action_test(  ActionTest_CubicEaseIn
                     ${ACTION_TEST_ARGS} ${ACTION_TEST_SPEED_ARGS}
                     --timing-mode cubic_ease_in )
 
-  add_action_test(  ActionTestExtended_CubicEaseOut
+  add_action_test(  ActionTest_CubicEaseOut
                     ${ACTION_TEST_ARGS} ${ACTION_TEST_SPEED_ARGS}
                     --timing-mode cubic_ease_out )
 
-  add_action_test(  ActionTestExtended_CubicEaseInOut
+  add_action_test(  ActionTest_CubicEaseInOut
                     ${ACTION_TEST_ARGS} ${ACTION_TEST_SPEED_ARGS}
                     --timing-mode cubic_ease_in_out )
 
-  add_action_test(  ActionTestExtended_QuartEaseIn
+  add_action_test(  ActionTest_QuartEaseIn
                     ${ACTION_TEST_ARGS} ${ACTION_TEST_SPEED_ARGS}
                     --timing-mode quart_ease_in )
 
-  add_action_test(  ActionTestExtended_QuartEaseOut
+  add_action_test(  ActionTest_QuartEaseOut
                     ${ACTION_TEST_ARGS} ${ACTION_TEST_SPEED_ARGS}
                     --timing-mode quart_ease_out )
 
-  add_action_test(  ActionTestExtended_QuartEaseInOut
+  add_action_test(  ActionTest_QuartEaseInOut
                     ${ACTION_TEST_ARGS} ${ACTION_TEST_SPEED_ARGS}
                     --timing-mode quart_ease_in_out )
 
-  add_action_test(  ActionTestExtended_QuintEaseIn
+  add_action_test(  ActionTest_QuintEaseIn
                     ${ACTION_TEST_ARGS} ${ACTION_TEST_SPEED_ARGS}
                     --timing-mode quint_ease_in )
 
-  add_action_test(  ActionTestExtended_QuintEaseOut
+  add_action_test(  ActionTest_QuintEaseOut
                     ${ACTION_TEST_ARGS} ${ACTION_TEST_SPEED_ARGS}
                     --timing-mode quint_ease_out )
 
-  add_action_test(  ActionTestExtended_QuintEaseInOut
+  add_action_test(  ActionTest_QuintEaseInOut
                     ${ACTION_TEST_ARGS} ${ACTION_TEST_SPEED_ARGS}
                     --timing-mode quint_ease_in_out )
 

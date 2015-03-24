@@ -164,6 +164,18 @@ macro( nom_add_visual_test test_name executable )
             --gtest_filter=${test_name}.* ${ARGN} )
 endmacro()
 
+# Helper function for adding an engine unit test
+#
+# IMPORTANT: Avoid using the newer add_test syntax, i.e.:
+# add_test(NAME <name> COMMAND <command>), because these tests are not
+# added to the default test configuration! Using the newer add_test
+# syntax leads me to this err message when running ctest from the project's
+# build directory (CMake generated XCode project files):
+#     "Test not available without configuration. (Missing "-C <config>"?)"
+macro( nom_add_test test_name test_executable )
+  add_test( ${test_name} ${test_executable} ${ARGN} )
+endmacro()
+
 macro(NOM_LOG_INFO msg)
   message( STATUS "INFO: ${msg}" )
 endmacro(NOM_LOG_INFO msg)

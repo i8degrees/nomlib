@@ -333,7 +333,7 @@ VisualUnitTest::~VisualUnitTest()
   std::string output_dir =
     this->output_directory();
 
-  fp = nom::create_json_serializer();
+  fp = nom::make_unique_json_serializer();
 
   // Save info file only if we have one or more images successfully captured
   if( fp != nullptr && VisualUnitTest::visual_test_.images().size() > 0 ) {

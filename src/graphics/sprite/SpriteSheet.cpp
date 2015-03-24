@@ -116,10 +116,17 @@ int SpriteSheet::total_frames() const
 bool SpriteSheet::load_file(const std::string& filename)
 {
   Value output;
-  auto deserializer = nom::create_json_deserializer();
+
+  auto deserializer = nom::make_unique_json_deserializer();
+  if( deserializer == nullptr ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not load input file: failure to allocate memory!" );
+    return false;
+  }
 
   if( deserializer->load(filename, output) == false ) {
-    NOM_LOG_ERR( NOM, "Unable to parse JSON file:", filename );
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Unable to parse JSON file:", filename );
     return false;
   }
 

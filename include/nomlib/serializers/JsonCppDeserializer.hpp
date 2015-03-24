@@ -109,7 +109,7 @@ class JsonCppDeserializer: public IValueDeserializer
     bool read_object( const Json::Value& object, Value& dest ) const;
 };
 
-std::unique_ptr<IValueDeserializer> create_json_deserializer();
+std::unique_ptr<IValueDeserializer> make_unique_json_deserializer();
 
 } // namespace nom
 

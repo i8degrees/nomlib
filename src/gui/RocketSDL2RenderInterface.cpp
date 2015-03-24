@@ -131,8 +131,7 @@ void RocketSDL2RenderInterface::Release()
 
 void RocketSDL2RenderInterface::
 RenderGeometry( Rocket::Core::Vertex* vertices, int num_vertices, int* indices,
-                int num_indices,
-                Rocket::Core::TextureHandle texture_handle,
+                int num_indices, Rocket::Core::TextureHandle texture_handle,
                 const Rocket::Core::Vector2f& translation )
 {
   SDL_Texture* sdl_texture = NULL;
@@ -296,8 +295,8 @@ bool RocketSDL2RenderInterface::LoadTexture(Rocket::Core::TextureHandle& texture
   {
     if( texture->create( surface ) == true )
     {
-      // ::ReleaseTexture is responsible for freeing this pointer
-      texture_handle = (Rocket::Core::TextureHandle) texture->texture();
+      // ::ReleaseTexture is responsible for freeing this pointer now
+      texture_handle = (Rocket::Core::TextureHandle) texture;
 
       texture_dimensions =
         Rocket::Core::Vector2i(surface.width(), surface.height() );
@@ -380,7 +379,9 @@ void RocketSDL2RenderInterface::
 ReleaseTexture(Rocket::Core::TextureHandle texture_handle)
 {
   auto texture = (nom::Texture*)texture_handle;
-  texture->free_texture();
+  if( texture != nullptr ) {
+    NOM_DELETE_PTR(texture);
+  }
 }
 
 } // namespace nom

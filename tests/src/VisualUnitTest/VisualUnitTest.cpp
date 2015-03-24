@@ -322,17 +322,23 @@ VisualUnitTest::~VisualUnitTest()
 
   Path p;
   File file;
+  std::unique_ptr<IValueSerializer> fp;
+
+  if( NOM_TEST_FLAG(disable_comparison) == true ) {
+    // Nothing to clean up; no files or directories should have ever been
+    // created!
+    return;
+  }
+
   std::string output_dir =
     this->output_directory();
 
-  IValueSerializer* fp = new JsonCppSerializer();
+  fp = nom::create_json_serializer();
 
   // Save info file only if we have one or more images successfully captured
   if( fp != nullptr && VisualUnitTest::visual_test_.images().size() > 0 ) {
-    VisualUnitTest::visual_test_.save_file(fp);
+    VisualUnitTest::visual_test_.save_file( fp.get() );
   }
-
-  NOM_DELETE_PTR(fp);
 
   // Handle cleaning up of empty directories at the end of each test
   if( VisualUnitTest::visual_test_.images().empty() == true ) {
@@ -679,7 +685,7 @@ void VisualUnitTest::initialize_directories()
     }
 
     this->set_output_directory(ref_dir);
-  } else {
+  } else if( NOM_TEST_FLAG(disable_comparison) == false ) {
     std::string test_name_dir =
       nom::test_output_directory + p.native() + this->test_set() +
       p.native() + this->test_set() + "_" + VisualUnitTest::timestamp();
@@ -694,13 +700,6 @@ void VisualUnitTest::initialize_directories()
     // on this output directory being available.
     this->set_output_directory(test_name_dir);
   }
-
-  // Log a friendly reminder
-  if( NOM_TEST_FLAG( disable_comparison ) == true ) {
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
-                  "Image set comparison has been explicitly disabled." );
-  }
-
 }
 
 void VisualUnitTest::set_test_set_directory( const std::string& dir_path )

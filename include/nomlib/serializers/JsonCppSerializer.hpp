@@ -120,7 +120,7 @@ class JsonCppSerializer: public IValueSerializer
     bool write_object( const Value& object, Json::Value& dest ) const;
 };
 
-std::unique_ptr<IValueSerializer> create_json_serializer();
+std::unique_ptr<IValueSerializer> make_unique_json_serializer();
 
 } // namespace nom
 

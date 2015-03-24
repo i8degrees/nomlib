@@ -90,13 +90,6 @@ class Texture
     /// time before freeing its memory.
     ~Texture( void );
 
-    /// \brief Destroy the texture.
-    ///
-    /// \remarks The pixel data and pitch value associated with the Texture is
-    /// freed as well. The other attributes, such as position and color key are
-    /// *not* reset to their respective defaults.
-    void free_texture( void );
-
     /// Copy constructor
     Texture ( const Texture& copy );
 

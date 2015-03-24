@@ -31,7 +31,13 @@ if( NOM_BUILD_ACTION_TESTS )
   # Helper function for adding action tests
   macro( add_action_test test_name )
     set( ACTION_TEST_BIN "${TESTS_INSTALL_DIR}/ActionTest" )
-    add_test( NAME ${test_name} COMMAND ${ACTION_TEST_BIN} ${ARGN} )
+    # NOTE: Avoid using the newer add_test syntax, i.e.:
+    # add_test(NAME <name> COMMAND <command>), because these tests are not
+    # added to the default test configuration! Using the newer add_test
+    # syntax leads me to this err message when running ctest from the project's
+    # build directory:
+    #   "Test not available without configuration. (Missing "-C <config>"?)"
+    add_test( ${test_name} ${ACTION_TEST_BIN} ${ARGN} )
   endmacro()
 
   # Fractional speed modifier values, such as 22.5 and the oddball number of 45

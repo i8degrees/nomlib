@@ -37,16 +37,6 @@ ActionTest::ActionTest()
 {
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_UNIT_TEST, NOM_LOG_PRIORITY_VERBOSE);
 
-  // We do not utilize screen dump comparison features for any of these tests,
-  // so we might as well leave the logic disabled...
-  NOM_TEST_FLAG(disable_comparison) = true;
-
-  // These tests **must** always run with the interactive flag set, so that the
-  // main loop does not prematurely terminate on us before we are done
-  // executing the animation's loop; we explicitly terminate each test upon
-  // the appropriate completion conditions.
-  NOM_TEST_FLAG(interactive) = true;
-
   // ActionTest reports various test statistics at this log level
   nom::SDL2Logger::set_logging_priority(  NOM_LOG_CATEGORY_ACTION,
                                           nom::NOM_LOG_PRIORITY_INFO );
@@ -1399,6 +1389,16 @@ int main(int argc, char** argv)
                   "Could not initialize unit testing framework." );
     return NOM_EXIT_FAILURE;
   }
+
+  // We do not utilize screen dump comparison features for any of these tests,
+  // so we might as well leave the logic disabled...
+  NOM_TEST_FLAG(disable_comparison) = true;
+
+  // These tests **must** always run with the interactive flag set, so that the
+  // main loop does not prematurely terminate on us before we are done
+  // executing the animation's loop; we explicitly terminate each test upon
+  // the appropriate completion conditions.
+  NOM_TEST_FLAG(interactive) = true;
 
   return RUN_ALL_TESTS();
 }

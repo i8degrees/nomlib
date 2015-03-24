@@ -28,9 +28,9 @@ endif( POLICY CMP0048 )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules" )
 set ( CMAKE_TEMPLATE_PATH ${CMAKE_TEMPLATE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates" )
 
-set ( PROJECT_VERSION_MAJOR 0 )
-set ( PROJECT_VERSION_MINOR 11 )
-set ( PROJECT_VERSION_PATCH 0 )
+set( PROJECT_VERSION_MAJOR 0 )
+set( PROJECT_VERSION_MINOR 12 )
+set( PROJECT_VERSION_PATCH 0 )
 
 # Project Options
 option ( DEBUG "Build with all debugging features" off )

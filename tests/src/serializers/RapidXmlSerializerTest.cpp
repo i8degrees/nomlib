@@ -6,7 +6,6 @@
 // nom::init functions
 #include "nomlib/system/init.hpp"
 #include "nomlib/system/dialog_messagebox.hpp"
-#include "nomlib/system/SearchPath.hpp"
 
 #include <nomlib/serializers.hpp>
 #include <nomlib/ptree.hpp> // Property Tree (nom::Value)

@@ -27,7 +27,7 @@ before_install:
   # - xvfb-run -- :99 -ac -screen 0 1024x768x32
   # - /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1024x768x32
 
-  # - brew update
+  - brew update
   # - brew install cmake
 
   # FIXME: It might be best if we packaged the freetype2 libs for libRocket
@@ -36,27 +36,32 @@ before_install:
 
   # NOM_DEPS_URL and NOM_OSX_SDK_URL has been set by our repository settings
   - wget -O /tmp/deps.tar.gz $NOM_DEPS_URL
-  - wget -O /tmp/osx10.7.sdk.tar.gz $NOM_OSX_SDK_URL
+  # NOTE: Ensure that nomlib builds against the latest OS X SDK instead of the
+  # minimum deployment version in the mean time -- until I get around to
+  # cleaning up this script and building for both the minimum and the latest
+  # SDKs...
+  # - wget -O /tmp/osx10.7.sdk.tar.gz $NOM_OSX_SDK_URL
 before_script:
   - tar -xzf /tmp/deps.tar.gz -C third-party
-  - sudo mkdir -p '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs'
-  - sudo tar -xzf /tmp/osx10.7.sdk.tar.gz -C /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs
+  # - sudo mkdir -p '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs'
+  # - sudo tar -xzf /tmp/osx10.7.sdk.tar.gz -C /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs
   - mkdir -p build && cd build
-  - cmake -GXcode -DDEBUG=on -DDEBUG_ASSERT=on -DEXAMPLES=on -DNOM_BUILD_TESTS=on -DCMAKE_INSTALL_PREFIX=~/Library/Frameworks ..
+  - cmake -GXcode -DDEBUG=on -DDEBUG_ASSERT=on -DEXAMPLES=on -DNOM_BUILD_TESTS=on -DCMAKE_OSX_DEPLOYMENT_TARGET=10.7 -DCMAKE_INSTALL_PREFIX=~/Library/Frameworks ..
 script:
-  - xcodebuild -sdk macosx10.7 build
+  - xcodebuild build
   - xcodebuild -target install
   # - xcodebuild -target uninstall
   # Broken:
   # - examples/Debug/device_info
   # - xcodebuild -target RUN_TESTS
+
 # whitelist
-branches:
-  only:
-    - feature/travis-ci
-    - feature/GUI-librocket
-    - dev
-    - master
+# branches:
+#   only:
+#     - feature/travis-ci
+#     - feature/GUI-librocket
+#     - dev
+#     - master
 
 matrix:
   allow_failures:

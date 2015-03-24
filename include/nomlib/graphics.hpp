@@ -35,12 +35,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics/Text.hpp>
 #include <nomlib/graphics/RendererInfo.hpp>
 #include <nomlib/graphics/Texture.hpp>
-#include <nomlib/graphics/VideoMode.hpp>
+#include <nomlib/graphics/DisplayMode.hpp>
 #include <nomlib/graphics/RenderWindow.hpp>
 #include <nomlib/graphics/Renderer.hpp>
 #include <nomlib/graphics/IDrawable.hpp>
 #include <nomlib/graphics/Gradient.hpp>
 #include <nomlib/graphics/Image.hpp>
+#include <nomlib/graphics/fonts/BMFont.hpp>
 #include <nomlib/graphics/fonts/BitmapFont.hpp>
 #include <nomlib/graphics/fonts/FontMetrics.hpp>
 #include <nomlib/graphics/fonts/FontPage.hpp>
@@ -55,7 +56,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics/sprite/Sprite.hpp>
 #include <nomlib/graphics/sprite/SpriteBatch.hpp>
 #include <nomlib/graphics/sprite/SpriteSheet.hpp>
-#include <nomlib/graphics/sprite/AnimatedSprite.hpp>
 #include <nomlib/graphics/Cursor.hpp>
+#include <nomlib/graphics/graphics_helpers.hpp>
 
 #endif // include guard defined

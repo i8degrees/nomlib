@@ -1,86 +1,86 @@
+# nomlib-system module tests
+
+set( NOM_BUILD_FILE_TESTS ON )
+set( NOM_BUILD_FONT_CACHE_TESTS ON )
+set( NOM_BUILD_COLOR_DB_TESTS ON )
+set( NOM_BUILD_TIMER_TESTS ON )
+
+if( EXISTS "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+  include( "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+endif()
 
 if( NOM_BUILD_FONT_CACHE_TESTS )
 
-  if( NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+  add_executable( FontCacheTest "FontCacheTest.cpp" )
 
-    add_executable  (
-                      font_cache
-                      ${NOM_TESTS_SOURCE_DIR}/system/FontCacheTest.cpp
-                      )
+  set( FONT_CACHE_DEPS nomlib-unit-test nomlib-graphics nomlib-serializers )
 
-    target_link_libraries (
-                            font_cache
-                            ${GTEST_LIBRARY}
-                            ${PROJECT_NAME} # nomlib
-                          )
+  target_link_libraries( FontCacheTest ${FONT_CACHE_DEPS} )
 
-    GTEST_ADD_TESTS (
-                      font_cache
-                      "FontCacheTest"
-                      ${NOM_TESTS_SOURCE_DIR}/system/FontCacheTest.cpp
-                      )
+  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/FontCacheTest
+                    "" # args
+                    "FontCacheTest.cpp" )
 
-    # FIXME:
-    if( PLATFORM_WINDOWS )
-      install (
-                DIRECTORY
-                "${NOMLIB_FONTS}" # Resources/fonts
-                DESTINATION
-                "${TESTS_DEPS_INSTALL_PEFIX}/Resources"
-                PATTERN ".*" EXCLUDE # Just say no to dotfiles
-              )
-    endif( PLATFORM_WINDOWS )
-
-  endif( NOM_BUILD_GRAPHICS_UNIT AND NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+  # Copy resource files for the test
+  install (
+            FILES
+            "${NOM_TESTS_RESOURCES_DIR}/graphics/FontCacheTest.json"
+            DESTINATION
+            "${TESTS_INSTALL_DIR}"
+          )
 
 endif( NOM_BUILD_FONT_CACHE_TESTS )
 
 if( NOM_BUILD_COLOR_DB_TESTS )
 
-  if( NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+  add_executable( ColorDatabaseTest "ColorDatabaseTest.cpp" )
 
-    add_executable  (
-                      color_database
-                      ${NOM_TESTS_SOURCE_DIR}/system/ColorDatabaseTest.cpp
-                    )
+  set( COLOR_DB_DEPS ${GTEST_LIBRARY} nomlib-system )
 
-    target_link_libraries (
-                            color_database
-                            ${GTEST_LIBRARY}
-                            ${PROJECT_NAME} # nomlib
-                          )
+  if( PLATFORM_WINDOWS )
+    list( APPEND COLOR_DB_DEPS ${SDL2MAIN_LIBRARY} )
+  endif( PLATFORM_WINDOWS )
 
-    GTEST_ADD_TESTS (
-                      color_database
-                      "ColorDatabaseTest"
-                      ${NOM_TESTS_SOURCE_DIR}/system/ColorDatabaseTest.cpp
-                    )
+  target_link_libraries( ColorDatabaseTest ${COLOR_DB_DEPS} )
 
-  endif( NOM_BUILD_MATH_UNIT AND NOM_BUILD_SYSTEM_UNIT )
+  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/ColorDatabaseTest
+                    "" # args
+                    "ColorDatabaseTest.cpp" )
 
 endif( NOM_BUILD_COLOR_DB_TESTS )
 
 if( NOM_BUILD_FILE_TESTS )
 
-  if( NOM_BUILD_SYSTEM_UNIT )
+  add_executable( FileInterfaceTest "FileInterfaceTest.cpp" )
 
-    add_executable  (
-                      file_interface
-                      ${NOM_TESTS_SOURCE_DIR}/system/FileInterfaceTest.cpp
-                    )
+  set( FILE_DEPS ${GTEST_LIBRARY} nomlib-file )
 
-    target_link_libraries (
-                            file_interface
-                            ${GTEST_LIBRARY}
-                            ${PROJECT_NAME} # nomlib
-                          )
+  if( PLATFORM_WINDOWS )
+    list( APPEND FILE_DEPS ${SDL2MAIN_LIBRARY} )
+  endif( PLATFORM_WINDOWS )
 
-    GTEST_ADD_TESTS (
-                      file_interface
-                      "FileInterfaceTest"
-                      ${NOM_TESTS_SOURCE_DIR}/system/FileInterfaceTest.cpp
-                    )
+  target_link_libraries( FileInterfaceTest ${FILE_DEPS} )
 
-  endif( NOM_BUILD_SYSTEM_UNIT )
+  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/FileInterfaceTest
+                    "" # args
+                    "FileInterfaceTest.cpp" )
 
 endif( NOM_BUILD_FILE_TESTS )
+
+if( NOM_BUILD_TIMER_TESTS )
+
+  add_executable( TimerTest "TimerTest.cpp" )
+
+  set( TIMER_DEPS ${GTEST_LIBRARY} nomlib-system )
+
+  if( PLATFORM_WINDOWS )
+    list( APPEND TIMER_DEPS ${SDL2MAIN_LIBRARY} )
+  endif( PLATFORM_WINDOWS )
+
+  target_link_libraries( TimerTest ${TIMER_DEPS} )
+
+  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/TimerTest
+                    "" # args
+                    "TimerTest.cpp" )
+
+endif( NOM_BUILD_TIMER_TESTS )

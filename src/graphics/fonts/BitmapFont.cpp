@@ -57,11 +57,11 @@ BitmapFont::~BitmapFont ( void )
 }
 
 BitmapFont::BitmapFont ( const BitmapFont& copy ) :
-  type_ { copy.type() },
-  sheet_width_ { copy.sheet_width() },
-  sheet_height_ { copy.sheet_height() },
-  pages_ { copy.pages() },
-  metrics_ { copy.metrics() }
+  type_( copy.type() ),
+  sheet_width_( copy.sheet_width() ),
+  sheet_height_( copy.sheet_height() ),
+  pages_( copy.pages() ),
+  metrics_( copy.metrics() )
 {
   // NOM_LOG_TRACE( NOM );
 }
@@ -83,9 +83,9 @@ enum IFont::FontType BitmapFont::type ( void ) const
   return this->type_;
 }
 
-const Image& BitmapFont::image ( uint32 character_size ) const
+const Image* BitmapFont::image(uint32 character_size) const
 {
-  return *this->pages_[0].texture.get();
+  return this->pages_[0].texture.get();
 }
 
 sint BitmapFont::spacing ( uint32 character_size ) const
@@ -100,7 +100,7 @@ int BitmapFont::newline( uint32 character_size ) const
 
 int BitmapFont::kerning( uint32 first_char, uint32 second_char, uint32 character_size ) const
 {
-  return -1;
+  return 0;
 }
 
 int BitmapFont::hinting( void ) const
@@ -168,10 +168,7 @@ bool BitmapFont::load( const std::string& filename )
   // Set the font's face name as the filename of the bitmap font.
   this->metrics_.name = filename;
 
-  // I don't understand why RGBA8888 is necessary here, but it is the only pixel
-  // format that I have found that works when we are initializing a
-  // nom::Texture (SDL_Texture) from a nom::Image (SDL_Surface).
-  if ( this->pages_[0].texture->load ( filename, SDL_PIXELFORMAT_RGBA8888 ) == false )
+  if( this->pages_[0].texture->load(filename, SDL_PIXELFORMAT_ARGB8888) == false )
   {
     NOM_LOG_ERR ( NOM, "Could not load bitmap font image file: " + filename );
     return false;
@@ -183,21 +180,43 @@ bool BitmapFont::load( const std::string& filename )
     return false;
   }
 
-  // Set pixel at coordinates 0, 0 to be color keyed (transparent)
-  uint32 key = this->pages_[0].texture->pixel( 0, 0 );
-  Color4i colorkey = nom::pixel ( key, this->pages_[0].texture->pixel_format() );
-
-  if ( this->pages_[0].texture->set_colorkey ( colorkey, true ) == false )
-  {
-    NOM_LOG_ERR ( NOM, "Could not set color key" );
-    return false;
-  }
+  // Set pixel at coordinates 0, 0 to be the color mask
+  uint32 key = this->pages_[0].texture->pixel(0, 0);
+  this->color_mask_ = nom::pixel( key, this->pages_[0].texture->pixel_format() );
 
   // Attempt to build font metrics
   if ( this->build(0) == false )
   {
     NOM_LOG_ERR ( NOM, "Could not build bitmap font metrics" );
     return false;
+  }
+
+  // Encode the color mask as a fully transparent alpha channel; this will hide
+  // the filtered pixel data -- visually seen as the glyph's background color
+  // from the image we load. This must be done **after** the glyph data is
+  // built, or else it won't have anything to compare against.
+  //
+  // This exists as an optimization for nom::Text; we could have just set the
+  // color key to the value of the color mask before building the glyph metrics,
+  // but when the pixel data is copied to update a SDL_TEXTURE_STREAMING texture
+  // type, we lose the color key in the process. We can't use
+  // nom::Texture::set_colorkey at that time, due to inefficiency -- not
+  // surprisingly, performance drops drastically.
+  Image* source = this->pages_[0].texture.get();
+  NOM_ASSERT(source != nullptr);
+
+  uint32* pixels = NOM_SCAST(uint32*, source->pixels() );
+
+  Color4i trans_color = this->color_mask_;
+  trans_color.a = 0;
+
+  uint32 trans_pixel = nom::RGBA( trans_color, source->pixel_format() );
+
+  for( auto idx = 0; idx < (source->pitch() / 4) * source->height(); ++idx ) {
+
+    if( pixels[idx] == key ) {
+      pixels[idx] = trans_pixel;
+    }
   }
 
   return true;
@@ -234,7 +253,7 @@ bool BitmapFont::build ( uint32 character_size )
   // pixel color we filter out (ignore) -- any other pixel color becomes part
   // of our glyph atlas.
   background_color = RGBA (
-                            page.texture->colorkey(),
+                            this->color_mask_,
                             page.texture->pixel_format()
                           );
 
@@ -356,11 +375,12 @@ bool BitmapFont::build ( uint32 character_size )
 
   page.texture->unlock(); // Finished messing with pixels
 
-  // Calculate new line by subtracting the baseline of the "chosen glyph"
-  // from the bitmap's ascent.
-  //
-  // (See also: baseline_glyph variable)
   this->metrics_.newline = base - top;
+
+  // NOTE: The original new line feed computation -- 'base - top', breaks text
+  // rendering bounds within nom::Text::update_cache because the height
+  // calculation it relies on was inaccurate.
+  this->metrics_.newline = base + top + 1;
 
   // Loop off excess top pixels
   for ( uint32 top_pixels = 0; top_pixels < current_char; ++top_pixels )

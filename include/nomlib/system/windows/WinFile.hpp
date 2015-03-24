@@ -230,6 +230,8 @@ class WinFile: public IFile
     ///
     /// \see http://msdn.microsoft.com/en-us/library/tehxacec.aspx
     std::string env( const std::string& path );
+
+    nom::size_type num_files(const std::string& path);
 };
 
 

@@ -32,59 +32,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/resource_types.hpp"
 
 namespace nom {
-
-/// \brief Class interface for accessing global font resources
-///
-/// \note A nom::RenderWindow must be initialized before the resource
-/// loading method call can be used -- nom::FontCache::load_resource.
-///
-/// \see nom::PlatformSettings, nom::ResourceCache.
-///
-/// \see Inspired by [wxSystemSettings](http://docs.wxwidgets.org/trunk/classwx_system_settings.html),
-/// [wxFontList](http://docs.wxwidgets.org/trunk/classwx_font_list.html)
-class SystemFonts
-{
-  public:
-    /// \brief Get the status of fonts cache.
-    static bool initialized( void );
-
-    /// \brief Create the global fonts resource cache.
-    static void initialize( void );
-
-    /// \brief Get the cache used for font resources.
-    ///
-    /// \returns The reference to the global font cache.
-    ///
-    /// \remarks This method call will automatically initialize the fonts cache
-    /// if it is not yet initialized.
-    static FontCache& cache( void );
-
-    /// \brief Destructor; clear the fonts resource cache.
-    ///
-    /// \note this must be done *before* SDL2_ttf is shutdown, as we do not own
-    /// the pointers that it will invalidate upon its shutdown.
-    ///
-    /// \see nom::quit.
-    static void shutdown( void );
-
-  private:
-    /// \brief The global list of available fonts for use by the engine and
-    /// end-user.
-    static std::shared_ptr<FontCache> cache_;
-
-    /// \brief Track object's state in order to ensure one-time initialization.
-    static bool initialized_;
-};
 
 // Forward declarations
 class ColorDatabase;
 
 /// \brief Class interface for accessing global color resources
 ///
-/// \see nom::PlatformSettings, nom::ColorDatabase.
+/// \see  nom::ColorDatabase.
 /// \see Inspired by http://docs.wxwidgets.org/trunk/classwx_system_settings.html
 class SystemColors
 {

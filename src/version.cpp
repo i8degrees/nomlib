@@ -28,39 +28,207 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/version.hpp"
 
+// Private headers
+#include <ctype.h>
+#include "nomlib/revision.hpp"
+
 namespace nom {
 
-std::string version( void )
+std::ostream& operator <<(std::ostream& os, const VersionInfo& v)
 {
-  std::ostringstream os;
+  os
+  << v.major()
+  << "."
+  << v.minor()
+  << "."
+  << v.patch();
 
-  os  << major_version()
-      << "."
-      << minor_version()
-      << "."
-      << patch_version();
-
-  return os.str();
+  return os;
 }
 
-std::string revision( void )
+bool operator ==(const VersionInfo& lhs, const VersionInfo& rhs)
+{
+  return( lhs.major() == rhs.major() &&
+          lhs.minor() == rhs.minor() &&
+          lhs.patch() == rhs.patch() );
+}
+
+bool operator !=(const VersionInfo& lhs, const VersionInfo& rhs)
+{
+  return !( lhs == rhs );
+}
+
+bool operator <(const VersionInfo& lhs, const VersionInfo& rhs)
+{
+  if( ( lhs.major() < rhs.major() ) ) {
+    return true;
+  } // major
+
+  if( ( lhs.minor() < rhs.minor() ) ) {
+    return true;
+  } // minor
+
+  if( ( lhs.patch() < rhs.patch() ) ) {
+    return true;
+  } // patch
+
+  return false;
+}
+
+bool operator <=(const VersionInfo& lhs, const VersionInfo& rhs)
+{
+  if( ( lhs.major() <= rhs.major() ) ) {
+    return true;
+  } // major
+
+  if( ( lhs.minor() <= rhs.minor() ) ) {
+    return true;
+  } // minor
+
+  if( ( lhs.patch() <= rhs.patch() ) ) {
+    return true;
+  } // patch
+
+  return false;
+}
+
+bool operator >(const VersionInfo& lhs, const VersionInfo& rhs)
+{
+  if( ( rhs.major() < lhs.major() ) ) {
+    return true;
+  } // major
+
+  if( ( rhs.minor() < lhs.minor() ) ) {
+    return true;
+  } // minor
+
+  if( ( rhs.patch() < lhs.patch() ) ) {
+    return true;
+  } // patch
+
+  return false;
+}
+
+bool operator >=(const VersionInfo& lhs, const VersionInfo& rhs)
+{
+  if( ( rhs.major() <= lhs.major() ) ) {
+    return true;
+  } // major
+
+  if( ( rhs.minor() <= lhs.minor() ) ) {
+    return true;
+  } // minor
+
+  if( ( rhs.patch() <= lhs.patch() ) ) {
+    return true;
+  } // patch
+
+  return false;
+}
+
+VersionInfo::VersionInfo() :
+  major_(0),
+  minor_(0),
+  patch_(0)
+{
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
+}
+
+VersionInfo::~VersionInfo()
+{
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
+}
+
+VersionInfo::VersionInfo(int major, int minor, int patch ) :
+  major_(major),
+  minor_(minor),
+  patch_(patch)
+{
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
+}
+
+int VersionInfo::major() const
+{
+  return this->major_;
+}
+
+int VersionInfo::minor() const
+{
+  return this->minor_;
+}
+
+int VersionInfo::patch() const
+{
+  return this->patch_;
+}
+
+std::string VersionInfo::version_string() const
+{
+  std::string major = std::to_string( this->major() );
+  std::string minor = std::to_string( this->minor() );
+  std::string patch = std::to_string( this->patch() );
+
+  return( major + "." + minor + "." + patch );
+}
+
+bool VersionInfo::convert_version_string( const std::string& ver_string,
+                                          VersionInfo& info)
+{
+  const char* str = ver_string.c_str();
+
+  if( isdigit( NOM_SCAST(uchar, *str) ) == false ) {
+    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION, "Invalid version format");
+    return false;
+  }
+
+  info.major_ = std::atoi(str);
+  if(info.major_ < 0) {
+    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION, "Invalid version format");
+    return false;
+  }
+
+  for(; *str && isdigit( NOM_SCAST(uchar, *str) ); ++str) {}
+
+  if(*str != '.') {
+    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION, "Invalid version format");
+    return false;
+  }
+  ++str;
+
+  if( isdigit( NOM_SCAST(uchar, *str) ) == false ) {
+    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION, "Invalid version format");
+    return false;
+  }
+
+  info.minor_ = std::atoi(str);
+  if(info.minor_ < 0) {
+    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION, "Invalid version format");
+    return false;
+  }
+
+  for(; *str && isdigit( NOM_SCAST(uchar, *str) ); ++str) {}
+
+  if(*str != 0) {
+
+    if(*str != '.') {
+      NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION, "Invalid version format");
+      return false;
+    }
+    ++str;
+
+    info.patch_ = std::atoi(str);
+    if(info.patch_ < 0) {
+      NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION, "Invalid version format");
+      return false;
+    }
+  }
+
+  return true;
+}
+
+std::string revision()
 {
   return GIT_REVISION;
-}
-
-int major_version( void )
-{
-  return NOMLIB_VERSION_MAJOR;
-}
-
-int minor_version( void )
-{
-  return NOMLIB_VERSION_MINOR;
-}
-
-int patch_version( void )
-{
-  return NOMLIB_VERSION_PATCH;
 }
 
 } // namespace nom

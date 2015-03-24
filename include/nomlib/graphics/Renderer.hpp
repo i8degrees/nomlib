@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <memory>
 
-#include "SDL.h"
+#include <SDL.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
@@ -43,6 +43,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Forward declarations
+class Texture;
+
 /// \brief Video subsystem responsible for managing high-level graphics display
 /// (think: *very* fancy back-buffer).
 ///
@@ -50,6 +53,17 @@ namespace nom {
 class Renderer
 {
   public:
+    /// \brief The index of the default rendering driver to use.
+    ///
+    /// \remarks A value of negative one (-1) will choose the first available
+    /// driver that supports the requested rendering flags.
+    ///
+    /// \see nom::available_render_driver
+    static const int DEFAULT_RENDERING_DRIVER = -1;
+
+    static const uint32 DEFAULT_RENDERER_FLAGS =
+      SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE;
+
     /// Default constructor; initializes instance to sane defaults
     Renderer ( void );
 
@@ -61,7 +75,9 @@ class Renderer
     /// Initializes with the first rendering driver supporting our request
     /// flags
     /// Enables video acceleration when able
-    bool create ( SDL_WINDOW::RawPtr window, int32 rendering_driver = -1, uint32 context_flags = SDL_RENDERER_ACCELERATED );
+    bool create(  SDL_WINDOW::RawPtr window,
+                  int rendering_driver = DEFAULT_RENDERING_DRIVER,
+                  uint32 renderer_flags = DEFAULT_RENDERER_FLAGS );
 
     /// Get a raw pointer to the SDL_Renderer in use
     SDL_Renderer* renderer ( void ) const;
@@ -90,10 +106,8 @@ class Renderer
     /// \returns Size2i object filled with the width and height fields.
     Size2i output_size( void ) const;
 
-    /// Obtain the renderer's clipping rectangle bounds (X, Y, width & height)
-    /// in pixels
-    /// \todo Test me!
-    const IntRect bounds ( void ) const;
+    /// \brief Obtain the renderer's clipping rectangle bounds (in pixels).
+    IntRect clip_bounds() const;
 
     /// \brief Obtain information specific to your rendering hardware
     /// capabilities.
@@ -108,10 +122,18 @@ class Renderer
     ///         is probably the API you want to use outside of nomlib.
     static const RendererInfo caps ( SDL_Renderer* target );
 
-    /// \brief Reset the current rendering target
+    /// \brief Set the current rendering target back to the default renderer.
+    bool reset_render_target() const;
+
+    /// \brief Set a texture as the current rendering target.
     ///
-    /// \remarks This is intended to be used with nom::Texture::set_render_target
-    bool reset ( void ) const;
+    /// \remarks The nom::Texture must be initialized as a
+    /// nom::Texture::Access::RenderTarget.
+    ///
+    /// \note Not all video hardware has support for this feature.
+    ///
+    /// \see ::reset_render_target
+    bool set_render_target(const Texture* texture) const;
 
     /// Update the renderer surface on the attached window
     void update ( void ) const;
@@ -168,18 +190,22 @@ class Renderer
     /// SDL_BLENDMODE_MOD
     bool set_blend_mode ( const SDL_BlendMode mode );
 
-    /// Set new clipping rectangle bounds for the rendering target.
+    /// \brief Set new clipping rectangle bounds for the rendering target.
     ///
     /// \param bounds    Passing nom::IntRect::null will disable clipping on
-    ///                  the target
-    ///
-    /// \todo Test me!
-    bool set_bounds ( const IntRect& bounds );
+    ///                  the target.
+    bool set_clip_bounds(const IntRect& bounds);
 
-    /// Obtain pixels buffer of the entire rendering target
+    /// \brief Obtain pixels buffer of the entire rendering target
+    ///
+    /// \returns An allocated memory buffer pointing to the current rendering
+    /// target's pixel values on success, or NULLPTR on failure, such as a
+    /// memory allocation failure (out of memory?).
+    ///
+    /// \remarks It is your responsibility to free the pointer that is returned.
     ///
     /// \todo Pixels pitch calculation
-    void* pixels ( void ) const;
+    void* pixels() const;
 
   protected:
     /// This is automatically released after the attached nom::RenderWindow has been

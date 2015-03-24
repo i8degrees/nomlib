@@ -1,155 +1,125 @@
+# nomlib-serializers module tests
+
+set( NOM_BUILD_SERIALIZERS_JSON_TESTS ON )
+set( NOM_BUILD_SERIALIZERS_XML_TESTS ON )
+set( NOM_BUILD_JSON_CONFIG_FILE_TESTS ON )
+set( NOM_BUILD_SERIALIZERS_HTML_TESTS ON )
+
+if( EXISTS "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+  include( "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+endif()
+
+set(  NOM_SERIALIZER_TESTS_DEPS ${GTEST_LIBRARY} nomlib-serializers
+      # FIXME: Just needs init...
+      nomlib-system
+)
+
+if( PLATFORM_WINDOWS )
+  list( APPEND NOM_SERIALIZER_TESTS_DEPS ${SDL2MAIN_LIBRARY} )
+endif( PLATFORM_WINDOWS )
+
 if( NOM_BUILD_SERIALIZERS_JSON_TESTS )
 
-  add_executable  (
-                    json_serializer
-                    ${NOM_TESTS_SOURCE_DIR}/serializers/JsonCppSerializerTest.cpp
-                    ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
-                  )
+  add_executable( JsonCppSerializerTest
+                  "JsonCppSerializerTest.cpp" "common.cpp" )
 
-  target_link_libraries (
-                          json_serializer
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+  target_link_libraries( JsonCppSerializerTest ${NOM_SERIALIZER_TESTS_DEPS} )
 
-  GTEST_ADD_TESTS (
-                    json_serializer
+  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/JsonCppSerializerTest
                     "" # args
-                    ${NOM_TESTS_SOURCE_DIR}/serializers/JsonCppSerializerTest.cpp
+                    "JsonCppSerializerTest.cpp"
                   )
 
-  add_executable  (
-                    json_deserializer
-                    ${NOM_TESTS_SOURCE_DIR}/serializers/JsonCppDeserializerTest.cpp
-                    ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
-                  )
+  add_executable( JsonCppDeserializerTest
+                  "JsonCppDeserializerTest.cpp"
+                  "common.cpp" )
 
 
-  target_link_libraries (
-                          json_deserializer
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+  target_link_libraries( JsonCppDeserializerTest ${NOM_SERIALIZER_TESTS_DEPS} )
 
-  GTEST_ADD_TESTS (
-                    json_deserializer
+  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/JsonCppDeserializerTest
                     "" # args
-                    ${NOM_TESTS_SOURCE_DIR}/serializers/JsonCppDeserializerTest.cpp
-                  )
+                    "JsonCppDeserializerTest.cpp" )
 
 endif( NOM_BUILD_SERIALIZERS_JSON_TESTS )
 
 if( NOM_BUILD_SERIALIZERS_XML_TESTS )
 
-  add_executable  (
-                    xml_serializer
-                    ${NOM_TESTS_SOURCE_DIR}/serializers/RapidXmlSerializerTest.cpp
-                    ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
-                  )
+  add_executable( RapidXmlSerializerTest
+                  "RapidXmlSerializerTest.cpp" "common.cpp" )
 
-  target_link_libraries (
-                          xml_serializer
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+  target_link_libraries( RapidXmlSerializerTest ${NOM_SERIALIZER_TESTS_DEPS} )
 
-  GTEST_ADD_TESTS (
-                    xml_serializer
+  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/RapidXmlSerializerTest
                     "" # args
-                    ${NOM_TESTS_SOURCE_DIR}/serializers/RapidXmlSerializerTest.cpp
-                  )
+                    "RapidXmlSerializerTest.cpp" )
 
-  add_executable  (
-                    xml_deserializer
-                    ${NOM_TESTS_SOURCE_DIR}/serializers/RapidXmlDeserializerTest.cpp
-                    ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
-                  )
+  add_executable( RapidXmlDeserializerTest
+                  "RapidXmlDeserializerTest.cpp"
+                  "common.cpp" )
 
-  target_link_libraries (
-                          xml_deserializer
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+  target_link_libraries( RapidXmlDeserializerTest ${NOM_SERIALIZER_TESTS_DEPS} )
 
-  GTEST_ADD_TESTS (
-                    xml_deserializer
+  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/RapidXmlDeserializerTest
                     "" # args
-                    ${NOM_TESTS_SOURCE_DIR}/serializers/RapidXmlDeserializerTest.cpp
-                  )
+                    "RapidXmlDeserializerTest.cpp" )
 
 endif( NOM_BUILD_SERIALIZERS_XML_TESTS )
 
 # Copy resources file for unit tests if it has been built.
 if( NOM_BUILD_SERIALIZERS_JSON_TESTS )
-    # Search paths to use in resolving the full resources path
-    install (
-              FILES
-              "${NOM_TESTS_RESOURCES_DIR}/serializers/JsonCppSerializerTest.json"
-              DESTINATION
-              "${TESTS_DEPS_INSTALL_PEFIX}"
-            )
+  # Search paths to use in resolving the full resources path
+  install (
+            FILES
+            "${NOM_TESTS_RESOURCES_DIR}/serializers/JsonCppSerializerTest.json"
+            DESTINATION
+            "${TESTS_INSTALL_DIR}"
+          )
 endif( NOM_BUILD_SERIALIZERS_JSON_TESTS )
 
 # Copy resources file for unit tests if it has been built.
 if( NOM_BUILD_SERIALIZERS_XML_TESTS )
-    # Search paths to use in resolving the full resources path
-    install (
-              FILES
-              "${NOM_TESTS_RESOURCES_DIR}/serializers/RapidXmlSerializerTest.json"
-              DESTINATION
-              "${TESTS_DEPS_INSTALL_PEFIX}"
-            )
+  # Search paths to use in resolving the full resources path
+  install (
+            FILES
+            "${NOM_TESTS_RESOURCES_DIR}/serializers/RapidXmlSerializerTest.json"
+            DESTINATION
+            "${TESTS_INSTALL_DIR}"
+          )
 endif( NOM_BUILD_SERIALIZERS_XML_TESTS )
 
 # TODO: Use resources cfg file
 if( NOM_BUILD_JSON_CONFIG_FILE_TESTS )
 
-  add_executable  (
-                    json_config_file
-                    ${NOM_TESTS_SOURCE_DIR}/serializers/JsonConfigFileTest.cpp
-                    # ${NOM_TESTS_SOURCE_DIR}/serializers/common.cpp
-                  )
+  add_executable( JsonConfigFileTest
+                  "JsonConfigFileTest.cpp" )
 
-  target_link_libraries (
-                          json_config_file
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+  target_link_libraries( JsonConfigFileTest ${NOM_SERIALIZER_TESTS_DEPS} )
 
-  GTEST_ADD_TESTS (
-                    json_config_file
+  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/JsonConfigFileTest
                     "" # args
-                    ${NOM_TESTS_SOURCE_DIR}/serializers/JsonConfigFileTest.cpp
-                  )
+                    "JsonConfigFileTest.cpp" )
 
   install (
             DIRECTORY
             "${NOM_TESTS_RESOURCES_DIR}/json"
             DESTINATION
-            # "${CMAKE_CURRENT_BINARY_DIR}/Resources"
-            "${TESTS_DEPS_INSTALL_PEFIX}/Resources"
-            PATTERN ".*" EXCLUDE # do not include those pesky dotfiles!
+            "${TESTS_INSTALL_DIR}/Resources"
+            PATTERN ".*" EXCLUDE
           )
 
 endif( NOM_BUILD_JSON_CONFIG_FILE_TESTS )
 
 if( NOM_BUILD_SERIALIZERS_HTML_TESTS )
 
-  add_executable  (
-                    MiniHTMLTest
-                    ${NOM_TESTS_SOURCE_DIR}/serializers/MiniHTMLTest.cpp
-                  )
+  add_executable( MiniHTMLTest
+                  "MiniHTMLTest.cpp" )
 
-  target_link_libraries (
-                          MiniHTMLTest
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+  # NOTE: We don't actually need nomlib-system here
+  target_link_libraries( MiniHTMLTest ${NOM_SERIALIZER_TESTS_DEPS} )
 
-  GTEST_ADD_TESTS (
-                    MiniHTMLTest
+  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/MiniHTMLTest
                     "" # args
-                    ${NOM_TESTS_SOURCE_DIR}/serializers/MiniHTMLTest.cpp
-                  )
+                    "MiniHTMLTest.cpp" )
 
 endif( NOM_BUILD_SERIALIZERS_HTML_TESTS )

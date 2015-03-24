@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <string>
-#include <memory>
 
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
@@ -43,18 +42,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-/// \todo Implement back-buffer for texture rendering
 class Text: public Transformable
 {
   public:
     typedef Text self_type;
-    typedef Transformable derived_class;
-
-    typedef self_type* raw_ptr;
-    typedef std::shared_ptr<self_type> shared_ptr;
-    typedef std::unique_ptr<self_type> unique_ptr;
-
-    typedef Font font_type;
+    typedef Transformable derived_type;
 
     /// \brief Font face style; multiple styles can be combined from bitwise
     /// masks.
@@ -65,22 +57,11 @@ class Text: public Transformable
     /// \fixme Implement styles for BitmapFont objects.
     enum Style: uint32
     {
-      Normal = 1,         /// Default
+      Normal = 0,         /// Default
       Bold = 2,
-      Italic = 4,         /// Verify working functionality
-      Underlined = 8,     /// Verify working functionality
-      Strikethrough = 16  /// Verify working functionality
-    };
-
-    /// \brief Additional rendering features; these are all optional, and are
-    /// turned off by default.
-    ///
-    /// \remarks Bit-mask friendly to pass.
-    enum ExtraRenderingFeatures: uint32
-    {
-      // Prevent rendering of text that goes beyond a user-defined size; the
-      // formula for detecting "out of bounds" is ::position().x + ::size().w.
-      CropText = 1
+      Italic = 4,
+      Underline = 8,
+      Strikethrough = 16
     };
 
     /// Default constructor
@@ -90,41 +71,60 @@ class Text: public Transformable
     ~Text( void );
 
     /// \brief Construct a Text, initializing it with a text string, a nom::Font
-    /// object reference, character size and text alignment.
+    /// object reference and character size.
     Text (
             const std::string& text,
-            const font_type& font,
+            const Font& font,
             uint character_size = nom::DEFAULT_FONT_SIZE,
-            uint32 align = Anchor::TopLeft,
             const Color4i& text_color = Color4i::White
           );
 
     /// \brief Construct a Text, initializing it with a text string, a nom::Font
-    /// object pointer, character size and text alignment.
+    /// object pointer and character size.
     Text (
             const std::string& text,
-            const font_type::raw_ptr font,
+            Font* font,
             uint character_size = nom::DEFAULT_FONT_SIZE,
-            uint32 align = Anchor::TopLeft,
             const Color4i& text_color = Color4i::White
           );
 
-    /// \see nom::DataViewTextItem
-    Text( const std::string& text );
+    /// \brief Copy constructor.
+    ///
+    /// \internal
+    /// \remarks This is necessary for the std::unique_ptr instance we use for
+    /// the cached texture.
+    /// \endinternal
+    Text(const self_type& rhs);
+
+    /// \brief Copy assignment operator.
+    ///
+    /// \internal
+    /// \remarks This is necessary for the std::unique_ptr instance we use for
+    /// the cached texture.
+    /// \endinternal
+    self_type& operator =(const self_type& rhs);
+
+    /// \brief Set the position of the rendered text.
+    ///
+    /// \remarks Re-implements Transformable::set_position.
+    virtual void set_position(const Point2i& pos) override;
 
     /// \brief Implements the required IDrawable::clone method.
-    IDrawable::raw_ptr clone( void ) const;
+    Text* clone() const;
 
     /// \brief Re-implements the IObject::type method.
     ///
     /// \remarks This uniquely identifies the object's type.
     ObjectTypeInfo type( void ) const;
 
-    font_type& font( void ) const;
+    const Font& font() const;
 
-    Text::raw_ptr get( void );
-
-    const Texture& texture ( void ) const;
+    /// \brief Get a deep-copy instance of the underlying texture used for the
+    /// text rendering.
+    ///
+    /// \returns A raw pointer to a new nom::Texture instance of the rendered
+    /// text. The returned pointer is owned by the caller.
+    Texture* clone_texture() const;
 
     /// Obtain validity of the Text object
     bool valid ( void ) const;
@@ -140,10 +140,7 @@ class Text: public Transformable
     ///           in pixels, on success. Zero (0) integer value on failure;
     ///           a possible combination of: no font, bad font, no text string
     ///           etc.
-    ///
-    /// \todo Support multi-line texts (newline character handling)
-    sint text_width ( const std::string& text_string ) const;
-    sint width ( void ) const;
+    int text_width(const std::string& text_buffer) const;
 
     /// \brief Obtain the text height in pixels of the set text
     ///
@@ -154,11 +151,7 @@ class Text: public Transformable
     ///           in pixels, on success. Zero (0) integer value on failure;
     ///           a possible combination of: no font, bad font, no text string
     ///           etc.
-    ///
-    /// \todo     We *may* have a better height value to use in our height
-    /// computation -- see nom::FontMetrics.
     sint text_height ( const std::string& text_string ) const;
-    sint height ( void ) const;
 
     /// Get text string
     const std::string& text ( void ) const;
@@ -169,40 +162,24 @@ class Text: public Transformable
     /// Get text style
     uint32 style( void ) const;
 
-    //const Point2i& local_bounds ( void ) const;
-
-    /// \brief Obtain the rendered coordinate bounds of the text object.
-    ///
-    /// \remarks This is equivalent to a call made to the methods ::position(),
-    /// ::width and ::height.
-    IntRect global_bounds( void ) const;
-
-    /// \brief Get the text alignment.
-    uint32 alignment( void ) const;
-
     /// Get text character size (in pixels?)
     uint text_size ( void ) const;
 
-    /// \brief Obtain the set rendering flags.
+    /// \brief Set the font to use in rendering text.
     ///
-    /// \remarks See also: nom::Text::ExtraRenderingFeatures enumeration.
-    uint32 features( void ) const;
+    /// \remarks You must ensure that you are passing a valid nom::Font object
+    /// that has been loaded into memory with its appropriate ::load call.
+    void set_font(const Font& font);
 
-    /// \brief Set the overall dimension bounds (width & height) of the text
-    /// object.
+    /// \brief Set the font to use in rendering text.
     ///
-    /// \remarks This method ensures that the text's alignment is recalculated.
+    /// \remarks This method exists for the convenience of direct interfacing
+    /// with the nom::IFont interface. You must ensure that you are passing a
+    /// valid nom::IFont-derived object that has been loaded into memory with
+    /// its appropriate ::load call.
     ///
-    /// \note Re-implements Transformable::set_size.
-    void set_size( const Size2i& size );
-
-    /// \brief Set the font from a nom::Font object.
-    void set_font( const Text::font_type& font );
-
-    /// \brief Set a font from a nom::Font object pointer.
-    ///
-    /// \note Used for ResourceCache::load_resource.
-    void set_font( Text::font_type* font );
+    /// \note This method is used by nom::FontCache.
+    void set_font(Font* font);
 
     /// \brief Set the text string to be rendered.
     void set_text( const std::string& text );
@@ -224,35 +201,18 @@ class Text: public Transformable
     /// \see The nom::Text::Style enumeration.
     void set_style( uint32 style );
 
-    /// \brief Set the text's alignment.
-    ///
-    /// \see The nom::Anchor enumeration.
-    ///
-    /// \remarks This method depends on the size dimensions and the text's font
-    /// being in a valid state.
-    ///
-    /// \note Every call to this method modifies the destination positions used
-    /// in the rendered text.
-    void set_alignment( uint32 align );
+    /// \brief Set the use of rendering glyphs with respect to kerning offsets,
+    /// when supported by the underlying font type.
+    void set_text_kerning(bool state);
 
     /// Render text to a target
     ///
     /// \todo Test horizontal tabbing '\t'
-    void draw ( RenderTarget& target ) const;
-
-    /// Rescale the font with a chosen resizing algorithm
-    ///
-    /// \todo SDL2 port
-    bool resize ( enum Texture::ResizeAlgorithm scaling_algorithm );
-
-    /// \brief Set additional rendering flags.
-    ///
-    /// \remarks See also: nom::Text::ExtraRenderingFeatures enumeration.
-    ///
-    /// \note Bit-mask friendly.
-    void set_features( uint32 flags );
+    void draw(RenderTarget& target) const;
 
   private:
+    void render_text(RenderTarget& target) const;
+
     /// \brief Apply requested transformations, styles, etc
     ///
     /// \remarks This internal method takes care of updating the properties of
@@ -260,10 +220,31 @@ class Text: public Transformable
     /// need to worry about using the API in a particular order.
     ///
     /// \note Implements nom::IDrawable::update.
-    void update( void );
+    void update();
 
-    mutable font_type font_; // FIXME?
-    mutable Texture texture_; // FIXME
+    /// \brief Get the current text width.
+    int width() const;
+
+    /// \brief Get the current text height.
+    int height() const;
+
+    bool update_cache();
+
+    int
+    multiline_width(const std::string& text_buffer, nom::size_type pos) const;
+
+    Font font_;
+
+    /// \brief A texture atlas created from the nom::Font instance that is
+    /// referred to in rendering a text.
+    ///
+    /// \see ::set_text_size, ::update, ::render_text
+    mutable Texture glyphs_texture_;
+
+    /// \brief The texture containing the rendered text.
+    ///
+    /// \see ::update_cache, ::texture, ::draw
+    std::unique_ptr<Texture> rendered_text_;
 
     /// Holds contents of text as a string buffer
     std::string text_;
@@ -272,17 +253,9 @@ class Text: public Transformable
 
     /// Current text effect set
     uint32 style_;
-    uint32 alignment_;
 
-    /// \brief Set additional rendering flags.
-    ///
-    /// \remarks See also: nom::Text::ExtraRenderingFeatures enumeration.
-    uint32 features_;
-
-/*
-    Point2i local_bounds;
-    Point2i global_bounds;
-*/
+    /// \see nom::Text::update
+    bool dirty_;
 };
 
 } // namespace nom

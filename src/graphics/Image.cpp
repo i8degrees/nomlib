@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Image.hpp"
 
 // Private headers (third-party)
-#include "SDL_image.h"
+#include <SDL_image.h>
 
 // Private headers
 #include "nomlib/graphics/RenderWindow.hpp"
@@ -427,12 +427,17 @@ bool Image::save_png ( const std::string& filename ) const
   return true;
 }
 
-const Point2i Image::size ( void ) const
+Size2i Image::size() const
 {
-  SDL_Surface* buffer = this->image();
-  Point2i image_pos ( buffer->w, buffer->h );
+  Size2i dims(Size2i::null);
 
-  return image_pos;
+  SDL_Surface* buffer = this->image();
+  if( buffer != nullptr ) {
+    dims.w = buffer->w;
+    dims.h = buffer->h;
+  }
+
+  return dims;
 }
 
 const Color4i Image::colorkey ( void ) const

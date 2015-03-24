@@ -114,6 +114,12 @@ class ConsoleOutput
     ConsoleOutput::Color lcolor_;
 
   private:
+    /// \brief Get the value of an environment variable.
+    ///
+    /// \returns A null-terminated string (zero length) upon err, such as an
+    /// non-existent environment variable.
+    std::string env(const std::string& path) const;
+
     /// \brief The platform-dependent implementation to use.
     ///
     /// \see nom::UnixConsoleOutput, nom::WindowsConsoleOutput

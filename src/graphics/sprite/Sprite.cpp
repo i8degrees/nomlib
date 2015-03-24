@@ -28,38 +28,44 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/graphics/sprite/Sprite.hpp"
 
+// Private headers
+#include "nomlib/graphics/shapes/Rectangle.hpp"
+#include "nomlib/core/helpers.hpp"
+
+// Forward declarations
+#include "nomlib/graphics/Texture.hpp"
+#include "nomlib/graphics/RenderWindow.hpp"
+
 namespace nom {
 
+inline static
+void TextureReferenceDeleter(Texture* tex)
+{
+  // Memory management is free for us here; the sprite does not own the
+  // texture!
+}
+
 Sprite::Sprite() :
-  Transformable( Point2i(0, 0), Size2i(0, 0) ),
-  texture_(nullptr)
+  Transformable(Point2i::zero, Size2i::zero)
 {
-// NOM_LOG_TRACE ( NOM );
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_RENDER, NOM_LOG_PRIORITY_VERBOSE);
 }
 
-Sprite::~Sprite ( void )
+Sprite::~Sprite()
 {
-// NOM_LOG_TRACE ( NOM );
-
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_RENDER, NOM_LOG_PRIORITY_VERBOSE);
 }
 
-Sprite::Sprite(const Size2i& dims) :
-  Transformable( Point2i(0, 0), dims ),
-  texture_(nullptr)
+bool Sprite::init_with_color(const Color4i& color, const Size2i& dims)
 {
-  // NOM_LOG_TRACE ( NOM );
-}
+  Point2i rect_pos(Point2i::zero);
+  Size2i rect_dims(dims);
+  IntRect rect_bounds(rect_pos, rect_dims);
 
-void Sprite::set_position(const Point2i& pos)
-{
-  Transformable::set_position(pos);
+  Rectangle rect(rect_bounds, color);
+  auto tex = rect.texture();
 
-  Sprite::update();
-}
-
-IDrawable* Sprite::clone() const
-{
-  return( new Sprite( *this ) );
+  return this->set_texture(tex);
 }
 
 ObjectTypeInfo Sprite::type() const
@@ -67,50 +73,261 @@ ObjectTypeInfo Sprite::type() const
   return NOM_OBJECT_TYPE_INFO(self_type);
 }
 
-SDL_Texture* Sprite::texture() const
+void Sprite::set_position(const Point2i& pos)
 {
-  NOM_ASSERT(this->texture_ != nullptr);
+  Transformable::set_position(pos);
 
-  if(this->texture_ != nullptr) {
-    return this->texture_->texture();
+  if( this->texture_ != nullptr ) {
+    this->texture_->set_position( this->position() );
+  }
+}
+
+void Sprite::set_size(const Size2i& dims)
+{
+  Transformable::set_size(dims);
+
+  if( this->texture_ != nullptr ) {
+    this->texture_->set_size( this->size() );
+  }
+}
+
+std::unique_ptr<Sprite> Sprite::clone() const
+{
+  return( nom::make_unique<self_type>( self_type(*this) ) );
+}
+
+std::shared_ptr<Texture> Sprite::texture() const
+{
+  return this->texture_;
+}
+
+bool Sprite::valid() const
+{
+  if( this->texture_ != nullptr ) {
+    return this->texture_->valid();
+  } else {
+    return false;
+  }
+}
+
+uint8 Sprite::alpha() const
+{
+  uint8 alpha = 0; // default return
+
+  if( this->valid() == true ) {
+    alpha = this->texture_->alpha();
+  } else {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not get the alpha value of the sprite." );
   }
 
-  // Invalid
-  return nullptr;
+  return alpha;
 }
 
-void Sprite::set_texture(/*const*/ Texture& tex)
+Color4i Sprite::color() const
 {
-  this->texture_ = &tex;
+  Color4i color = Color4i::null; // default return
+
+  if( this->valid() == true ) {
+    color = this->texture_->color_modulation();
+  } else {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not get the color value of the sprite." );
+  }
+
+  return color;
 }
 
-void Sprite::draw( RenderTarget& target ) const
+BlendMode Sprite::color_blend_mode() const
 {
-  NOM_ASSERT(this->texture_ != nullptr);
+  // default return
+  BlendMode mode = BlendMode::BLEND_MODE_NONE;
 
-  if(this->texture_ != nullptr) {
+  if( this->valid() == true ) {
+    mode = nom::blend_mode( this->texture_->blend_mode() );
+  } else {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not get the color blending mode of the sprite." );
+  }
+
+  return mode;
+}
+
+bool Sprite::set_texture(Texture& tex)
+{
+  this->texture_.reset(&tex, TextureReferenceDeleter);
+
+  if( this->texture_ != nullptr ) {
+    this->set_position( this->texture_->position() );
+    this->set_size( this->texture_->size() );
+    return true;
+  } else {
+    // Err; out of memory???
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not allocate a texture for the sprite." );
+    return false;
+  }
+}
+
+bool Sprite::set_texture(Texture* tex)
+{
+  this->texture_.reset(tex);
+
+  if( this->texture_ != nullptr ) {
+    this->set_position( this->texture_->position() );
+    this->set_size( this->texture_->size() );
+    return true;
+  } else {
+    // Err; out of memory???
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not allocate a texture for the sprite." );
+    return false;
+  }
+}
+
+bool Sprite::set_texture(std::shared_ptr<Texture>& tex)
+{
+  this->texture_ = tex;
+
+  if( this->texture_ != nullptr ) {
+    this->set_position( this->texture_->position() );
+    this->set_size( this->texture_->size() );
+    return true;
+  } else {
+    // Err; out of memory???
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not allocate texture for sprite." );
+    return false;
+  }
+}
+
+bool Sprite::set_alpha(uint8 opacity)
+{
+  if( this->texture_ != nullptr ) {
+    return this->texture_->set_alpha(opacity);
+  } else {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not set the alpha value of the sprite." );
+    return false;
+  }
+}
+
+bool Sprite::set_color(const Color4i& color)
+{
+  if( this->valid() == true ) {
+    return this->texture_->set_color_modulation(color);
+  } else {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not set the color of the sprite." );
+    return false;
+  }
+}
+
+bool Sprite::set_color_blend_mode(BlendMode blend)
+{
+  SDL_BlendMode mode = nom::SDL_blend_mode(blend);
+
+  if( this->texture_ != nullptr ) {
+    return this->texture_->set_blend_mode(mode);
+  } else {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not set the color blending mode of the sprite." );
+    return false;
+  }
+}
+
+void Sprite::release_texture()
+{
+  this->texture_.reset();
+}
+
+void Sprite::draw(RenderTarget& target) const
+{
+  if( this->valid() == true ) {
     this->texture_->draw( target.renderer() );
   }
 }
 
-void Sprite::draw(RenderTarget& target, const double degrees) const
+void Sprite::draw(RenderTarget& target, real64 degrees) const
 {
-  NOM_ASSERT(this->texture_ != nullptr);
-
-  if(this->texture_ != nullptr) {
+  if( this->valid() == true ) {
     this->texture_->draw(target.renderer(), degrees);
   }
 }
 
-// Protected scope
+// Private scope
 
 void Sprite::update()
 {
-  NOM_ASSERT(this->texture_ != nullptr);
+  // Stub
+}
 
-  if(this->texture_ != nullptr) {
-    this->texture_->set_position( Point2i( this->position().x, this->position().y ) );
+// Non-member factory functions
+
+std::unique_ptr<Sprite>
+make_unique_sprite(Texture& tex)
+{
+  auto sprite = nom::make_unique<Sprite>();
+  if( sprite != nullptr ) {
+    sprite->set_texture(tex);
   }
+
+  return std::move(sprite);
+}
+
+std::unique_ptr<Sprite>
+make_unique_sprite(Texture* tex)
+{
+  auto sprite = nom::make_unique<Sprite>();
+  if( sprite != nullptr ) {
+    sprite->set_texture(tex);
+  }
+
+  return std::move(sprite);
+}
+
+std::unique_ptr<Sprite>
+make_unique_sprite(std::shared_ptr<Texture>& tex)
+{
+  auto sprite = nom::make_unique<Sprite>();
+  if( sprite != nullptr ) {
+    sprite->set_texture(tex);
+  }
+
+  return std::move(sprite);
+}
+
+std::shared_ptr<Sprite>
+make_shared_sprite(Texture& tex)
+{
+  auto sprite = std::make_shared<Sprite>();
+  if( sprite != nullptr ) {
+    sprite->set_texture(tex);
+  }
+
+  return sprite;
+}
+
+std::shared_ptr<Sprite>
+make_shared_sprite(Texture* tex)
+{
+  auto sprite = std::make_shared<Sprite>();
+  if( sprite != nullptr ) {
+    sprite->set_texture(tex);
+  }
+
+  return sprite;
+}
+
+std::shared_ptr<Sprite>
+make_shared_sprite(std::shared_ptr<Texture>& tex)
+{
+  auto sprite = std::make_shared<Sprite>();
+  if( sprite != nullptr ) {
+    sprite->set_texture(tex);
+  }
+
+  return sprite;
 }
 
 } // namespace nom

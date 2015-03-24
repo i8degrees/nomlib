@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_CORE_HELPERS_HPP
 
 #include <cstring>
+#include <memory>
 
 #include "nomlib/config.hpp"
 
@@ -40,7 +41,13 @@ namespace priv {
 /// \brief Maximum size a nom::Value string type may be
 ///
 /// \remarks Buffer overflow protection.
-const uint MAX_STRING_LENGTH = 256;
+const nom::size_type MAX_STRING_LENGTH = 256;
+
+nom::size_type string_length(const char* str);
+nom::size_type string_length(const std::string& str);
+
+int compare_string(const char* str1, const char* str2);
+int compare_string(const std::string& str1, const std::string& str2);
 
 /// \brief Clone a C style string value.
 ///
@@ -49,7 +56,11 @@ const uint MAX_STRING_LENGTH = 256;
 /// \returns Null-terminated string up to MAX_STRING_LENGTH.
 ///
 /// \todo Find a better home for this function?
-char* duplicate_string( const char* val, uint length );
+const char* duplicate_string(const char* str, nom::size_type length);
+
+const char* duplicate_string(const std::string& str, nom::size_type length);
+
+void free_string(const char* ptr);
 
 } // namespace priv
 

@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system.hpp>
 #include <nomlib/graphics.hpp>
 
-// using namespace nom;
+using namespace nom;
 
 const nom::Path p;
 
@@ -46,6 +46,8 @@ const nom::int32 WINDOW_WIDTH = 640;
 
 /// \brief Height, in pixels, of our effective rendering surface.
 const nom::int32 WINDOW_HEIGHT = 480;
+
+auto WINDOW_RESOLUTION = Size2i(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 const std::string RESOURCE_ICON = APP_RESOURCES_DIR + "icon.png";
 
@@ -92,7 +94,7 @@ class App: public nom::SDLApp
         NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
       }
 
-      if( this->window.create( APP_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, window_flags ) == false )
+      if( this->window.create(APP_NAME, WINDOW_RESOLUTION, window_flags) == false )
       {
         return false;
       }

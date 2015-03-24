@@ -31,9 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
-#include "SDL.h"
-#include "SDL_image.h"
-#include "SDL_ttf.h"
+#include <SDL.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
@@ -55,11 +53,37 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #undef RGB
 #endif
 
+// Forward declarations
+struct _TTF_Font {};
+
 namespace nom {
+
+enum BlendMode
+{
+  /// no blending
+  /// dstRGBA = srcRGBA
+  BLEND_MODE_NONE = SDL_BLENDMODE_NONE,
+
+  /// alpha blending
+  /// dstRGB = (srcRGB * srcA) + (dstRGB * (1-srcA))
+  /// dstA = srcA + (dstA * (1-srcA))
+  BLEND_MODE_BLEND = SDL_BLENDMODE_BLEND,
+
+  /// additive blending
+  /// dstRGB = (srcRGB * srcA) + dstRGB
+  /// dstA = dstA
+  BLEND_MODE_ADD = SDL_BLENDMODE_ADD,
+
+  /// color modulate
+  /// dstRGB = srcRGB * dstRGB
+  /// dstA = dstA
+  BLEND_MODE_MOD = SDL_BLENDMODE_MOD
+};
 
 /// \brief Convenience definitions for pointer types
 ///
-/// \todo Remove.
+/// \todo Remove or perhaps better yet, refer to as a light-weight handle,
+/// i.e.: nom::WindowHandle?
 namespace SDL_WINDOW
 {
   typedef std::unique_ptr<SDL_Window, void (*)(SDL_Window*)> UniquePtr;
@@ -68,7 +92,7 @@ namespace SDL_WINDOW
 
 /// \brief Convenience definitions for pointer types
 ///
-/// \todo Remove.
+/// \todo Remove or perhaps better yet, refer to as a light-weight handle..?
 namespace SDL_PIXELFORMAT
 {
   typedef SDL_PixelFormat* RawPtr;
@@ -76,7 +100,8 @@ namespace SDL_PIXELFORMAT
 
 /// \brief Convenience definitions for pointer types
 ///
-/// \todo Remove.
+/// \todo Remove or perhaps better yet, refer to as a light-weight handle,
+/// i.e.: nom::SurfaceHandle?
 namespace SDL_SURFACE
 {
   typedef std::unique_ptr<SDL_Surface, void(*) (SDL_Surface*)> UniquePtr;
@@ -86,12 +111,21 @@ namespace SDL_SURFACE
 
 /// \brief Convenience definitions for pointer types
 ///
-/// \todo Remove.
+/// \todo Remove or perhaps better yet, refer to as a light-weight handle,
+/// i.e.: nom::TextureHandle?
 namespace SDL_TEXTURE
 {
   typedef std::shared_ptr<SDL_Texture> SharedPtr;
   typedef SDL_Texture* RawPtr;
 }
+
+/// \brief Convert a SDL_BlendMode enumeration value to a nom::BlendMode
+/// enumeration value.
+BlendMode blend_mode(SDL_BlendMode mode);
+
+/// \brief Convert a nom::BlendMode enumeration value to a SDL_BlendMode
+/// enumeration value.
+SDL_BlendMode SDL_blend_mode(BlendMode mode);
 
 /// SDL2 data structure wrappers for nomlib
 ///
@@ -221,7 +255,7 @@ void FreeTexture ( SDL_Texture* );
 void FreeSurface ( SDL_Surface* );
 
 /// Custom deleter for TTF_Font* structures
-void TTF_FreeFont ( TTF_Font* );
+void TTF_FreeFont ( _TTF_Font* );
 
 } // namespace priv
 } // namespace nom

@@ -1,0 +1,37 @@
+{
+  "bitmap":
+  {
+    "search_prefix":
+    [
+      "../../../",
+      "../../",
+      "./"
+    ],
+
+    "path": "Resources/tests/graphics/BitmapFontTest/"
+  },
+
+  "truetype":
+  {
+    "search_prefix":
+    [
+      "../../../",
+      "../../",
+      "./"
+    ],
+
+    "path": "Resources/tests/graphics/TrueTypeFontTest/"
+  },
+
+  "bm":
+  {
+    "search_prefix":
+    [
+      "../../../",
+      "../../",
+      "./"
+    ],
+
+    "path": "Resources/tests/graphics/BMFontTest/"
+  }
+}

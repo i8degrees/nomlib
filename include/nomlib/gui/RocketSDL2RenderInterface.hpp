@@ -36,7 +36,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 
+#if defined(NOM_PLATFORM_WINDOWS)
+  #define NOM_API_EXPORT __stdcall
+#else
+  #define NOM_API_EXPORT
+#endif
+
 namespace nom {
+
+namespace priv {
+
+typedef void (NOM_API_EXPORT* glUseProgramObjectARB_func) (unsigned int);
+
+} // namespace priv
 
 // Forward declarations
 class RenderWindow;
@@ -53,8 +65,8 @@ class RocketSDL2RenderInterface: public Rocket::Core::RenderInterface
     /// \brief Initialize OpenGL with the necessary settings for libRocket and
     /// SDL2 to be all friendly.
     ///
-    /// \returns Boolean TRUE if OpenGL initialization (this implies GLEW) is
-    /// successful, and boolean FALSE on failure.
+    /// \returns Boolean TRUE if OpenGL initialization is successful, and
+    /// boolean FALSE on failure.
     ///
     /// \param width  The width of the clipping plane (orthographic matrix).
     /// \param height The height of the clipping plane (orthographic matrix).
@@ -77,7 +89,11 @@ class RocketSDL2RenderInterface: public Rocket::Core::RenderInterface
     virtual void Release();
 
     /// Called by Rocket when it wants to render geometry that it does not wish to optimise.
-    virtual void RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation);
+    virtual void
+    RenderGeometry( Rocket::Core::Vertex* vertices, int num_vertices,
+                    int* indices, int num_indices,
+                    Rocket::Core::TextureHandle texture_handle,
+                    const Rocket::Core::Vector2f& translation);
 
     /// Called by Rocket when it wants to enable or disable scissoring to clip content.
     virtual void EnableScissorRegion(bool enable);
@@ -93,13 +109,22 @@ class RocketSDL2RenderInterface: public Rocket::Core::RenderInterface
     virtual bool LoadTexture(Rocket::Core::TextureHandle& texture_handle, Rocket::Core::Vector2i& texture_dimensions, const Rocket::Core::String& source);
     /// Called by Rocket when a texture is required to be built from an internally-generated sequence of pixels.
     virtual bool GenerateTexture(Rocket::Core::TextureHandle& texture_handle, const Rocket::Core::byte* source, const Rocket::Core::Vector2i& source_dimensions);
+
     /// Called by Rocket when a loaded texture is no longer required.
-    virtual void ReleaseTexture(Rocket::Core::TextureHandle texture_handle);
+    virtual void
+    ReleaseTexture(Rocket::Core::TextureHandle texture_handle);
 
     /// \brief nomlib interface bridge between SDL2 and libRocket
     ///
     /// \remarks The interface does **not** own the pointer.
     RenderWindow* window_;
+
+  private:
+    /// \brief Shader context function pointer
+    ///
+    /// \note We bypass the use of GLEW by requesting this extension through
+    /// SDL2.
+    static priv::glUseProgramObjectARB_func ctx_;
 };
 
 } // namespace nom

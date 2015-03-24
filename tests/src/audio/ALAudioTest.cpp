@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/init.hpp"
+#include "nomlib/system/Path.hpp"
 #include "nomlib/audio.hpp"
 
 using namespace nom;

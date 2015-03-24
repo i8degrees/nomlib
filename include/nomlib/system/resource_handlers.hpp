@@ -30,7 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_SYSTEM_RESOURCE_HANDLERS_HPP
 
 #include <string>
-#include <memory>
 
 #include "nomlib/config.hpp"
 
@@ -38,7 +37,7 @@ namespace nom {
 
 // Forward declarations
 class ResourceFile;
-class Font;
+class IFont;
 
 /// \brief The default font load handler.
 ///
@@ -46,7 +45,7 @@ class Font;
 /// and nom::TrueTypeFont objects are marked as sharable nom::Font objects.
 ///
 /// \see nom::ResourceCache, nom::Font, nom::SDLApp::initialize.
-void create_font( const ResourceFile& res, Font& font );
+void create_font( const ResourceFile& res, IFont* font );
 
 } // namespace nom
 

@@ -28,118 +28,98 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/ptree/VString.hpp"
 
+#include "nomlib/core/helpers.hpp"
+
 namespace nom {
 
-VString::VString( void )  :
-  value_( nullptr ),
-  index_( 0 )
+VString::VString()
 {
-  //NOM_LOG_TRACE(NOM);
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
+
+  this->index_ = 0;
 }
 
-VString::~VString( void )
+VString::~VString()
 {
-  //NOM_LOG_TRACE(NOM);
-
-  // free( const_cast<char*> ( this->value_ ) );
-  // this->value_ = nullptr;
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
 }
 
-VString::VString( ArrayIndex index ) :
-  value_( nullptr ),
-  index_( index )
+VString::VString(const char* key)
 {
-  //NOM_LOG_TRACE(NOM);
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
+
+  this->cstr_ = std::string(key);
+  this->index_ = 0;
 }
 
-VString::VString( const char* key ) :
-  index_( 0 )
+VString::VString(const std::string& key)
 {
-  //NOM_LOG_TRACE(NOM);
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
 
-  uint size = strlen( key );
-  this->value_ = priv::duplicate_string( key, size );
+  this->cstr_ = key;
+  this->index_ = 0;
 }
 
-VString::VString( const std::string& key )  :
-  index_( 0 )
+VString::VString(ArrayIndex index)
 {
-  //NOM_LOG_TRACE(NOM);
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
 
-  uint size = strlen( key.c_str() );
-  this->value_ = priv::duplicate_string( key.c_str(), size );
+  this->index_ = index;
 }
 
-VString::VString( const SelfType& copy )  :
-  index_{ copy.index() }
+VString::VString(const self_type& rhs)
 {
-  // NOM_LOG_TRACE(NOM);
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
 
-  this->value_ = copy.value_;
+  this->cstr_ = rhs.cstr_;
+  this->index_ = rhs.index_;
 }
 
-VString::SelfType& VString::operator =( const SelfType& other )
+VString::self_type& VString::operator =(const self_type& rhs)
 {
-  VString temp( other );
-  this->swap( temp );
+  VString copy(rhs);
+  this->swap(copy);
 
   return *this;
 }
 
-void VString::swap( VString& other )
+void VString::swap(VString& rhs)
 {
-  std::swap( this->value_, other.value_ );
-  std::swap( this->index_, other.index_ );
+  std::swap(this->cstr_, rhs.cstr_);
+  std::swap(this->index_, rhs.index_);
 }
 
-bool VString::valid( void ) const
+// TODO: Try to use a more efficient sorting algorithm for string comparisons?
+bool VString::operator <(const self_type& rhs) const
 {
-  if( this->c_str() != nullptr ) return true;
-
-  return false;
-}
-
-bool VString::operator <( const VString& other ) const
-{
-  // Key member
-  if( this->valid() && other.valid() )
-  {
-    return strcmp( this->c_str(), other.c_str() ) < 0;
-  }
-
-  // Array element index
-  else
-  {
-    return( this->index() < other.index() );
+  if( this->cstr_ != "" && rhs.cstr_ != "" ) {
+    return( priv::compare_string(this->cstr_, rhs.cstr_) < 0);
+  } else {
+    return(this->index_ < rhs.index_);
   }
 }
 
-bool VString::operator ==( const VString& other ) const
+// TODO: Try to use a more efficient sorting algorithm for string comparisons?
+bool VString::operator ==(const self_type& rhs) const
 {
-  // Key member
-  if( this->valid() && other.valid() )
-  {
-    return strcmp( this->c_str(), other.c_str() ) == 0;
-  }
-
-  // Array element index
-  else
-  {
-    return( this->index() == other.index() );
+  if( this->cstr_ != "" && rhs.cstr_ != "" ) {
+    return( priv::compare_string(this->cstr_, rhs.cstr_) == 0);
+  } else {
+    return(this->index_ == rhs.index_);
   }
 }
 
-const char* VString::c_str( void ) const
+std::string VString::string() const
 {
-  return this->value_;
+  return this->cstr_;
 }
 
-const std::string VString::get_string( void ) const
+const char* VString::c_str() const
 {
-  return std::string( this->c_str() );
+  return this->cstr_.c_str();
 }
 
-ArrayIndex VString::index( void ) const
+ArrayIndex VString::index() const
 {
   return this->index_;
 }

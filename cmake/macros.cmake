@@ -1,14 +1,9 @@
 # Helper macros for CMake build scripts
 #
 
-# Be quiet about what we are doing if verbose makefiles are toggled off
-if ( NOT CMAKE_VERBOSE_MAKEFILE )
-  set ( COMMENT_TEXT )
-endif ( NOT CMAKE_VERBOSE_MAKEFILE )
-
 # Add runtime search path to our application bundle so that we can find its
 # dependencies at launch.
-macro ( add_rpath rpath binary_path )
+macro ( add_rpath target rpath binary_path )
 
   foreach ( path ${rpath} )
 
@@ -16,7 +11,7 @@ macro ( add_rpath rpath binary_path )
       set ( COMMENT_TEXT "\nAdding runtime search path: \n\n\t${path}\n\nto ${binary_path}\n\n" )
     endif ( CMAKE_VERBOSE_MAKEFILE )
 
-    add_custom_command  ( TARGET ${PROJECT_NAME}
+    add_custom_command  ( TARGET ${target}
                           COMMAND ${CMAKE_INSTALL_NAME_TOOL}
                           -add_rpath "${path}" "${binary_path}"
                           COMMENT ${COMMENT_TEXT}
@@ -24,7 +19,7 @@ macro ( add_rpath rpath binary_path )
 
   endforeach ( path ${rpath} )
 
-endmacro ( add_rpath rpath binary_path )
+endmacro ( add_rpath target rpath binary_path )
 
 # Modify runtime search path for a library or application
 macro ( change_rpath old_rpath new_rpath binary_path )
@@ -56,28 +51,139 @@ macro ( install_name_rpath rpath binary_path )
 
 endmacro ( install_name_rpath rpath binary_path )
 
-# Install files wrapper with support for list variables; install DIRECORIES
-# syntax doesn't seem to support multiple directories separated by a semicolon.
+# Create and link a library module
 #
-# TODO: I'd like to eventually see this used all throughout the build process;
-# needs more testing and consideration... (areas of use include example and unit
-# test binaries, i.e.: dependencies to run the executables without cluttering up
-# system-wide paths, or requiring administrative rights).
+# source parameter should be enclosed within double quotes.
+# headers parameter is not implemented; reserved for future implementation.
 #
-# TODO: Support CONFIGURATIONS and COMPONENT variables of the install command?
+# external_deps parameters should be separated by semicolons when multiple
+# dependencies are specified and enclosed within double quotes.
 #
-# http://www.cmake.org/cmake/help/v3.0/command/install.html?highlight=install
-macro( install_dependencies dirs dest file_type )
+# TODO: Future expansion of this macro should strongly consider refactoring with
+# the use of the CMakeParseArguments module.
+# http://www.cmake.org/cmake/help/v3.0/module/CMakeParseArguments.html
+macro(nom_add_library target lib_type source headers external_deps)
 
-  foreach( dir ${dirs} )
+  add_library( ${target} ${lib_type} ${source} )
 
-    install ( DIRECTORY
-              "${dir}"
-              DESTINATION
-              "${dest}"
-              FILES_MATCHING PATTERN ${file_type}
-            )
+  # The Application Binary Interface (ABI) version; PATCH level versions are
+  # intended **not** to break the ABI version.
+  set_target_properties(  ${target} PROPERTIES SOVERSION
+                          "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+  )
 
-  endforeach( dir ${dirs} )
+  # The Application Programming Interface (API) version
+  set_target_properties(  ${target} PROPERTIES VERSION
+                          "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
+  )
 
-endmacro( install_dependencies dirs file_type )
+  set_target_properties( ${target} PROPERTIES DEBUG_POSTFIX "-d" )
+
+  target_link_libraries( ${target} ${external_deps} )
+
+  if( PLATFORM_OSX AND FRAMEWORK )
+
+    # Create target.framework
+    set_target_properties(  ${target} PROPERTIES
+                            FRAMEWORK TRUE
+                            MACOSX_FRAMEWORK_INFO_PLIST
+                            "${CMAKE_TEMPLATE_PATH}/Info.plist.in"
+                            MACOSX_FRAMEWORK_NAME
+                            "${target}"
+                            MACOSX_FRAMEWORK_BUNDLE_VERSION
+                            "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_BUILD_TYPE}"
+                            MACOSX_FRAMEWORK_SHORT_VERSION_STRING
+                            "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+                            MACOSX_FRAMEWORK_IDENTIFIER
+                            "net.i8degrees.${target}"
+                            # TODO?
+                            # PUBLIC_HEADER
+                            # "${source}"
+    )
+  endif( PLATFORM_OSX AND FRAMEWORK )
+
+  # Copy target's library file to $CMAKE_INSTALL_PREFIX/lib
+  install(  TARGETS ${target}
+            LIBRARY DESTINATION lib
+            ARCHIVE DESTINATION lib
+            LIBRARY FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX} )
+
+endmacro(nom_add_library)
+
+#
+# target parameter is not implemented; reserved for future implementation.
+#
+# dest parameter is not implemented; reserved for future implementation.
+# macro(nom_install_dep target external_deps dest)
+
+#   # Bundle the appropriate external dependencies
+#   foreach( dep ${external_deps} )
+
+#     if( IS_DIRECTORY ${dep} )
+
+#       # Bundle frameworks we depend on that are not system library bundles
+#       install(  DIRECTORY ${dep}
+#                 DESTINATION "nomlib.framework/Frameworks"
+#                 PATTERN ".*" EXCLUDE )
+
+#     else( NOT IS_DIRECTORY ${dep} )
+
+#       # if( IS_SYMLINK ${dep} )
+#       #   # Resolve real file path when symbolic so CMake's install command
+#       #   # copies the real file
+#       #   get_filename_component( dep ${dep} REALPATH )
+#       # endif( IS_SYMLINK ${dep} )
+#       # message( STATUS "DEP IS A FILE: ${dep}" )
+
+#       # Bundle dynamic libraries (*.dylib) that we depend on
+#       install(  FILES ${dep}
+#                 DESTINATION "nomlib.framework/Frameworks"
+#                 PATTERN ".*" EXCLUDE )
+
+#       endif( IS_DIRECTORY ${dep} )
+#     endforeach( dep ${external_deps} )
+
+# endmacro(nom_install_dep target external_deps dest)
+
+# Helper function for adding tests through CTest
+#
+# IMPORTANT: We cannot use the GTEST_ADD_TESTS macro here for adding tests that
+# rely on the nom::VisualUnitTest framework because of the way that the macro
+# breaks up the test run -- it ends up executing each individual test in a
+# separate process, i.e.: 'SpriteTest.SpriteInterfaceWithTextureReference' and
+# 'SpriteTest.SpriteInterfaceWithTextureRawPointer' are treated as two
+# separated executable binaries.
+#  This is bad for us because our screen-dumping creates new timestamped
+# directories on every new instance of the framework, which normally is OK
+# because this yields one directory, but in the case of multiple executable
+# runs ... spawns an awful lot more than I'd prefer.
+#   I hope to one day figure out a proper solution for this work flow issue,
+# but in the mean time ... this is the best I can come up with.
+macro( nom_add_visual_test test_name executable )
+  add_test( ${test_name} ${executable}
+            --gtest_filter=${test_name}.* ${ARGN} )
+endmacro()
+
+# Helper function for adding an engine unit test
+#
+# IMPORTANT: Avoid using the newer add_test syntax, i.e.:
+# add_test(NAME <name> COMMAND <command>), because these tests are not
+# added to the default test configuration! Using the newer add_test
+# syntax leads me to this err message when running ctest from the project's
+# build directory (CMake generated XCode project files):
+#     "Test not available without configuration. (Missing "-C <config>"?)"
+macro( nom_add_test test_name test_executable )
+  add_test( ${test_name} ${test_executable} ${ARGN} )
+endmacro()
+
+macro(NOM_LOG_INFO msg)
+  message( STATUS "INFO: ${msg}" )
+endmacro(NOM_LOG_INFO msg)
+
+macro(NOM_LOG_WARN msg)
+  message( WARNING "WARN: ${msg}" )
+endmacro(NOM_LOG_WARN msg)
+
+macro(NOM_LOG_CRIT msg)
+  message( FATAL_ERROR "CRITICAL: ${msg}" )
+endmacro(NOM_LOG_CRIT msg)

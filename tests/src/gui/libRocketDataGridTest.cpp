@@ -37,12 +37,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Rocket/Core.h>
 #include <Rocket/Core/Input.h>
 
-// nom::UnitTest framework
-#include "nomlib/tests/common.hpp"
+// nom::VisualUnitTest framework
+#include "nomlib/tests/VisualUnitTest.hpp"
 
 #include <nomlib/config.hpp>
 #include <nomlib/core/SDL_assertion_helpers.hpp>
 #include <nomlib/system.hpp>
+#include <nomlib/serializers.hpp>
 #include <nomlib/graphics.hpp>
 #include <nomlib/gui.hpp>
 
@@ -227,10 +228,6 @@ class libRocketDataGridTest: public nom::VisualUnitTest
       VisualUnitTest( Size2i(768,448) )
     {
       // NOM_LOG_TRACE( NOM );
-
-      // Platform specific initialization of fonts (system, user, engine) that
-      // are available to us at run-time.
-      // PlatformSettings::initialize();
 
       // The frame image to compare against the reference image set
       this->append_screenshot_frame( 0 );

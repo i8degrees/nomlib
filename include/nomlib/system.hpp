@@ -42,11 +42,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system/EventHandler.hpp>
 #include <nomlib/system/Joystick.hpp>
 #include <nomlib/system/Timer.hpp>
-#include <nomlib/system/AnimationTimer.hpp>
+#include <nomlib/system/HighResolutionTimer.hpp>
 
 // Engine initialization & shutdown
 #include <nomlib/system/init.hpp>
-#include <nomlib/system/PlatformSettings.hpp>
 
 #include <nomlib/system/SDL_helpers.hpp>
 #include <nomlib/system/Event.hpp>
@@ -58,13 +57,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Resource management
 #include <nomlib/system/resource_types.hpp>
-#include <nomlib/system/resource_handlers.hpp>
 #include <nomlib/system/ResourceFile.hpp>
 #include <nomlib/system/ResourceCache.hpp>
 
 #include <nomlib/system/ColorDatabase.hpp>
-
-// Filesystem utilities
-#include <nomlib/system/SearchPath.hpp>
 
 #endif // include guard defined

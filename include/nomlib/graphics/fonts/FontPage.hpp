@@ -32,53 +32,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 
 #include "nomlib/config.hpp"
-#include "nomlib/graphics/Image.hpp"
 #include "nomlib/graphics/fonts/Glyph.hpp"
 #include "nomlib/graphics/fonts/FontRow.hpp"
 
 namespace nom {
 
+// Forward declarations
+class Image;
+
 /// \brief Container structure for font data
 struct FontPage
 {
   /// \brief Default constructor; initialize the font page to its empty state.
-  FontPage( void )
-  {
-    //NOM_LOG_TRACE(NOM);
-
-    this->invalidate();
-  }
+  FontPage();
 
   /// \brief Destructor.
-  ~FontPage( void )
-  {
-    //NOM_LOG_TRACE(NOM);
-  }
+  ~FontPage();
 
   /// \brief Validity of the glyph page.
-  bool valid( void ) const
-  {
-    if( this->texture->valid() == true && this->glyphs.empty() == false )
-    {
-      return true;
-    }
-
-    return false;
-  }
+  bool valid() const;
 
   /// \brief Re-initialize the page to its defaults.
-  void invalidate( void )
-  {
-    this->texture.reset( new Image() );
-    this->next_row = 0;
-    this->glyphs.clear();
-    this->rows.clear();
-  }
+  void invalidate();
 
   GlyphAtlas glyphs;
 
   /// Container for the glyph's pixel buffer
-  Image::SharedPtr texture;
+  std::shared_ptr<Image> texture;
 
   /// Y position of the next new row in the texture
   uint next_row;

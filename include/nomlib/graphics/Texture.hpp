@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <memory>
 
-#include "SDL.h"
+#include <SDL.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
@@ -53,7 +53,7 @@ class RenderWindow;
 class Texture
 {
   public:
-    typedef std::shared_ptr<Texture> SharedPtr;
+    typedef Texture self_type;
 
     /// \brief Available pixel rescaling algorithms
     enum ResizeAlgorithm
@@ -90,20 +90,23 @@ class Texture
     /// time before freeing its memory.
     ~Texture( void );
 
-    /// \brief Destroy the texture.
-    ///
-    /// \remarks The pixel data and pitch value associated with the Texture is
-    /// freed as well. The other attributes, such as position and color key are
-    /// *not* reset to their respective defaults.
-    void free_texture( void );
-
     /// Copy constructor
     Texture ( const Texture& copy );
 
     /// Copy assignment operator
     Texture& operator = ( const Texture& other );
 
-    /// Create a deep copy of this instance.
+    /// \brief Get a shallow-copy of the underlying stored texture.
+    ///
+    /// \returns A pointer to a new nom::Texture instance from the stored
+    /// data of this object's instance. The returned pointer is owned by the
+    /// caller.
+    ///
+    /// \remarks The cloned instance shares the same internal texture memory.
+    /// If a deep-copy clone is required, you should either keep the nom::Image
+    /// source used to create the texture's pixel buffer and clone from it
+    /// instead. Alternatives may include using a Render To Texture target or
+    /// nom::Renderer::pixels.
     Texture* clone() const;
 
     /// Initialize an object with specified parameters
@@ -116,6 +119,12 @@ class Texture
     ///                 SDL_TextureAccess
     bool initialize ( uint32 format, uint32 flags, int width, int height );
 
+    /// \see ::intialize(uint32 format, uint32 flags, int width, int height)
+    bool initialize(uint32 format, uint32 flags, const Size2i& dims);
+
+    /// \see Image::texture
+    bool create(SDL_Texture* source);
+
     /// \remarks Texture::Access::Static type
     bool create ( const Image& source );
 
@@ -123,7 +132,7 @@ class Texture
     /// Access::RenderTarget.
     bool create( const Image& source, uint32 pixel_format, enum Texture::Access type );
 
-    const Point2i& position( void ) const;
+    const Point2i& position() const;
 
     /// \brief Get the width & height dimensions of the texture.
     ///
@@ -132,28 +141,31 @@ class Texture
     ///
     /// \fixme We need to decide if we ought to return the dimensions as per
     /// what SDL has on record, or if we should use cached values.
-    const Size2i size( void ) const;
+    const Size2i& size() const;
 
-    const IntRect& bounds( void ) const;
+    const IntRect& bounds() const;
 
-    /// Get the video memory surface of the Texture object
+    /// \brief Get the underlying texture stored.
     SDL_Texture* texture() const;
 
     /// Is this object initialized -- not nullptr?
-    bool valid ( void ) const;
+    bool valid() const;
 
     /// \brief Query texture access type
     ///
     /// \returns Texture::Access enumeration
     enum Texture::Access access ( void ) const;
 
-    void set_position( const Point2i& pos );
+    void set_position(const Point2i& pos);
 
     /// \brief Set the width & height dimensions of the texture.
-    void set_size( const Size2i& size );
+    ///
+    /// \remarks If the width or height dimensions are greater than the
+    /// original source dimensions, they will automatically be rescaled.
+    void set_size(const Size2i& size);
 
     /// Set bounding coordinates of the Texture
-    void set_bounds( const IntRect& bounds );
+    void set_bounds(const IntRect& bounds);
 
     /// Obtain width, in pixels, of texture
     ///
@@ -213,13 +225,13 @@ class Texture
     static const Point2i maximum_size ( void );
 
     /// \brief Query lock status of texture
-    bool locked ( void ) const;
+    bool locked() const;
 
     /// \brief Lock the entire bounds of the texture for write access to the
     /// pixel buffer.
     ///
     /// \remarks Texture must have been created as the Access::Streaming type.
-    bool lock ( void );
+    bool lock();
 
     /// \brief Lock a portion of the texture for write access to the pixel
     /// buffer.
@@ -229,7 +241,7 @@ class Texture
     ///
     /// \remarks Texture must have been created as the Access::Streaming type.
 
-    bool lock ( const IntRect& bounds );
+    bool lock(const IntRect& bounds);
 
     /// Unlock the texture; signals the OK to upload the pixel buffer to the GPU
     ///
@@ -272,14 +284,14 @@ class Texture
     ///
     /// \param  SDL_Renderer
     ///
-    void draw ( SDL_Renderer* target ) const;
+    void draw(SDL_Renderer* target) const;
 
     /// Draw a nom::Texture to a nom::RenderWindow target
     ///
     /// \param  nom::RenderWindow
     ///
     /// \note This is an alias for nom::Texture::draw ( SDL_Renderer* )
-    void draw( const RenderWindow& target ) const;
+    void draw(const RenderWindow& target) const;
 
     /// Draw a rotated nom::Texture to a rendering target
     ///
@@ -287,13 +299,13 @@ class Texture
     /// \param  angle   Rotation angle in degrees
     ///
     /// \todo Implement pivot point & make use of SDL_RendererFlip enum
-    void draw ( SDL_Renderer* target, const double angle ) const;
+    void draw(SDL_Renderer* target, const real64 angle) const;
 
     /// Draw a rotated nom::Texture on a nom::RenderWindow
     ///
     /// \param  target  Reference to an active nom::RenderWindow
     /// \param  angle   Rotation angle in degrees
-    void draw( const RenderWindow& target, const double angle ) const;
+    void draw(const RenderWindow& target, const real64 angle) const;
 
     /// \brief  Set an additional alpha value multiplied into render copy
     ///         operations.
@@ -348,7 +360,10 @@ class Texture
     /// \todo ERR check on locking call, etc.
     ///
     /// (This method requires locking the texture; use wisely!).
-    bool set_colorkey ( const Color4i& colorkey );
+    ///
+    /// \remarks This method converts a a color key to a fully transparent
+    /// alpha channel.
+    bool set_colorkey(const Color4i& colorkey);
 
     /// \brief    Set an additional color value multiplied into render copy
     ///           operations
@@ -363,13 +378,6 @@ class Texture
     bool set_color_modulation ( const Color4i& color );
 
     bool copy_pixels ( const void* source, int pitch );
-
-    /// \brief    Set a nom::Texture as the current renderer target.
-    ///
-    /// \remarks  nom::Texture access type must be Texture::Access::RenderTarget
-    ///
-    /// \note     Not all graphics hardware supports this request
-    bool set_render_target ( void );
 
   private:
     void set_scale_factor(int factor);
@@ -388,10 +396,7 @@ class Texture
     ///           width & height members.
     Point2i position_; // This should probably be an IntRect. (Global bounds).
 
-    /// \todo This needs to be used ASAP; we've been using our texture source
-    /// bounds with our texture size coordinates, and this makes a huge,
-    /// confusing mess of things. See Texture.cpp for additional comments.
-    // Size2i size_;
+    Size2i size_;
 
     /// Position & size of texture within memory; X, Y, width & height in pixels.
     ///

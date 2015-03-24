@@ -36,12 +36,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/core/clock.hpp"
 
-#if defined NOM_PLATFORM_OSX
+#if defined(NOM_PLATFORM_OSX) // Use platform-distributed OpenAL headers
   #include <OpenAL/al.h>
   #include <OpenAL/alc.h>
-#else // Assumes configuration to be alike (Ubuntu) Linux & Windows platforms
-  #include <AL/al.h>
-  #include <AL/alc.h>
+#else // As per the header inclusion path that FindOpenAL.cmake offers us
+  #include <al.h>
+  #include <alc.h>
 #endif
 
 /// Optimal sound frame size (in bytes); used by libsndfile

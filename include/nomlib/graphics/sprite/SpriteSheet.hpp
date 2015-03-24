@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
+#include "nomlib/version.hpp"
 #include "nomlib/math/Rect.hpp"
 #include "nomlib/ptree.hpp"
 
@@ -45,11 +46,9 @@ namespace nom {
 class SpriteSheet
 {
   public:
-    static const int MAJOR_VERSION;
-    static const int MINOR_VERSION;
-    static const int PATCH_VERSION;
+    static const VersionInfo VERSION;
 
-    typedef std::shared_ptr<SpriteSheet> SharedPtr;
+    typedef SpriteSheet self_type;
 
     /// Default construct for initializing instance variables to their
     /// respective defaults.
@@ -59,7 +58,7 @@ class SpriteSheet
     ~SpriteSheet();
 
     /// Make a duplicate of this object's instance
-    SpriteSheet::SharedPtr clone() const;
+    SpriteSheet* clone() const;
 
     /// Get the calculations made for a particular ID number.
     const IntRect& dimensions(int index) const;
@@ -103,6 +102,12 @@ class SpriteSheet
     /// value.
     int sheet_spacing() const;
 
+    /// \brief Get the total number of sprite frames.
+    ///
+    /// \remarks This data corresponds to the meta-data object node's
+    /// 'total_frames' value.
+    int total_frames() const;
+
     /// \brief De-serialize an existing JSON file.
     ///
     /// \param filename The absolute file path to the JSON input.
@@ -117,6 +122,15 @@ class SpriteSheet
     ///
     /// \param object An existing, de-serialized object to use.
     bool load_sheet_object(const Value& object);
+
+    bool insert_frame(nom::size_type frame_num, const IntRect& frame_bounds);
+    bool append_frame(const IntRect& frame_bounds);
+
+    /// \brief Erase an existing frame from the sheet.
+    bool remove_frame(nom::size_type frame);
+
+    /// \brief Destroy all stored sprite frames.
+    void remove_frames();
 
     /// Dump the state of this object instance
     void dump() const;
@@ -142,6 +156,10 @@ class SpriteSheet
 
     /// \brief Source sheet_height used is saved with the output (meta-data)
     int sheet_height_;
+
+    /// \brief The total number of sprite frames; as per the number of objects
+    /// in the frames object node.
+    int total_frames_;
 };
 
 } // namespace nom

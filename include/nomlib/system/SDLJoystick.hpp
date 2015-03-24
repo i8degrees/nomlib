@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstring>
 #include <memory>
 
-#include "SDL.h"
+#include <SDL.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/system/IJoystick.hpp"

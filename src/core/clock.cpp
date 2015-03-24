@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/core/clock.hpp"
 
 // Private headers (third-party libs)
-#include "SDL.h" // Used for ticks & sleep implementations
+#include <SDL.h> // Used for ticks & sleep implementations
 
 namespace nom {
 
@@ -77,7 +77,7 @@ void sleep( uint32 milliseconds )
   SDL_Delay ( std::max ( milliseconds, static_cast<uint32> ( 10 ) ) );
 }
 
-uint64 hires_counter()
+uint64 hires_ticks()
 {
   return SDL_GetPerformanceCounter();
 }

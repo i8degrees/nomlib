@@ -29,92 +29,108 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_FILE_HEADERS
 #define NOMLIB_FILE_HEADERS
 
-#include <iostream>
 #include <string>
-#include <cstring>
-#include <memory>
+#include <vector>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/IFile.hpp"
-
-#if defined ( NOM_PLATFORM_OSX ) || defined ( NOM_PLATFORM_LINUX )
-
-  #include "nomlib/system/unix/UnixFile.hpp"
-
-#elif defined ( NOM_PLATFORM_WINDOWS )
-
-  #include "nomlib/system/windows/WinFile.hpp"
-
-#endif
 
 namespace nom {
+
+// Forward declarations
+class IFile;
 
 /// \brief Platform-agnostic file system interface
 class File
 {
   public:
-    File ( void );
-    ~File ( void );
+    File();
+    ~File();
 
     /// Re-implements nom::IFile::extension
-    const std::string extension ( const std::string& file );
+    std::string extension(const std::string& file) const;
 
     /// Re-implements nom::IFile::size
-    int32 size ( const std::string& file_path );
+    int32 size(const std::string& file_path) const;
 
     /// \brief Test for the existence of a directory.
-    bool is_dir( const std::string& file_path );
+    bool is_dir(const std::string& file_path) const;
 
-    bool is_file( const std::string& file_path );
+    bool is_file(const std::string& file_path) const;
 
     /// Re-implements nom::IFile::exists
-    bool exists( const std::string& file_path );
+    bool exists(const std::string& file_path) const;
 
     /// \brief Platform-specific implementation of IFile::path.
     ///
     /// \see UnixFile::path, WinFile::path.
-    const std::string path( const std::string& dir_path );
+    std::string path(const std::string& dir_path) const;
 
     /// Re-implements nom::IFile::currentPath
-    std::string currentPath( void ) const;
+    std::string currentPath() const;
 
     /// Re-implements nom::IFile::set_path
-    bool set_path ( const std::string& path );
+    bool set_path(const std::string& path) const;
 
     /// Re-implements nom::IFile::basename
-    const std::string basename ( const std::string& filename );
+    std::string basename(const std::string& filename) const;
 
-    std::vector<std::string> read_dir( const std::string& dir_path );
+    std::vector<std::string> read_dir(const std::string& dir_path) const;
 
-    const std::string resource_path( const std::string& identifier = "\0" );
+    std::string resource_path(const std::string& identifier = "\0") const;
 
-    const std::string user_documents_path( void );
+    std::string user_documents_path() const;
 
-    const std::string user_app_support_path( void );
+    std::string user_app_support_path() const;
 
-    const std::string user_home_path( void );
+    std::string user_home_path() const;
 
-    const std::string system_path( void );
+    std::string system_path() const;
 
     /// \see UnixFile::mkdir, WinFile::mkdir.
-    bool mkdir( const std::string& path );
+    bool mkdir(const std::string& path) const;
 
     /// \see UnixFile::recursive_mkdir, WinFile::recursive_mkdir.
-    bool recursive_mkdir( const std::string& path );
+    bool recursive_mkdir(const std::string& path) const;
 
     /// \see UnixFile::rmdir, WinFile::rmdir.
-    bool rmdir( const std::string& path );
+    bool rmdir(const std::string& path) const;
 
     /// \see UnixFile::mkfile, WinFile::mkfile.
-    bool mkfile( const std::string& path );
+    bool mkfile(const std::string& path) const;
 
     /// \see UnixFile::env, WinFile::env.
-    std::string env( const std::string& path );
+    std::string env(const std::string& path) const;
+
+    /// \see UnixFile::num_files, WinFile::num_files
+    nom::size_type num_files(const std::string& path) const;
 
   private:
     std::unique_ptr<IFile> file;
 };
 
+namespace priv {
+
+/// \brief The root directory path.
+extern std::string file_root_;
+
+} // namespace priv
+
+/// \brief Get the root directory path.
+///
+/// \returns A string containing the directory path root.
+///
+/// \see nom::set_file_root.
+std::string file_root();
+
+/// \brief Set the root directory path.
+///
+/// \param root The absolute directory path, ending with a slash.
+///
+/// \remarks This path can be used to establish a relative directory path to
+/// prepend onto a file name to form a complete, absolute path.
+///
+/// \see nom::BMFont::build
+void set_file_root(const std::string& root);
 
 } // namespace nom
 

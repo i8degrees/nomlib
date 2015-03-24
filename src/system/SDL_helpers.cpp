@@ -28,7 +28,39 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/SDL_helpers.hpp"
 
+// Private headers (third-party)
+#include <SDL_image.h>
+
+// Forward declarations
+#include <SDL_ttf.h>
+
 namespace nom {
+
+BlendMode blend_mode(SDL_BlendMode mode)
+{
+  if( mode == SDL_BLENDMODE_BLEND ) {
+    return BlendMode::BLEND_MODE_BLEND;
+  } else if( mode == SDL_BLENDMODE_ADD ) {
+    return BlendMode::BLEND_MODE_ADD;
+  } else if( mode == SDL_BLENDMODE_MOD ) {
+    return BlendMode::BLEND_MODE_MOD;
+  }
+
+  return BlendMode::BLEND_MODE_NONE;
+}
+
+SDL_BlendMode SDL_blend_mode(BlendMode mode)
+{
+  if( mode == BlendMode::BLEND_MODE_BLEND ) {
+    return SDL_BLENDMODE_BLEND;
+  } else if( mode == BlendMode::BLEND_MODE_ADD ) {
+    return SDL_BLENDMODE_ADD;
+  } else if( mode == BlendMode::BLEND_MODE_MOD ) {
+    return SDL_BLENDMODE_MOD;
+  }
+
+  return SDL_BLENDMODE_NONE;
+}
 
 SDL_bool SDL_BOOL ( bool value )
 {
@@ -250,7 +282,7 @@ void FreeSurface ( SDL_Surface* video_buffer )
   }
 }
 
-void TTF_FreeFont ( TTF_Font* font )
+void TTF_FreeFont ( _TTF_Font* font )
 {
   if ( font != nullptr )
   {

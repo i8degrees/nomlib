@@ -33,8 +33,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstring>
 #include <queue>
 
-#include "SDL.h"
-
 #include "nomlib/config.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 #include "nomlib/system/Joystick.hpp"
@@ -167,7 +165,7 @@ class EventHandler
     /// nom::RenderWindow instance is assigned in ev.window.data1 and
     /// ev.window.data2, respectively.
     ///
-    /// \remarks This event is always preceded by SDL_WINDOWEVENT_SIZE_CHANGED.
+    /// \see ::on_window_size_changed
     ///
     /// \remarks ev.window.event = 5
     virtual void on_window_resized( const Event& ev );
@@ -181,9 +179,9 @@ class EventHandler
     /// nom::RenderWindow instance is assigned in ev.window.data1 and
     /// ev.window.data2, respectively.
     ///
-    /// \remarks This event is followed by SDL_WINDOWEVENT_RESIZED if the size
-    /// was changed by an external event, such as the user or the window
-    /// manager.
+    /// \remarks This event will be posted **after** ::on_window_resized
+    /// (SDL_WINDOWEVENT_RESIZED) if the size was changed by an external event,
+    /// such as the user or the window manager.
     ///
     /// \remarks ev.window.event = 6
     virtual void on_window_size_changed( const Event& ev );

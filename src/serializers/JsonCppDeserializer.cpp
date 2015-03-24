@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/serializers/JsonCppDeserializer.hpp"
 
+#include "nomlib/core/helpers.hpp"
+
 // Private headers (third-party)
 #include "jsoncpp/json.h"
 
@@ -514,6 +516,14 @@ bool JsonCppDeserializer::read_object( const Json::Value& object, Value& dest ) 
   } // end switch object type
 
   return true;
+}
+
+std::unique_ptr<IValueDeserializer> create_json_deserializer()
+{
+  std::unique_ptr<IValueDeserializer> deserializer =
+    nom::make_unique<JsonCppDeserializer>();
+
+  return std::move(deserializer);
 }
 
 } // namespace nom

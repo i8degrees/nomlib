@@ -28,6 +28,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/audio/AL/SoundFile.hpp"
 
+// Private headers
+#include "nomlib/audio/AL/OpenAL.hpp"
+
+// Forward declarations (third-party)
+#include <sndfile.h>
+
 namespace nom {
 
 SoundFile::SoundFile ( void )
@@ -45,7 +51,7 @@ SoundFile::~SoundFile ( void )
   // Clean up instance variables
 }
 
-sf_count_t SoundFile::getSampleCount ( void ) const
+int64 SoundFile::getSampleCount ( void ) const
 {
   return this->sample_count;
 }
@@ -65,7 +71,7 @@ uint32 SoundFile::getChannelFormat ( void ) const
   return this->channel_format;
 }
 
-sf_count_t SoundFile::getDataByteSize ( void ) const
+int64 SoundFile::getDataByteSize ( void ) const
 {
   return this->getSampleCount() * sizeof ( int16 );
 }
@@ -113,6 +119,11 @@ bool SoundFile::read ( std::vector<int16>& data )
   }
 
   return true;
+}
+
+std::string libsndfile_version()
+{
+  return sf_version_string();
 }
 
 } // namespace nom

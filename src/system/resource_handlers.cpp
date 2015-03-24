@@ -36,24 +36,26 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-void create_font( const ResourceFile& res, Font& font )
+void create_font( const ResourceFile& res, IFont* font )
 {
   if( res.type() == ResourceFile::Type::BitmapFont )
   {
-    font = Font( IFont::shared_ptr( new BitmapFont() ) );
+    // font = Font( IFont::shared_ptr( new BitmapFont() ) );
 
     // Do not make cloned copies of the font; cloning is only necessary for
     // fonts that do not need to share data, such as point size, which is not
     // yet implemented.
-    font.set_sharable( false );
+    // font.set_sharable( false );
+    font = new BitmapFont();
   }
   else if( res.type() == ResourceFile::Type::TrueTypeFont )
   {
-    font = Font( IFont::shared_ptr( new TrueTypeFont() ) );
+    // font = Font( IFont::shared_ptr( new TrueTypeFont() ) );
 
     // We need clones of the font, because otherwise we'd be sharing point size,
     // etc. when the same font is used in multiple objects.
-    font.set_sharable( true );
+    // font.set_sharable( true );
+    font = new TrueTypeFont();
   }
 }
 

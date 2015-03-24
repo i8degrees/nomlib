@@ -35,6 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+typedef std::function<void(const Event&)> event_callback;
+
 /// \brief Base class for mapping an action to an input device
 ///
 /// \remarks See also nom::InputMapper, nom::InputContext, nom::InputState

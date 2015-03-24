@@ -34,10 +34,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <vector>
 
-#include <sndfile.h>
-
 #include "nomlib/config.hpp"
-#include "nomlib/audio/AL/OpenAL.hpp"
+
+// Forward declarations
+struct SNDFILE_tag {};
 
 namespace nom {
 
@@ -48,7 +48,7 @@ class SoundFile
     ~SoundFile ( void );
 
     /// Obtain number of samples in audio file
-    sf_count_t getSampleCount ( void ) const;
+    int64 getSampleCount ( void ) const;
 
     /// Obtain number of channels used by audio file
     uint32 getChannelCount ( void ) const;
@@ -60,7 +60,7 @@ class SoundFile
     uint32 getChannelFormat ( void ) const;
 
     /// Obtain audio data size in bytes
-    sf_count_t getDataByteSize ( void ) const;
+    int64 getDataByteSize ( void ) const;
 
     bool open ( const std::string& filename );
     bool read ( std::vector<int16>& data );
@@ -68,11 +68,11 @@ class SoundFile
   private:
     /// SNDFILE* file descriptor
     /// \todo Change me to a std::unique_ptr
-    std::shared_ptr<SNDFILE> fp;
+    std::shared_ptr<SNDFILE_tag> fp;
     /// Extracted audio stream from file
     std::vector<int16> samples;
     /// Total number of samples in the file
-    sf_count_t sample_count;
+    int64 sample_count;
     /// Number of audio channels used by sound
     uint32 channel_count;
     /// Number of samples per second
@@ -80,6 +80,8 @@ class SoundFile
     /// OpenAL compatible audio channels used by sound
     int32 channel_format;
 };
+
+std::string libsndfile_version();
 
 } // namespace nom
 

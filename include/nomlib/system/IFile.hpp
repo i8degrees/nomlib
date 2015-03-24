@@ -104,6 +104,11 @@ class IFile
     virtual bool mkfile( const std::string& path ) = 0;
 
     virtual std::string env( const std::string& path ) = 0;
+
+    /// \brief Get the total number of files in a directory.
+    ///
+    /// \params An absolute directory path.
+    virtual nom::size_type num_files(const std::string& path) = 0;
 };
 
 

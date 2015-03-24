@@ -1,28 +1,30 @@
+# nomlib-audio module tests
+
+set( NOM_BUILD_OPENAL_AUDIO_TESTS ON )
+
 if( NOM_BUILD_OPENAL_AUDIO_TESTS )
 
-  add_executable  (
-                    al_audio_test
-                    ${NOM_TESTS_SOURCE_DIR}/audio/ALAudioTest.cpp
-                  )
+  add_executable( ALAudioTest "ALAudioTest.cpp" )
 
-  target_link_libraries (
-                          al_audio_test
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+  # FIXME: We only need init from nomlib-system
+  set( AUDIO_DEPS ${GTEST_LIBRARY} nomlib-core nomlib-audio nomlib-system )
 
-  GTEST_ADD_TESTS (
-                    al_audio_test
-                    "ALAudioTest"
-                    ${NOM_TESTS_SOURCE_DIR}/audio/ALAudioTest.cpp
-                  )
+  if( PLATFORM_WINDOWS )
+    list( APPEND AUDIO_DEPS ${SDL2MAIN_LIBRARY} )
+  endif( PLATFORM_WINDOWS )
+
+  target_link_libraries( ALAudioTest ${AUDIO_DEPS} )
+
+  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/ALAudioTest
+                    "" # args
+                    "ALAudioTest.cpp" )
 
   # Resources for audio tests
   install (
             DIRECTORY
             "${EXAMPLES_SRC_DIR}/audio/Resources"
             DESTINATION
-            "${TESTS_DEPS_INSTALL_PEFIX}"
+            "${TESTS_INSTALL_DIR}"
             FILES_MATCHING PATTERN "*.wav"
           )
 

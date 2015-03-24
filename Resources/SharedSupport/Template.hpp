@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_UNIT_TEMPLATE_HPP
 #define NOMLIB_UNIT_TEMPLATE_HPP
 
-#include <memory>
+// #include <memory>
 
 #include "nomlib/config.hpp"
 
@@ -41,10 +41,6 @@ class Template
   public:
     typedef Template self_type;
 
-    typedef self_type* raw_ptr;
-    typedef std::unique_ptr<self_type> unique_ptr;
-    typedef std::shared_ptr<self_type> shared_ptr;
-
     /// \brief Default constructor.
     Template();
 
@@ -52,10 +48,10 @@ class Template
     ~Template();
 
     /// \brief Copy constructor.
-    Template( const self_type& copy );
+    Template(const self_type& rhs);
 
     /// \brief Copy assignment operator.
-    self_type& operator =( const self_type& other );
+    self_type& operator =(const self_type& rhs);
 
   private:
     // Member variables

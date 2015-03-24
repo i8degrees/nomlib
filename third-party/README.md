@@ -21,6 +21,7 @@ Both the 64-bit and 32-bit official development binaries versions of:
 * [TCLAP headers on branch master, commit 12cee3](https://sourceforge.net/p/tclap/code/ci/master/tree/)
 
   * Packaged only under Mac OS X
+      * [SDL2.framework v2.0.3] with a self-signed certificate for running app bundles built with this framework within Instruments. Using a self-signed certificate also resolves a XCode v6 crash for me that results when trying to run a process from the IDE, complaining about an invalid code signature for SDL2.framework.
       * [libsndfile v1.0.24](http://www.mega-nerd.com/libsndfile/)
         * Distributed framework is copied from the [SFML2 master branch](https://github.com/LaurentGomila/SFML/tree/master/) with me moving the distribution's **sndfile.h** file to it under a new Headers directory.
 
@@ -29,9 +30,9 @@ Both the 64-bit and 32-bit official development binaries versions of:
         * [libtiff v4.0.3](https://github.com/Homebrew/homebrew/commits/master/Library/Formula/libtiff.rb) from Homebrew's repository with the --universal build flag.
         * [libjpeg 8d](https://github.com/Homebrew/homebrew/commits/master/Library/Formula/jpeg.rb) from Homebrew's repository with the --universal build flag.
 
-      * [SDL2_ttf.framework v2.0.12](http://libsdl.org/projects/SDL_ttf) built with a [font kerning size patch](https://bugzilla.libsdl.org/show_bug.cgi?id=2572).
+      * [SDL_ttf.framework v2.0.12](http://libsdl.org/projects/SDL_ttf) built with two patches: [TTF_GetFontKerningSize fix](https://bugzilla.libsdl.org/show_bug.cgi?id=2572) and related [TTF_GetFontKerningSize err code fix](https://bugzilla.libsdl.org/show_bug.cgi?id=2779).
     
-      * [libRocket v1.3.0](http://librocket.com) compiled with the FreeType v2.3.5 libraries from [homebrew](http://brew.sh).
+      * [libRocket v1.3.0](http://librocket.com) compiled with the FreeType v2.3.5 libraries from [homebrew](http://brew.sh). Refer to my [libRocket fork: dev branch](https://github.com/i8degrees/libRocket/tree/dev) to see any changes from the upstream [libRocket: master branch](https://github.com/libRocket/libRocket/tree/master) library.
       ```
       # dynamic libs
       cmake -DBUILD_SAMPLES=off -DBUILD_LUA_BINDINGS=on -DCMAKE_BUILD_TYPE=Debug -DROCKET_DEBUG=on -DCMAKE_VERBOSE_MAKEFILE=1 ..
@@ -42,15 +43,25 @@ Both the 64-bit and 32-bit official development binaries versions of:
 
   - Packaged only for Windows
     * [Google Test v1.7.0](https://code.google.com/p/googletest/) built with:
-    ```
+    ```console
+    # Debug library
+    mkdir build-debug && cd build-debug
     cmake -DBUILD_SHARED_LIBS=on ..
     msbuild /t:build gtest.vcxproj
+    msbuild /t:build gtest_main.vcxproj
+    ```
+    
+    ```console
+    # Release library
+    mkdir build-release && cd build-release
+    cmake -DBUILD_SHARED_LIBS=on -DCMAKE_BUILD_TYPE=Release ..
+    msbuild /t:build gtest.vcxproj /p:Configuration=Release
+    msbuild /t:build gtest_main.vcxproj /p:Configuration=Release
     ```
 
     * [libsndfile v1.0.25](http://www.mega-nerd.com/libsndfile/)
     * [OpenAL Soft v1.15.1](http://kcat.strangesoft.net/openal.html)
-    * [libRocket v1.3.0](http://librocket.com) compiled with the FreeType v2.3.5 libraries from [GNU win32 FreeType](http://gnuwin32.sourceforge.net/packages/freetype.htm), 'binaries' release.
-      * [GLEW v1.10.0](http://glew.sourceforge.net)
+    * [libRocket v1.3.0](http://librocket.com) compiled with the FreeType v2.3.5 libraries from [GNU win32 FreeType](http://gnuwin32.sourceforge.net/packages/freetype.htm), 'binaries' release. Refer to my [libRocket fork: dev branch](https://github.com/i8degrees/libRocket/tree/dev) to see any changes from the upstream [libRocket: master branch](https://github.com/libRocket/libRocket/tree/master) library.
 
 ## Licensing ##
 

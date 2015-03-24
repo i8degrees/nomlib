@@ -6,11 +6,12 @@
 
 #include "gtest/gtest.h"
 
-// nom::UnitTest framework
-#include "nomlib/tests/common.hpp"
+// nom::VisualUnitTest framework
+#include "nomlib/tests/VisualUnitTest.hpp"
 
 #include <nomlib/config.hpp>
 #include <nomlib/system.hpp>
+#include <nomlib/serializers.hpp>
 #include <nomlib/graphics.hpp>
 #include <nomlib/gui.hpp>
 
@@ -88,10 +89,6 @@ class libRocketTest: public nom::VisualUnitTest
     libRocketTest()
     {
       // NOM_LOG_TRACE( NOM );
-
-      // Platform specific initialization of fonts (system, user, engine) that
-      // are available to us at run-time.
-      PlatformSettings::initialize();
 
       // The frame image to compare against the reference image set
       this->append_screenshot_frame( 0 );

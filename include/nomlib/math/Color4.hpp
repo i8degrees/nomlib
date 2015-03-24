@@ -53,7 +53,6 @@ const std::string COLOR_DELIMITER = ", ";
 
 /// \brief RGBA color container
 ///
-/// \todo Implement lesser than, greater than and so on operators?
 /// \todo Implement specialized Color4<float> operators
 /// \todo Explicitly initialize alpha component of static colors to 255.
 template <typename T>
@@ -124,31 +123,6 @@ struct Color4
       //NOM_LOG_TRACE(NOM);
     }
 
-    // \brief Method overload of binary operator / (Division)
-    //
-    // \param rhs Left operand.
-    // \param rhs Right operand.
-    //
-    // \remarks Division of both objects; result is assigned to the left operand.
-    //
-    // \returns Reference to the left operand.
-    //
-    // \note Borrowed from Ogre::ColourValue.
-    // inline Color4<float> operator / ( const float factor ) const
-    // {
-    //   NOM_ASSERT( factor != 0 );
-
-    //   Color4<float> div;
-    //   T inv = 1.0f / factor;
-
-    //   div.r = ( r / 255 ) * inv;
-    //   div.g = ( g / 255 ) * inv;
-    //   div.b = ( b / 255 ) * inv;
-    //   div.a = ( a / 255 ) * inv;
-
-    //   return div;
-    // }
-
     /// \brief 100% transparent alpha channel value
     static const T ALPHA_TRANSPARENT;
 
@@ -160,7 +134,11 @@ struct Color4
     /// \remarks  Null value implementation depends on signed (negative) numbers.
     static const Color4 null;
 
-    /// Primary colors
+    /// \brief Primary colors
+    ///
+    /// \todo Consider using Color4::Transparent instead of Color4::null.
+    /// \todo Rename constants to ALL UPPERCASE.
+    static const Color4 Transparent;
     static const Color4 Black;
     static const Color4 White;
     static const Color4 Red;
@@ -363,6 +341,96 @@ template <typename T>
 inline Color4<T>& operator *= ( Color4<T>& left, const Color4<T>& right )
 {
   return left = left * right;
+}
+
+/// \brief Lesser than comparison operator.
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+template <typename T>
+inline bool operator <(const Color4<T> lhs, const Color4<T>& rhs)
+{
+  return  (lhs.r < rhs.r) && (lhs.r < rhs.r)  &&
+          (lhs.g < rhs.g) && (lhs.g < rhs.g)  &&
+          (lhs.b < rhs.b) && (lhs.b < rhs.b)  &&
+          (lhs.a < rhs.a) && (lhs.a < rhs.a);
+}
+
+/// \brief Greater than or equal to comparison operator.
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+template <typename T>
+inline bool operator >(const Color4<T>& lhs, const Color4<T>& rhs)
+{
+  return  (rhs.r < lhs.r) && (rhs.r < lhs.r)  &&
+          (rhs.g < lhs.g) && (rhs.g < lhs.g)  &&
+          (rhs.b < lhs.b) && (rhs.b < lhs.b)  &&
+          (rhs.a < lhs.a) && (rhs.a < lhs.a);
+}
+
+/// \brief Lesser than or equal to comparison operator.
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+template <typename T>
+inline bool operator <=(const Color4<T>& lhs, const Color4<T>& rhs)
+{
+  return  (lhs.r <= rhs.r) && (lhs.r <= rhs.r)  &&
+          (lhs.g <= rhs.g) && (lhs.g <= rhs.g)  &&
+          (lhs.b <= rhs.b) && (lhs.b <= rhs.b)  &&
+          (lhs.a <= rhs.a) && (lhs.a <= rhs.a);
+}
+
+/// \brief Greater than or equal to comparison operator.
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+template <typename T>
+inline bool operator >=(const Color4<T>& lhs, const Color4<T>& rhs)
+{
+  return  (rhs.r <= lhs.r) && (rhs.r <= lhs.r)  &&
+          (rhs.g <= lhs.g) && (rhs.g <= lhs.g)  &&
+          (rhs.b <= lhs.b) && (rhs.b <= lhs.b)  &&
+          (rhs.a <= lhs.a) && (rhs.a <= lhs.a);
+}
+
+/// \brief Method overload of binary operator / (Division)
+///
+/// \param rhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Division of both objects; result is assigned to the left operand.
+///
+/// \returns Reference to the left operand.
+template <typename T>
+inline Color4<T> operator /(const Color4<T>& lhs, const Color4<T>& rhs)
+{
+  return Color4<T>( lhs.r / rhs.r,
+                    lhs.g / rhs.g,
+                    lhs.b / rhs.b,
+                    lhs.a / rhs.a
+                  );
+}
+
+/// \brief Method overload of binary operator /= (Division)
+///
+/// \param lhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Division of both objects; result is assigned to the
+/// left operand.
+///
+/// \returns Reference to left operand.
+template <typename T>
+inline Color4<T>& operator /=(Color4<T>& lhs, Color4<T>& rhs)
+{
+  lhs.r /= rhs.r;
+  lhs.g /= rhs.g;
+  lhs.b /= rhs.b;
+  lhs.a /= rhs.a;
+
+  return lhs;
 }
 
 /// Color4 object defined using signed 16-bit integers

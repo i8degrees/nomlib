@@ -29,22 +29,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/sprite/SpriteSheet.hpp"
 
 // Private headers
+#include "nomlib/core/helpers.hpp"
 #include "nomlib/serializers/JsonCppSerializer.hpp"
 #include "nomlib/serializers/JsonCppDeserializer.hpp"
 
 namespace nom {
 
-// Static initialization
-const int SpriteSheet::MAJOR_VERSION = 0;
-const int SpriteSheet::MINOR_VERSION = 4;
-const int SpriteSheet::PATCH_VERSION = 0;
+// Static initializations
+const VersionInfo SpriteSheet::VERSION = VersionInfo(0,4,1);
 
 SpriteSheet::SpriteSheet() :
   sheet_filename_("\0"),
   sheet_spacing_(0),
   sheet_padding_(0),
   sheet_width_(0),
-  sheet_height_(0)
+  sheet_height_(0),
+  total_frames_(0)
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
@@ -52,6 +52,11 @@ SpriteSheet::SpriteSheet() :
 SpriteSheet::~SpriteSheet()
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, nom::NOM_LOG_PRIORITY_VERBOSE );
+}
+
+SpriteSheet* SpriteSheet::clone() const
+{
+  return( new SpriteSheet(*this) );
 }
 
 const IntRect& SpriteSheet::dimensions(int index) const
@@ -75,11 +80,7 @@ bool SpriteSheet::empty() const
 
 std::string SpriteSheet::version() const
 {
-  std::string major = std::to_string(SpriteSheet::MAJOR_VERSION);
-  std::string minor = std::to_string(SpriteSheet::MINOR_VERSION);
-  std::string patch = std::to_string(SpriteSheet::PATCH_VERSION);
-
-  return(major + "." + minor + "." + patch);
+  return this->VERSION.version_string();
 }
 
 const std::string& SpriteSheet::sheet_filename() const
@@ -107,18 +108,17 @@ int SpriteSheet::sheet_spacing() const
   return this->sheet_spacing_;
 }
 
-SpriteSheet::SharedPtr SpriteSheet::clone() const
+int SpriteSheet::total_frames() const
 {
-  return SpriteSheet::SharedPtr ( new SpriteSheet ( *this ) );
+  return this->total_frames_;
 }
 
 bool SpriteSheet::load_file(const std::string& filename)
 {
-  IValueDeserializer* serializer = new JsonCppDeserializer();
-  Value output; // Value buffer of resulting de-serialized input.
+  Value output;
+  auto deserializer = nom::create_json_deserializer();
 
-  if( serializer->load( filename, output ) == false )
-  {
+  if( deserializer->load(filename, output) == false ) {
     NOM_LOG_ERR( NOM, "Unable to parse JSON file:", filename );
     return false;
   }
@@ -133,6 +133,9 @@ bool SpriteSheet::load_sheet_object(const Value& object)
   int pos = 0;
   std::map<int, IntRect> buffer;
   Value fp = object;
+  VersionInfo file_ver;       // metadata object's 'version' container
+  VersionInfo min_ver(0,4,0); // minimum required spec version for this func
+  std::string fp_version;     // metadata object's 'version' string
 
   if( fp.null_type() ) {
     NOM_LOG_ERR( NOM, "Could not load sprite sheet: nom::Value object was null." );
@@ -143,9 +146,19 @@ bool SpriteSheet::load_sheet_object(const Value& object)
     NOM_DUMP(fp);
   #endif
 
-  if( fp["metadata"]["version"] != "0.4.0" ) {
-    NOM_LOG_ERR(  NOM,
-                  "Could not load sprite sheet: sprite sheet version mismatch." );
+  fp_version = fp["metadata"]["version"].get_string();
+
+  if( VersionInfo::convert_version_string(fp_version, file_ver) == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not load sprite sheet: invalid 'version' string",
+                  file_ver );
+    return false;
+  }
+
+  if( file_ver < min_ver ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not load sprite sheet: file spec version",
+                  file_ver, "is less than minimum required version", min_ver );
     return false;
   }
 
@@ -167,6 +180,10 @@ bool SpriteSheet::load_sheet_object(const Value& object)
         this->sheet_height_ = fp[key]["height"].get_int();
         this->sheet_padding_ = fp[key]["padding"].get_int();
         this->sheet_spacing_ = fp[key]["spacing"].get_int();
+
+        if( file_ver > min_ver ) {
+          this->total_frames_ = fp[key]["total_frames"].get_int();
+        }
       } // end if key == metadata
       else {
         for( auto itr = obj.begin(); itr != obj.end(); ++itr ) {
@@ -207,6 +224,10 @@ bool SpriteSheet::load_sheet_object(const Value& object)
     } // end if object type
   } // end for outer loop
 
+  if( file_ver > min_ver ) {
+    NOM_ASSERT( this->sheet_.size() == this->total_frames() );
+  }
+
   #if defined( NOM_DEBUG_SPRITE_SHEET_JSON_LOAD )
     NOM_DUMP(fp);
   #endif
@@ -217,6 +238,52 @@ bool SpriteSheet::load_sheet_object(const Value& object)
   this->sheet_ = buffer;
 
   return true;
+}
+
+bool SpriteSheet::
+insert_frame(nom::size_type frame_num, const IntRect& frame_bounds)
+{
+  this->sheet_[frame_num] = frame_bounds;
+
+  return true;
+}
+
+bool SpriteSheet::append_frame(const IntRect& frame_bounds)
+{
+  nom::size_type num_frames = this->frames();
+
+  auto pair =
+    std::make_pair(num_frames, frame_bounds);
+
+  auto res = this->sheet_.insert(pair);
+  if( res.second == true ) {
+    // Success!
+    return true;
+  } else {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not append frame: key already exists at", num_frames );
+    return false;
+  }
+}
+
+bool SpriteSheet::remove_frame(nom::size_type frame)
+{
+  auto res = this->sheet_.find(frame);
+
+  if( res == this->sheet_.end() ) {
+    // Not found
+    return false;
+  } else {
+
+    // Found
+    this->sheet_.erase(res);
+    return true;
+  }
+}
+
+void SpriteSheet::remove_frames()
+{
+  this->sheet_.clear();
 }
 
 void SpriteSheet::dump ( void ) const

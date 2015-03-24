@@ -29,13 +29,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_CORE_SDL2_LOGGER_HPP
 #define NOMLIB_CORE_SDL2_LOGGER_HPP
 
-#include <iostream>
 #include <sstream>
 #include <string>
 
-#include "SDL.h"
-
-#include "nomlib/core/clock.hpp"
+#include <SDL.h>
 
 /// \brief The predefined logging categories.
 ///
@@ -83,6 +80,15 @@ enum
   /// \brief Rendering subsystem logging category
   NOM_LOG_CATEGORY_RENDER,
 
+  /// \brief Action objects
+  NOM_LOG_CATEGORY_ACTION,
+
+  /// \brief Action engine
+  NOM_LOG_CATEGORY_ACTION_PLAYER,
+
+  /// \brief Action queue
+  NOM_LOG_CATEGORY_ACTION_QUEUE,
+
   /// \brief Events logging category
   NOM_LOG_CATEGORY_EVENT,
 
@@ -116,6 +122,12 @@ enum
   NOM_LOG_CATEGORY_TRACE_STATES,
 
   NOM_LOG_CATEGORY_TRACE_SYSTEM,
+
+  /// \brief Call stacks for engine unit tests
+  NOM_LOG_CATEGORY_TRACE_UNIT_TEST,
+
+  /// \brief Call stacks for the actions engine
+  NOM_LOG_CATEGORY_TRACE_ACTION,
 
   /// \brief Custom logging category that is reserved for application-level use.
   /// For example:
@@ -162,6 +174,11 @@ void log_message( void* ptr, int cat, SDL_LogPriority prio, const char* msg );
 } // namespace priv
 
 /// \brief Helper method for nom::SDL2Logger.
+///
+/// \todo Optionally support modifying floating-point precision so to help
+/// catch floating-point math errs such as 254.999984741 being represented
+/// in the debug output as 255 without explicitly setting the precision to
+/// five (5) or greater.
 template<typename Type>
 void write_debug_output( std::ostream& out, const Type& f )
 {
@@ -232,6 +249,11 @@ class SDL2Logger
     void write( const Type& f )
     {
       nom::write_debug_output( this->output_stream(), f );
+    }
+
+    void write(uint8_t f)
+    {
+      nom::write_debug_output(this->output_stream(), (int)f);
     }
 
     /// \brief Write a log message to the output stream.

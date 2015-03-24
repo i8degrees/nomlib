@@ -29,8 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_GRAPHICS_FONTS_FONT_HPP
 #define NOMLIB_GRAPHICS_FONTS_FONT_HPP
 
-#include <memory>
-
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/fonts/IFont.hpp"
 
@@ -38,71 +36,35 @@ namespace nom {
 
 /// \brief Font interface wrapper for nom::IFont derived objects.
 ///
-/// \see nom::IFont, nom::BitmapFont, nom::TrueTypeFont
+/// \see nom::IFont, nom::BitmapFont, nom::TrueTypeFont, nom::BMFont
 class Font
 {
   public:
     typedef Font self_type;
     typedef IFont font_type;
-    typedef std::shared_ptr<font_type> value_type;
-
-    typedef self_type* raw_ptr;
-    typedef std::shared_ptr<self_type> shared_ptr;
 
     /// \brief Default constructor; initialize the font to NULL and the
     /// sharable state to false.
-    Font( void );
+    Font();
 
     /// \brief Destructor.
-    ~Font( void );
-
-    /// \brief Constructor for initializing an object from a nom::IFont derived
-    /// object.
-    // Font( const font_type& font );
+    ~Font();
 
     /// \brief Constructor for initializing an object from a std::shared_ptr
     /// object<nom::IFont> object.
-    Font( const value_type& font );
+    Font(const std::shared_ptr<font_type>& font);
 
-    // \brief Constructor for initializing an object from a nom::IFont derived
-    // raw pointer.
-    //
-    // \note Used by Text::set_font( font_type* font ).
-    // Font( font_type* font );
-
-    // \brief Copy assignment operator for Font object pointers.
-    //
-    // \note Used by Text::set_font.
-    // self_type& operator =( const self_type* rhs );
-
-    // const font_type& operator *( void ) const;
-
-    // \remarks Font::share is called beforehand.
-    // font_type& operator *( void );
-
-    /// \brief Read-only pointer operator overload.
-    ///
-    /// \remarks This method is provided for read-only access of the stored
-    /// font object. You should probably not be using this method, but be using
-    /// the convenience methods provided in this class (see below).
-    ///
-    /// \note Used by nom::Text.
-    ///
-    /// \todo Consider removal of this method?.
-    const font_type* operator ->( void ) const;
+    /// \brief Constructor for initializing an object from a nom::IFont derived
+    /// raw pointer.
+    Font(font_type* font);
 
     /// \brief Read-write pointer operator overload.
     ///
-    /// \remarks This method is provided for read-write access of the stored
-    /// font object. You should probably not be using this method, but be using
-    /// the convenience methods provided in this class (see below).
+    /// \remarks This method allows you to access the wrapped font object
+    /// directly. This will be one of the nom::IFont object types.
     ///
-    /// \note Font::share is called beforehand.
-    ///
-    /// \note Used by nom::Text.
-    ///
-    /// \todo Consider removal of this method?.
-    font_type* operator ->( void );
+    /// \see nom::BitmapFont, nom::TrueTypeFont.
+    font_type* operator ->() const;
 
     /// \brief Equality comparison overload.
     ///
@@ -110,7 +72,7 @@ class Font
     /// font object -- whether or not the objects point to the same memory
     /// location -- not the actual data stored in the font (as this would be
     /// inefficient).
-    bool operator ==( const self_type& rhs ) const;
+    bool operator ==(const self_type& rhs) const;
 
     /// \brief In-equality comparison overload.
     ///
@@ -118,76 +80,41 @@ class Font
     /// font object -- whether or not the objects point to the same memory
     /// location -- not the actual data stored in the font (as this would be
     /// inefficient).
-    bool operator !=( const self_type& rhs ) const;
+    bool operator !=(const self_type& rhs) const;
 
     /// \brief Get the object's unique state.
     ///
     /// \remarks The uniqueness of the object -- whether or not it is being held
     /// by multiple objects -- depends on the implementation of std::shared_ptr.
-    bool unique( void ) const;
-
-    /// \brief Get the object's validity state.
-    bool valid( void ) const;
-
-    /// \brief Get the object's sharable state.
-    bool sharable( void ) const;
+    bool unique() const;
 
     /// \brief Determine the type of font by filename extension.
     ///
     /// \param filename The file name (absolute or relative) with the full
-    /// extension. File extensions recognized are 'png', 'bmp', 'ttf', 'ttc',
-    /// and 'otf'.
+    /// extension. File extensions recognized are 'png', 'bmp', 'ttf', 'ttc'
+    /// 'otf', 'ttf' and 'fnt'.
     ///
     /// \returns One of the IFont::FontType enumerations.
     ///
     /// \remarks This method is used by ::load in order to determine the type
-    /// of font object to initialize.
-    IFont::FontType type( const std::string& filename ) const;
+    /// of font interface to initialize.
+    IFont::FontType type(const std::string& filename) const;
 
     /// \brief Load a font from a filename.
     ///
     /// \remarks This is a convenience method provided for ease of access.
     ///
-    /// \note If the nom::Font::operator -> method is used (not recommended),
-    /// you must ensure that you first initialize the nom::Font object with the
-    /// proper nom::IFont derived object type.
-    bool load( const std::string& filename );
-
-    /// \brief Set the stored font's point size.
-    bool set_point_size( int point_size );
-
-    /// \brief Set the stored font's hinting.
-    void set_hinting( int type );
-
-    /// \brief Set the stored font's outline.
-    bool set_outline( int outline );
-
-    /// \brief Set the stored font's sharable state.
+    /// \note If you bypass this method (not recommended), you must ensure that
+    /// you have constructed the nom::Font object with a valid
+    /// nom::IFont-derived object that has been loaded into memory with its
+    /// appropriate ::load call. The nom::Font(font_type* font) constructor is
+    /// used for the constructing call.
     ///
-    /// \remarks This method is provided to allow the end-user the final call
-    /// in whether or not to consider the stored font object a resource in
-    /// which can be shared (separate, new cloned object) or not (the same
-    /// pointer shared across multiple objects). This ultimately has an effect
-    /// on things like memory consumption.
-    ///
-    /// \see Default constructor of nom::Font for default sharable state.
-    ///
-    /// \see Used by the default font load handler, nom::create_font.
-    void set_sharable( bool state );
-
-    /// \brief Make a shared (separate, new clone) copy of the font.
-    ///
-    /// \remarks Before the stored font object is shared, it must meet all of
-    /// the following criteria: a) the stored font object must not be NULL; b)
-    /// the stored font object must not be unique (see ::unique); c) this object
-    /// instance must be marked shared (see ::sharable, ::set_sharable).
-    ///
-    /// \note This is where the copy-on-write implementation lies.
-    void share( void );
+    /// \todo Rename to load_file
+    bool load(const std::string& filename);
 
   private:
-    value_type font_;
-    bool sharable_;
+    std::shared_ptr<Font::font_type> font_;
 };
 
 } // namespace nom
@@ -195,12 +122,12 @@ class Font
 #endif // include guard defined
 
 /// \class nom::Font
-/// \ingroup system
+/// \ingroup graphics
 ///
-/// A class interface for a nom::IFont derived object (a common interface
-/// handling the differences different font types, such as TrueType and Bitmap).
-/// Reference counting via std::shared_ptr and optionally, copy-on-write
-/// (lazy copying) are built-in features.
+/// A class wrapper interface for a nom::IFont derived objects. This wrapper
+/// has the side intention of being conveniently used within a
+/// nom::ResourceCache (it does not support pure abstract objects, such as
+/// nom::IFont).
 ///
 /// \code
 ///
@@ -236,8 +163,3 @@ class Font
 ///
 /// \endcode
 ///
-/// \see Derives from the implementation at http://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Copy-on-write
-/// \see http://archive.today/20121222041326/cdumez.blogspot.tw/2011/03/implicit-explicit-data-sharing-with-qt.html
-/// \see http://www.gotw.ca/publications/optimizations.htm
-/// \see http://seanmiddleditch.com/journal/2014/01/dangers-of-stdshared_ptr/
-/// \see Inspired by http://docs.wxwidgets.org/trunk/classwx_font_list.html

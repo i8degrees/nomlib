@@ -40,11 +40,11 @@ Template::~Template()
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-Template::Template( const self_type& copy )
+Template::Template(const self_type& rhs)
 {
 }
 
-Template::self_type& Template::operator =( const self_type& other )
+Template::self_type& Template::operator =(const self_type& rhs)
 {
   return *this;
 }

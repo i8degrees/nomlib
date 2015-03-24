@@ -97,10 +97,9 @@ void Transformable::set_size( int w, int h )
   this->set_size( Size2i( w, h ) );
 }
 
-void Transformable::move( int x, int y )
+void Transformable::translate(const Point2i& pos)
 {
-  this->position_.x += x;
-  this->position_.y += y;
+  this->position_ += pos;
 }
 
 } // namespace nom

@@ -1,13 +1,42 @@
+/******************************************************************************
+
+  nomlib - C++11 cross-platform game engine
+
+Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+******************************************************************************/
 #include <iostream>
 #include <string>
 
 #include "gtest/gtest.h"
 
-// nom::UnitTest framework
-#include "nomlib/tests/common.hpp"
+// nom::VisualUnitTest framework
+#include "nomlib/tests/VisualUnitTest.hpp"
 
 #include <nomlib/config.hpp>
 #include <nomlib/system.hpp>
+#include <nomlib/serializers.hpp>
 #include <nomlib/graphics.hpp>
 
 // #if ! defined( NOM_USE_SCALEX )
@@ -88,10 +117,6 @@ class GradientTest: public nom::VisualUnitTest
       this->pos2 = Point2i( 0, h / 2 );
       this->dims2 = Size2i( w, h / 2 );
 
-      // Not used
-      this->pos3 = Point2i( w/3, h/2 );
-      this->dims3 = Size2i( w/3, h/3 );
-
       this->grad1.set_colors( this->colors[0] );
       this->grad1.set_position( this->pos1 );
       this->grad1.set_size( this->dims1 );
@@ -100,15 +125,9 @@ class GradientTest: public nom::VisualUnitTest
       this->grad2.set_position( this->pos2 );
       this->grad2.set_size( this->dims2 );
 
-      // Not used
-      this->grad3.set_colors( this->colors[0] );
-      this->grad3.set_position( this->pos3 );
-      this->grad3.set_size( this->dims3 );
-
       // Register our main loop
       this->append_render_callback( [&] ( const RenderWindow& win ) { this->grad1.draw( this->render_window() ); } );
       this->append_render_callback( [&] ( const RenderWindow& win ) { this->grad2.draw( this->render_window() ); } );
-      // this->append_render_callback( [&] ( const RenderWindow& win ) { this->grad3.draw( this->render_window() ); } );
     }
 
     /// \remarks This method is called before destruction, at the end of each
@@ -135,18 +154,12 @@ class GradientTest: public nom::VisualUnitTest
 
     Gradient grad1;
     Gradient grad2;
-    // Not used
-    Gradient grad3;
 
     Point2i pos1;
     Size2i dims1;
 
     Point2i pos2;
     Size2i dims2;
-
-    // Not used
-    Point2i pos3;
-    Size2i dims3;
 
     /// \brief Colors used to create the gradient
 
@@ -158,7 +171,6 @@ TEST_F( GradientTest, TopToBottomLinearFill )
 {
   this->grad1.set_fill_direction( Gradient::FillDirection::Top );
   this->grad2.set_fill_direction( Gradient::FillDirection::Top );
-  // this->grad3.set_fill_direction( Gradient::FillDirection::Top );
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
@@ -168,7 +180,6 @@ TEST_F( GradientTest, BottomToTopLinearFill )
 {
   this->grad1.set_fill_direction( Gradient::FillDirection::Bottom );
   this->grad2.set_fill_direction( Gradient::FillDirection::Bottom );
-  // this->grad3.set_fill_direction( Gradient::FillDirection::Bottom );
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
@@ -178,7 +189,6 @@ TEST_F( GradientTest, LeftToRightLinearFill )
 {
   this->grad1.set_fill_direction( Gradient::FillDirection::Left );
   this->grad2.set_fill_direction( Gradient::FillDirection::Left );
-  // this->grad3.set_fill_direction( Gradient::FillDirection::Left );
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
@@ -188,7 +198,6 @@ TEST_F( GradientTest, RightToLeftLinearFill )
 {
   this->grad1.set_fill_direction( Gradient::FillDirection::Right );
   this->grad2.set_fill_direction( Gradient::FillDirection::Right );
-  // this->grad3.set_fill_direction( Gradient::FillDirection::Right );
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
@@ -274,6 +283,51 @@ TEST_F( GradientTest, Margins )
   EXPECT_TRUE( this->compare() );
 }
 
+TEST_F(GradientTest, SharedTextureForSprite)
+{
+  this->grad1.set_fill_direction(Gradient::FillDirection::Right);
+  this->grad2.set_fill_direction(Gradient::FillDirection::Right);
+
+#if 1
+  auto grad1_tex =
+    std::shared_ptr<Texture>( this->grad1.texture() );
+  auto grad2_tex =
+    std::shared_ptr<Texture>( this->grad2.texture() );
+#else
+  // ...Broken...
+  auto grad1_tex = std::shared_ptr<Texture>( this->grad1.clone_texture() );
+  auto grad2_tex = std::shared_ptr<Texture>( this->grad2.clone_texture() );
+#endif
+
+  auto sprite_grad1 =
+    nom::make_shared_sprite(grad1_tex);
+  ASSERT_TRUE(sprite_grad1 != nullptr);
+  ASSERT_TRUE(sprite_grad1->valid() != false);
+
+  auto sprite_grad2 =
+    nom::make_shared_sprite(grad2_tex);
+  ASSERT_TRUE(sprite_grad2 != nullptr);
+  ASSERT_TRUE(sprite_grad2->valid() != false);
+
+  // Need to first clear out the default grad objects in here
+  this->clear_render_callbacks();
+  this->append_render_callback( this->default_render_callback() );
+
+  this->append_render_callback( [=](const RenderWindow& win) {
+
+    if( sprite_grad1 != nullptr && sprite_grad1->valid() == true ) {
+      sprite_grad1->draw( this->render_window() );
+    }
+
+    if( sprite_grad2 != nullptr && sprite_grad2->valid() == true ) {
+      sprite_grad2->draw( this->render_window() );
+    }
+  });
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+  EXPECT_TRUE( this->compare() );
+}
+
 } // namespace nom
 
 int main( int argc, char** argv )
@@ -292,7 +346,7 @@ int main( int argc, char** argv )
   // nom::UnitTest framework integration
   nom::init_test( argc, argv );
 
-  nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_RENDER, nom::NOM_LOG_PRIORITY_VERBOSE );
+  // nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_RENDER, nom::NOM_LOG_PRIORITY_VERBOSE );
   // nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 
   return RUN_ALL_TESTS();

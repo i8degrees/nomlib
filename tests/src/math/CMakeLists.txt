@@ -1,20 +1,15 @@
-if( NOM_BUILD_MATH_TESTS )
+# nomlib-math module tests
 
-    add_executable  (
-                      MathTest
-                      ${NOM_TESTS_SOURCE_DIR}/math/MathTest.cpp
-                    )
+add_executable( MathTest "MathTest.cpp" )
 
-    target_link_libraries (
-                            MathTest
-                            ${GTEST_LIBRARY}
-                            ${PROJECT_NAME} # nomlib
-                          )
+set( NOM_MATH_TESTS_DEPS ${GTEST_LIBRARY} nomlib-core nomlib-math )
 
-    GTEST_ADD_TESTS (
-                      MathTest
-                      "" # args
-                      ${NOM_TESTS_SOURCE_DIR}/math/MathTest.cpp
-                    )
+if( PLATFORM_WINDOWS )
+  list( APPEND NOM_MATH_TESTS_DEPS ${SDL2MAIN_LIBRARY} )
+endif( PLATFORM_WINDOWS )
 
-endif( NOM_BUILD_MATH_TESTS )
+target_link_libraries( MathTest ${NOM_MATH_TESTS_DEPS} )
+
+GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/MathTest
+                  "" # args
+                  "MathTest.cpp" )

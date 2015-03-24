@@ -29,13 +29,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_MATH_HELPERS_HPP
 #define NOMLIB_MATH_HELPERS_HPP
 
-#include <chrono>
 #include <random>
 #include <cmath>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point2.hpp"
-#include "nomlib/core/clock.hpp"
+#include "nomlib/math/Size2.hpp"
 
 namespace nom {
 
@@ -67,7 +66,7 @@ void init_rand(uint32 seed_seq);
 ///
 /// \remarks This function should only be used with signed or unsigned integers.
 template <typename T>
-T uniform_int_rand(T start_range, T end_range)
+inline T uniform_int_rand(T start_range, T end_range)
 {
   std::uniform_int_distribution<T> distribution(start_range, end_range);
 
@@ -80,7 +79,7 @@ T uniform_int_rand(T start_range, T end_range)
 ///
 /// \remarks This function should only be used with float or double numbers.
 template <typename T>
-T uniform_real_rand(T start_range, T end_range)
+inline T uniform_real_rand(T start_range, T end_range)
 {
   std::uniform_real_distribution<T> distribution(start_range, end_range);
 
@@ -91,17 +90,64 @@ T uniform_real_rand(T start_range, T end_range)
 /// (rotation point) at the given angle (in degrees), clockwise.
 const Point2d rotate_points ( float angle, float x, float y, float pivot_x, float pivot_y );
 
-/// Round a fractional value
+/// \brief Round a fractional value.
 ///
-/// \param number Number to round up or down
+/// \param number The 32-bit floating-point number to round.
 ///
-/// \return Rounded value
-///
-/// \note Round up when number > 0.5; round down when number < 0.5
+/// \remarks The number is round up when it is greater than 0.5 and rounded
+/// down when the number is less than 0.5
 template <typename T>
-T round ( T number )
+inline T round_float(real32 number)
 {
-  return number < 0.0 ? ceil ( number - 0.5 ) : floor ( number + 0.5 );
+  real32 ret = number < 0.0f ? ceilf(number - 0.5f) : floorf(number + 0.5f);
+  return NOM_SCAST(T, ret);
+}
+
+/// \brief Round a fractional value down to the nearest integral number.
+///
+/// \param number The 32-bit floating-point number to round.
+template <typename T>
+inline T round_float_down(real32 number)
+{
+  real32 ret = floorf(number);
+  return NOM_SCAST(T, ret);
+}
+
+/// \brief Round a fractional value up to the largest integral number.
+///
+/// \param number The 32-bit floating-point number to round.
+template <typename T>
+inline T round_float_up(real32 number)
+{
+  real32 ret = ceilf(number);
+  return NOM_SCAST(T, ret);
+}
+
+/// \brief Round a fractional value.
+///
+/// \param number The 64-bit floating-point number to round.
+///
+/// \remarks The number is round up when it is greater than 0.5 and rounded
+/// down when the number is less than 0.5.
+template <typename T>
+inline T round_double(real64 number)
+{
+  real64 ret = number < 0.0f ? ceil(number - 0.5f) : floor(number + 0.5f);
+  return NOM_SCAST(T, ret);
+}
+
+template <typename T>
+inline T truncate_float(real32 number)
+{
+  T ret = NOM_SCAST(T, number);
+  return(ret);
+}
+
+template <typename T>
+inline T absolute_float(real32 number)
+{
+  T ret = fabs(number);
+  return(ret);
 }
 
 } // namespace nom

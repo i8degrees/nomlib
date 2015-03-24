@@ -1,94 +1,64 @@
-if( NOM_BUILD_GUI_TESTS )
+# nomlib-gui module tests
 
-  add_executable  (
-                    libRocketTest
-                    ${NOM_TESTS_COMMON_SOURCE}
-                    ${NOM_TESTS_VTEST_SOURCE}
-                    ${NOM_TESTS_SOURCE_DIR}/gui/libRocketTest.cpp
-                  )
+set( NOM_BUILD_GUI_BASE_TEST ON )
+set( NOM_BUILD_GUI_DATAGRID_TESTS ON )
 
-  target_link_libraries (
-                          libRocketTest
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+if( EXISTS "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+  include( "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+endif()
 
-    GTEST_ADD_TESTS (
-                      libRocketTest
-                      "" # args
-                      ${NOM_TESTS_SOURCE_DIR}/gui/libRocketTest.cpp
-                    )
+if( NOM_BUILD_GUI_BASE_TEST )
 
-    # Search paths to use in finding resources path
-    install (
-              FILES
-              "${NOM_TESTS_RESOURCES_DIR}/libRocketTest.json"
-              DESTINATION
-              "${TESTS_DEPS_INSTALL_PEFIX}"
-            )
+  add_executable( libRocketTest "libRocketTest.cpp" )
 
-endif( NOM_BUILD_GUI_TESTS )
+  target_link_libraries( libRocketTest nomlib-visual-unit-test nomlib-gui )
+
+  nom_add_visual_test(  libRocketTest
+                        ${TESTS_INSTALL_DIR}/libRocketTest )
+
+  # Search paths to use in finding resources path
+  install (
+            FILES
+            "${NOM_TESTS_RESOURCES_DIR}/libRocketTest.json"
+            DESTINATION
+            "${TESTS_INSTALL_DIR}"
+          )
+
+endif( NOM_BUILD_GUI_BASE_TEST )
 
 if( NOM_BUILD_GUI_DATAGRID_TESTS )
 
-  add_executable  (
-                    libRocketDataGridTest
-                    ${NOM_TESTS_COMMON_SOURCE}
-                    ${NOM_TESTS_VTEST_SOURCE}
-                    ${NOM_TESTS_SOURCE_DIR}/gui/datagrid/Card.cpp
-                    ${NOM_TESTS_SOURCE_DIR}/gui/datagrid/CardCollection.cpp
-                    ${NOM_TESTS_SOURCE_DIR}/gui/datagrid/CardsPageDataSource.cpp
-                    ${NOM_TESTS_SOURCE_DIR}/gui/libRocketDataGridTest.cpp
-                  )
+  add_executable( libRocketDataGridTest
+                  "datagrid/Card.cpp"
+                  "datagrid/CardCollection.cpp"
+                  "datagrid/CardsPageDataSource.cpp"
+                  "libRocketDataGridTest.cpp" )
 
-  target_link_libraries (
-                          libRocketDataGridTest
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
+  target_link_libraries( libRocketDataGridTest nomlib-visual-unit-test nomlib-gui )
 
-    GTEST_ADD_TESTS (
-                      libRocketDataGridTest
-                      "" # args
-                      ${NOM_TESTS_SOURCE_DIR}/gui/libRocketDataGridTest.cpp
-                    )
+  nom_add_visual_test(  libRocketDataGridTest
+                        ${TESTS_INSTALL_DIR}/libRocketDataGridTest )
 
-    # Search paths file to use in finding resources path
-    install (
-              FILES
-              "${NOM_TESTS_RESOURCES_DIR}/libRocketDataGridTest.json"
-              DESTINATION
-              "${TESTS_DEPS_INSTALL_PEFIX}"
-            )
+  # Search paths file to use in finding resources path
+  install (
+            FILES
+            "${NOM_TESTS_RESOURCES_DIR}/libRocketDataGridTest.json"
+            DESTINATION
+            "${TESTS_INSTALL_DIR}"
+          )
 
 endif( NOM_BUILD_GUI_DATAGRID_TESTS )
 
-# Install binary dependencies for the unit tests
+# Install additional binary dependencies for the unit tests
 if ( PLATFORM_WINDOWS )
 
-  install ( DIRECTORY
-            "${SDL2_LIBRARY_DIR}"
-            "${SDL2_IMAGE_LIBRARY_DIR}"
-            "${SDL2_TTF_LIBRARY_DIR}"
-            "${OPENAL_LIBRARY_DIR}"
-            "${LIBSNDFILE_LIBRARY_DIR}"
-            "${MSVCPP_LIBRARY_REDIST}"
-            "${GTEST_ROOT}/lib/"        # GTest re-dist libs
-            "${GLEW_REDIST_DIR}"
-            DESTINATION
-            "${TESTS_DEPS_INSTALL_PEFIX}"
+  install(  DIRECTORY
+            ${LIBROCKET_REDIST_DIR}
+            ${LIBROCKET_EXT_REDIST_DIR}
+            DESTINATION ${TESTS_INSTALL_DIR}
+            OPTIONAL # In case end-user overrides third-party dependencies
             FILES_MATCHING PATTERN "*.dll"
-          )
-
-  if( NOM_BUILD_GUI_UNIT )
-
-    install_dependencies  (
-                            "${LIBROCKET_REDIST_DIRS}"
-                            "${TESTS_DEPS_INSTALL_PEFIX}"
-                            "*.dll"
-                          )
-
-  endif( NOM_BUILD_GUI_UNIT )
+  )
 
 endif ( PLATFORM_WINDOWS )
 

@@ -29,9 +29,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/init.hpp"
 
 // Private headers (third-party)
-#include "SDL.h"
-#include "SDL_image.h"
-#include "SDL_ttf.h"
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_ttf.h>
 
 // Private headers
 #include "nomlib/core/IObject.hpp"
@@ -44,47 +44,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/ColorDatabase.hpp"
 
 namespace nom {
-
-// Static initialization
-std::shared_ptr<FontCache> SystemFonts::cache_ = std::shared_ptr<FontCache>( nullptr );
-bool SystemFonts::initialized_ = false;
-
-bool SystemFonts::initialized( void )
-{
-  return SystemFonts::initialized_;
-}
-
-void SystemFonts::initialize( void )
-{
-  // Ensure one-time only initialization
-  if( SystemFonts::initialized() == false )
-  {
-    nom::init_third_party( InitHints::SDL2_IMAGE | InitHints::SDL2 | InitHints::SDL2_TTF );
-
-    SystemFonts::cache_ = std::make_shared<FontCache>( FontCache() );
-    SystemFonts::initialized_ = true;
-  }
-}
-
-FontCache& SystemFonts::cache( void )
-{
-  if( SystemFonts::initialized() == false )
-  {
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_SYSTEM, "System fonts cache was not yet initialized. Initializing..." );
-    SystemFonts::initialize();
-  }
-
-  return *SystemFonts::cache_;
-}
-
-void SystemFonts::shutdown( void )
-{
-  // Clear the global fonts cache; note how this is very similar to how we use
-  // to have to deal with nom::TrueTypeFont destruction.
-  SystemFonts::cache_.reset();  // NULL
-
-  SystemFonts::initialized_ = false;
-}
 
 // Static initialization
 std::unique_ptr<ColorDatabase> SystemColors::colors_ = std::unique_ptr<ColorDatabase>( nullptr );
@@ -209,13 +168,9 @@ bool init ( int argc, char* argv[] )
   nom::File dir;
   std::string pwd = "\0";
 
+  // Note that this will always be a POSIX path -- Unix path delimiters -- even
+  // on Windows
   pwd = dir.path( argv[0] );
-
-  // We might want to consider using the following instead, so that we may not
-  // need to depend on program arguments, which is a major platform-specific
-  // implementation detail.
-  //
-  // pwd = dir.currentPath();
 
   if( pwd.length() < 1 )
   {
@@ -241,11 +196,6 @@ bool init ( int argc, char* argv[] )
 void quit( void )
 {
   NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_SYSTEM );
-
-  // We must clear the cache of nom::Font objects before shutting down SDL2_ttf,
-  // because otherwise we'll be freeing memory that we do not own (FreeType
-  // engine within is the rightful owner).
-  SystemFonts::shutdown();
 
   TTF_Quit();
   IMG_Quit();

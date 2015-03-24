@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/graphics/RendererInfo.hpp"
 
+// Private headers
+#include <SDL.h>
+
 namespace nom {
 
 RendererInfo::RendererInfo ( void ) :

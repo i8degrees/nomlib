@@ -29,13 +29,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_STDINT_TYPES_HPP
 #define NOMLIB_STDINT_TYPES_HPP
 
-#include <string> // std::size_t
-#include <vector>
+#include <cstddef>  // std::size_t
+#include <limits>   // min && max types
 
 #include "nomlib/platforms.hpp"
-
-// RTTI for library objects.
-#include "nomlib/core/ObjectTypeInfo.hpp"
 
 /*
   TODO: This should be replaced by an actual CMake script -- think:
@@ -53,6 +50,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #include <sys/types.h>
 #endif
 
+// FIXME: The following declaration is necessary in order to avoid a very
+// nasty compiling conflict that can happen under Windows anytime the
+// windef.h header file is included (commonly from windows.h), due to min and
+// max macros being declared there. This is why macros are evil.
+//
+// http://support.microsoft.com/kb/143208
+// http://stackoverflow.com/questions/5004858/stdmin-gives-error
+#if defined( NOM_PLATFORM_WINDOWS )
+  #undef min
+  #undef max
+#endif
+
 // Borrowed from /usr/include/MacTypes.h && /usr/include/objc/objc.h:
 #ifndef NULL
   #if defined( NOM_COMPILER_FEATURE_NULLPTR )
@@ -61,14 +70,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     #define NULL 0 //__DARWIN_NULL
   #endif
 #endif // ! NULL
-
-#ifndef nil
-  #if defined( NOM_COMPILER_FEATURE_NULLPTR )
-    #define nil nullptr
-  #else
-    #define nil 0 //__DARWIN_NULL
-  #endif
-#endif // ! nil
 
 // Portable fixed-size data types derive from stdint.h
 namespace nom {
@@ -91,6 +92,12 @@ typedef int32_t int32;
 /// \brief Unsigned 16-bit integer.
 typedef uint32_t uint32;
 
+/// \brief 32-bit IEEE floating-point value.
+typedef float real32;
+
+/// \brief 64-bit IEEE floating-point value.
+typedef double real64;
+
 /// \brief 64-bit integer types
 /// \note As per **/usr/include/MacTypes.h**:
 ///
@@ -109,6 +116,7 @@ typedef uint32_t uint32;
 typedef unsigned char uchar;
 
 /// \brief Variable-size (platform-defined) signed integer.
+/// \deprecated This will be removed in a future version; use int type instead.
 typedef signed int sint;
 
 /// \brief Variable-size (platform-defined) unsigned integer.
@@ -116,8 +124,12 @@ typedef unsigned int uint;
 
 typedef std::size_t size_type;
 
+typedef intptr_t* int_ptr;
+typedef uintptr_t* uint_ptr;
+
+/// \deprecated This will be removed in a future version; use int_ptr type
+/// instead.
 typedef sint* sint_ptr;
-typedef uint* uint_ptr;
 
 typedef int32_t* int32_ptr;
 typedef uint32_t* uint32_ptr;
@@ -126,6 +138,49 @@ typedef void* void_ptr;
 
 typedef unsigned long ulong;
 
+// Numerical min, max values for commonly used data types
+//
+// http://en.cppreference.com/w/cpp/types/numeric_limits
+
+const char NOM_CHAR_MIN = std::numeric_limits<char>::lowest();
+const char NOM_CHAR_MAX = std::numeric_limits<char>::max();
+const uchar NOM_UCHAR_MIN = std::numeric_limits<uchar>::lowest();
+const uchar NOM_UCHAR_MAX = std::numeric_limits<uchar>::max();
+
+const int8 NOM_INT8_MIN = std::numeric_limits<int8>::lowest();
+const int8 NOM_INT8_MAX = std::numeric_limits<int8>::max();
+const uint8 NOM_UINT8_MIN = std::numeric_limits<uint8>::lowest();
+const uint8 NOM_UINT8_MAX = std::numeric_limits<uint8>::max();
+
+const int16 NOM_INT16_MIN = std::numeric_limits<int16>::lowest();
+const int16 NOM_INT16_MAX = std::numeric_limits<int16>::max();
+const uint16 NOM_UINT16_MIN = std::numeric_limits<uint16>::lowest();
+const uint16 NOM_UINT16_MAX = std::numeric_limits<uint16>::max();
+
+const int NOM_INT_MIN = std::numeric_limits<int>::lowest();
+const int NOM_INT_MAX = std::numeric_limits<int>::max();
+const uint NOM_UINT_MIN = std::numeric_limits<uint>::lowest();
+const uint NOM_UINT_MAX = std::numeric_limits<uint>::max();
+
+const int32 NOM_INT32_MIN = std::numeric_limits<int32>::lowest();
+const int32 NOM_INT32_MAX = std::numeric_limits<int32>::max();
+const uint32 NOM_UINT32_MIN = std::numeric_limits<uint32>::lowest();
+const uint32 NOM_UINT32_MAX = std::numeric_limits<uint32>::max();
+
+const int64 NOM_INT64_MIN = std::numeric_limits<int64>::lowest();
+const int64 NOM_INT64_MAX = std::numeric_limits<int64>::max();
+const uint64 NOM_UINT64_MIN = std::numeric_limits<uint64>::lowest();
+const uint64 NOM_UINT64_MAX = std::numeric_limits<uint64>::max();
+
+const size_type NOM_SIZE_TYPE_MIN = std::numeric_limits<size_type>::lowest();
+const size_type NOM_SIZE_TYPE_MAX = std::numeric_limits<size_type>::max();
+
+const real32 NOM_REAL32_MIN = std::numeric_limits<real32>::lowest();
+const real32 NOM_REAL32_MAX = std::numeric_limits<real32>::max();
+
+const real64 NOM_REAL64_MIN = std::numeric_limits<real64>::lowest();
+const real64 NOM_REAL64_MAX = std::numeric_limits<real64>::max();
+
 /// \brief An integer indicating that there is no match, an error or NULL.
 static const int npos = -1;
 
@@ -133,13 +188,6 @@ static const int npos = -1;
 ///
 /// \remarks Used in default initialization of nom::Text, nom::UIWidget, etc.
 static const int DEFAULT_FONT_SIZE = 12;
-
-/// \brief Upper limit of exact-width integer types
-#if defined( INT32_MAX )
-
-  /// \note As per /usr/include/stdint.h under OS X v10.9.x "Mavericks".
-  static const int MAX_INT = INT32_MAX;
-#endif
 
 /// \brief Alignment types.
 ///
@@ -185,8 +233,6 @@ enum Anchor: uint32
   BottomRight = Y_BOTTOM | X_RIGHT      // Hex: 0x44, Dec: 68
 };
 
-typedef std::vector<std::string> StringList;
-
 } // namespace nom
 
 /// Ensure our data types have the right sizes using C++11 compile-time asserts.
@@ -202,20 +248,29 @@ static_assert ( sizeof ( nom::int32 ) == 4, "nom::int32" );
 static_assert ( sizeof ( nom::uint64 ) == 8, "nom::uint64" );
 static_assert ( sizeof ( nom::int64 ) == 8, "nom::int64" );
 
+static_assert ( sizeof ( nom::real32 ) == 4, "nom::real32" );
+static_assert ( sizeof ( nom::real64 ) == 8, "nom::real64" );
+
 static_assert ( sizeof ( nom::uchar ) == 1, "nom::uchar" );
 
 // Blindly assumes we are on either a 64-bit or 32-bit platform.
 #if defined( NOM_PLATFORM_ARCH_X86_64 )
   static_assert( sizeof ( nom::ulong ) == 8, "nom::ulong" );
+  static_assert( sizeof ( nom::size_type ) == 8, "nom::size_type" );
 #else // #elif defined( NOM_PLATFORM_ARCH_X86_86 )
   static_assert( sizeof ( nom::ulong ) == 4, "nom::ulong" );
+  static_assert( sizeof ( nom::size_type ) == 4, "nom::size_type" );
 #endif
 
 // Blindly assumes we are on either a 64-bit or 32-bit platform.
 #if defined( NOM_PLATFORM_ARCH_X86_64 )
+  static_assert( sizeof(nom::int_ptr) == 8, "nom::int_ptr" );
+  static_assert( sizeof(nom::uint_ptr) == 8, "nom::uint_ptr" );
   static_assert( sizeof ( nom::int32_ptr ) == ( sizeof(long) ), "nom::int32_ptr" );
   static_assert( sizeof ( nom::uint32_ptr ) == ( sizeof(nom::ulong) ), "nom::uint32_ptr" );
 #else // #elif defined(NOM_PLATFORM_ARCH_X86)
+  static_assert( sizeof(nom::int_ptr) == 4, "nom::int_ptr" );
+  static_assert( sizeof(nom::uint_ptr) == 4, "nom::uint_ptr" );
   static_assert( sizeof( nom::int32_ptr ) == ( sizeof( long ) ), "nom::int32_ptr" );
   static_assert( sizeof( nom::uint32_ptr ) == ( sizeof( nom::ulong ) ), "nom::uint32_ptr" );
 #endif

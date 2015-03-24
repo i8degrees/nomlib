@@ -32,7 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <memory>
 
-#include "SDL.h" // SDL2
+// TODO: Forward declare
+#include <SDL.h>
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
@@ -200,7 +201,7 @@ class Image
     bool save_png ( const std::string& filename ) const;
 
     /// Obtain the width and height (in pixels) of the stored bitmap buffer
-    const Point2i size ( void ) const;
+    Size2i size() const;
 
     /// Obtain the set color key for this image
     ///

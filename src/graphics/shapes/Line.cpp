@@ -48,9 +48,9 @@ Line::Line ( const IntRect& bounds, const Color4i& outline )
   this->set_outline_color ( outline );
 }
 
-IDrawable::raw_ptr Line::clone( void ) const
+Shape* Line::clone() const
 {
-  return Line::raw_ptr( new Line( *this ) );
+  return( new self_type(*this) );
 }
 
 ObjectTypeInfo Line::type( void ) const

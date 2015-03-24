@@ -67,10 +67,11 @@ class DecoratorFinalFantasyFrame : public Rocket::Core::Decorator
   private:
     std::unique_ptr<IDecorator> decorator_;
 
-    /// \brief Dirty state; comparison of the element's coordinates and our
-    /// decorator's is necessary for the resizing and moving of the decorator
-    /// to work.
-    IntRect coords_;
+    /// \brief The bounds of our decorator.
+    ///
+    /// \note The state of the element's coordinates are stored every frame so
+    /// that we can synchronize the coordinates to our custom decorator.
+    FloatRect bounds_;
 };
 
 } // namespace nom

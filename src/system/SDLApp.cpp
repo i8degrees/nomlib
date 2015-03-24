@@ -29,13 +29,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/SDLApp.hpp"
 
 // Private headers (third-party libs)
-// #include "SDL.h"
+// #include <SDL.h>
 
 // Private headers
 #include "nomlib/system/SDL_helpers.hpp"
 #include "nomlib/system/init.hpp"
 #include "nomlib/system/ColorDatabase.hpp"
-#include "nomlib/system/PlatformSettings.hpp" // System fonts initialization
 
 // Forward declarations
 #include "nomlib/system/Event.hpp"
@@ -50,8 +49,7 @@ SDLApp::SDLApp( void )
   NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_SYSTEM );
 
   uint32 flags =  OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS |
-                  OSX_DISABLE_FULLSCREEN_SPACES |
-                  INIT_ENGINE_FONTS;
+                  OSX_DISABLE_FULLSCREEN_SPACES;
 
   this->initialize( flags );
 }
@@ -222,17 +220,6 @@ bool SDLApp::initialize( uint32 flags )
       NOM_LOG_ERR( NOM, "Could not disable Spaces support." );
       return false;
     }
-  }
-
-  if( flags & INIT_ENGINE_FONTS )
-  {
-    // Create a resource cache for letting either SDLApp or the end-user add
-    // fonts for ease of access.
-    SystemFonts::initialize();
-
-    // Platform specific initialization of fonts (system, user, engine) that are
-    // available to the engine for access.
-    PlatformSettings::initialize();
   }
 
   // The color database is allocated and immediately populated

@@ -61,7 +61,9 @@ bool operator == ( const Glyph& lhs, const Glyph& rhs )
 {
   return  ( lhs.bounds.x == rhs.bounds.x )  &&  ( lhs.bounds.w == rhs.bounds.w )
                                             &&
-          ( lhs.bounds.y == rhs.bounds.y )  &&  ( lhs.bounds.h == rhs.bounds.h );
+          ( lhs.bounds.y == rhs.bounds.y )  &&  ( lhs.bounds.h == rhs.bounds.h )
+                                            &&
+          ( lhs.offset == rhs.offset );
 }
 
 bool operator < ( const Glyph& lhs, const Glyph& rhs )

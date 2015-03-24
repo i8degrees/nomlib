@@ -46,41 +46,41 @@ class ValueIterator: public ValueIteratorBase
     typedef SelfType Iterator;
 
     /// \brief Default constructor.
-    ValueIterator( void );
+    ValueIterator();
 
     /// \brief Destructor.
-    ~ValueIterator( void );
+    ~ValueIterator();
 
     /// \brief Copy constructor
-    ValueIterator( const ValueIterator& copy );
+    ValueIterator(const ValueIterator& rhs);
 
     /// \brief Copy constructor
-    ValueIterator( const ObjectIterator& itr );
+    ValueIterator(const ObjectIterator& rhs);
 
     /// \brief Copy assignment
-    SelfType& operator =( const SelfType& other );
+    SelfType& operator =(const SelfType& rhs);
 
     /// \brief Obtain a reference to the iterator's object.
     ///
     /// \returns A reference to the nom::Value object.
-    ValueTypeReference operator *( void ) const;
+    ValueTypeReference operator *() const;
 
     /// \brief Obtain a pointer to the iterator's object.
     ///
     /// \returns A pointer to the nom::Value object.
-    ValueTypePointer operator ->( void ) const;
+    ValueTypePointer operator ->() const;
 
     /// \brief Increment the object by one
-    SelfType& operator ++( void );
+    SelfType& operator ++();
 
     /// \brief Increment by specified parameter
-    SelfType operator ++( sint );
+    SelfType operator ++(int);
 
     /// \brief Decrement by one
-    SelfType& operator --( void );
+    SelfType& operator --();
 
     /// \brief Decrement by specified parameter
-    SelfType operator --( sint );
+    SelfType operator --(int);
 };
 
 } // namespace nom

@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/core/SDL2Logger.hpp"
 
 // Private headers
+#include "nomlib/core/clock.hpp"
 #include "nomlib/core/ConsoleOutput.hpp"
 
 namespace nom {

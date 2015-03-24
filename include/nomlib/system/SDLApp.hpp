@@ -64,16 +64,13 @@ class SDLApp: public EventHandler
       OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS = 0x1,
 
       /// SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES
-      OSX_DISABLE_FULLSCREEN_SPACES = 0x2,
-
-      /// Initialize the cache of font resources available to the engine.
-      INIT_ENGINE_FONTS = 0x4
+      OSX_DISABLE_FULLSCREEN_SPACES = 0x2
     };
 
     /// \brief Default constructor; initialize with the default set of hints.
     ///
-    /// \remarks The hints OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS,
-    /// OSX_DISABLE_FULLSCREEN_SPACES and INIT_ENGINE_FONTS are passed.
+    /// \remarks The hints OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS and
+    /// OSX_DISABLE_FULLSCREEN_SPACES are passed.
     SDLApp( void );
 
     /// \see SDLApp::Hints enumeration.

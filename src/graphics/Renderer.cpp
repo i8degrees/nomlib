@@ -28,6 +28,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/graphics/Renderer.hpp"
 
+// Forward declarations
+#include "nomlib/graphics/Texture.hpp"
+
+// Private headers
+#include <cstdlib>
+
 namespace nom {
 
 Renderer::Renderer ( void ) :
@@ -43,18 +49,17 @@ Renderer::~Renderer ( void )
   // Thanks for all the fish!
 }
 
-bool Renderer::create ( SDL_WINDOW::RawPtr window, int32 rendering_driver, uint32 context_flags )
+bool
+Renderer::create( SDL_WINDOW::RawPtr window, int rendering_driver,
+                  uint32 renderer_flags )
 {
   // NOM_LOG_TRACE( NOM );
 
-  this->renderer_.reset( SDL_CreateRenderer( window, rendering_driver, context_flags ) );
+  auto render_driver =
+    SDL_CreateRenderer(window, rendering_driver, renderer_flags);
+  this->renderer_.reset(render_driver);
 
-  if( this->renderer_valid() == false )
-  {
-    return false;
-  }
-
-  return true;
+  return this->renderer_valid();
 }
 
 SDL_Renderer* Renderer::renderer ( void ) const
@@ -128,13 +133,13 @@ Size2i Renderer::output_size( void ) const
   return size;
 }
 
-const IntRect Renderer::bounds ( void ) const
+IntRect Renderer::clip_bounds() const
 {
   SDL_Rect clip;
 
-  SDL_RenderGetClipRect( this->renderer(), &clip );
+  SDL_RenderGetClipRect(this->renderer(), &clip);
 
-  return IntRect ( clip.x, clip.y, clip.w, clip.h );
+  return IntRect(clip.x, clip.y, clip.w, clip.h);
 }
 
 const RendererInfo Renderer::caps ( void ) const
@@ -169,25 +174,39 @@ const RendererInfo Renderer::caps ( SDL_Renderer* target )
   return renderer_info;
 }
 
-bool Renderer::reset ( void ) const
+bool Renderer::set_render_target(const Texture* texture) const
 {
+  SDL_Renderer* renderer = this->renderer();
+  NOM_ASSERT(renderer != nullptr);
+
+  SDL_Texture* target = nullptr;
+  if( texture != nullptr ) {
+    target = texture->texture();
+  }
+
   RendererInfo caps = this->caps();
 
-  // Graphics hardware does not support render to texture
-  if ( caps.target_texture() == false )
-  {
-    NOM_LOG_ERR ( NOM, "Video hardware does not support render to texture" );
+  // Check to see if the rendering hardware supports FBO
+  if( caps.target_texture() == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Failed to set rendering target:",
+                  "the hardware does not support the operation." );
     return false;
   }
 
-  // Honor the request to reset the renderer
-  if ( SDL_SetRenderTarget ( this->renderer(), nullptr ) != 0 )
-  {
-    NOM_LOG_ERR ( NOM, SDL_GetError() );
+  // Try to honor the request; render to the source texture
+  if( SDL_SetRenderTarget(renderer, target) != 0 ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Failed to set rendering target:", SDL_GetError() );
     return false;
   }
 
   return true;
+}
+
+bool Renderer::reset_render_target() const
+{
+  return this->set_render_target(nullptr);
 }
 
 void Renderer::update ( void ) const
@@ -293,31 +312,26 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-bool Renderer::set_bounds ( const IntRect& bounds )
+bool Renderer::set_clip_bounds(const IntRect& bounds)
 {
-  if ( bounds == IntRect::null ) // Disable clipping bounds rectangle
-  {
-    if ( SDL_RenderSetClipRect( this->renderer(), nullptr ) != 0 )
-    {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-      return false;
-    }
+  SDL_Rect* clip = nullptr;
 
-    return true;
+  if( bounds != IntRect::null ) {
+    clip = new SDL_Rect( SDL_RECT(bounds) );
+  } else {
+    // Disable clipping bounds
   }
 
-  // IntRect argument is not null -- try setting the requested bounds
-  SDL_Rect clip = SDL_RECT ( bounds );
-  if ( SDL_RenderSetClipRect( this->renderer(), &clip ) != 0 )
-  {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+  if( SDL_RenderSetClipRect(this->renderer(), clip) != 0 ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Failed to set clipping bounds:", SDL_GetError() );
     return false;
   }
 
   return true;
 }
 
-void* Renderer::pixels ( void ) const
+void* Renderer::pixels() const
 {
   SDL_Rect clip;
   void* pixels = nullptr;
@@ -349,6 +363,12 @@ void* Renderer::pixels ( void ) const
 
   pixels = static_cast<uint32*> ( malloc( clip.w * clip.h * 4 ) );
 
+  if( pixels == nullptr ) {
+    // Out of memory???
+    NOM_LOG_ERR( NOM, "Could not allocate pixel buffer for screen dump." );
+    return nullptr;
+  }
+
   if ( SDL_RenderReadPixels(  this->renderer(),
                               // Use calculated bounding dimensions;
                               // Pass null to dump the pixels of the entire
@@ -365,6 +385,7 @@ void* Renderer::pixels ( void ) const
                               clip.w * 4 ) != 0 )
   {
     NOM_LOG_ERR( NOM, SDL_GetError() );
+    std::free(pixels);
     return nullptr;
   }
 

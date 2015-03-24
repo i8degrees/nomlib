@@ -75,12 +75,12 @@ class TrueTypeFont: public IFont
     TrueTypeFont ( const TrueTypeFont& copy );
 
     /// \brief Construct a clone of the existing instance
-    IFont::raw_ptr clone( void ) const;
+    IFont::raw_ptr clone( void ) const override;
 
     /// \brief Validity check
-    bool valid ( void ) const;
+    bool valid ( void ) const override;
 
-    enum IFont::FontType type ( void ) const;
+    enum IFont::FontType type ( void ) const override;
 
     TTF_Font* font ( void ) const;
 
@@ -88,31 +88,31 @@ class TrueTypeFont: public IFont
     ///
     /// \remarks It is assumed that the requested character size is already
     /// loaded into memory (using TrueTypeFont::set_point_size).
-    const Image& image ( uint32 character_size ) const;
+    const Image* image(uint32 character_size) const override;
 
     /// \brief Obtain text character spacing width in pixels
     ///
     /// \returns  The width applied when the space carriage is encountered when
     ///           rendered.
-    sint spacing ( uint32 character_size ) const;
+    sint spacing ( uint32 character_size ) const override;
 
-    int point_size( void ) const;
+    int point_size() const;
 
     /// \brief Obtain font's line spacing
     ///
     /// \param character_size Point size in pixels
     ///
     /// \returns  Height offset in pixels
-    int newline( uint32 character_size ) const;
+    int newline( uint32 character_size ) const override;
 
-    /// \returns A non-negative value on success, or negative one (-1) on
-    /// failure.
+    /// \brief Obtain the kerning pair offsets between two glyphs.
     ///
-    /// \note The font's point size affects the results.
+    /// \returns A kerning pair offset value on success, or nom::NOM_INT_MIN on
+    /// failure, such as if the font in use is invalid. If font kerning is
+    /// disabled, a value of zero (0) is always returned.
     ///
-    /// \todo Rename to kerning_size so we can create kerning getter for
-    /// kerning_ class variable.
-    int kerning( uint32 first_char, uint32 second_char, uint32 character_size ) const;
+    /// \note The font's point size affects the kerning pair offsets.
+    int kerning( uint32 first_char, uint32 second_char, uint32 character_size ) const override;
 
     /// \brief Get the font's hinting style.
     ///
@@ -120,7 +120,7 @@ class TrueTypeFont: public IFont
     /// TTF_HINTING_MONO or TTF_HINTING_NONE.
     ///
     /// \remarks The default hinting is TTF_HINTING_NONE.
-    int hinting( void ) const;
+    int hinting( void ) const override;
 
     /// \brief Obtain a glyph
     ///
@@ -128,7 +128,7 @@ class TrueTypeFont: public IFont
     /// \param    character_size   Reserved for future implementation
     ///
     /// \returns  nom::Glyph structure
-    const Glyph& glyph ( uint32 codepoint, uint32 character_size ) const;
+    const Glyph& glyph ( uint32 codepoint, uint32 character_size ) const override;
 
     /// \brief Obtain font's outline size
     ///
@@ -140,9 +140,9 @@ class TrueTypeFont: public IFont
     /// \brief Get the rendering style of the font.
     ///
     /// \returns style A bit-mask composed of one or more of the following
-    /// styles: TTF_STYLE_BOLD, TTF_STYLE_ITALIC, TTF_STYLE_UNDERLINE,
-    /// TTF_STYLE_STRIKETHROUGH.
-    uint32 font_style( void ) const;
+    /// styles: TTF_STYLE_NORMAL, TTF_STYLE_BOLD, TTF_STYLE_ITALIC,
+    /// TTF_STYLE_UNDERLINE, TTF_STYLE_STRIKETHROUGH.
+    uint32 font_style( void ) const override;
 
     /// \brief Set a new font point size
     ///
@@ -156,7 +156,7 @@ class TrueTypeFont: public IFont
     /// occurs (think: real-time), you may want to take advantage of the glyph
     /// caching feature by making a call to this method for every used point
     /// size of the scaling range.
-    bool set_point_size( int point_size );
+    bool set_point_size( int point_size ) override;
 
     /// \brief Set the requested font hinting style.
     ///
@@ -165,37 +165,37 @@ class TrueTypeFont: public IFont
     ///
     /// \note This method call forces a rebuild of the glyph cache if the input
     /// type does not match the last known hinting.
-    bool set_hinting( int type );
+    ///
+    /// \fixme This feature is broken.
+    bool set_hinting( int type ) override;
 
     /// \brief Set font's outline size
     ///
     /// \param outline The outline size in pixels
     ///
     /// \remarks This is an expensive method call; every glyph must be re-built!
-    bool set_outline( int outline );
+    bool set_outline( int outline ) override;
 
     /// \brief Set the rendering style of the font.
     ///
     /// \param style A bit-mask composed of one or more of the following styles:
     /// TTF_STYLE_BOLD, TTF_STYLE_ITALIC, TTF_STYLE_UNDERLINE,
     /// TTF_STYLE_STRIKETHROUGH.
-    ///
-    /// \fixme This method must be called *after* ::set_font_size.
-    void set_font_style( uint32 style );
+    void set_font_style( uint32 style ) override;
 
     /// \brief Set the use of kerning for the font.
-    void set_font_kerning( bool state );
+    void set_font_kerning( bool state ) override;
 
     /// \brief Load a new TrueType font from a file.
     ///
     /// \remarks Refer to the SDL_ttf documentation for file formats supported.
     /// TTF and FON file formats are known to be supported as of this writing.
-    bool load( const std::string& filename );
+    bool load( const std::string& filename ) override;
 
     /// \brief Obtain information about the loaded font
     ///
     /// \remarks Implements IFont::metrics.
-    const FontMetrics& metrics( void ) const;
+    const FontMetrics& metrics( void ) const override;
 
   private:
     /// \brief Trigger a rebuild of the font metrics from the current font; this
@@ -256,15 +256,10 @@ class TrueTypeFont: public IFont
     /// \endinternal
     sint point_size_;
 
-    /// \brief The font's applied hinting style.
-    ///
-    /// \remarks The default is TTF_HINTING_NONE.
-    int hinting_;
-
     /// \brief Whether or not to use font kerning.
     ///
     /// \remarks Default is true.
-    bool kerning_;
+    bool use_kerning_;
 };
 
 } // namespace nom

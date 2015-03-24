@@ -29,21 +29,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Text.hpp"
 
 // Private headers (third-party)
-#include "SDL.h"
+#include <SDL.h>
+#include <SDL_ttf.h>
 
 // Private headers
 #include "nomlib/graphics/fonts/Glyph.hpp"
+#include "nomlib/graphics/shapes/Rectangle.hpp"
 
-// #define NOM_DEBUG_OUTPUT_KERNING_VALUES
+// #define NOM_OLD_TEXT_RENDER
 
 namespace nom {
 
 Text::Text( void ) :
-  Transformable { Point2i::null, Size2i::null }, // Base class
+  Transformable(Point2i::zero, Size2i::null), // Base class
   text_size_ ( nom::DEFAULT_FONT_SIZE ),
   color_ ( Color4i::White ),
   style_ ( Text::Style::Normal ),
-  alignment_{ Anchor::TopLeft }
+  dirty_(false)
 {
   // NOM_LOG_TRACE( NOM );
 }
@@ -57,52 +59,89 @@ Text::Text  (
               const std::string& text,
               const Font& font,
               uint character_size,        // Default parameter
-              uint32 align,               // Default parameter
               const Color4i& text_color   // Default parameter
             )  :
-  Transformable { Point2i::null, Size2i::null }, // Base class
+  Transformable(Point2i::zero, Size2i::null), // Base class
   text_ ( text ),
   text_size_( character_size ),
-  style_( Text::Style::Normal )
+  style_( Text::Style::Normal ),
+  dirty_(false)
 {
   // NOM_LOG_TRACE( NOM );
 
   this->set_font( font );
   this->set_color( text_color );
-  this->set_alignment( align );
 }
 
 Text::Text  (
               const std::string& text,
-              const Font::raw_ptr font,
+              Font* font,
               uint character_size,        // Default parameter
-              uint32 align,               // Default parameter
               const Color4i& text_color   // Default parameter
             )  :
-  Transformable { Point2i::null, Size2i::null }, // Base class
+  Transformable(Point2i::zero, Size2i::null), // Base class
   text_ ( text ),
   text_size_( character_size ),
-  style_( Text::Style::Normal )
+  style_( Text::Style::Normal ),
+  dirty_(false)
 {
   // NOM_LOG_TRACE( NOM );
 
   this->set_font( font );
   this->set_color( text_color );
-  this->set_alignment( align );
 }
 
-Text::Text( const std::string& text ) :
-  Transformable{ Point2i::null, Size2i::null }, // Base class
-  text_{ text },
-  text_size_{ nom::DEFAULT_FONT_SIZE },
-  style_{ Text::Style::Normal }
+Text::Text(const self_type& rhs) :
+  Transformable( rhs.position(), rhs.size() ),
+  font_(rhs.font_),
+  glyphs_texture_(rhs.glyphs_texture_),
+  text_(rhs.text_),
+  text_size_(rhs.text_size_),
+  color_(rhs.color_),
+  style_(rhs.style_),
+  dirty_(rhs.dirty_)
 {
   // NOM_LOG_TRACE( NOM );
+
+  if( this->rendered_text_ != nullptr ) {
+    this->rendered_text_.reset( new Texture(*rhs.rendered_text_) );
+  }
 }
 
-IDrawable::raw_ptr Text::clone( void ) const
+Text::self_type& Text::operator =(const self_type& rhs)
 {
-  return Text::raw_ptr( new Text( *this ) );
+  Transformable::set_position( rhs.position() );
+  Transformable::set_size( rhs.size() );
+  this->font_ = rhs.font_;
+  this->glyphs_texture_ = rhs.glyphs_texture_;
+
+  if( this->rendered_text_ != nullptr ) {
+    this->rendered_text_.reset( new Texture(*rhs.rendered_text_) );
+  }
+
+  this->text_ = rhs.text_;
+  this->text_size_ = rhs.text_size_;
+  this->color_ = rhs.color_;
+  this->style_ = rhs.style_;
+  this->dirty_ = rhs.dirty_;
+
+  return *this;
+}
+
+void Text::set_position(const Point2i& pos)
+{
+  Transformable::set_position(pos);
+
+  if( this->rendered_text_ != nullptr &&
+      this->rendered_text_->valid() == true )
+  {
+    this->rendered_text_->set_position( this->position() );
+  }
+}
+
+Text* Text::clone() const
+{
+  return( new self_type(*this) );
 }
 
 ObjectTypeInfo Text::type( void ) const
@@ -110,24 +149,91 @@ ObjectTypeInfo Text::type( void ) const
   return NOM_OBJECT_TYPE_INFO( self_type );
 }
 
-Text::raw_ptr Text::get( void )
-{
-  return this;
-}
-
-Text::font_type& Text::font( void ) const
+const Font& Text::font() const
 {
   return this->font_;
 }
 
-const Texture& Text::texture ( void ) const
+// NOTE: It is necessary to always return a new Texture instance because the
+// stored texture may be reallocated at any time, i.e.: glyph rebuild from
+// point size modification -- leaving the end-user with an invalid texture!
+Texture* Text::clone_texture() const
 {
-  return this->texture_;
+  Texture* texture = new Texture();
+  NOM_ASSERT(texture != nullptr);
+
+  // Our cached texture dimensions should always be the same as the rendered
+  // text's dimensions; if the rendered text appears cut off, the calculated
+  // text width or height is likely to blame!
+  Size2i texture_dims(Size2i::zero);
+  texture_dims = this->size();
+  // Padding
+  // texture_dims.w += this->text_width(" ");
+
+  RenderWindow* context = nom::render_interface();
+  NOM_ASSERT(context != nullptr);
+  if( context == nullptr ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION, "Could not update cache",
+                  "invalid renderer." );
+    NOM_DELETE_PTR(texture);
+    return texture;
+  }
+
+  // Obtain the optimal pixel format for the platform
+  RendererInfo caps = context->caps();
+
+  if( texture->initialize( caps.optimal_texture_format(),
+      SDL_TEXTUREACCESS_TARGET, texture_dims ) == false )
+  {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not update cache: failed texture creation." );
+    NOM_DELETE_PTR(texture);
+    return texture;
+  }
+
+  // Use an alpha channel; otherwise the text is rendered on a black
+  // background!
+  texture->set_blend_mode(SDL_BLENDMODE_BLEND);
+
+  // Set the destination (screen) positioning of the rendered text
+  texture->set_position( this->position() );
+
+  if( context->set_render_target(texture) == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not update cache: failed to set the rendering target." );
+    NOM_DELETE_PTR(texture);
+    return texture;
+  }
+
+  // Clear the rendering backdrop color to be fully transparent; this preserves
+  // any existing alpha channel data from the rendered text
+  if( context->fill(Color4i::Transparent) == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not update cache:",
+                  "failed to set the render target's color." );
+    NOM_DELETE_PTR(texture);
+    return texture;
+  }
+
+  this->render_text(*context);
+
+  if( context->reset_render_target() == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not update cache:",
+                  "failed to reset the rendering target." );
+    NOM_DELETE_PTR(texture);
+    return texture;
+  }
+
+  return texture;
 }
 
 bool Text::valid ( void ) const
 {
-  return this->font().valid();
+  if( this->font() != nullptr ) {
+    return this->font()->valid();
+  }
+  return false;
 }
 
 // enum IFont::FontType Text::font_type( void ) const
@@ -137,60 +243,98 @@ bool Text::valid ( void ) const
 //   return IFont::FontType::NotDefined;
 // }
 
-sint Text::text_width ( const std::string& text_string ) const
+int Text::text_width(const std::string& text_buffer) const
 {
-  sint text_width = 0;
-  uint32 previous_char = 0; // Kerning calculation
-  int kerning_value = -1;
-  std::string text_buffer = text_string;
+  int text_width = 0;
+  int max_text_width = 0;
 
   // Ensure that our font pointer is still valid
-  if ( this->valid() == false )
-  {
+  if( this->valid() == false ) {
     NOM_LOG_ERR( NOM, "Invalid font for width calculation" );
     return text_width;
   }
 
-  // Calculate text width up to either: a) end of string; b) newline character.
-  //
-  // We add kerning offsets, the glyph's advance offsets, and spacing onto the
-  // total text_width count.
-  for ( uint32 pos = 0; pos < text_buffer.length() && text_buffer[pos] != '\n'; ++pos )
-  {
-    // Apply kerning offset
+  for( auto pos = 0; pos < text_buffer.length(); ++pos ) {
+
     uint32 current_char = text_buffer[pos];
 
-    kerning_value = this->font()->kerning( previous_char, current_char, this->text_size() );
+    if( current_char == '\n' ) {
 
-    if( kerning_value != -1 )
-    {
-      text_width += kerning_value;
-    }
+      max_text_width =
+        std::max( max_text_width, this->multiline_width(text_buffer, pos) );
+    } else {
 
-    previous_char = current_char;
-
-    if ( current_char == ' ' ) // ASCII space glyph (32)
-    {
-      text_width += this->font()->spacing ( this->text_size() );
-    }
-    else if ( current_char == '\t' ) // Tab character (we indent two spaces)
-    {
-      text_width += this->font()->spacing ( this->text_size() ) * 2;
-    }
-    else // Printable ASCII glyph (33..127)
-    {
-      // Match the offset calculations done in the text rendering -- hence the
-      // plus one (+1) spacing.
-      text_width += this->font()->glyph(current_char, this->text_size() ).advance + 1;
+      // Printable ASCII glyph; 33..127
+      text_width =
+        std::max(text_width, this->multiline_width(text_buffer, pos) );
     }
   } // end for loop
 
-  return text_width;
+  return( std::max(text_width, max_text_width) );
 }
 
-sint Text::width ( void ) const
+// Private call
+int
+Text::multiline_width(const std::string& text_buffer, nom::size_type pos) const
 {
-  return this->text_width ( this->text() );
+  int text_width = 0;
+  int max_text_width = 0;
+  uint32 previous_kerning_char = 0;
+  int kerning_offset = 0;
+  nom::size_type text_buffer_end = text_buffer.length();
+
+  nom::size_type next_newline =
+    text_buffer.find('\n', pos + 1);
+
+  if( next_newline != std::string::npos ) {
+    text_buffer_end = next_newline;
+  } else {
+    // Use default initialized result
+  }
+
+  for(  auto character_pos = pos;
+        character_pos != text_buffer_end;
+        ++character_pos )
+  {
+    uint32 current_char = text_buffer[character_pos];
+
+    kerning_offset =
+      this->font()->kerning(  previous_kerning_char, current_char,
+                              this->text_size() );
+
+    if( kerning_offset != nom::NOM_INT_MIN ) {
+      text_width += kerning_offset;
+    }
+
+    previous_kerning_char = current_char;
+
+    if( current_char == ' ' ) {
+
+      // ASCII 32; space glyph
+      text_width +=
+        this->font()->spacing( this->text_size() );
+
+    } else if( current_char == '\t' ) {
+
+      // Tab character; indent two space glyphs
+      text_width +=
+        this->font()->spacing( this->text_size() ) * 2;
+
+    } else if( current_char == '\n' ) {
+      // Do nothing
+    } else {
+
+      text_width +=
+        this->font()->glyph(current_char, this->text_size() ).advance + 1;
+    }
+
+    max_text_width = std::max(text_width, max_text_width);
+  }
+
+  // Padding for rendered_text_
+  // max_text_width += this->font()->spacing( this->text_size() );
+
+  return max_text_width;
 }
 
 sint Text::text_height ( const std::string& text_string ) const
@@ -227,11 +371,6 @@ sint Text::text_height ( const std::string& text_string ) const
   return text_height;
 }
 
-sint Text::height ( void ) const
-{
-  return this->text_height ( this->text() );
-}
-
 const std::string& Text::text ( void ) const
 {
   return this->text_;
@@ -252,78 +391,37 @@ uint32 Text::style( void ) const
   return this->style_;
 }
 
-/*
-const Point2i& Text::local_bounds ( void ) const
-{
-}
-*/
-
-IntRect Text::global_bounds( void ) const
-{
-  IntRect bounds;
-
-  // Positioning coordinates as would be rendered on-screen
-  bounds.x = this->position().x;
-  bounds.y = this->position().y;
-
-  // Text width and height, in pixels, with respect to set font
-  bounds.w = this->width();
-  bounds.h = this->height();
-
-  return bounds;
-}
-
-uint32 Text::alignment( void ) const
-{
-  return this->alignment_;
-}
-
-uint32 Text::features( void ) const
-{
-  return this->features_;
-}
-
-void Text::set_size( const Size2i& size )
-{
-  Transformable::set_size( size );
-
-  this->set_alignment( this->alignment() );
-}
-
-void Text::set_font( const Text::font_type& font )
+void Text::set_font(const Font& font)
 {
   this->font_ = font;
 
   this->set_text_size( this->text_size() );
 }
 
-void Text::set_font( Text::font_type* font )
+void Text::set_font(Font* font)
 {
   this->font_ = *font;
 
   this->set_text_size( this->text_size() );
-
-  // Set the overall size of this text label to the width & height of the text,
-  // with consideration to the specific font in use.
-  // this->set_size( Size2i( this->text_width( this->text() ), this->text_height( this->text() ) ) );
 }
 
 void Text::set_text( const std::string& text )
 {
-  if ( text == this->text() )
-  {
-    return;
+  if( text != this->text() ) {
+    this->text_ = text;
+
+    this->dirty_ = true;
+    this->update();
   }
-
-  this->text_ = text;
-
-  // Set the overall size of this text label to the width & height of the text,
-  // with consideration to the specific font in use.
-  // this->set_size( Size2i( this->text_width( text ), this->text_height( text ) ) );
 }
 
 void Text::set_text_size ( uint character_size )
 {
+  RenderWindow* context = nom::render_interface();
+
+  // Default pixel format used when context is NULL
+  uint32 pixel_format = SDL_PIXELFORMAT_ARGB8888;
+
   if ( this->valid() == false )
   {
     NOM_LOG_ERR( NOM, "Could not set text size: the font is invalid." );
@@ -335,11 +433,33 @@ void Text::set_text_size ( uint character_size )
   // Force a rebuild of the texture atlas at the specified point size
   this->font()->set_point_size( this->text_size() );
 
-  this->update();
+  if( context != nullptr ) {
+    RendererInfo caps = context->caps();
+    pixel_format = caps.optimal_texture_format();
+  }
 
-  // Set the overall size of this text label to the width & height of the text,
-  // with consideration to the specific font in use.
-  // this->set_size( Size2i( this->text_width( this->text() ), this->text_height( this->text() ) ) );
+  // We can only (sanely) initialize our texture once we know the text size; we
+  // will update this texture only as it becomes necessary (see ::update).
+  if( this->glyphs_texture_.create( *this->font()->image( this->text_size() ), pixel_format, Texture::Access::Streaming ) == false ) {
+    NOM_LOG_ERR(  NOM, "Could not create texture atlas at point size:",
+                  std::to_string( this->text_size() ) );
+    return;
+  }
+
+  if( this->rendered_text_ == nullptr ) {
+    this->rendered_text_.reset( new Texture() );
+  }
+
+  NOM_ASSERT(this->rendered_text_ != nullptr);
+  if( this->rendered_text_ == nullptr ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not create texture cache:",
+                  "failed to allocate texture memory." );
+    return;
+  }
+
+  this->dirty_ = true;
+  this->update();
 }
 
 void Text::set_color( const Color4i& color )
@@ -351,6 +471,7 @@ void Text::set_color( const Color4i& color )
 
   this->color_ = color;
 
+  this->dirty_ = true;
   this->update();
 }
 
@@ -364,69 +485,55 @@ void Text::set_style( uint32 style )
   // Set new style if sanity checks pass
   this->style_ = style;
 
+  this->dirty_ = true;
   this->update();
 }
 
-void Text::set_alignment( uint32 align )
+void Text::set_text_kerning(bool state)
 {
-  Point2i offset( this->position() );
+  this->font()->set_font_kerning(state);
 
-  this->alignment_ = align;
-
-  if( this->valid() == false ) return;
-  if( this->position() == Point2i::null ) return;
-  if( this->size() == Size2i::null ) return;
-
-  // Anchor::TopLeft, Anchor::Left, Anchor::BottomLeft
-  if( align & Alignment::X_LEFT )
-  {
-    offset.x = this->position().x;
-  }
-
-  // Anchor::TopCenter, Anchor::MiddleCenter, Anchor::BottomCenter
-  if( align & Alignment::X_CENTER )
-  {
-    offset.x = this->position().x + ( this->size().w - this->width() ) / 2;
-  }
-
-  // Anchor::TopRight, Anchor::MiddleRight, Anchor::BottomRight
-  if( align & Alignment::X_RIGHT )
-  {
-    offset.x = this->position().x + ( this->size().w - this->width() );
-  }
-
-  // Anchor::TopLeft, Anchor::TopCenter, Anchor::TopRight
-  if( align & Alignment::Y_TOP )
-  {
-    offset.y = this->position().y;
-  }
-
-  // Anchor::MiddleLeft, Anchor::MiddleCenter, Anchor::MiddleRight
-  if( align & Alignment::Y_CENTER )
-  {
-    offset.y = this->position().y + ( this->size().h - this->height() ) / 2;
-  }
-
-  // Anchor::BottomLeft, Anchor::BottomCenter, Anchor::BottomRight
-  if( align & Alignment::Y_BOTTOM )
-  {
-    offset.y = this->position().y + ( this->size().h - this->height() );
-  }
-
-  this->set_position( offset );
+  this->dirty_ = true;
+  this->update();
 }
 
-void Text::draw ( RenderTarget& target ) const
+void Text::draw(RenderTarget& target) const
 {
-  // Font kerning
-  int kerning_value = -1;
+
+#if defined(NOM_OLD_TEXT_RENDER)
+  if( this->valid() == true ) {
+    this->render_text(target);
+  }
+#else
+  if( this->rendered_text_ != nullptr &&
+      this->rendered_text_->valid() == true )
+  {
+    this->rendered_text_->draw(target);
+  }
+#endif
+}
+
+// Private scope
+
+void Text::render_text(RenderTarget& target) const
+{
+  int kerning_offset = 0;
   uint32 previous_char = 0;
   uint32 current_char = 0;
 
-  // Use coordinates provided by interface user as our starting origin
-  // coordinates to compute from
-  int x_offset = this->position().x;
-  int y_offset = this->position().y;
+  // Our position should always start from zero, when rendering text to a
+  // rendering target (glyphs_texture_ -> rendered_text_), so that updating
+  // text positions only effect the rendered text.
+#if defined(NOM_OLD_TEXT_RENDER)
+  Point2i pos( this->position() );
+#else
+  Point2i pos(Point2i::zero);
+#endif
+  // Additional rendering offsets; applicable to nom::BMFont
+  Point2i glyph_offset(Point2i::zero);
+
+  // Final rendering position
+  Point2i tex_pos(Point2i::zero);
 
   double angle = 0;
 
@@ -441,154 +548,242 @@ void Text::draw ( RenderTarget& target ) const
 
   if ( this->style() == Text::Style::Italic )
   {
-    angle = 12; // 12 degrees as per SDL2_ttf
+    // angle = 12; // 12 degrees as per SDL2_ttf
   }
 
-  for ( uint32 pos = 0; pos < text_buffer.length(); ++pos )
-  {
+  for( auto i = 0; i < text_buffer.length(); ++i ) {
+
     // Apply kerning offset
-    current_char = text_buffer[pos];
-    kerning_value = this->font()->kerning( previous_char, current_char, this->text_size() );
+    current_char = text_buffer[i];
+    kerning_offset = this->font()->kerning( previous_char, current_char, this->text_size() );
 
-    if( kerning_value != -1 )
-    {
-      #if defined( NOM_DEBUG_OUTPUT_KERNING_VALUES )
-        if( kerning_value != 0 )
-        {
-          NOM_LOG_INFO( NOM, "kerning_value: ", kerning_value );
-        }
-      #endif
-
-      x_offset += kerning_value;
+    if( kerning_offset != nom::NOM_INT_MIN ) {
+      pos.x += kerning_offset;
     }
 
     previous_char = current_char;
 
+    glyph_offset =
+      this->font()->glyph( current_char, this->text_size() ).offset;
+
     if ( current_char == ' ' ) // Space character
     {
-      //Move over
-      x_offset += this->font()->spacing ( this->text_size() );
+      // Move over
+      pos.x += this->font()->spacing ( this->text_size() );
     }
     else if( current_char == '\n' || current_char == '\v' ) // Vertical chars
     {
-      //Move down and back over to the beginning of line
-      y_offset += this->font()->newline ( this->text_size() );
-      x_offset = this->position().x;
+      // Move down and back over to the beginning of line
+      pos.y += this->font()->newline ( this->text_size() );
+      pos.x = this->position().x;
     }
     else if( current_char == '\t' ) // Tab character (we indent two spaces)
     {
-      x_offset += this->font()->spacing ( this->text_size() ) * 2;
+      pos.x += this->font()->spacing ( this->text_size() ) * 2;
     }
     else // The time to render is now!
     {
-      this->texture_.set_position ( Point2i ( x_offset, y_offset ) );
-      this->texture_.set_bounds ( this->font()->glyph(current_char, this->text_size() ).bounds );
+      IntRect glyph_bounds =
+        this->font()->glyph( current_char, this->text_size() ).bounds;
 
-      this->texture_.draw ( target.renderer(), angle );
+      Size2i tex_dims;
+      tex_dims.w = glyph_bounds.w;
+      tex_dims.h = glyph_bounds.h;
+
+      // Apply rendering offsets; applicable to nom::BMFont glyphs
+      tex_pos =
+        Point2i(pos.x + glyph_offset.x, pos.y + glyph_offset.y);
+      this->glyphs_texture_.set_position(tex_pos);
+
+      this->glyphs_texture_.set_bounds(glyph_bounds);
+      this->glyphs_texture_.set_size(tex_dims);
+
+      this->glyphs_texture_.draw(target.renderer(), angle);
 
       // Move over the width of the character with one pixel of padding
-      x_offset += ( this->font()->glyph(current_char, this->text_size() ).advance ) + 1;
-
-      // Prevent rendering of text that is longer than its contained size;
-      // this generally must be set by the developer.
-      if( this->features() & ExtraRenderingFeatures::CropText &&
-          this->size() != Size2i::null
-        )
-      {
-        // Maximal cropping bounds
-        int bounds = this->position().x + this->size().w;
-
-        if( x_offset >= bounds ) break;
-      }
+      pos.x += ( this->font()->glyph(current_char, this->text_size() ).advance ) + 1;
 
     } // end else
   } // end for loop
+
+// Debugging overlay to show the bounds of the overall text rendering
+#if 0
+    IntRect text_overlay;
+    text_overlay.x = this->position().x;
+    text_overlay.y = this->position().y;
+    text_overlay.w = this->size().w;
+    text_overlay.h = this->size().h;
+    Color4i text_overlay_color = Color4i(151, 161, 225, 128);
+    Rectangle text_bounds(text_overlay, text_overlay_color);
+    text_bounds.draw(target);
+#endif
 }
 
-bool Text::resize ( enum Texture::ResizeAlgorithm scaling_algorithm )
-{
-  if ( this->valid() == false )
-  {
-    NOM_LOG_ERR ( NOM, "Video surface is invalid." );
-    return false;
-  }
-/* TODO: (an implementation in nom::Image)
-  if ( this->bitmap_font.resize ( scaling_algorithm ) == false )
-  {
-NOM_LOG_ERR ( NOM, "Failed to resize the video surface." );
-    return false;
-  }
-TODO */
-
-/* TODO (implement in IFont, BitmapFont, TrueTypeFont classes)
-  if ( this->font_->build() == false )
-  {
-    NOM_LOG_ERR ( NOM, "Could not build bitmap font metrics" );
-    return false;
-  }
-TODO */
-
-  return true;
-}
-
-void Text::set_features( uint32 flags )
-{
-  this->features_ = flags;
-
-  this->update();
-}
-
-void Text::update( void )
+void Text::update()
 {
   uint32 style = this->style();
+  uint32 e_style = 0;
 
-  // No font has been loaded -- nothing to draw!
-  if ( this->valid() == false )
-  {
+  if( this->dirty_ == false ) {
     return;
   }
 
-  if( style & Text::Style::Normal )
-  {
-    this->font()->set_font_style( TTF_STYLE_NORMAL );
+  this->dirty_ = false;
+
+  // No font has been loaded -- nothing to draw!
+  if( this->valid() == false ) {
+    return;
   }
 
-  if( style & Text::Style::Bold )
-  {
-    this->font()->set_font_style( TTF_STYLE_BOLD );
+  e_style = this->font()->font_style();
+
+  if( style & Text::Style::Bold ) {
+    e_style |= TTF_STYLE_BOLD;
   }
 
-  if( style & Text::Style::Italic )
-  {
-    this->font()->set_font_style( TTF_STYLE_ITALIC );
+  if( style & Text::Style::Italic ) {
+    e_style |= TTF_STYLE_ITALIC;
   }
 
-  if( style & Text::Style::Underlined )
-  {
-    this->font()->set_font_style( TTF_STYLE_UNDERLINE );
+  if( style & Text::Style::Underline ) {
+    e_style |= TTF_STYLE_UNDERLINE;
   }
 
-  if( style & Text::Style::Strikethrough )
-  {
-    this->font()->set_font_style( TTF_STYLE_STRIKETHROUGH );
+  if( style & Text::Style::Strikethrough ) {
+    e_style |= TTF_STYLE_STRIKETHROUGH;
+  }
+
+  // Expensive call
+  if( ! (style & Text::Style::Normal) ) {
+    this->font()->set_font_style(e_style);
   }
 
   // Update the texture atlas; this is necessary anytime we rebuild the font's
   // glyphs cache, such as when we change the text's font point size or rendering
   // style.
-  if( this->texture_.create( this->font()->image( this->text_size() ) ) == false )
-  {
-    NOM_LOG_ERR ( NOM, "Could not create texture at point size: " + std::to_string( this->text_size() ) );
+  // This is an expensive call.
+  const Image* source = this->font()->image( this->text_size() );
+
+  NOM_ASSERT(source != nullptr);
+  if( source->valid() == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not update glyphs texture: invalid image source." );
     return;
   }
 
-  // Update the font's text color.
-  this->texture_.set_color_modulation( this->color() );
-
-  if( this->features() & ExtraRenderingFeatures::CropText )
-  {
-    // this->set_alignment( alignment() );
+  // Expensive call
+  if( glyphs_texture_.lock() == true ) {
+    glyphs_texture_.copy_pixels( source->pixels(), source->pitch() * source->height() );
+    glyphs_texture_.unlock();
+  } else {
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION,
+                "Could not update glyphs texture: could not lock texture." );
+    return;
   }
+
+  // NOTE: By **not** preserving the alpha channel here, we introduce a bug that
+  // can clip off the edges of certain glyphs when using kerning -- as can be
+  // seen in the letter 'A' of the 'Kerning' tests of BMFont and TrueTypeFont.
+  //
+  // The downside to blending is that we lose the original pixel data around the
+  // edges of text; the input color gets blended in with the destination color.
+  this->glyphs_texture_.set_blend_mode(SDL_BLENDMODE_BLEND);
+
+  // Update the font's text color.
+  this->glyphs_texture_.set_color_modulation( this->color() );
+
+  // Set the overall size of this text label to the width & height of the text,
+  // with consideration to the font.
+  this->set_size( Size2i( this->width(), this->height() ) );
+
+#if ! defined(NOM_OLD_TEXT_RENDER)
+  if( this->size().w > 0 && this->size().h > 0 ) {
+    // Expensive call
+    this->update_cache();
+  }
+#endif
+}
+
+int Text::width() const
+{
+  return this->text_width( this->text() );
+}
+
+int Text::height() const
+{
+  return this->text_height( this->text() );
+}
+
+bool Text::update_cache()
+{
+  // Our cached texture dimensions should always be the same as the rendered
+  // text's dimensions; if the rendered text appears cut off, the calculated
+  // text width or height is likely to blame!
+  Size2i texture_dims(Size2i::zero);
+  texture_dims = this->size();
+  // Padding
+  // texture_dims.w += this->text_width(" ");
+
+  RenderWindow* context = nom::render_interface();
+  NOM_ASSERT(context != nullptr);
+  if( context == nullptr ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION, "Could not update cache",
+                  "invalid renderer." );
+    return false;
+  }
+
+  // Obtain the optimal pixel format for the platform
+  RendererInfo caps = context->caps();
+
+  if( this->rendered_text_->size() != texture_dims ) {
+
+    // Poor man's counter of how often we are re-allocating this texture
+    // NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_RENDER, NOM_LOG_PRIORITY_DEBUG);
+    // NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_RENDER,
+    //                 "old_size:", this->rendered_text_->size(),
+    //                 "new_size:", texture_dims );
+
+    if( this->rendered_text_->initialize( caps.optimal_texture_format(),
+        SDL_TEXTUREACCESS_TARGET, texture_dims ) == false )
+    {
+      NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                    "Could not update cache: failed texture creation." );
+      return false;
+    }
+  }
+
+  // Use an alpha channel; otherwise the text is rendered on a black
+  // background!
+  this->rendered_text_->set_blend_mode(SDL_BLENDMODE_BLEND);
+
+  // Set the destination (screen) positioning of the rendered text
+  this->rendered_text_->set_position( this->position() );
+
+  if( context->set_render_target( this->rendered_text_.get() ) == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not update cache: render targets not supported." );
+    return false;
+  }
+
+  // Clear the rendering backdrop color to be fully transparent; this preserves
+  // any existing alpha channel data from the rendered text
+  if( context->fill(Color4i::Transparent) == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not update cache:",
+                  "failed to set the render target's color." );
+    return false;
+  }
+
+  this->render_text(*context);
+
+  if( context->reset_render_target() == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not update cache:",
+                  "failed to reset the rendering target." );
+    return false;
+  }
+
+  return true;
 }
 
 } // namespace nom

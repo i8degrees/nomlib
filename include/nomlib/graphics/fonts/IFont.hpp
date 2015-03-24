@@ -55,7 +55,8 @@ class IFont
     {
       NotDefined = 0,
       BitmapFont,
-      TrueTypeFont
+      TrueTypeFont,
+      BMFont
     };
 
     IFont( void )
@@ -71,7 +72,7 @@ class IFont
     virtual IFont::raw_ptr clone( void ) const = 0;
     virtual bool valid ( void ) const = 0;
 
-    virtual const Image& image ( uint32 ) const = 0;
+    virtual const Image* image(uint32) const = 0;
     virtual enum IFont::FontType type ( void ) const = 0;
 
     virtual const Glyph& glyph ( uint32, uint32 ) const = 0;
@@ -83,11 +84,17 @@ class IFont
     virtual const FontMetrics& metrics( void ) const = 0;
 
     virtual bool set_point_size( int ) = 0;
+
+    /// \todo Rename to set_font_hinting..?
     virtual bool set_hinting( int ) = 0;
+
+    /// \todo Rename to set_font_outline..?
     virtual bool set_outline( int ) = 0;
+
     virtual void set_font_style( uint32 style ) = 0;
     virtual void set_font_kerning( bool state ) = 0;
 
+    /// \todo Rename to load_file.
     virtual bool load( const std::string& filename ) = 0;
 };
 
@@ -119,3 +126,6 @@ class IFont
 ///       [USAGE EXAMPLE STUB]
 ///
 /// \endcode
+///
+/// Reference: [ASCII Table](http://upload.wikimedia.org/wikipedia/commons/1/1b/ASCII-Table-wide.svg)
+///

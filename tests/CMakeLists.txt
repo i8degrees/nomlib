@@ -7,144 +7,254 @@
 # NOTE: You may need to issue a 'make rebuild_cache' after changing test
 # fixture names, in order to get 'make test' to recognize the modified test
 # code.
+
+# Source file inclusion root (directory); must be an absolute path.
+set( TESTS_SRC_DIR "${PROJECT_SOURCE_DIR}/tests/src" )
+
+# Header file inclusion root (directory); must be an absolute path.
+set( TESTS_INC_DIR "${PROJECT_SOURCE_DIR}/tests/include" )
+
+# Use common build output directories for MSVCPP && Xcode project files.
 #
-# NOTE: To display a unit test's full debugging output (NOM_LOG_ERR, NOM_DUMP
-# and friends), run the test's executable directly. This debugging output will
-# not be shown when using the 'test' target -- i.e.: make target.
+# IMPORTANT: Debug and Release build targets **must** be kept in separate build
+# trees!
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/tests/Debug")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/tests/Release")
+
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/tests/Debug")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/tests/Release")
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/tests/Debug")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/tests/Release")
+
+if(DEBUG)
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG})
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG})
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG})
+else() # Release builds
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE})
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE})
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE})
+endif()
+
+# This path is used for the local installation of required dependencies for
+# running unit tests, such as dependent resource files. Additionally, when
+# building on Windows, this will be the path that dependent DLLs are copied to.
 #
-# NOTE: Compiling nomlib under Windows without iterator asserts --
-# /D_ITERATOR_DBUG_LEVEL=0 -- will cause GTest to throw SEH exception errors
-# before it is able to display actual & expected results when a unit test fails.
-#
-# NOTE: The custom command line processing used by nom::UnitTest for interactive
-# interactive test runs breaks under Windows when building with the target
-# library ${GTEST_BOTH_LIBRARIES}, due to GTest's main library overwriting our
-# unit test's main functions. In summary, only the library target
-# ${GTEST_LIBRARY} should be used, to ensure cross-platform support.
+# IMPORTANT: This path serves a vital role in the *consistent* usage of CTest
+# and GTest across the supported CMake project generators -- Unix Makefiles,
+# Xcode and MSVCPP. The path **must** be prepended on every unit test
+# executable created using the add_test and GTEST_ADD_TESTS commands.
+set( TESTS_INSTALL_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" )
 
-# UnitTest framework tests
-set( NOM_BUILD_COMMON_TESTS TRUE )
+# TODO: Relocate me?
+set( NOM_BUILD_UNIT_TEST_UNIT ON )
+set( NOM_BUILD_VISUAL_UNIT_TEST_UNIT ON )
 
-# Core engine tests
-set( NOM_BUILD_SDL2_LOGGER_TESTS TRUE )
+set( NOM_BUILD_CORE_TESTS ON )
+set( NOM_BUILD_FILE_TESTS ON )
+set( NOM_BUILD_MATH_TESTS ON )
+set( NOM_BUILD_PTREE_TESTS ON )
+set( NOM_BUILD_SERIALIZERS_TESTS ON )
+set( NOM_BUILD_SYSTEM_TESTS ON )
+set( NOM_BUILD_AUDIO_TESTS ON )
+set( NOM_BUILD_GRAPHICS_TESTS ON )
+set( NOM_BUILD_ACTIONS_TESTS ON )
+set( NOM_BUILD_GUI_TESTS ON )
 
-# Audio subsystem tests
-set( NOM_BUILD_OPENAL_AUDIO_TESTS TRUE )
+# Tests for the testing framework
+set( NOM_BUILD_UNIT_TEST_TESTS ON )
+set( NOM_BUILD_VTEST_TESTS ON )
 
-# Graphics tests
-set( NOM_BUILD_RENDERWINDOW_TESTS TRUE )
-set( NOM_BUILD_GRADIENT_TESTS TRUE )
+if( EXISTS "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+  include( "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+endif()
 
-# GUI tests
-set( NOM_BUILD_GUI_TESTS TRUE )
-set( NOM_BUILD_GUI_DATAGRID_TESTS TRUE )
+# Project headers files inclusions; our header files namespace, 'nomlib'
+include_directories( "${INC_ROOT_DIR}" )
 
-# Math tests
-set( NOM_BUILD_MATH_TESTS TRUE )
+# Third-party dependencies
 
-# Property Tree tests
-set( NOM_BUILD_PTREE_TESTS TRUE )
+# Absolute path to project's third-party 'common' directory
+set( NOM_THIRD_PARTY_COMMON_DIR "${PROJECT_SOURCE_DIR}/third-party/common" )
 
-# Serializer tests
-set( NOM_BUILD_SERIALIZERS_JSON_TESTS TRUE )
-set( NOM_BUILD_SERIALIZERS_XML_TESTS TRUE )
-set( NOM_BUILD_JSON_CONFIG_FILE_TESTS TRUE )
-set( NOM_BUILD_SERIALIZERS_HTML_TESTS TRUE )
+# nomlib-core external deps
+find_package( SDL2 REQUIRED )
+if( SDL2_FOUND )
+  # Add development header files; SDL.h & friends
+  include_directories( ${SDL2_INCLUDE_DIR} )
+endif( SDL2_FOUND )
 
-# System tests
-set( NOM_BUILD_FILE_TESTS TRUE )
-set( NOM_BUILD_FONT_CACHE_TESTS TRUE )
-set( NOM_BUILD_COLOR_DB_TESTS TRUE )
+# nomlib-audio external deps
+if( PLATFORM_WINDOWS )
+  find_package( OpenAL REQUIRED )
+  if( OPENAL_FOUND )
+    # Add development header files; al.h, alc.h
+    include_directories( ${OPENAL_INCLUDE_DIR} )
+  endif( OPENAL_FOUND )
+endif( PLATFORM_WINDOWS )
 
-if( PLATFORM_WINDOWS OR CMAKE_GENERATOR STREQUAL "Xcode" )
+# nomlib-gui external deps
+find_package( libRocket REQUIRED )
+if( LIBROCKET_FOUND )
+  # Add development header files
+  include_directories( ${LIBROCKET_INCLUDE_DIRS} )
+endif( LIBROCKET_FOUND )
 
-  # Path under Windows should resolve to: build/tests/Debug
-  set ( TESTS_DEPS_INSTALL_PEFIX
-        "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}"
-      )
+# third-party, headers-only dependency TCLAP
+set( TCLAP_INCLUDE_DIR "${NOM_THIRD_PARTY_COMMON_DIR}/tclap" )
 
-else( NOT PLATFORM_WINDOWS )
+if( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
+  message(  FATAL_ERROR
+            "Could not find header file ${TCLAP_INCLUDE_DIR} for TCLAP; "
+            "see nomlib's third-party/README.md for help obtaining this "
+            "required dependency."
+  )
+else( EXISTS ${TCLAP_INCLUDE_DIR} )
+  message( STATUS "TCLAP headers found: ${TCLAP_INCLUDE_DIR}" )
+endif( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
 
-  # Path should resolve to a directory: build/tests
-  set ( TESTS_DEPS_INSTALL_PEFIX
-        "${CMAKE_CURRENT_BINARY_DIR}"
-      )
+# Header file inclusion; third-party -- TCLAP
+include_directories("${NOM_THIRD_PARTY_COMMON_DIR}")
 
-endif( PLATFORM_WINDOWS OR CMAKE_GENERATOR STREQUAL "Xcode" )
+# Unit test dependencies (common / global)
+if( PLATFORM_OSX )
+  set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/osx/gtest" )
+else( PLATFORM_WINDOWS )
+  set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/windows/gtest" )
+else( PLATFORM_LINUX )
+  # TODO
+endif( PLATFORM_OSX )
 
-# NOTE: we set GTEST_ROOT in the dependencies section of our project's
-# root build script.
 find_package( GTest REQUIRED )
 
 include_directories( ${GTEST_INCLUDE_DIRS} )
 
-# TODO: Header file list is used for adding to project files (IDE)
-#
-# See also: src/CMakeLists.txt, source_group command
-file ( GLOB NOM_TESTS_COMMON_HEADERS ${NOM_TESTS_COMMON_HEADERS} "${NOM_TESTS_HEADERS_DIR}/${PROJECT_NAME}/tests/common/*.hpp" )
+set(  NOM_TESTS_UNIT_TEST_SOURCE
+      ${TESTS_SRC_DIR}/UnitTest/UnitTest.cpp
+      ${TESTS_INC_DIR}/nomlib/tests/UnitTest/UnitTest.hpp
+)
 
-set (
-      NOM_TESTS_COMMON_SOURCE
-      ${NOM_TESTS_SOURCE_DIR}/common/UnitTest.cpp
-    )
+set(  NOM_TESTS_VTEST_SOURCE
+      ${TESTS_SRC_DIR}/VisualUnitTest/ImageTestSet.cpp
+      ${TESTS_INC_DIR}/nomlib/tests/VisualUnitTest/ImageTestSet.hpp
 
-set (
-      NOM_TESTS_VTEST_SOURCE
-      ${NOM_TESTS_COMMON_SOURCE}
-      ${NOM_TESTS_SOURCE_DIR}/common/ImageTestSet.cpp
-      ${NOM_TESTS_SOURCE_DIR}/common/VisualUnitTest.cpp
-      ${NOM_TESTS_SOURCE_DIR}/common/ImageDiff.cpp
-      ${NOM_TESTS_SOURCE_DIR}/common/TestResultWriter.cpp
-      ${NOM_TESTS_SOURCE_DIR}/common/VisualUnitTestResultWriter.cpp
-      ${NOM_TESTS_SOURCE_DIR}/common/HTMLTestResultWriter.cpp
-      ${NOM_TESTS_SOURCE_DIR}/common/MinimalTestResultWriter.cpp
-    )
+      ${TESTS_SRC_DIR}/VisualUnitTest/VisualUnitTest.cpp
+      ${TESTS_INC_DIR}/nomlib/tests/VisualUnitTest/VisualUnitTest.hpp
 
-include_directories( "${NOM_TESTS_HEADERS_DIR}" )
+      ${TESTS_SRC_DIR}/VisualUnitTest/ImageDiff.cpp
+      ${TESTS_INC_DIR}/nomlib/tests/VisualUnitTest/ImageDiff.hpp
 
-include( "${NOM_TESTS_SOURCE_DIR}/common/CMakeLists.txt" )
-include( "${NOM_TESTS_SOURCE_DIR}/core/CMakeLists.txt" )
-include( "${NOM_TESTS_SOURCE_DIR}/audio/CMakeLists.txt" )
-include( "${NOM_TESTS_SOURCE_DIR}/graphics/CMakeLists.txt" )
-include( "${NOM_TESTS_SOURCE_DIR}/gui/CMakeLists.txt" )
-include( "${NOM_TESTS_SOURCE_DIR}/math/CMakeLists.txt" )
-include( "${NOM_TESTS_SOURCE_DIR}/ptree/CMakeLists.txt" )
-include( "${NOM_TESTS_SOURCE_DIR}/system/CMakeLists.txt" )
-include( "${NOM_TESTS_SOURCE_DIR}/serializers/CMakeLists.txt" )
+      ${TESTS_SRC_DIR}/VisualUnitTest/TestResultWriter.cpp
+      ${TESTS_INC_DIR}/nomlib/tests/VisualUnitTest/TestResultWriter.hpp
+
+      ${TESTS_SRC_DIR}/VisualUnitTest/VisualUnitTestResultWriter.cpp
+      ${TESTS_INC_DIR}/nomlib/tests/VisualUnitTest/VisualUnitTestResultWriter.hpp
+
+      ${TESTS_SRC_DIR}/VisualUnitTest/HTMLTestResultWriter.cpp
+      ${TESTS_INC_DIR}/nomlib/tests/VisualUnitTest/HTMLTestResultWriter.hpp
+
+      ${TESTS_SRC_DIR}/VisualUnitTest/MinimalTestResultWriter.cpp
+      ${TESTS_INC_DIR}/nomlib/tests/VisualUnitTest/MinimalTestResultWriter.hpp
+)
+
+if( NOM_BUILD_UNIT_TEST_UNIT )
+
+  set( NOM_UNIT_TEST_LIBRARY_DEPS ${GTEST_LIBRARY} nomlib-core nomlib-file )
+
+  if( PLATFORM_WINDOWS )
+    list( APPEND NOM_UNIT_TEST_LIBRARY_DEPS ${SDL2MAIN_LIBRARY} )
+  endif( PLATFORM_WINDOWS )
+
+  add_library(  nomlib-unit-test ${LIBRARY_OUTPUT_TYPE}
+                ${NOM_TESTS_UNIT_TEST_SOURCE} )
+
+  # Link nomlib-unit-test
+  target_link_libraries( nomlib-unit-test ${NOM_UNIT_TEST_LIBRARY_DEPS} )
+
+endif( NOM_BUILD_UNIT_TEST_UNIT )
+
+if( NOM_BUILD_VISUAL_UNIT_TEST_UNIT )
+
+  set( NOM_VISUAL_UNIT_TEST_LIBRARY_DEPS nomlib-unit-test nomlib-graphics )
+
+  add_library(  nomlib-visual-unit-test
+                ${LIBRARY_OUTPUT_TYPE} ${NOM_TESTS_VTEST_SOURCE} )
+
+  # Link nomlib-visual-unit-test
+  target_link_libraries( nomlib-visual-unit-test ${NOM_VISUAL_UNIT_TEST_LIBRARY_DEPS} )
+
+endif( NOM_BUILD_VISUAL_UNIT_TEST_UNIT )
+
+include_directories("${TESTS_INC_DIR}")
+
+if( NOM_BUILD_UNIT_TEST_TESTS )
+  add_subdirectory("src/UnitTest")
+endif( NOM_BUILD_UNIT_TEST_TESTS )
+
+if( NOM_BUILD_VTEST_TESTS )
+  add_subdirectory("src/VisualUnitTest")
+endif( NOM_BUILD_VTEST_TESTS )
+
+if( NOM_BUILD_CORE_TESTS )
+  add_subdirectory("src/core")
+endif( NOM_BUILD_CORE_TESTS )
+
+if( NOM_BUILD_AUDIO_TESTS )
+  add_subdirectory("src/audio")
+endif( NOM_BUILD_AUDIO_TESTS )
+
+if( NOM_BUILD_GRAPHICS_TESTS )
+  add_subdirectory("src/graphics")
+endif( NOM_BUILD_GRAPHICS_TESTS )
+
+if( NOM_BUILD_ACTIONS_TESTS )
+  add_subdirectory("src/actions")
+endif( NOM_BUILD_ACTIONS_TESTS )
+
+if( NOM_BUILD_GUI_TESTS )
+  add_subdirectory("src/gui")
+endif( NOM_BUILD_GUI_TESTS )
+
+if( NOM_BUILD_MATH_TESTS )
+  add_subdirectory("src/math")
+endif( NOM_BUILD_MATH_TESTS )
+
+if( NOM_BUILD_PTREE_TESTS )
+  add_subdirectory("src/ptree")
+endif( NOM_BUILD_PTREE_TESTS )
+
+if( NOM_BUILD_SYSTEM_TESTS )
+  add_subdirectory("src/system")
+endif( NOM_BUILD_SYSTEM_TESTS )
+
+if( NOM_BUILD_SERIALIZERS_TESTS )
+  add_subdirectory("src/serializers")
+endif( NOM_BUILD_SERIALIZERS_TESTS )
 
 # Install library dependencies into tests output directory so we can always
 # execute the binaries with the proper dependency versions.
 if ( PLATFORM_WINDOWS )
+
+  if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
+    set( GTEST_LIBRARY_REDIST_DLL "${GTEST_ROOT}/lib/gtestd.dll" )
+  else()
+    set( GTEST_LIBRARY_REDIST_DLL "${GTEST_ROOT}/lib/gtest.dll" )
+  endif()
+
+  install(  FILES ${GTEST_LIBRARY_REDIST_DLL}
+            DESTINATION ${TESTS_INSTALL_DIR}
+            RENAME "gtest.dll" )
+
   install ( DIRECTORY
-            "${SDL2_LIBRARY_DIR}"
-            "${SDL2_IMAGE_LIBRARY_DIR}"
-            "${SDL2_TTF_LIBRARY_DIR}"
-            "${OPENAL_LIBRARY_DIR}"
-            "${LIBSNDFILE_LIBRARY_DIR}"
-            "${MSVCPP_LIBRARY_REDIST}"
-            "${GTEST_ROOT}/lib/"        # GTest re-dist libs
+            ${SDL2_REDIST_DIR}
+            ${SDL2_IMAGE_REDIST_DIR}
+            ${SDL2_TTF_REDIST_DIR}
+            ${OPENAL_REDIST_DIR}
+            ${LIBSNDFILE_REDIST_DIR}
+            ${MSVCPP_REDIST_DIR}
             DESTINATION
-            "${TESTS_DEPS_INSTALL_PEFIX}"
+            ${TESTS_INSTALL_DIR}
             FILES_MATCHING PATTERN "*.dll"
           )
 endif ( PLATFORM_WINDOWS )
-
-if( NOM_BUILD_TEMPLATES_UNIT )
-
-  add_executable  (
-                    Template
-                    "${PROJECT_SOURCE_DIR}/Resources/SharedSupport/UnitTestTemplate.cpp"
-                  )
-
-  target_link_libraries ( Template
-                          ${GTEST_LIBRARY}
-                          ${PROJECT_NAME} # nomlib
-                        )
-
-  GTEST_ADD_TESTS (
-                    Template
-                    "Template"
-                    "${PROJECT_SOURCE_DIR}/Resources/SharedSupport/UnitTestTemplate.cpp"
-                  )
-
-endif( NOM_BUILD_TEMPLATES_UNIT )

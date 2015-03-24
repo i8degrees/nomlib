@@ -46,8 +46,7 @@ TrueTypeFont::TrueTypeFont ( void ) :
   sheet_width_ ( 16 ),
   sheet_height_ ( 16 ),
   point_size_ ( nom::DEFAULT_FONT_SIZE ),   // Terrible Eyesight (TM)
-  hinting_( TTF_HINTING_NONE ),
-  kerning_( true )
+  use_kerning_(true)
 {
   // NOM_LOG_TRACE( NOM );
 
@@ -64,16 +63,15 @@ TrueTypeFont::~TrueTypeFont ( void )
 }
 
 TrueTypeFont::TrueTypeFont ( const TrueTypeFont& copy ) :
-  type_ { copy.type() },
-  sheet_width_ { copy.sheet_width() },
-  sheet_height_ { copy.sheet_height() },
-  font_ { copy.font_ },
-  pages_ { copy.pages() },
-  metrics_ { copy.metrics() },
-  filename_ { copy.filename_ },
-  point_size_ { copy.point_size() },
-  hinting_{ copy.hinting() },
-  kerning_{ copy.kerning_ }
+  type_( copy.type() ),
+  sheet_width_( copy.sheet_width() ),
+  sheet_height_( copy.sheet_height() ),
+  font_( copy.font_ ),
+  pages_( copy.pages() ),
+  metrics_( copy.metrics() ),
+  filename_( copy.filename_ ),
+  point_size_( copy.point_size() ),
+  use_kerning_(copy.use_kerning_)
 {
   // NOM_LOG_TRACE( NOM );
 }
@@ -100,9 +98,9 @@ TTF_Font* TrueTypeFont::font ( void ) const
   return this->font_.get();
 }
 
-const Image& TrueTypeFont::image ( uint32 character_size ) const
+const Image* TrueTypeFont::image(uint32 character_size) const
 {
-  return *this->pages_[character_size].texture.get();
+  return this->pages_[character_size].texture.get();
 }
 
 int TrueTypeFont::spacing ( uint32 character_size ) const
@@ -129,22 +127,40 @@ int TrueTypeFont::newline( uint32 character_size ) const
 
 int TrueTypeFont::kerning( uint32 first_char, uint32 second_char, uint32 character_size ) const
 {
-  // Null character
-  if ( first_char == 0 || second_char == 0 )
-  {
-    return -1;
+  int kerning_offset = 0;
+
+  // if ( first_char == 0 || second_char == 0 ) {
+  //   // Null character
+  //   return kerning_offset;
+  // }
+
+  if( this->use_kerning_ == false ) {
+    // Use of kerning pair offsets are disabled
+    return kerning_offset;
   }
 
-  if( this->valid() && this->kerning_ == true )
-  {
-    // NOM_LOG_INFO( NOM, "sdl2_ttf kerning: ", TTF_GetFontKerning( this->font() ) );
-
-    NOM_ASSERT( TTF_GetFontKerning( this->font() ) == this->kerning_ );
-
-    return TTF_GetFontKerningSize( this->font(), first_char, second_char );
+  if( this->valid() == false ) {
+    // Invalid font
+    return nom::NOM_INT_MIN;
   }
 
-  return -1;
+  // NOM_LOG_INFO( NOM, "sdl2_ttf kerning: ", TTF_GetFontKerning( this->font() ) );
+
+  // Check for state consistency between SDL_TTF and us
+  NOM_ASSERT(TTF_GetFontKerning( this->font() ) == this->use_kerning_);
+
+  kerning_offset = TTF_GetFontKerningSize(this->font(), first_char, second_char);
+
+  if( kerning_offset == nom::NOM_INT_MIN ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not obtain kerning offset: ", TTF_GetError() );
+
+    // Err; SDL_TTF related
+    return kerning_offset;
+  }
+
+  // Success
+  return kerning_offset;
 }
 
 const Glyph& TrueTypeFont::glyph ( uint32 codepoint, uint32 character_size ) const
@@ -174,12 +190,22 @@ int TrueTypeFont::outline ( /*uint32 character_size*/void ) /*const*/
 
 int TrueTypeFont::hinting( void ) const
 {
-  return TTF_GetFontHinting( this->font() );
+  if( this->valid() == true ) {
+    return TTF_GetFontHinting( this->font() );
+  }
+
+  // Default
+  return TTF_HINTING_NONE;
 }
 
 uint32 TrueTypeFont::font_style( void ) const
 {
-  return TTF_GetFontStyle( this->font() );
+  if( this->valid() == true ) {
+    return TTF_GetFontStyle( this->font() );
+  }
+
+  // Default
+  return TTF_STYLE_NORMAL;
 }
 
 bool TrueTypeFont::set_point_size( int point_size )
@@ -208,17 +234,30 @@ bool TrueTypeFont::set_point_size( int point_size )
 bool TrueTypeFont::set_hinting( int type )
 {
   // Expensive function call
-  if( this->hinting_ != type )
-  {
-    TTF_SetFontHinting( this->font(), type );
+  if( this->hinting() != type ) {
 
-    if ( this->build( this->point_size() ) == false )
-    {
-      NOM_LOG_ERR ( NOM, "Could not set requested font hinting." );
-      return false;
-    }
-  }
+    if( this->valid() == true ) {
+      TTF_SetFontHinting( this->font(), type );
 
+      int point_size = this->point_size();
+
+      // Force a rebuild of the font page by clearing / invalidating it.
+      // this->pages_[point_size].invalidate();
+
+      if( this->build(point_size) == false ) {
+        NOM_LOG_ERR ( NOM, "Could not set requested font hinting." );
+        return false;
+      }
+
+      // Success
+      return true;
+    } // end if valid
+
+    // Err; invalid
+    return false;
+  } // end if hinting != type
+
+  // Nothing to do; the font hinting has not changed
   return true;
 }
 
@@ -264,12 +303,12 @@ void TrueTypeFont::set_font_kerning( bool state )
   if( state == true )
   {
     TTF_SetFontKerning( this->font(), 1 );
-    this->kerning_ = true;
+    this->use_kerning_ = true;
   }
   else
   {
     TTF_SetFontKerning( this->font(), 0 );
-    this->kerning_ = false;
+    this->use_kerning_ = false;
   }
 }
 
@@ -300,7 +339,8 @@ bool TrueTypeFont::load( const std::string& filename )
   // Set the font face style name
   this->metrics_.name = std::string( TTF_FontFaceFamilyName( this->font() ) );
 
-  this->hinting_ = this->hinting();
+  // FIXME: This feature is broken
+  // this->set_hinting( this->hinting() );
 
   // Attempt to build font metrics
   if ( this->build ( this->point_size() ) == false )

@@ -30,70 +30,71 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-ValueIterator::ValueIterator( void )
+ValueIterator::ValueIterator()
 {
   //NOM_LOG_TRACE(NOM);
 }
 
-ValueIterator::~ValueIterator( void )
+ValueIterator::~ValueIterator()
 {
   //NOM_LOG_TRACE(NOM);
 }
 
-ValueIterator::ValueIterator( const ValueIterator& copy )
+ValueIterator::ValueIterator(const ValueIterator& rhs)
 {
   //NOM_LOG_TRACE(NOM);
-  this->copy( copy );
+
+  this->copy(rhs);
 }
 
-ValueIterator::ValueIterator( const ObjectIterator& itr ) :
-  ValueIteratorBase ( itr )
+ValueIterator::ValueIterator(const ObjectIterator& rhs) :
+  ValueIteratorBase(rhs)
 {
   //NOM_LOG_TRACE(NOM);
 }
 
-ValueIterator::SelfType& ValueIterator::operator =( const SelfType& other )
+ValueIterator::SelfType& ValueIterator::operator =(const SelfType& rhs)
 {
-  this->copy( other );
+  this->copy(rhs);
 
   return *this;
 }
 
-ValueIterator::ValueTypeReference ValueIterator::operator *( void ) const
+ValueIterator::ValueTypeReference ValueIterator::operator *() const
 {
   return this->dereference();
 }
 
-ValueIterator::ValueTypePointer ValueIterator::operator ->( void ) const
+ValueIterator::ValueTypePointer ValueIterator::operator ->() const
 {
   return this->pointer();
 }
 
-ValueIterator::SelfType& ValueIterator::operator ++( void )
+ValueIterator::SelfType& ValueIterator::operator ++()
 {
    this->increment();
 
    return *this;
 }
 
-ValueIterator::SelfType ValueIterator::operator ++( sint )
+ValueIterator::SelfType ValueIterator::operator ++(int)
 {
-   SelfType itr( *this );
+   SelfType itr(*this);
    ++*this;
 
    return itr;
 }
 
-ValueIterator::SelfType& ValueIterator::operator --( void )
+ValueIterator::SelfType& ValueIterator::operator --()
 {
    this->decrement();
 
    return *this;
 }
 
-ValueIterator::SelfType ValueIterator::operator --( sint )
+ValueIterator::SelfType ValueIterator::operator --(int)
 {
-   SelfType itr( *this );
+   SelfType itr(*this);
 
    return itr;
 }

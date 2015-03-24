@@ -1,6 +1,8 @@
 # nomlib
 
-C++11 cross-platform 2D game engine (SDL2 powered).
+[![Build Status](https://travis-ci.org/i8degrees/nomlib.png?branch=master,dev)](https://travis-ci.org/i8degrees/nomlib)
+
+C++11 2D game framework using SDL2
 
 ## Projects Using nomlib
 
@@ -17,10 +19,6 @@ First, ensure that you have the following core dependencies installed:
 Next, you should visit the dependencies section for your platform. After these mundane chores are complete, you should be ready to start the building process for your platform!
 
 ### Mac OS X
-
-master branch: [![Build Status](https://travis-ci.org/i8degrees/nomlib.png?branch=master)](https://travis-ci.org/i8degrees/nomlib)
-
-dev branch: [![Build Status](https://travis-ci.org/i8degrees/nomlib.png?branch=dev)](https://travis-ci.org/i8degrees/nomlib)
 
 After you have the dependencies taken care of, execute the following commands at your terminal prompt:
 
@@ -43,10 +41,6 @@ Linux builds are broken at the moment.
 
 ~~Until I get around to writing the proper instructions, you may take a look at my
 .travis.yml build script in the project root of nomlib for hints!~~
-
-#### Linux Build Status #####
-
-[![Build Status](https://travis-ci.org/i8degrees/nomlib.png?branch=master,dev)](https://travis-ci.org/i8degrees/nomlib)
 
 ### Windows
 

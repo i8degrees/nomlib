@@ -59,31 +59,21 @@ const auto WINDOW_RESOLUTION = Size2i(WINDOW_WIDTH / 2, WINDOW_HEIGHT);
 const nom::int32 MAXIMUM_WINDOWS = 2;
 
 const nom::int32 USER_EVENT_DEBUG = 0;
-/// \brief Usage example
-/// \remarks For unit testing: ensure that library is compiled with
-/// the appropriate defines enabled within EventHandler.hpp.
+
 class App: public nom::SDLApp
 {
   public:
-    App( nom::int32 argc, char* argv[] )
+    App(nom::int32 argc, char* argv[])
     {
-      NOM_LOG_TRACE( NOM );
+      NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
 
-      // Fatal error; if we are not able to complete this step, it means that
-      // we probably cannot rely on our resource paths!
-      if( nom::init( argc, argv ) == false )
-      {
-        nom::DialogMessageBox( APP_NAME, "ERROR: Could not initialize nomlib." );
-        exit( NOM_EXIT_FAILURE );
-      }
+      nom::set_hint(NOM_EVENT_QUEUE_STATISTICS, "1");
+    }
 
-      atexit( nom::quit );
-    } // end App
-
-    ~App( void )
+    ~App()
     {
-      NOM_LOG_TRACE( NOM );
-    } // end ~App
+      NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
+    }
 
     bool on_init( void )
     {
@@ -388,8 +378,6 @@ class App: public nom::SDLApp
         ev.jaxis.dump();
       }
 
-      // NOM_LOG_TRACE( NOM );
-
       switch( dir )
       {
         default:
@@ -540,13 +528,23 @@ class App: public nom::SDLApp
     nom::InputStateMapper input_mapper;
 }; // end class App
 
-nom::sint main( nom::int32 argc, char* argv[] )
+int main(nom::int32 argc, char* argv[])
 {
-  App app ( argc, argv );
+  // Fatal error; if we are not able to complete this step, it means that
+  // we probably cannot rely on our resource paths!
+  if( nom::init(argc, argv) == false ) {
+    NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not initialize nomlib." );
+    return NOM_EXIT_FAILURE;
+  }
 
-  if ( app.on_init() == false )
-  {
-    nom::DialogMessageBox( APP_NAME, "ERROR: Could not initialize application." );
+  atexit(nom::quit);
+
+  App app(argc, argv);
+
+  if( app.on_init() == false ) {
+    NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not initialize application." );
     return NOM_EXIT_FAILURE;
   }
 

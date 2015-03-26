@@ -206,7 +206,7 @@ uint32 RGBA ( const Color4i& color, uint32 fmt );
 /// \param name   Hint to query
 ///
 /// \return Value of the queried name, or a null-terminated string if not set
-std::string hint( const std::string& name );
+std::string hint(const std::string& name);
 
 /// SDL2 helper function
 ///
@@ -219,7 +219,7 @@ std::string hint( const std::string& name );
 /// been made, as certain hints, i.e.: SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES
 /// must be called before video initialization, whereas others depend on a valid
 /// renderer, etc.
-bool set_hint( const std::string& name, const std::string& value );
+bool set_hint(const std::string& name, const std::string& value);
 
 const std::string PIXEL_FORMAT_NAME ( uint32 format );
 

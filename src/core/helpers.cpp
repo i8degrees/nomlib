@@ -29,9 +29,32 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/core/helpers.hpp"
 
+#include <inttypes.h>
+
 namespace nom {
 
 namespace priv {
+
+int string_to_integer(const char* str)
+{
+  int base = 10;
+  int result = 0;
+
+  if( str != nullptr ) {
+    result = strtoimax(str, nullptr, base);
+  } else {
+    result = 0;
+  }
+
+  return result;
+}
+
+int string_to_integer(const std::string& str)
+{
+  int result = string_to_integer( str.c_str() );
+
+  return result;
+}
 
 nom::size_type string_length(const char* str)
 {

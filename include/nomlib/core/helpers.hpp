@@ -36,12 +36,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// TODO: Remove nom::priv namespace
 namespace priv {
 
 /// \brief Maximum size a nom::Value string type may be
 ///
 /// \remarks Buffer overflow protection.
 const nom::size_type MAX_STRING_LENGTH = 256;
+
+int string_to_integer(const char* str);
+int string_to_integer(const std::string& str);
 
 nom::size_type string_length(const char* str);
 nom::size_type string_length(const std::string& str);

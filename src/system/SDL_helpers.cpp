@@ -168,24 +168,29 @@ uint32 RGBA ( const Color4i& color, uint32 fmt )
   return SDL_MapRGBA ( SDL_AllocFormat(fmt), color.r, color.g, color.b, color.a );
 }
 
-std::string hint( const std::string& name )
+std::string hint(const std::string& name)
 {
-  const char* result;
+  const char* hint_str = name.c_str();
+  const char* hint_result = nullptr;
+  std::string result = "\0";
 
-  result = SDL_GetHint( name.c_str() );
+  hint_result = SDL_GetHint(hint_str);
+  if( hint_result != nullptr ) {
+    result = hint_result;
+  }
 
-  // Success
-  if( result != nullptr ) return result;
-
-  // Err
-  return "\0";
+  return result;
 }
 
-bool set_hint( const std::string& name, const std::string& value )
+bool set_hint(const std::string& name, const std::string& value)
 {
-  if( SDL_SetHint( name.c_str(), value.c_str() ) == false ) return false;
+  bool result = true;
 
-  return true;
+  if( SDL_SetHint( name.c_str(), value.c_str() ) == false ) {
+    result = false;
+  }
+
+  return result;
 }
 
 const std::string PIXEL_FORMAT_NAME ( uint32 format )

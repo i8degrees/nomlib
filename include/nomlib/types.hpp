@@ -284,4 +284,8 @@ const nom::sint NOM_EXIT_SUCCESS = 0; // EXIT_SUCCESS from cstdlib headers
 const nom::sint SDL_SUCCESS = 0; // Non-error return value for SDL2 API
 //#endif
 
+// Configuration variables for the engine
+
+#define NOM_EVENT_QUEUE_STATISTICS "NOM_EVENT_QUEUE_STATISTICS"
+
 #endif // include guard defined

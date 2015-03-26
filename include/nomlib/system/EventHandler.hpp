@@ -95,12 +95,12 @@ class EventHandler
     /// \brief Default constructor.
     ///
     /// \remarks The joystick subsystem is initialized here.
-    EventHandler( void );
+    EventHandler();
 
     /// \brief Destructor.
     ///
     /// \remarks The joystick subsystem is shutdown within nom::SDLApp.
-    virtual ~EventHandler( void );
+    virtual ~EventHandler();
 
     /// \brief The high-level events handler.
     ///
@@ -334,13 +334,13 @@ class EventHandler
     virtual void on_user_event( const Event& ev );
 
     /// \brief Remove the top event from the high-level events queue.
-    bool pop_event( Event& ev );
+    bool pop_event(Event& ev);
 
     /// \brief Insert an event into the high-level events queue.
     ///
     /// \remarks This can be used to simulate input events; i.e.: key press,
     /// mouse click, ...
-    void push_event( const Event& ev );
+    void push_event(const Event& ev);
 
   private:
     /// \brief Enumerate the available events from the underlying events
@@ -352,7 +352,7 @@ class EventHandler
 
     /// \brief Enumerate the available events from the underlying events
     /// subsystem (SDL_Event).
-    void process_events( void );
+    void process_events();
 
     /// \brief The high-level queue of available events.
     ///
@@ -364,6 +364,9 @@ class EventHandler
     /// does, less and except any events omitted from processing within the
     /// nom::EventHandler::process_event method.
     std::queue<Event> events_;
+
+    /// \brief The maximum number of events seen.
+    nom::size_type max_events_count_;
 
     Joystick joystick;
 };

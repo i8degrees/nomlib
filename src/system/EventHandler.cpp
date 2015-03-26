@@ -29,23 +29,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/EventHandler.hpp"
 
 #include "nomlib/core/clock.hpp"
+#include "nomlib/core/helpers.hpp"
 
 // Private headers (third-party)
 #include <SDL.h>
 
 namespace nom {
 
-EventHandler::EventHandler( void )
+EventHandler::EventHandler() :
+  max_events_count_(0)
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_EVENT, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_EVENT,
+                      NOM_LOG_PRIORITY_VERBOSE );
 
   // TODO: Err handling?
   this->joystick.initialize();
 }
 
-EventHandler::~EventHandler( void )
+EventHandler::~EventHandler()
 {
-  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_EVENT, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_EVENT,
+                      NOM_LOG_PRIORITY_VERBOSE );
+
+  auto enable_report = nom::hint("NOM_EVENT_QUEUE_STATISTICS");
+  if( priv::string_to_integer(enable_report) != 0 ) {
+    NOM_LOG_DEBUG(NOM, "num_events:", this->events_.size() );
+    NOM_LOG_DEBUG(NOM, "max_events_count:", max_events_count_);
+  }
 }
 
 void EventHandler::process_event( const Event& ev )
@@ -828,11 +838,14 @@ void EventHandler::on_user_event( const Event& ev )
   #endif
 }
 
-bool EventHandler::pop_event( Event& ev )
+bool EventHandler::pop_event(Event& ev)
 {
+  nom::size_type num_events = 0;
+  bool result = false;
+
   // Empty event queue -- it's time to start gathering events
-  if( this->events_.empty() )
-  {
+  if( this->events_.empty() == true ) {
+
     // Use the underlying events subsystem (SDL2 events) to poll for available
     // events. Once processed, our wrapped nom::Event queue should contain the
     // same SDL_Event struct(s) preicsely, less & except minus any event type we
@@ -849,24 +862,30 @@ bool EventHandler::pop_event( Event& ev )
     //     this->process_events();
     //   }
     // }
+
+    result = false;
   }
 
   // Events queue is NOT empty; return the top of the queue stack to the
   // end-user as the current event and mark it processed (remove it from queue).
-  if( ! this->events_.empty() )
-  {
+  if( this->events_.empty() == false ) {
     ev = this->events_.front();
     this->events_.pop();
 
-    return true;
+    result = true;
   }
 
-  return false;
+  num_events = this->events_.size();
+  if( num_events > this->max_events_count_ ) {
+    this->max_events_count_ = num_events;
+  }
+
+  return result;
 }
 
-void EventHandler::push_event( const Event& ev )
+void EventHandler::push_event(const Event& ev)
 {
-  this->events_.push( ev );
+  this->events_.push(ev);
 }
 
 void EventHandler::process_event( const SDL_Event* ev )
@@ -1498,16 +1517,20 @@ void EventHandler::process_event( const SDL_Event* ev )
   } // end switch event->type
 }
 
-void EventHandler::process_events( void )
+void EventHandler::process_events()
 {
   SDL_Event ev;
 
   // Enumerate events from all available input devices
   SDL_PumpEvents();
 
-  while( SDL_PeepEvents( &ev, 1, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT ) )
-  {
-    this->process_event( &ev );
+  int result = -1;
+
+  while( result != 0 ) {
+    this->process_event(&ev);
+
+    result =
+      SDL_PeepEvents(&ev, 1, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT);
   }
 }
 

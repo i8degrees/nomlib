@@ -39,15 +39,31 @@ const uint8 MAX_TEXT_INPUT_LENGTH = 255;
 
 class EventCallback;
 
+/// \todo Implement QuitEvent struct
+/// \remarks SDL_QUIT; event type 256 (dec).
+
 /// \brief A structure containing information on a window event.
 ///
-/// \remarks SDL_WINDOWEVENT.
+/// \remarks SDL_WINDOWEVENT; event type 512 (dec).
 struct WindowEvent
 {
   /// \brief An enumeration of window events.
   ///
-  /// \remarks SDL_WINDOWEVENT_NONE, SDL_WINDOWEVENT_SHOWN,
-  /// SDL_WINDOWEVENT_HIDDEN, ..., SDL_WINDOWEVENT_CLOSE.
+  /// \remarks SDL_WINDOWEVENT_NONE; event type 0 (dec).
+  /// \remarks SDL_WINDOWEVENT_SHOWN; event type 1 (dec).
+  /// \remarks SDL_WINDOWEVENT_HIDDEN; event type 2 (dec).
+  /// \remarks SDL_WINDOWEVENT_EXPOSED; event type 3 (dec).
+  /// \remarks SDL_WINDOWEVENT_MOVED; event type 4 (dec).
+  /// \remarks SDL_WINDOWEVENT_RESIZED; event type 5 (dec).
+  /// \remarks SDL_WINDOWEVENT_SIZE_CHANGED; event type 6 (dec).
+  /// \remarks SDL_WINDOWEVENT_MINIMIZED; event type 7 (dec).
+  /// \remarks SDL_WINDOWEVENT_MAXIMIZED; event type 8 (dec).
+  /// \remarks SDL_WINDOWEVENT_RESTORED; event type 9 (dec).
+  /// \remarks SDL_WINDOWEVENT_ENTER; event type 10 (dec).
+  /// \remarks SDL_WINDOWEVENT_LEAVE; event type 11 (dec).
+  /// \remarks SDL_WINDOWEVENT_FOCUS_GAINED; event type 12 (dec).
+  /// \remarks SDL_WINDOWEVENT_FOCUS_LOST; event type 13 (dec).
+  /// \remarks SDL_WINDOWEVENT_CLOSE; event type 14 (dec).
   uint8 event;
 
   /// \brief Event dependent data; typically the X coordinate position or width
@@ -105,7 +121,8 @@ struct KeyboardSymbolEvent
 
 /// \brief A structure containing information on a keyboard event.
 ///
-/// \remarks SDL_KEYDOWN or SDL_KEYUP.
+/// \remarks  SDL_KEYDOWN; event type 768 (dec),
+///           SDL_KEYUP; event type 769 (dec).
 struct KeyboardEvent
 {
   SDL_Scancode scan_code;
@@ -144,7 +161,7 @@ struct KeyboardEvent
 
 /// \brief A structure containing information on a mouse event.
 ///
-/// \remarks SDL_MOUSEMOTION.
+/// \remarks SDL_MOUSEMOTION; event type 1024 (dec).
 struct MouseMotionEvent
 {
   /// \brief The mouse instance identifier, or SDL_TOUCH_MOUSEID.
@@ -190,7 +207,8 @@ struct MouseMotionEvent
 
 /// \brief A structure containing information on a mouse button event.
 ///
-/// \remarks SDL_MOUSEBUTTONDOWN (1025) or SDL_MOUSEBUTTONUP (1026).
+/// \remarks  SDL_MOUSEBUTTONDOWN; event type 1025 (dec),
+///           SDL_MOUSEBUTTONUP; event type 1026 (dec).
 struct MouseButtonEvent
 {
   /// \brief The mouse instance identifier, or SDL_TOUCH_MOUSEID.
@@ -243,7 +261,7 @@ struct MouseButtonEvent
 
 /// \brief A structure containing information on a mouse wheel event.
 ///
-/// \remarks SDL_MOUSEWHEEL.
+/// \remarks SDL_MOUSEWHEEL; event type 1027 (dec).
 struct MouseWheelEvent
 {
   /// \brief The mouse instance identifier, or SDL_TOUCH_MOUSEID.
@@ -284,7 +302,7 @@ struct MouseWheelEvent
 
 /// \brief A structure containing information on a joystick axis motion event.
 ///
-/// \remarks SDL_JOYAXISMOTION.
+/// \remarks SDL_JOYAXISMOTION; event type 1536 (dec).
 struct JoystickAxisEvent
 {
   /// \brief Index of the joystick that reported the event.
@@ -311,7 +329,8 @@ struct JoystickAxisEvent
 
 /// \brief A structure containing information on a joystick button event.
 ///
-/// \remarks SDL_JOYBUTTONDOWN or SDL_JOYBUTTON_UP.
+/// \remarks  SDL_JOYBUTTONDOWN; event type 1539 (dec),
+///           SDL_JOYBUTTONUP; event type 1540 (dec).
 struct JoystickButtonEvent
 {
   /// \brief Index of the joystick that reported the event.
@@ -333,6 +352,7 @@ struct JoystickButtonEvent
   }
 };
 
+/// \remarks SDL_JOYDEVICEADDED; event type 1541 (dec).
 struct JoystickConnectedEvent
 {
   /// \brief Index of the joystick that reported the event.
@@ -344,6 +364,7 @@ struct JoystickConnectedEvent
   }
 };
 
+/// \remarks SDL_JOYDEVICEREMOVED; event type 1542 (dec).
 struct JoystickDisconnectedEvent
 {
   /// \brief Index of the joystick that reported the event.
@@ -455,7 +476,7 @@ struct GestureEvent
 
 /// \brief A structure containing information on a Drag 'N' Drop event.
 ///
-/// \remarks SDL_DROPFILE.
+/// \remarks SDL_DROPFILE; event type 4096 (dec).
 struct DragDropEvent
 {
   /// \brief The path of the file dropped onto the nom::Window.
@@ -472,7 +493,7 @@ struct DragDropEvent
 
 /// \brief A structure containing information on a text input event.
 ///
-/// \remarks SDL_TEXTINPUT.
+/// \remarks SDL_TEXTINPUT; event type 771 (dec).
 struct TextInputEvent
 {
   /// \brief The text input.

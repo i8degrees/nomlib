@@ -847,9 +847,7 @@ bool EventHandler::pop_event(Event& ev)
   if( this->events_.empty() == true ) {
 
     // Use the underlying events subsystem (SDL2 events) to poll for available
-    // events. Once processed, our wrapped nom::Event queue should contain the
-    // same SDL_Event struct(s) preicsely, less & except minus any event type we
-    // may omit from pushing into our events queue.
+    // events.
     this->process_events();
 
     // TODO:

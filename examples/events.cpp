@@ -325,59 +325,18 @@ class App: public nom::SDLApp
 
     void minimize( const nom::Event& ev )
     {
-      ev.dump();
-
-      if( ev.type == SDL_KEYDOWN )
-      {
-        ev.key.dump();
-      }
-      else if( ev.type == SDL_MOUSEBUTTONDOWN )
-      {
-        ev.mouse.dump();
-      }
-      else if( ev.type == SDL_JOYBUTTONDOWN )
-      {
-        ev.jbutton.dump();
-      }
-
       NOM_DUMP("MINIMIZE WINDOW 0");
       this->window[0].minimize_window();
     }
 
     void restore( const nom::Event& ev )
     {
-      ev.dump();
-
-      if( ev.type == SDL_KEYDOWN )
-      {
-        ev.key.dump();
-      }
-      else if( ev.type == SDL_MOUSEBUTTONDOWN )
-      {
-        ev.mouse.dump();
-      }
-      else if( ev.type == SDL_JOYBUTTONDOWN )
-      {
-        ev.jbutton.dump();
-      }
-
       NOM_DUMP("RESTORE WINDOW 0");
       this->window[0].restore_window();
     }
 
     void color_fill( const nom::Event& ev, nom::uint8 dir )
     {
-      ev.dump();
-
-      if( ev.type == SDL_MOUSEWHEEL )
-      {
-        ev.wheel.dump();
-      }
-      else if( ev.type == SDL_JOYAXISMOTION )
-      {
-        ev.jaxis.dump();
-      }
-
       switch( dir )
       {
         default:
@@ -539,6 +498,17 @@ int main(nom::int32 argc, char* argv[])
   }
 
   atexit(nom::quit);
+
+#if 0
+  // NOTE: NOM_LOG_PRIORITY_VERBOSE is a real-time stream of every event
+  // enqueued.
+  // NOM_LOG_PRIORITY_DEBUG is the real-time stream of only those events that
+  // were responsible for increasing the maximum events count.
+  auto prio = NOM_LOG_PRIORITY_DEBUG;
+#else
+  auto prio = NOM_LOG_PRIORITY_INFO;
+#endif
+  nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_EVENT, prio);
 
   App app(argc, argv);
 

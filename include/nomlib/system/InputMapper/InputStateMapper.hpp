@@ -46,6 +46,11 @@ struct InputActionState
 /// \brief High-level API for collections of input action maps.
 ///
 /// \remarks See also, nom::InputActionMapper, nom::InputAction.
+///
+/// \todo We should perhaps be handling InputMapping actions in a similar
+/// manner as SDL_PumpEvents in the future -- push triggered actions as events
+/// to be acted on by an events queue of some sort (i.e.: EventHandler), and
+/// let that interface do the necessary processing logic.
 class InputStateMapper
 {
   public:

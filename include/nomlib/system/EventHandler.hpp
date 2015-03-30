@@ -116,7 +116,7 @@ class EventHandler
     ///
     /// \note This method must still be called even when using the optional
     /// event handlers provided by this class.
-    bool poll_event( Event& ev );
+    bool poll_event(Event& ev);
 
     // virtual bool poll_event( SDL_Event* ev );
 
@@ -330,8 +330,12 @@ class EventHandler
     /// nom::EventHandler::process_event method.
     std::queue<Event> events_;
 
-    /// \brief The maximum number of events seen.
-    nom::size_type max_events_count_;
+    /// \brief The number of enqueued events.
+    nom::size_type num_events_ = 0;
+
+    /// \brief The maximum number of events processed per queue cycle -- i.e.:
+    /// one frame of the game's update loop.
+    nom::size_type max_events_count_ = 0;
 
     Joystick joystick;
 };

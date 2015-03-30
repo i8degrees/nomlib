@@ -36,13 +36,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-EventHandler::EventHandler() :
-  max_events_count_(0)
+EventHandler::EventHandler()
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_EVENT,
                       NOM_LOG_PRIORITY_VERBOSE );
 
-  // TODO: Err handling?
+  // TODO: Err handling
   this->joystick.initialize();
 }
 
@@ -53,7 +52,7 @@ EventHandler::~EventHandler()
 
   auto enable_report = nom::hint("NOM_EVENT_QUEUE_STATISTICS");
   if( priv::string_to_integer(enable_report) != 0 ) {
-    NOM_LOG_DEBUG(NOM, "num_events:", this->events_.size() );
+    NOM_LOG_DEBUG(NOM, "num_events:", this->num_events_ );
     NOM_LOG_DEBUG(NOM, "max_events_count:", max_events_count_);
   }
 }
@@ -356,16 +355,15 @@ void EventHandler::process_event( const Event& ev )
   } // end switch ev.type
 }
 
-bool EventHandler::poll_event( Event& ev )
+bool EventHandler::poll_event(Event& ev)
 {
-  // We have pending events in the queue!
-  if( this->pop_event( ev ) )
-  {
+  if( this->pop_event(ev) == true ) {
+    // Pending events
     return true;
+  } else {
+    // No pending events in queue
+    return false;
   }
-
-  // No pending events in queue
-  return false;
 }
 
 // bool EventHandler::poll_event( SDL_Event* ev )
@@ -840,7 +838,6 @@ void EventHandler::on_user_event( const Event& ev )
 
 bool EventHandler::pop_event(Event& ev)
 {
-  nom::size_type num_events = 0;
   bool result = false;
 
   // Empty event queue -- it's time to start gathering events
@@ -870,12 +867,10 @@ bool EventHandler::pop_event(Event& ev)
     ev = this->events_.front();
     this->events_.pop();
 
-    result = true;
-  }
+    NOM_ASSERT(this->num_events_ >= 0);
+    --this->num_events_;
 
-  num_events = this->events_.size();
-  if( num_events > this->max_events_count_ ) {
-    this->max_events_count_ = num_events;
+    result = true;
   }
 
   return result;
@@ -884,6 +879,28 @@ bool EventHandler::pop_event(Event& ev)
 void EventHandler::push_event(const Event& ev)
 {
   this->events_.push(ev);
+
+  if( ev.type == SDL_WINDOWEVENT ) {
+    NOM_LOG_VERBOSE(  NOM_LOG_CATEGORY_EVENT,
+                      "window_event:", NOM_SCAST(int, ev.window.event),
+                      "at", ev.timestamp, "ms",
+                      "window_id:", ev.window.window_id );
+  } else {
+    NOM_LOG_VERBOSE(  NOM_LOG_CATEGORY_EVENT,
+                      "event:", ev.type, "at", ev.timestamp, "ms" );
+  }
+
+  ++this->num_events_;
+  if( this->num_events_ > this->max_events_count_ ) {
+    this->max_events_count_ = this->num_events_;
+
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_EVENT,
+                    "event:", ev.type, "at", ev.timestamp, "ms" );
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_EVENT,
+                    "  num_events:", this->num_events_ );
+    NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_EVENT,
+                    "  max_events_count:", this->max_events_count_ );
+  }
 }
 
 void EventHandler::process_event( const SDL_Event* ev )
@@ -1517,18 +1534,27 @@ void EventHandler::process_event( const SDL_Event* ev )
 
 void EventHandler::process_events()
 {
+  int result = 1;
   SDL_Event ev;
 
   // Enumerate events from all available input devices
   SDL_PumpEvents();
 
-  int result = -1;
-
-  while( result != 0 ) {
-    this->process_event(&ev);
-
+  while( result > 0 ) {
     result =
       SDL_PeepEvents(&ev, 1, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT);
+
+    if( result < 0 ) {
+      // TODO: Handle err logging in a more sane manner -- not SPAM it every
+      // frame there was an err; ideally, we'd have the end-user check a return
+      // code and optionally act upon it only when they care to.
+      NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION, "Could not process events:",
+                    SDL_GetError() );
+      result = -1;
+    } else if( result > 0 ) {
+      // Enqueue incoming events from SDL
+      this->process_event(&ev);
+    }
   }
 }
 

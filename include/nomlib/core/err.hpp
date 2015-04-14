@@ -37,6 +37,11 @@ namespace nom {
 
 struct err
 {
+  err();
+  ~err();
+
+  err(const err& rhs);
+
   std::stringstream message;
 };
 

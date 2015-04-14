@@ -31,7 +31,25 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 // Global err buffer
-static err err_buffer = {};
+static err err_buffer;
+
+err::err()
+{
+  // :-(
+}
+
+err::~err()
+{
+  // NOTE: An explicitly-declared destructor is necessary for building with
+  // MSVCPP 2013
+}
+
+err::err(const err& rhs) :
+  message( rhs.message.str() )
+{
+  // NOTE: An explicitly-declared copy constructor is necessary for building
+  // with MSVCPP 2013
+}
 
 std::stringstream& operator <<(std::stringstream& os, const err& error)
 {

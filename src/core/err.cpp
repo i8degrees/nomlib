@@ -2,7 +2,7 @@
 
   nomlib - C++11 cross-platform game engine
 
-Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
+Copyright (c) 2013, 2014, 2015 Jeffrey Carpenter <i8degrees@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -26,17 +26,50 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_CORE_HPP
-#define NOMLIB_CORE_HPP
+#include "nomlib/core/err.hpp"
 
-// Public header file
+namespace nom {
 
-#include "nomlib/core/helpers.hpp"
-#include "nomlib/core/clock.hpp"
-#include "nomlib/core/ObjectTypeInfo.hpp"
-#include "nomlib/core/IObject.hpp"
-#include "nomlib/core/SDL2Logger.hpp"
-#include "nomlib/core/ConsoleOutput.hpp"
-#include <nomlib/core/err.hpp>
+// Global err buffer
+static err err_buffer = {};
 
-#endif // include guard defined
+std::stringstream& operator <<(std::stringstream& os, const err& error)
+{
+  os << error.message.rdbuf();
+
+  return os;
+}
+
+std::string error()
+{
+  return err_buffer.message.str();
+}
+
+err make_error(const char* message)
+{
+  err error;
+  error.message << message;
+
+  return error;
+}
+
+void set_error(const err& error)
+{
+  nom::clear_error();
+
+  err_buffer.message << error.message.str();
+}
+
+void set_error(const char* message)
+{
+  nom::clear_error();
+
+  err_buffer.message << message;
+}
+
+void clear_error()
+{
+  err_buffer.message.str("");
+}
+
+} // namespace nom

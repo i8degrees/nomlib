@@ -43,6 +43,9 @@ set(  NOM_CORE_SOURCE
 
       ${SRC_DIR}/core/SDL_assertion_helpers.cpp
       ${INC_DIR}/core/SDL_assertion_helpers.hpp
+
+      ${SRC_DIR}/core/err.cpp
+      ${INC_DIR}/core/err.hpp
 )
 
 # Platform-specific implementations & dependencies

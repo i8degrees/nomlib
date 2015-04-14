@@ -41,49 +41,34 @@ class Texture;
 
 /// \brief Calculate an object's alignment rectangle.
 ///
-/// \returns Point2i::null on failure, such as when an invalid Transformable
-/// object pointer is passed to this function.
+/// \returns The X and Y coordinates computed with respect to alignment to
+/// the given boundaries.
 ///
-/// \param obj    A valid nom::Transformable derived object pointer.
-/// \param bounds The dimensions to calculate alignment for.
+/// \param obj_dims The dimensions of the object to use for alignment.
+/// \param pos_offset Additional X, Y coordinates to offset the alignment by.
+/// \param align_bounds The total boundary dimensions of the object's alignment.
 /// \param align  One of the nom::Alignment or nom::Anchor enumeration types.
-///
-/// \todo Add pos_offset argument
-Point2i alignment_rect( Transformable* obj, const Point2i& pos_offset,
-                        const Size2i& bounds, uint32 align );
+Point2i alignment_rect( const Size2i& obj_dims, const Point2i& pos_offset,
+                        const Size2i& align_bounds, uint32 align );
 
 /// \brief Set an object's alignment.
 ///
 /// \param obj    A valid nom::Transformable derived object pointer.
-/// \param bounds The dimensions to be aligned in respect to.
+/// \param pos_offset Additional X, Y coordinates to offset the alignment by.
+/// \param align_bounds The total boundary dimensions of the object's alignment.
 /// \param align  One of the nom::Alignment or nom::Anchor enumeration types.
-///
-/// \todo Add pos_offset argument
 void set_alignment( Transformable* obj, const Point2i& pos_offset,
-                    const Size2i& bounds, uint32 align );
-
-/// \brief Calculate an object's alignment rectangle.
-///
-/// \returns Point2i::null on failure, such as when an invalid Texture object
-/// pointer is passed to this function.
-///
-/// \param obj        A valid nom::Texture derived object pointer.
-/// \param pos_offset Additional X, Y value (in pixels) to offset alignment by.
-/// \param bounds     The dimensions to calculate alignment for.
-/// \param align      One of the nom::Alignment or nom::Anchor enumeration
-///                   types.
-Point2i alignment_rect( Texture* obj, const Point2i& pos_offset,
-                        const Size2i& bounds, uint32 align );
+                    const Size2i& align_bounds, uint32 align );
 
 /// \brief Set an object's alignment.
 ///
 /// \param obj        A valid nom::Texture derived object pointer.
-/// \param pos_offset Additional X, Y value (in pixels) to offset alignment by.
-/// \param bounds     The dimensions to be aligned in respect to.
+/// \param pos_offset Additional X, Y coordinates to offset the alignment by.
+/// \param align_bounds The total boundary dimensions of the object's alignment.
 /// \param align      One of the nom::Alignment or nom::Anchor enumeration
 ///                   types.
 void set_alignment( Texture* obj, const Point2i& pos_offset,
-                    const Size2i& bounds, uint32 align );
+                    const Size2i& align_bounds, uint32 align );
 
 } // namespace nom
 

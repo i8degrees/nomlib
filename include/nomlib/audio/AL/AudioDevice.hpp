@@ -74,6 +74,8 @@ class AudioDevice: public IAudioDevice
     /// Obtain support info regarding a particular extension
     bool isExtensionSupported ( const std::string& extension ) const;
 
+    static bool extension_available(const std::string& ext);
+
     // frequency
     // Suspend context
     // Resume context

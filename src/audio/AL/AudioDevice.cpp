@@ -159,4 +159,19 @@ bool AudioDevice::isExtensionSupported ( const std::string& extension ) const
   return false;
 }
 
+bool AudioDevice::extension_available(const std::string& ext)
+{
+  if( ext.length() > 2 && ext.substr(0, 3) == "ALC" ) {
+    if( alcIsExtensionPresent( NULL, ext.c_str() ) != AL_FALSE ) {
+      return true;
+    }
+  } else {
+    if( alIsExtensionPresent( ext.c_str() ) != AL_FALSE ) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 } // namespace nom

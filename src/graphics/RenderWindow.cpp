@@ -429,9 +429,9 @@ void RenderWindow::hide_window ( void )
   SDL_HideWindow ( this->window() );
 }
 
-void RenderWindow::set_window_grab ( bool grab )
+void RenderWindow::set_window_grab(bool grab)
 {
-  SDL_SetWindowGrab ( this->window(), SDL_BOOL(grab) );
+  SDL_SetWindowGrab( this->window(), (SDL_bool)grab );
 }
 
 void RenderWindow::set_minimum_window_size ( int min_width, int min_height )
@@ -444,7 +444,7 @@ void RenderWindow::set_maximum_window_size ( int max_width, int max_height )
   SDL_SetWindowMaximumSize ( this->window(), max_width, max_height );
 }
 
-bool RenderWindow::save_png_file( const std::string& filename ) const
+bool RenderWindow::save_png_file(const std::string& filename) const
 {
   int bpp = 0; // bits per pixel
   uint32 red_mask = 0;
@@ -459,8 +459,10 @@ bool RenderWindow::save_png_file( const std::string& filename ) const
   // Width & height of target in pixels
   Size2i renderer_size = Renderer::output_size();
 
-  if ( SDL_BOOL( SDL_PixelFormatEnumToMasks ( caps.optimal_texture_format(), &bpp, &red_mask, &green_mask, &blue_mask, &alpha_mask ) ) != true )
-  {
+  SDL_bool result =
+    SDL_PixelFormatEnumToMasks( caps.optimal_texture_format(), &bpp, &red_mask,
+                                &green_mask, &blue_mask, &alpha_mask );
+  if( result != SDL_TRUE ) {
     NOM_LOG_ERR( NOM, SDL_GetError() );
     return false;
   }
@@ -484,7 +486,7 @@ bool RenderWindow::save_png_file( const std::string& filename ) const
   return true;
 }
 
-bool RenderWindow::save_screenshot( const std::string& filename ) const
+bool RenderWindow::save_screenshot(const std::string& filename) const
 {
   RendererInfo caps = this->caps();
   Image screenshot;
@@ -504,8 +506,10 @@ bool RenderWindow::save_screenshot( const std::string& filename ) const
   uint32 blue_mask = 0;
   uint32 alpha_mask = 0;
 
-  if ( SDL_BOOL( SDL_PixelFormatEnumToMasks ( caps.optimal_texture_format(), &bpp, &red_mask, &green_mask, &blue_mask, &alpha_mask ) ) != true )
-  {
+  SDL_bool result =
+    SDL_PixelFormatEnumToMasks( caps.optimal_texture_format(), &bpp, &red_mask,
+                                &green_mask, &blue_mask, &alpha_mask );
+  if( result != SDL_TRUE ) {
     NOM_LOG_ERR( NOM, SDL_GetError() );
     return false;
   }

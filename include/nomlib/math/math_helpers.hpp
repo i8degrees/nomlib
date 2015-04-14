@@ -150,6 +150,26 @@ inline T absolute_float(real32 number)
   return(ret);
 }
 
+/// \brief Compare two numbers for the smaller of the two values.
+///
+/// \returns The smaller of the two given values.
+template <typename T>
+inline T minimum(const T& a, const T& b)
+{
+  T result = (b < a) ? b : a;
+  return result;
+}
+
+/// \brief Compare two numbers for the larger of the two values.
+///
+/// \returns The larger of the two given values.
+template <typename T>
+inline T maximum(const T& a, const T& b)
+{
+  T result = (a < b) ? b : a;
+  return result;
+}
+
 } // namespace nom
 
 #endif // include guard defined

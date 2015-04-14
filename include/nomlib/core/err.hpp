@@ -26,17 +26,64 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_CORE_HPP
-#define NOMLIB_CORE_HPP
+#ifndef NOMLIB_CORE_ERR_HPP
+#define NOMLIB_CORE_ERR_HPP
 
-// Public header file
+#include <sstream>
 
-#include "nomlib/core/helpers.hpp"
-#include "nomlib/core/clock.hpp"
-#include "nomlib/core/ObjectTypeInfo.hpp"
-#include "nomlib/core/IObject.hpp"
-#include "nomlib/core/SDL2Logger.hpp"
-#include "nomlib/core/ConsoleOutput.hpp"
-#include <nomlib/core/err.hpp>
+#include "nomlib/config.hpp"
+
+namespace nom {
+
+struct err
+{
+  std::stringstream message;
+};
+
+inline std::stringstream& operator <<(std::stringstream& os, const err& error);
+
+/// \brief Get the current error.
+std::string error();
+
+/// \brief Create an error.
+err make_error(const char* message);
+
+/// \brief Set the error message.
+///
+/// \remarks The global error buffer is cleared.
+void set_error(const err& error);
+
+/// \brief Set the error message.
+///
+/// \remarks The global error buffer is cleared.
+void set_error(const char* message);
+
+/// \brief Clears the global error buffer.
+void clear_error();
+
+// Common error types
+
+const err OUT_OF_MEMORY_ERR =
+  nom::make_error("Failed to allocate memory");
+
+const err NULL_ARGUMENT_ERR =
+  nom::make_error("Passed NULL argument");
+
+} // namespace nom
 
 #endif // include guard defined
+
+/// \class nom::err
+/// \ingroup core
+///
+/// ## Usage Examples
+///
+/// \code
+///
+/// #include <nomlib/core.hpp>
+///
+/// err error;
+/// error.message << "My error message";
+/// nom::set_error(error);
+/// NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, nom::error() );
+///

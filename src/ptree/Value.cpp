@@ -64,7 +64,7 @@ Value::~Value()
     case ValueType::String:
     {
       if( this->value_.string_ != nullptr ) {
-        priv::free_string(this->value_.string_);
+        nom::free_string(this->value_.string_);
         this->value_.string_ = nullptr;
       }
     } break;
@@ -106,8 +106,8 @@ Value::Value(const char* str) :
 {
   //NOM_LOG_TRACE(NOM);
 
-  nom::size_type str_len = priv::string_length(str);
-  this->value_.string_ = priv::duplicate_string(str, str_len);
+  nom::size_type str_len = nom::string_length(str);
+  this->value_.string_ = nom::duplicate_string(str, str_len);
 }
 
 Value::Value(const std::string& str) :
@@ -115,8 +115,8 @@ Value::Value(const std::string& str) :
 {
   //NOM_LOG_TRACE(NOM);
 
-  nom::size_type str_len = priv::string_length(str);
-  this->value_.string_ = priv::duplicate_string(str, str_len);
+  nom::size_type str_len = nom::string_length(str);
+  this->value_.string_ = nom::duplicate_string(str, str_len);
 }
 
 Value::Value(bool val) :
@@ -220,10 +220,10 @@ Value::Value(const Value& rhs)
     {
       const char* rhs_string_value = rhs.value_.string_;
       if( rhs_string_value != nullptr ) {
-        nom::size_type str_len = priv::string_length(rhs_string_value);
+        nom::size_type str_len = nom::string_length(rhs_string_value);
 
         this->value_.string_ =
-          priv::duplicate_string(rhs_string_value, str_len);
+          nom::duplicate_string(rhs_string_value, str_len);
       }
     } break;
 
@@ -302,7 +302,7 @@ bool Value::operator <(const Value& rhs) const
         }
       } else {
         comp_result =
-          priv::compare_string(this->value_.string_, rhs.value_.string_) < 0;
+          nom::compare_string(this->value_.string_, rhs.value_.string_) < 0;
       }
     } break;
 
@@ -380,7 +380,7 @@ bool Value::operator ==(const Value& rhs) const
         comp_result = this->value_.string_ == rhs.value_.string_;
       } else {
         comp_result =
-          priv::compare_string(this->value_.string_, rhs.value_.string_) == 0;
+          nom::compare_string(this->value_.string_, rhs.value_.string_) == 0;
       }
     } break;
 

@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Forward declarations
 #include "nomlib/system/Event.hpp"
+#include "nomlib/system/EventHandler.hpp"
 #include "nomlib/gui/UIContextEventHandler.hpp"
 
 // Private headers
@@ -339,7 +340,7 @@ bool UIContext::create_context( const std::string& name, const Size2i& res,
     }
 
     // Install the default event handler for this context
-    this->evt_.reset( new UIContextEventHandler( this ) );
+    this->evt_.reset( new UIContextEventHandler(this) );
 
     return true;
   }
@@ -443,13 +444,15 @@ void UIContext::set_size(const Size2i& dims)
   this->context_->SetDimensions( Rocket::Core::Vector2i(res.w, res.h) );
 }
 
-void UIContext::process_event( const Event& ev )
+void UIContext::set_event_handler(nom::EventHandler& evt_handler)
 {
-  NOM_ASSERT( this->evt_ != nullptr );
-  if( this->evt_ != nullptr )
-  {
-    this->evt_->process_event( ev );
-  }
+  this->event_handler_ = &evt_handler;
+
+  auto event_watch = nom::event_filter( [=](const nom::Event& evt, void* data) {
+    this->process_event(evt);
+  });
+
+  this->event_handler_->append_event_watch(event_watch, nullptr);
 }
 
 void UIContext::update()
@@ -536,6 +539,13 @@ void UIContext::initialize_debugger()
 
   //   this->set_beacon_position(beacon_offset);
   // }
+}
+
+void UIContext::process_event(const nom::Event& evt)
+{
+  if( this->evt_ != nullptr ) {
+    this->evt_->process_event(evt);
+  }
 }
 
 } // namespace nom

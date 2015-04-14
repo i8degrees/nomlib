@@ -135,21 +135,11 @@ void StateMachine::pop_state( void_ptr data )
   // this->states_.back()->on_resume( data );
 }
 
-void StateMachine::on_event( const Event& ev )
+void StateMachine::on_event(const Event& ev)
 {
   // Ensure that we have a state in which we can handle events on
-  if ( ! this->states_.empty() )
-  {
-    // Call state's EventHandler::process_event only when IState::on_event
-    // implementation returns FALSE (the default implementation).
-    //
-    // This is currently required if we wish to process GUI events; see also:
-    // TTcards::Game::on_event, TTcards::ContinueMenuState::on_event.
-    if( this->states_.back()->on_event( ev ) == false )
-    {
-      // Game state inputs & events loop processing
-      this->states_.back()->process_event( ev );
-    }
+  if( this->states_.empty() == false ) {
+    this->states_.back()->on_event(ev);
   }
 }
 

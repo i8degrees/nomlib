@@ -141,6 +141,8 @@ class FontRenderingApp: public nom::SDLApp
       //   return false;
       // }
 
+      SDLApp::set_event_handler(this->evt_handler);
+
       nom::File fp;
       nom::Path p;
       // Used by nom::BMFont interface; this sets the relative file root for
@@ -163,11 +165,14 @@ class FontRenderingApp: public nom::SDLApp
       // 3. Render
 
       nom::Event ev;
-      while ( this->running() == true )
-      {
-        while( this->poll_event( ev ) )
-        {
-          this->on_event( ev );
+      while( this->running() == true ) {
+
+        nom::Event evt;
+        while( this->evt_handler.poll_event(evt) == true ) {
+          // NOTE: Pending events will be handled by the event listeners that
+          // were given an EventHandler object via ::set_event_handler.
+          //
+          // Additional event processing done in here is still OK, too.
         }
 
         this->window.update();
@@ -203,12 +208,14 @@ class FontRenderingApp: public nom::SDLApp
   private:
     AppFlags opts;
 
-    /// \brief Event handler for key down actions.
-    ///
-    /// Implements the nom::Input::on_key_down method.
-    void on_key_down( const nom::Event& ev ) override
+    /// \brief The default event handler for input events.
+    void on_input_event(const nom::Event& ev) override
     {
-      switch ( ev.key.sym )
+      if( ev.type != Event::KEY_PRESS ) {
+        return;
+      }
+
+      switch(ev.key.sym)
       {
         default: break;
 
@@ -250,6 +257,8 @@ class FontRenderingApp: public nom::SDLApp
   private:
     /// Window handle
     nom::RenderWindow window;
+
+    nom::EventHandler evt_handler;
 
     /// Interval at which we refresh the frames per second counter
     nom::Timer update;

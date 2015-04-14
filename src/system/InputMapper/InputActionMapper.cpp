@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/InputMapper/InputActionMapper.hpp"
 
+// Forward declarations
+#include "nomlib/system/InputMapper/InputAction.hpp"
+
 namespace nom {
 
 InputActionMapper::InputActionMapper( void )
@@ -43,23 +46,6 @@ InputActionMapper::~InputActionMapper( void )
 const InputActionMapper::ActionMap& InputActionMapper::get( void ) const
 {
   return this->input_map_;
-}
-
-bool InputActionMapper::insert( const std::string& key, const InputAction& action, const EventCallback& callback )
-{
-  ActionPair p( key, std::make_shared<InputAction>( action ) );
-  p.second->set_callback( callback );
-
-  auto it = this->input_map_.insert( p );
-
-  // No dice; the insertion failed for some reason!
-  if( it == this->input_map_.end() )
-  {
-    NOM_LOG_ERR( NOM, "Could not insert action with key: " + key );
-    return false;
-  }
-
-  return true;
 }
 
 bool InputActionMapper::
@@ -98,21 +84,6 @@ bool InputActionMapper::erase( const std::string& key )
   }
 
   return false;
-}
-
-void InputActionMapper::dump( void ) const
-{
-  for( ActionMap::const_iterator itr = this->input_map_.begin(); itr != this->input_map_.end(); ++itr )
-  {
-    if( itr->second != nullptr )
-    {
-      itr->second->dump();
-    }
-    else
-    {
-      NOM_LOG_ERR( NOM, "Invalid input action." );
-    }
-  }
 }
 
 } // namespace nom

@@ -208,6 +208,8 @@ class App: public nom::SDLApp
       // Use no pixel unit scaling; this gives us one to one pixel ratio
       this->window[0].set_scale( nom::Point2f(1,1) );
 
+      SDLApp::set_event_handler(this->evt_handler);
+
       // Initialize the core of libRocket; these are the core dependencies that
       // libRocket depends on for successful initialization.
       Rocket::Core::FileInterface* fs =
@@ -381,13 +383,14 @@ class App: public nom::SDLApp
       // 2. Logic
       // 3. Render
 
-      nom::Event ev;
-      while ( this->running() == true )
-      {
-        while( this->poll_event( ev ) )
-        {
-          this->on_event( ev );
-          this->desktop.process_event(ev);
+      while( this->running() == true ) {
+
+        nom::Event evt;
+        while( this->evt_handler.poll_event(evt) == true ) {
+          // NOTE: Pending events will be handled by the event listeners that
+          // were given an EventHandler object via ::set_event_handler.
+
+          this->desktop.process_event(evt);
         }
 
         for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
@@ -483,12 +486,28 @@ class App: public nom::SDLApp
       }
     }
 
-    /// \brief Event handler for key down actions.
-    ///
-    /// Implements the nom::Input::on_key_down method.
-    void on_key_down( const nom::Event& ev )
+    /// \brief The default event handler for input events.
+    void on_input_event(const nom::Event& ev) override
     {
-      switch ( ev.key.sym )
+      switch(ev.type)
+      {
+        default: break;
+
+        case nom::Event::KEY_PRESS:
+        {
+          this->on_key_down(ev);
+        } break;
+
+        case nom::Event::MOUSE_WHEEL:
+        {
+          this->on_mouse_wheel(ev);
+        } break;
+      } // end switch key
+    } // onKeyDown
+
+    void on_key_down(const nom::Event& ev)
+    {
+      switch(ev.key.sym)
       {
         default: break;
 
@@ -641,21 +660,17 @@ class App: public nom::SDLApp
           } // end window_id match
           break;
         } // end SDLK_f
-      } // end switch key
-    } // onKeyDown
-
-    void on_mouse_wheel( const nom::Event& ev )
-    {
-      // Filter out non-wheel events (otherwise we can receive false positives)
-      if( ev.type != SDL_MOUSEWHEEL ) return;
-
-      if( ev.wheel.y > 0 )  // Up
-      {
-        this->increase_font_size( 1 );
       }
-      else if( ev.wheel.y < 0 ) // Down
-      {
-        this->decrease_font_size( 1 );
+    }
+
+    void on_mouse_wheel(const nom::Event& ev)
+    {
+      if( ev.wheel.y > 0 ) {
+        // Up
+        this->increase_font_size(1);
+      } else if( ev.wheel.y < 0 ) {
+        // Down
+        this->decrease_font_size(1);
       }
     }
 
@@ -666,6 +681,8 @@ class App: public nom::SDLApp
     nom::RenderWindow window[MAXIMUM_WINDOWS];
 
     nom::UIContext desktop;
+
+    nom::EventHandler evt_handler;
 
     /// Interval at which we refresh the frames per second counter
     nom::Timer update[MAXIMUM_WINDOWS];

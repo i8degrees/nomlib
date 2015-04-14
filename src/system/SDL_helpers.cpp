@@ -62,18 +62,6 @@ SDL_BlendMode SDL_blend_mode(BlendMode mode)
   return SDL_BLENDMODE_NONE;
 }
 
-SDL_bool SDL_BOOL ( bool value )
-{
-  if ( value )
-  {
-    return SDL_TRUE;
-  }
-  else
-  {
-    return SDL_FALSE;
-  }
-}
-
 SDL_Rect SDL_RECT ( const IntRect& rectangle )
 {
   SDL_Rect r;

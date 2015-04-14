@@ -127,11 +127,6 @@ BlendMode blend_mode(SDL_BlendMode mode);
 /// enumeration value.
 SDL_BlendMode SDL_blend_mode(BlendMode mode);
 
-/// SDL2 data structure wrappers for nomlib
-///
-/// \return A SDL_bool from a boolean value
-SDL_bool SDL_BOOL ( bool value );
-
 /// SDL data structure wrappers for nomlib
 ///
 /// \return SDL_Rect structure composed from a nom::IntRect object

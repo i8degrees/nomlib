@@ -107,7 +107,7 @@ class Image
     /// \param pixel_format Pixel format to use for the memory buffer.
     ///
     /// \deprecated
-    bool create( const Point2i& size, uint32 pixel_format );
+    bool create(const Point2i& size, uint32 pixel_format);
     bool create( const Size2i& size, uint32 pixel_format );
 
     /// \brief  Create a new memory buffer using the most optimal pixel format
@@ -143,7 +143,7 @@ class Image
     const IntRect bounds ( void ) const;
 
     /// Check to see if the video surface needs locking
-    bool must_lock ( void ) const;
+    bool must_lock() const;
 
     /// Obtain the locked status of the video surface memory
     ///
@@ -221,7 +221,7 @@ class Image
     ///
     /// \param colorkey     Pixel color to mark transparent
     /// \param flag         TRUE to enable color key; FALSE to disable color key
-    bool set_colorkey ( const Color4i& colorkey, bool flag );
+    bool set_colorkey(const Color4i& colorkey, bool flag);
 
     /// Set RLE acceleration for this image
     ///
@@ -230,7 +230,7 @@ class Image
     /// pixels.
     ///
     /// \param      TRUE to enable RLE acceleration; FALSE to disable
-    bool RLE ( bool flag );
+    bool RLE(bool flag);
 
     /// \brief Read a RGBA pixel from the video surface.
     ///
@@ -274,7 +274,7 @@ class Image
 
     /// Lock the video surface; this must be done before you attempt to write
     /// directly to video memory (pixel manipulation).
-    bool lock ( void ) const;
+    bool lock() const;
 
     /// Unlocks the video surface; this must be done after you are finished
     /// writing to the video buffer. During the time that the video surface is
@@ -310,7 +310,6 @@ class Image
     Point2i position_;  // Not implemented
     IntRect bounds_;    // Not implemented
 };
-
 
 } // namespace nom
 

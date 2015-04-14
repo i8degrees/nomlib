@@ -184,7 +184,7 @@ bool Image::initialize ( const Point2i& size )
   return true;
 }
 
-bool Image::create( const Point2i& size, uint32 pixel_format )
+bool Image::create(const Point2i& size, uint32 pixel_format)
 {
   int bpp = 0; // bits per pixel
   uint32 red_mask = 0;
@@ -193,8 +193,10 @@ bool Image::create( const Point2i& size, uint32 pixel_format )
   uint32 alpha_mask = 0;
 
   // Find the best surface format based on the requested pixel_format
-  if ( SDL_BOOL( SDL_PixelFormatEnumToMasks ( pixel_format, &bpp, &red_mask, &green_mask, &blue_mask, &alpha_mask ) ) != true )
-  {
+  SDL_bool result =
+    SDL_PixelFormatEnumToMasks( pixel_format, &bpp, &red_mask, &green_mask,
+                                &blue_mask, &alpha_mask );
+  if( result != SDL_TRUE ) {
     NOM_LOG_ERR( NOM, SDL_GetError() );
     return false;
   }
@@ -281,11 +283,10 @@ const IntRect Image::bounds ( void ) const
   return IntRect(bounds.x, bounds.y, bounds.w, bounds.h);
 }
 
-bool Image::must_lock ( void ) const
+bool Image::must_lock() const
 {
-  if ( SDL_MUSTLOCK ( this->image() ) ) return true;
-
-  return false;
+  bool result = SDL_MUSTLOCK( this->image() );
+  return result;
 }
 
 bool Image::locked( void ) const
@@ -486,35 +487,35 @@ const Point2i Image::position ( void ) const
   return this->position_;
 }
 
-bool Image::set_colorkey ( const Color4i& colorkey, bool flag )
+bool Image::set_colorkey(const Color4i& colorkey, bool flag)
 {
   SDL_Surface* buffer = this->image();
-  uint32 transparent_color = RGB ( colorkey, buffer->format );
+  uint32 transparent_color = RGB(colorkey, buffer->format);
 
-  if ( this->valid() == false )
-  {
-NOM_LOG_ERR ( NOM, "Could not set color key: invalid image buffer." );
-    priv::FreeSurface ( buffer );
+  if( this->valid() == false ) {
+    NOM_LOG_ERR ( NOM, "Could not set color key: invalid image buffer." );
+    priv::FreeSurface(buffer);
     return false;
   }
 
-  if ( SDL_SetColorKey ( buffer, SDL_BOOL(flag), transparent_color ) != 0 )
-  {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
-    priv::FreeSurface ( buffer );
+  int result =
+    SDL_SetColorKey(buffer, (int32)flag, transparent_color);
+  if( result != 0 ) {
+    NOM_LOG_ERR( NOM, SDL_GetError() );
+    priv::FreeSurface(buffer);
     return false;
   }
 
   return true;
 }
 
-bool Image::RLE ( bool flag )
+bool Image::RLE(bool flag)
 {
-  if ( SDL_SetSurfaceRLE ( this->image(), SDL_BOOL(flag) ) != 0 )
-  {
-NOM_LOG_ERR ( NOM, SDL_GetError() );
+  if( SDL_SetSurfaceRLE( this->image(), (int32)flag ) != 0 ) {
+    NOM_LOG_ERR ( NOM, SDL_GetError() );
     return false;
   }
+
   return true;
 }
 
@@ -642,13 +643,12 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return true;
 }
 
-bool Image::lock ( void ) const
+bool Image::lock() const
 {
-  if ( SDL_BOOL ( this->must_lock() ) )
-  {
-    if ( SDL_LockSurface ( this->image() ) != 0 )
-    {
-NOM_LOG_ERR ( NOM, "Could not lock video surface memory." );
+  if( this->must_lock() == true ) {
+
+    if( SDL_LockSurface( this->image() ) != 0 ) {
+      NOM_LOG_ERR( NOM, "Could not lock video surface memory." );
       return false;
     }
   }

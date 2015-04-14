@@ -287,7 +287,7 @@ class RenderWindow: public Renderer
     /// \param grab     TRUE to grab input; FALSE to release input
     ///
     /// \todo Test me
-    void set_window_grab ( bool grab );
+    void set_window_grab(bool grab);
 
     /// Set the minimum size of the window's client area.
     ///
@@ -312,7 +312,7 @@ class RenderWindow: public Renderer
     /// \todo Restructure code shared with ::save_screenshot.
     ///
     /// \see RenderWindow::save_screenshot, Image::save_png.
-    bool save_png_file( const std::string& filename ) const;
+    bool save_png_file(const std::string& filename) const;
 
     /// Save a screen shot of the window as a PNG file
     ///
@@ -327,7 +327,7 @@ class RenderWindow: public Renderer
     /// \todo    Pixels pitch calculation (see screenshot.initialize call)
     ///
     /// \see RenderWindow::save_png_file, Image::save_png.
-    bool save_screenshot( const std::string& filename ) const;
+    bool save_screenshot(const std::string& filename) const;
 
     /// Set the current Window as the active rendering context; this must be
     /// called before doing any drawing (this includes creation of textures)

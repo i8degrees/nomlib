@@ -77,7 +77,7 @@ EventHandler::~EventHandler()
                       NOM_LOG_PRIORITY_VERBOSE );
 
   auto enable_report = nom::hint("NOM_EVENT_QUEUE_STATISTICS");
-  if( priv::string_to_integer(enable_report) != 0 ) {
+  if( nom::string_to_integer(enable_report) != 0 ) {
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_APPLICATION,
                     "num_events:", this->num_events() );
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_APPLICATION,
@@ -860,7 +860,7 @@ void EventHandler::process_event(const SDL_Event* ev)
       Event event;
       event.type = Event::TEXT_INPUT;
       event.timestamp = ev->text.timestamp;
-      priv::copy_string(ev->text.text, event.text.text);
+      nom::copy_string(ev->text.text, event.text.text);
       event.text.window_id = ev->text.windowID;
       this->push_event(event);
       break;
@@ -873,7 +873,7 @@ void EventHandler::process_event(const SDL_Event* ev)
       event.timestamp = ev->edit.timestamp;
       event.edit.start = ev->edit.start;
       event.edit.length = ev->edit.length;
-      priv::copy_string(ev->edit.text, event.edit.text);
+      nom::copy_string(ev->edit.text, event.edit.text);
       event.edit.window_id = ev->edit.windowID;
       this->push_event(event);
       break;

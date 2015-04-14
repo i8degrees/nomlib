@@ -33,8 +33,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-namespace priv {
-
 int string_to_integer(const char* str)
 {
   int base = 10;
@@ -84,9 +82,9 @@ void copy_string(const char* source, char* dest)
 const char* duplicate_string(const char* str, nom::size_type length)
 {
   // Buffer overflow protection
-  if( length >= priv::MAX_STRING_LENGTH )
+  if( length >= MAX_STRING_LENGTH )
   {
-    length = priv::MAX_STRING_LENGTH - 1;
+    length = MAX_STRING_LENGTH - 1;
   }
 
   // Allocate memory for duplicating the C string
@@ -101,14 +99,12 @@ const char* duplicate_string(const char* str, nom::size_type length)
 
 const char* duplicate_string(const std::string& str, nom::size_type length)
 {
-  return priv::duplicate_string(str.c_str(), length);
+  return nom::duplicate_string(str.c_str(), length);
 }
 
 void free_string(const char* ptr)
 {
   std::free( NOM_CCAST(char*, ptr) );
 }
-
-} // namespace priv
 
 } // namespace nom

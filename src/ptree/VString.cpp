@@ -93,7 +93,7 @@ void VString::swap(VString& rhs)
 bool VString::operator <(const self_type& rhs) const
 {
   if( this->cstr_ != "" && rhs.cstr_ != "" ) {
-    return( priv::compare_string(this->cstr_, rhs.cstr_) < 0);
+    return( nom::compare_string(this->cstr_, rhs.cstr_) < 0);
   } else {
     return(this->index_ < rhs.index_);
   }
@@ -103,7 +103,7 @@ bool VString::operator <(const self_type& rhs) const
 bool VString::operator ==(const self_type& rhs) const
 {
   if( this->cstr_ != "" && rhs.cstr_ != "" ) {
-    return( priv::compare_string(this->cstr_, rhs.cstr_) == 0);
+    return( nom::compare_string(this->cstr_, rhs.cstr_) == 0);
   } else {
     return(this->index_ == rhs.index_);
   }

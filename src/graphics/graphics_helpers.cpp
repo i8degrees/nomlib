@@ -34,20 +34,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Point2i alignment_rect(Transformable* obj, const Point2i& pos_offset, const Size2i& bounds, uint32 align)
+Point2i
+alignment_rect( const Size2i& obj_dims, const Point2i& pos_offset,
+                const Size2i& align_bounds, uint32 align )
 {
   // Resulting alignment calculation
   Point2i align_offset(Point2i::zero);
 
   // Object's rendered width and height
-  Size2i dims(Size2i::zero);
-
-  if( obj != nullptr ) {
-    dims = obj->size();
-  } else {
-    // Err: invalid pointer given
-    return Point2i::null;
-  }
+  Size2i dims = obj_dims;
 
   // Anchor::TopLeft, Anchor::Left, Anchor::BottomLeft
   if( align & Alignment::X_LEFT ) {
@@ -56,12 +51,12 @@ Point2i alignment_rect(Transformable* obj, const Point2i& pos_offset, const Size
 
   // Anchor::TopCenter, Anchor::MiddleCenter, Anchor::BottomCenter
   if( align & Alignment::X_CENTER ) {
-    align_offset.x = pos_offset.x + (bounds.w - dims.w) / 2;
+    align_offset.x = pos_offset.x + (align_bounds.w - dims.w) / 2;
   }
 
   // Anchor::TopRight, Anchor::MiddleRight, Anchor::BottomRight
   if( align & Alignment::X_RIGHT ) {
-    align_offset.x = pos_offset.x + (bounds.w - dims.w);
+    align_offset.x = pos_offset.x + (align_bounds.w - dims.w);
   }
 
   // Anchor::TopLeft, Anchor::TopCenter, Anchor::TopRight
@@ -71,18 +66,20 @@ Point2i alignment_rect(Transformable* obj, const Point2i& pos_offset, const Size
 
   // Anchor::MiddleLeft, Anchor::MiddleCenter, Anchor::MiddleRight
   if( align & Alignment::Y_CENTER ) {
-    align_offset.y = pos_offset.y + (bounds.h - dims.h) / 2;
+    align_offset.y = pos_offset.y + (align_bounds.h - dims.h) / 2;
   }
 
   // Anchor::BottomLeft, Anchor::BottomCenter, Anchor::BottomRight
   if( align & Alignment::Y_BOTTOM ) {
-    align_offset.y = pos_offset.y + (bounds.h - dims.h);
+    align_offset.y = pos_offset.y + (align_bounds.h - dims.h);
   }
 
   return align_offset;
 }
 
-void set_alignment(Transformable* obj, const Point2i& pos_offset, const Size2i& bounds, uint32 align)
+void
+set_alignment(  Transformable* obj, const Point2i& pos_offset,
+                const Size2i& align_bounds, uint32 align )
 {
   // Resulting alignment calculation
   Point2i offset(Point2i::zero);
@@ -91,64 +88,13 @@ void set_alignment(Transformable* obj, const Point2i& pos_offset, const Size2i& 
     return; // Err
   }
 
-  offset = nom::alignment_rect(obj, pos_offset, bounds, align);
+  offset = nom::alignment_rect(obj->size(), pos_offset, align_bounds, align);
 
-  if(offset != Point2i::null) {
-    obj->set_position(offset);
-  }
-}
-
-Point2i alignment_rect( Texture* obj, const Point2i& pos_offset,
-                        const Size2i& bounds, uint32 align )
-{
-  // Resulting alignment calculation
-  Point2i align_offset(Point2i::zero);
-
-  // Object's rendered width and height
-  Size2i dims(Size2i::zero);
-
-  if( obj != nullptr ) {
-    dims = obj->size();
-  } else {
-    // Err: invalid pointer given
-    return Point2i::null;
-  }
-
-  // Anchor::TopLeft, Anchor::Left, Anchor::BottomLeft
-  if( align & Alignment::X_LEFT ) {
-    align_offset.x = pos_offset.x;
-  }
-
-  // Anchor::TopCenter, Anchor::MiddleCenter, Anchor::BottomCenter
-  if( align & Alignment::X_CENTER ) {
-    align_offset.x = pos_offset.x + (bounds.w - dims.w) / 2;
-  }
-
-  // Anchor::TopRight, Anchor::MiddleRight, Anchor::BottomRight
-  if( align & Alignment::X_RIGHT ) {
-    align_offset.x = pos_offset.x + (bounds.w - dims.w);
-  }
-
-  // Anchor::TopLeft, Anchor::TopCenter, Anchor::TopRight
-  if( align & Alignment::Y_TOP ) {
-    align_offset.y = pos_offset.y;
-  }
-
-  // Anchor::MiddleLeft, Anchor::MiddleCenter, Anchor::MiddleRight
-  if( align & Alignment::Y_CENTER ) {
-    align_offset.y = pos_offset.y + (bounds.h - dims.h) / 2;
-  }
-
-  // Anchor::BottomLeft, Anchor::BottomCenter, Anchor::BottomRight
-  if( align & Alignment::Y_BOTTOM ) {
-    align_offset.y = pos_offset.y + (bounds.h - dims.h);
-  }
-
-  return align_offset;
+  obj->set_position(offset);
 }
 
 void set_alignment( Texture* obj, const Point2i& pos_offset,
-                    const Size2i& bounds, uint32 align )
+                    const Size2i& align_bounds, uint32 align )
 {
   // Resulting alignment calculation
   Point2i align_offset(Point2i::zero);
@@ -157,11 +103,10 @@ void set_alignment( Texture* obj, const Point2i& pos_offset,
     return; // Err
   }
 
-  align_offset = nom::alignment_rect(obj, pos_offset, bounds, align);
+  align_offset =
+    nom::alignment_rect(obj->size(), pos_offset, align_bounds, align);
 
-  if(align_offset != Point2i::null) {
-    obj->set_position(align_offset);
-  }
+  obj->set_position(align_offset);
 }
 
 } // namespace nom

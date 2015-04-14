@@ -145,25 +145,17 @@ class App: public nom::SDLApp
 
       // ...Mouse wheel mappings...
 
-      action = nom::MouseWheelAction( nom::MouseWheelAction::AXIS_Y,
-                                      nom::MouseWheelAction::UP );
+      action = nom::MouseWheelAction(nom::MOUSE_WHEEL_UP);
+      mouse_wheel.insert("color_fill_up", action, this->up_action);
 
-      mouse_wheel.insert("color_fill_1", action, this->up_action);
+      action = nom::MouseWheelAction(nom::MOUSE_WHEEL_DOWN);
+      mouse_wheel.insert("color_fill_down", action, this->down_action);
 
-      action = nom::MouseWheelAction( nom::MouseWheelAction::AXIS_Y,
-                                      nom::MouseWheelAction::DOWN );
+      action = nom::MouseWheelAction(nom::MOUSE_WHEEL_LEFT);
+      mouse_wheel.insert("color_fill_left", action, this->left_action);
 
-      mouse_wheel.insert("color_fill_1", action, this->down_action);
-
-      action = nom::MouseWheelAction( nom::MouseWheelAction::AXIS_X,
-                                      nom::MouseWheelAction::LEFT );
-
-      mouse_wheel.insert("color_fill_1", action, this->left_action);
-
-      action = nom::MouseWheelAction( nom::MouseWheelAction::AXIS_X,
-                                      nom::MouseWheelAction::RIGHT );
-
-      mouse_wheel.insert("color_fill_1", action, this->right_action);
+      action = nom::MouseWheelAction(nom::MOUSE_WHEEL_RIGHT);
+      mouse_wheel.insert("color_fill_right", action, this->right_action);
 
       // ...Keyboard repeat action...
 

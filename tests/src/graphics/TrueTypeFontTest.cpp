@@ -560,11 +560,8 @@ TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
     }
   });
 
-  wheel.insert( "zoom_in", MouseWheelAction(MouseWheelAction::AXIS_Y,
-                MouseWheelAction::UP), zoom_in );
-
-  wheel.insert( "zoom_out", MouseWheelAction(MouseWheelAction::AXIS_Y,
-                MouseWheelAction::DOWN), zoom_out );
+  wheel.insert("zoom_in", MouseWheelAction(nom::MOUSE_WHEEL_UP), zoom_in);
+  wheel.insert("zoom_out", MouseWheelAction(nom::MOUSE_WHEEL_DOWN), zoom_out);
 
   this->input_mapper_.insert("zoom_in", wheel, true);
   this->input_mapper_.insert("zoom_out", wheel, true);

@@ -179,35 +179,30 @@ MouseWheelAction::~MouseWheelAction()
   // NOM_LOG_TRACE( NOM );
 }
 
-MouseWheelAction::MouseWheelAction(uint8 axis, int32 value)
+MouseWheelAction::MouseWheelAction(MouseWheelDirection dir)
 {
   // NOM_LOG_TRACE( NOM );
-
 
   this->event_.type = Event::MOUSE_WHEEL;
   this->event_.timestamp = 0;
   this->event_.wheel.id = 0;
-  // this->event_.wheel.axis = axis;
   this->event_.wheel.window_id = 0;
 
-  // Wheel direction is left or right
-  // if( this->event_.wheel.axis == AXIS_X )
-  if( axis == AXIS_X )
-  {
-    this->event_.wheel.x = value;
-    this->event_.wheel.y = MouseWheelAction::null;
-  }
-  // Wheel direction is up or down
-  // else if( this->event_.wheel.axis == AXIS_Y )
-  else if( axis == AXIS_Y )
-  {
-    this->event_.wheel.y = value;
-    this->event_.wheel.x = MouseWheelAction::null;
-  }
-  else // Invalid state
-  {
-    this->event_.wheel.x = MouseWheelAction::null;
-    this->event_.wheel.y = MouseWheelAction::null;
+  if( dir == MOUSE_WHEEL_UP ) {
+    this->event_.wheel.y = MOUSE_WHEEL_UP;
+    this->event_.wheel.x = MOUSE_WHEEL_INVALID;
+  } else if( dir == MOUSE_WHEEL_DOWN ) {
+    this->event_.wheel.y = MOUSE_WHEEL_DOWN;
+    this->event_.wheel.x = MOUSE_WHEEL_INVALID;
+  } else if( dir == MOUSE_WHEEL_LEFT ) {
+    this->event_.wheel.x = MOUSE_WHEEL_LEFT;
+    this->event_.wheel.y = MOUSE_WHEEL_INVALID;
+  } else if( dir == MOUSE_WHEEL_RIGHT ) {
+    this->event_.wheel.x = MOUSE_WHEEL_RIGHT;
+    this->event_.wheel.y = MOUSE_WHEEL_INVALID;
+  } else {
+    this->event_.wheel.x = MOUSE_WHEEL_INVALID;
+    this->event_.wheel.y = MOUSE_WHEEL_INVALID;
   }
 }
 

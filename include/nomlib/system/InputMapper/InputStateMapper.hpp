@@ -32,10 +32,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/Event.hpp"
 #include "nomlib/system/InputMapper/InputActionMapper.hpp"
 
 namespace nom {
+
+// Forward declarations
+struct Event;
+class EventHandler;
+class InputAction;
 
 struct InputActionState
 {
@@ -46,11 +50,6 @@ struct InputActionState
 /// \brief High-level API for collections of input action maps.
 ///
 /// \remarks See also, nom::InputActionMapper, nom::InputAction.
-///
-/// \todo We should perhaps be handling InputMapping actions in a similar
-/// manner as SDL_PumpEvents in the future -- push triggered actions as events
-/// to be acted on by an events queue of some sort (i.e.: EventHandler), and
-/// let that interface do the necessary processing logic.
 class InputStateMapper
 {
   public:
@@ -83,7 +82,7 @@ class InputStateMapper
     /// \brief Remove a state.
     ///
     /// \param key The state string index to remove.
-    bool erase( const std::string& key );
+    bool erase(const std::string& key);
 
     /// \brief Activate a state.
     ///
@@ -110,17 +109,24 @@ class InputStateMapper
     /// \brief Diagnostic output.
     ///
     /// remarks Dumps only the active states.
-    void dump( void );
+    void dump();
 
-    /// \brief Event handler for triggering mapped action states.
+    /// \brief Install the event handler used by the interface.
     ///
-    /// \remarks This method must be located within the main input loop.
-    void on_event( const Event& ev );
+    /// \remarks The application's events will not be processed until a call is
+    /// made to the event handler's ::poll_event method.
+    ///
+    /// \note The installed event handler must outlive the destruction of
+    /// this interface!
+    void set_event_handler(EventHandler& evt_handler);
 
   private:
+    /// \brief Internal event handler for triggering mapped action states.
+    void on_event(const Event& ev);
+
     /// \brief Internal event handler for matching a keyboard action to a
     /// keyboard event.
-    bool on_key_press( const InputAction& mapping, const Event& ev );
+    bool on_key_press(const InputAction& mapping, const Event& ev);
 
     /// \brief Internal event handler for matching a mouse button action to a
     /// mouse button event.
@@ -132,13 +138,26 @@ class InputStateMapper
 
     /// \brief Internal event handler for matching a joystick button action to
     /// a joystick button event.
-    bool on_joystick_button( const InputAction& mapping, const Event& ev );
+    bool on_joystick_button(const InputAction& mapping, const Event& ev);
 
     /// \brief Internal event handler for matching a joystick axis action to
     /// a joystick axis event.
-    ///
-    /// \todo Do not use; the implementation is incomplete!
-    bool on_joystick_axis( const InputAction& mapping, const Event& ev );
+    bool on_joystick_axis(const InputAction& mapping, const Event& ev);
+
+    bool on_joystick_hat(const InputAction& mapping, const Event& ev);
+
+    /// \brief Internal event handler for matching a game controller button
+    /// action to an equivalent event.
+    bool
+    on_game_controller_button(const InputAction& mapping, const Event& ev);
+
+    /// \brief Internal event handler for matching a game controller axis
+    /// action to an equivalent event.
+    bool
+    on_game_controller_axis(const InputAction& mapping, const Event& ev);
+
+    // Non-owned pointer
+    EventHandler* event_handler_ = nullptr;
 
     InputStateMap states_;
 };

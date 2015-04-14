@@ -82,19 +82,17 @@ class GradientTest: public nom::VisualUnitTest
       // VisualUnitTest environment init...
       VisualUnitTest::SetUp();
 
-      EventCallback debug_info( [&] ( const Event& evt )
-        {
-          NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "x:", evt.mouse.x, "y:", evt.mouse.y );
-        }
-      );
+      auto debug_info = ( [&](const Event& evt) {
+        NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, "x:", evt.mouse.x, "y:", evt.mouse.y );
+      });
 
       InputActionMapper state;
 
-      state.insert( "debug_info", nom::MouseButtonAction(
-                    SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT ),
+      state.insert( "debug_info",
+                    nom::MouseButtonAction(MouseButton::LEFT_MOUSE_BUTTON),
                     debug_info );
 
-      this->input_mapper_.insert( "debug_info", state, true );
+      this->input_mapper_.insert("debug_info", state, true);
 
       this->colors[0] = {
                           Color4iColors{

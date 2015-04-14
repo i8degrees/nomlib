@@ -62,7 +62,7 @@ class UIContextEventHandler: public IUIEventHandler
 
   protected:
     virtual Rocket::Core::Input::KeyIdentifier translate_key( const Event& ev );
-    virtual int translate_mouse_button( const Event& ev );
+    virtual int translate_mouse_button(const Event& ev);
 
     /// \returns Positive X, Y axis wheel values are translated from SDL2 to
     /// libRocket as the 'up' direction in libRocket and negative X, Y axis
@@ -72,7 +72,7 @@ class UIContextEventHandler: public IUIEventHandler
     /// (away from the end-user), and positive wheel values as the 'down'
     /// direction (towards the end-user). This is indeed the inverse of how
     /// SDL2 handles the values.
-    virtual int translate_mouse_wheel( const Event& ev );
+    virtual int translate_mouse_wheel(const Event& ev);
 
     virtual int translate_key_modifiers( const Event& ev );
 

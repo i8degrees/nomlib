@@ -29,41 +29,76 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SYSTEM_EVENT_HPP
 #define NOMLIB_SYSTEM_EVENT_HPP
 
-#include <SDL.h>
+#include <functional>
 
 #include "nomlib/config.hpp"
+#include "nomlib/system/Joystick.hpp"
 
 namespace nom {
 
-const uint8 MAX_TEXT_INPUT_LENGTH = 255;
+const uint8 MAX_TEXT_INPUT_LENGTH = 32;
+const uint8 MAX_TEXT_EDITING_LENGTH = 32;
 
-class EventCallback;
+/// \brief General hardware device state definitions.
+enum InputState: uint8
+{
+  RELEASED = 0,
+  PRESSED,
+};
 
-/// \todo Implement QuitEvent struct
-/// \remarks SDL_QUIT; event type 256 (dec).
+/// \brief Mouse button definitions.
+enum MouseButton: uint8
+{
+  LEFT_MOUSE_BUTTON = 1,
+  MIDDLE_MOUSE_BUTTON,
+  RIGHT_MOUSE_BUTTON,
+  X1_MOUSE_BUTTON,
+  X2_MOUSE_BUTTON,
+};
+
+typedef int64 TouchID;
+typedef int64 FingerID;
+
+/// \brief Unique identifier for mouse events simulated with touch input
+/// hardware.
+const uint32 TOUCH_MOUSE_ID = nom::NOM_UINT32_MAX;
+
+/// \brief Representation of a program termination request.
+struct QuitEvent
+{
+  /// \brief User-defined data.
+  void* data1;
+
+  /// \brief User-defined data.
+  void* data2;
+};
 
 /// \brief A structure containing information on a window event.
-///
-/// \remarks SDL_WINDOWEVENT; event type 512 (dec).
 struct WindowEvent
 {
-  /// \brief An enumeration of window events.
+  /// \brief Window event types.
+  enum EventType: uint8
+  {
+    NONE = 0,
+    SHOWN,
+    HIDDEN,
+    EXPOSED,
+    MOVED,
+    RESIZED,
+    SIZE_CHANGED,
+    MINIMIZED,
+    MAXIMIZED,
+    RESTORED,
+    MOUSE_FOCUS_GAINED,
+    MOUSE_FOCUS_LOST,
+    KEYBOARD_FOCUS_GAINED,
+    KEYBOARD_FOCUS_LOST,
+    CLOSE,
+  };
+
+  /// \brief The window's event type.
   ///
-  /// \remarks SDL_WINDOWEVENT_NONE; event type 0 (dec).
-  /// \remarks SDL_WINDOWEVENT_SHOWN; event type 1 (dec).
-  /// \remarks SDL_WINDOWEVENT_HIDDEN; event type 2 (dec).
-  /// \remarks SDL_WINDOWEVENT_EXPOSED; event type 3 (dec).
-  /// \remarks SDL_WINDOWEVENT_MOVED; event type 4 (dec).
-  /// \remarks SDL_WINDOWEVENT_RESIZED; event type 5 (dec).
-  /// \remarks SDL_WINDOWEVENT_SIZE_CHANGED; event type 6 (dec).
-  /// \remarks SDL_WINDOWEVENT_MINIMIZED; event type 7 (dec).
-  /// \remarks SDL_WINDOWEVENT_MAXIMIZED; event type 8 (dec).
-  /// \remarks SDL_WINDOWEVENT_RESTORED; event type 9 (dec).
-  /// \remarks SDL_WINDOWEVENT_ENTER; event type 10 (dec).
-  /// \remarks SDL_WINDOWEVENT_LEAVE; event type 11 (dec).
-  /// \remarks SDL_WINDOWEVENT_FOCUS_GAINED; event type 12 (dec).
-  /// \remarks SDL_WINDOWEVENT_FOCUS_LOST; event type 13 (dec).
-  /// \remarks SDL_WINDOWEVENT_CLOSE; event type 14 (dec).
+  /// \see nom::WindowEvent::EventType
   uint8 event;
 
   /// \brief Event dependent data; typically the X coordinate position or width
@@ -76,70 +111,24 @@ struct WindowEvent
 
   /// \brief The identifier of the window at the moment of the event.
   uint32 window_id;
-
-  void dump( void ) const
-  {
-    NOM_DUMP( NOM_SCAST( int, event ) );
-    NOM_DUMP( data1 );
-    NOM_DUMP( data2 );
-    NOM_DUMP( window_id );
-  }
-};
-
-struct KeyboardSymbolCode
-{
-  // TODO
-};
-
-struct KeyboardScanCode
-{
-  // TODO
-};
-
-/// \brief A structure containing information on a keyboard symbol.
-struct KeyboardSymbolEvent
-{
-  /// \brief The event type.
-  ///
-  /// \remarks Not used; reserved for future use.
-  uint32 type;
-
-  /// \brief The physical key code of the key press event.
-  ///
-  /// \todo Implement using the KeyboardScanCode structure.
-  SDL_Scancode scan_code;
-
-  /// \brief Virtual key code of the key press event.
-  ///
-  /// \todo Implement using the KeyboardSymbolCode structure.
-  SDL_Keycode sym;
-
-  /// \brief An enumeration of key modifier masks; see also: the SDL2 wiki
-  /// documentation page for [SDL_Keymod](https://wiki.libsdl.org/SDL_Keymod).
-  uint16 mod;
 };
 
 /// \brief A structure containing information on a keyboard event.
-///
-/// \remarks  SDL_KEYDOWN; event type 768 (dec),
-///           SDL_KEYUP; event type 769 (dec).
 struct KeyboardEvent
 {
-  SDL_Scancode scan_code;
-
-  /// \brief Symbol of the key press event.
-  ///
-  /// \todo Implement using the KeyboardSymbol structure.
-  // SDL_Keysym sym;
+  /// \brief The virtual key code.
   int32 sym;
 
   /// \brief An enumeration of key modifier masks; see also: the SDL2 wiki
   /// documentation page for [SDL_Keymod](https://wiki.libsdl.org/SDL_Keymod).
   uint16 mod;
 
+  /// \brief The physical key code.
+  uint16 scan_code;
+
   /// \brief The state of the key press event.
   ///
-  /// \remarks SDL_PRESSED or SDL_RELEASED.
+  /// \see nom::InputState
   uint8 state;
 
   /// \brief Non-zero if this is a repeating key press event.
@@ -147,21 +136,9 @@ struct KeyboardEvent
 
   /// \brief The identifier of the window at the moment of the event.
   uint32 window_id;
-
-  void dump( void ) const
-  {
-    NOM_DUMP( scan_code );
-    NOM_DUMP( sym );
-    NOM_DUMP( mod );
-    NOM_DUMP( NOM_SCAST( int, state ) );
-    NOM_DUMP( NOM_SCAST( int, repeat ) );
-    NOM_DUMP( window_id );
-  }
 };
 
 /// \brief A structure containing information on a mouse event.
-///
-/// \remarks SDL_MOUSEMOTION; event type 1024 (dec).
 struct MouseMotionEvent
 {
   /// \brief The mouse instance identifier, or SDL_TOUCH_MOUSEID.
@@ -192,23 +169,9 @@ struct MouseMotionEvent
 
   /// \brief The identifier of the window at the moment of the event.
   uint32 window_id;
-
-  void dump( void ) const
-  {
-    NOM_DUMP( id );
-    NOM_DUMP( x );
-    NOM_DUMP( y );
-    NOM_DUMP( x_rel );
-    NOM_DUMP( y_rel );
-    NOM_DUMP( NOM_SCAST( int, state ) );
-    NOM_DUMP( window_id );
-  }
 };
 
 /// \brief A structure containing information on a mouse button event.
-///
-/// \remarks  SDL_MOUSEBUTTONDOWN; event type 1025 (dec),
-///           SDL_MOUSEBUTTONUP; event type 1026 (dec).
 struct MouseButtonEvent
 {
   /// \brief The mouse instance identifier, or SDL_TOUCH_MOUSEID.
@@ -226,15 +189,14 @@ struct MouseButtonEvent
   /// \brief The Y coordinate, relative to the nom::Window instance.
   int32 y;
 
-  /// \brief The button that has changed.
+  /// \brief The button's event type.
   ///
-  /// \remarks This field may be one of: SDL_BUTTON_LEFT, SDL_BUTTON_MIDDLE,
-  /// SDL_BUTTON_RIGHT, SDL_BUTTON_X1 or SDL_BUTTON_X2.
+  /// \see nom::MouseButton.
   uint8 button;
 
   /// \brief The state of the button.
   ///
-  /// \remarks SDL_PRESSED or SDL_RELEASED.
+  /// \see nom::InputState
   uint8 state;
 
   /// \brief Value containing how many mouse buttons were clicked.
@@ -246,22 +208,9 @@ struct MouseButtonEvent
   ///
   /// \note ev->button.windowID
   uint32 window_id;
-
-  void dump( void ) const
-  {
-    NOM_DUMP( id );
-    NOM_DUMP( x );
-    NOM_DUMP( y );
-    NOM_DUMP( NOM_SCAST( int, button ) );
-    NOM_DUMP( NOM_SCAST( int, state ) );
-    NOM_DUMP( NOM_SCAST( int, clicks ) );
-    NOM_DUMP( window_id );
-  }
 };
 
 /// \brief A structure containing information on a mouse wheel event.
-///
-/// \remarks SDL_MOUSEWHEEL; event type 1027 (dec).
 struct MouseWheelEvent
 {
   /// \brief The mouse instance identifier, or SDL_TOUCH_MOUSEID.
@@ -290,97 +239,118 @@ struct MouseWheelEvent
 
   /// \brief The identifier of the window at the moment of event.
   uint32 window_id;
-
-  void dump( void ) const
-  {
-    NOM_DUMP( id );
-    NOM_DUMP( x );
-    NOM_DUMP( y );
-    NOM_DUMP( window_id );
-  }
 };
 
 /// \brief A structure containing information on a joystick axis motion event.
-///
-/// \remarks SDL_JOYAXISMOTION; event type 1536 (dec).
 struct JoystickAxisEvent
 {
-  /// \brief Index of the joystick that reported the event.
-  SDL_JoystickID id;
+  /// \brief The joystick instance identifier.
+  JoystickID id;
 
   /// \brief Index of the axis on the device.
+  ///
+  /// \see nom::JoystickAxis
   uint8 axis;
 
   /// \brief The current position of the axis.
   ///
   /// \remarks The range of the axis value is in between -32,768 to 32,767.
   int16 value;
-
-  /// \brief Identifier of the window at the moment of the event.
-  // uint32 window_id;
-
-  void dump( void ) const
-  {
-    NOM_DUMP( id );
-    NOM_DUMP( NOM_SCAST( int, axis ) );
-    NOM_DUMP( value );
-  }
 };
 
 /// \brief A structure containing information on a joystick button event.
-///
-/// \remarks  SDL_JOYBUTTONDOWN; event type 1539 (dec),
-///           SDL_JOYBUTTONUP; event type 1540 (dec).
 struct JoystickButtonEvent
 {
-  /// \brief Index of the joystick that reported the event.
-  SDL_JoystickID id;
+  /// \brief The joystick instance identifier.
+  JoystickID id;
 
   /// \brief The index of the button.
   uint8 button;
 
   /// \brief The state of the button.
   ///
-  /// \remarks SDL_PRESSED or SDL_RELEASED.
+  /// \see nom::InputState
   uint8 state;
-
-  void dump( void ) const
-  {
-    NOM_DUMP( id );
-    NOM_DUMP( NOM_SCAST( int, button ) );
-    NOM_DUMP( NOM_SCAST( int, state ) );
-  }
 };
 
-/// \remarks SDL_JOYDEVICEADDED; event type 1541 (dec).
-struct JoystickConnectedEvent
+/// \brief Internal representation of a joystick hat position.
+struct JoystickHatEvent
 {
-  /// \brief Index of the joystick that reported the event.
-  SDL_JoystickID id;
+  /// \brief The joystick instance identifier.
+  JoystickID id;
 
-  void dump( void ) const
-  {
-    NOM_DUMP( id );
-  }
+  /// \brief The index of the joystick hat.
+  ///
+  /// \see nom::JoystickHat
+  uint8 hat;
+
+  /// \brief The hat position value.
+  ///
+  /// \see nom::JoystickHatPosition
+  uint8 value;
 };
 
-/// \remarks SDL_JOYDEVICEREMOVED; event type 1542 (dec).
-struct JoystickDisconnectedEvent
+/// \brief Internal representation of a joystick device connection event.
+struct JoystickDeviceEvent
 {
-  /// \brief Index of the joystick that reported the event.
-  SDL_JoystickID id;
+  /// \brief The joystick instance identifier.
+  ///
+  /// \see Event::JOYSTICK_ADDED, Event::JOYSTICK_REMOVED
+  JoystickID id;
+};
 
-  void dump( void ) const
-  {
-    NOM_DUMP( id );
-  }
+/// \brief A structure containing information on a game controller axis motion
+/// event.
+struct GameControllerAxisEvent
+{
+  /// \brief The joystick instance identifier.
+  JoystickID id;
+
+  /// \brief Index of the axis on the device.
+  ///
+  /// \see nom::GameControllerAxis
+  int8 axis;
+
+  /// \brief The axis value.
+  ///
+  /// \remarks The range of this value is between -32,768 to 32,767.
+  int16 value;
+};
+
+/// \brief A structure containing information on a game controller button event.
+struct GameControllerButtonEvent
+{
+  /// \brief The joystick instance identifier.
+  JoystickID id;
+
+  /// \brief The index of the button.
+  ///
+  /// \see nom::GameControllerButton
+  int8 button;
+
+  /// \brief The state of the button.
+  ///
+  /// \see nom::InputState
+  uint8 state;
+};
+
+/// \brief Internal representation of a game controller device connection
+/// event.
+struct GameControllerDeviceEvent
+{
+  /// \brief The joystick instance identifier.
+  ///
+  /// \see Event::GAME_CONTROLLER_ADDED,
+  /// Event::GAME_CONTROLLER_REMOVED,
+  /// Event::GAME_CONTROLLER_REMAPPED
+  JoystickID id;
 };
 
 /// \brief A structure containing information on a finger (touch) event.
 struct FingerEvent
 {
   /// \brief The finger index identifier.
-  SDL_FingerID id;
+  FingerID id;
 
   /// \brief The X coordinate of the event; normalized 0..1.
   float x;
@@ -390,14 +360,6 @@ struct FingerEvent
 
   /// \brief The quantity of the pressure applied; normalized 0..1.
   float pressure;
-
-  void dump( void ) const
-  {
-    NOM_DUMP( id );
-    NOM_DUMP( x );
-    NOM_DUMP( y );
-    NOM_DUMP( pressure );
-  }
 };
 
 /// \brief A structure containing information on a finger touch event.
@@ -406,7 +368,7 @@ struct FingerEvent
 struct FingerTouchEvent
 {
   /// \brief The touch device index identifier.
-  SDL_TouchID id;
+  TouchID id;
 
   /// \brief The finger index identifier.
   FingerEvent finger;
@@ -425,18 +387,6 @@ struct FingerTouchEvent
 
   /// \brief The quantity of the pressure applied; normalized 0..1.
   float pressure;
-
-  void dump( void ) const
-  {
-    NOM_DUMP( id );
-    NOM_DUMP( finger.id );
-    finger.dump();
-    NOM_DUMP( x );
-    NOM_DUMP( y );
-    NOM_DUMP( dx );
-    NOM_DUMP( dy );
-    NOM_DUMP( pressure );
-  }
 };
 
 /// \brief A structure containing information on a multi-finger gesture (touch)
@@ -446,7 +396,7 @@ struct FingerTouchEvent
 struct GestureEvent
 {
   /// \brief The touch device index identifier.
-  SDL_TouchID id;
+  TouchID id;
 
   /// \brief The X coordinate of the event.
   float x;
@@ -462,38 +412,16 @@ struct GestureEvent
 
   /// \brief The number of fingers used in the gesture event.
   uint16 num_fingers;
-
-  void dump( void ) const
-  {
-    NOM_DUMP( id );
-    NOM_DUMP( dTheta );
-    NOM_DUMP( dDist );
-    NOM_DUMP( x );
-    NOM_DUMP( y );
-    NOM_DUMP( num_fingers );
-  }
 };
 
 /// \brief A structure containing information on a Drag 'N' Drop event.
-///
-/// \remarks SDL_DROPFILE; event type 4096 (dec).
 struct DragDropEvent
 {
   /// \brief The path of the file dropped onto the nom::Window.
   const char* file_path;
-
-  void dump( void ) const
-  {
-    if( file_path != nullptr )
-    {
-      NOM_DUMP( file_path );
-    }
-  }
 };
 
 /// \brief A structure containing information on a text input event.
-///
-/// \remarks SDL_TEXTINPUT; event type 771 (dec).
 struct TextInputEvent
 {
   /// \brief The text input.
@@ -501,12 +429,6 @@ struct TextInputEvent
 
   /// \brief The identifier of the window at the moment of the event.
   uint32 window_id;
-
-  void dump( void ) const
-  {
-    NOM_DUMP( text );
-    NOM_DUMP( window_id );
-  }
 };
 
 /// \brief A structure containing information on a text editing event.
@@ -515,7 +437,7 @@ struct TextInputEvent
 struct TextEditingEvent
 {
   /// \brief The text being edited.
-  char text[SDL_TEXTEDITINGEVENT_TEXT_SIZE];
+  char text[MAX_TEXT_EDITING_LENGTH];
 
   /// \brief The location to begin editing from.
   int32 start;
@@ -525,28 +447,11 @@ struct TextEditingEvent
 
   /// \brief The identifier of the window at the moment of the event.
   uint32 window_id;
-
-  void dump( void ) const
-  {
-    NOM_DUMP( text );
-    NOM_DUMP( start );
-    NOM_DUMP( length );
-    NOM_DUMP( window_id );
-  }
 };
 
 /// \brief A structure containing information on an user event.
-///
-/// \remarks SDL_USEREVENT.
 struct UserEvent
 {
-  /// \brief Convenience getter for nom::EventCallback objects stored in the
-  /// data2 field.
-  EventCallback* get_callback( void ) const
-  {
-    return NOM_SCAST( EventCallback*, data2 );
-  }
-
   /// \brief User defined event code.
   int32 code;
 
@@ -558,19 +463,79 @@ struct UserEvent
 
   /// \brief The identifier of the window at the moment of the event.
   uint32 window_id;
-
-  void dump( void ) const
-  {
-    NOM_DUMP( code );
-    NOM_DUMP( window_id );
-  }
 };
 
 /// \brief Event handling types.
 struct Event
 {
+  enum EventType: uint32
+  {
+    FIRST_EVENT = 0,
+    QUIT_EVENT,
+    WINDOW_EVENT,
+    SYSWMEVENT,
+    KEY_PRESS,
+    KEY_RELEASE,
+    MOUSE_MOTION,
+    MOUSE_BUTTON_CLICK,
+    MOUSE_BUTTON_RELEASE,
+    MOUSE_WHEEL,
+    JOYSTICK_AXIS_MOTION,
+    JOYSTICK_BALL_MOTION,
+    JOYSTICK_HAT_MOTION,
+    JOYSTICK_BUTTON_PRESS,
+    JOYSTICK_BUTTON_RELEASE,
+
+    /// \brief The device index of the joystick connection event.
+    JOYSTICK_ADDED,
+
+    /// \brief The instance ID of the joystick removal event.
+    JOYSTICK_REMOVED,
+
+    GAME_CONTROLLER_AXIS_MOTION,
+
+    GAME_CONTROLLER_BUTTON_PRESS,
+    GAME_CONTROLLER_BUTTON_RELEASE,
+
+    /// \brief The device index of the game controller connection event.
+    GAME_CONTROLLER_ADDED,
+
+    /// \brief The instance ID of the game controller removal event.
+    GAME_CONTROLLER_REMOVED,
+
+    /// \brief The instance ID of the game controller remapping event.
+    GAME_CONTROLLER_REMAPPED,
+
+    FINGER_MOTION,
+
+    FINGER_PRESS,
+
+    FINGER_RELEASE,
+
+    MULTI_FINGER_GESTURE,
+    DROP_FILE,
+    TEXT_INPUT,
+    TEXT_EDITING,
+    RENDER_TARGETS_RESET,
+
+// NOTE: Not available until the release of SDL 2.0.4
+#if 0
+    RENDER_DEVICE_RESET,
+#endif
+    USER_EVENT,
+  };
+
+  /// \brief The event type.
+  ///
+  /// \see nom::Event::EventType
+  uint32 type;
+
+  /// \brief The recorded time at the moment of the event.
+  uint32 timestamp;
+
   union
   {
+    QuitEvent quit;
     WindowEvent window;
     KeyboardEvent key;
     MouseMotionEvent motion;
@@ -578,8 +543,11 @@ struct Event
     MouseWheelEvent wheel;
     JoystickButtonEvent jbutton;
     JoystickAxisEvent jaxis;
-    JoystickConnectedEvent jconnected;
-    JoystickDisconnectedEvent jdisconnected;
+    JoystickHatEvent jhat;
+    JoystickDeviceEvent jdevice;
+    GameControllerAxisEvent caxis;
+    GameControllerButtonEvent cbutton;
+    GameControllerDeviceEvent cdevice;
     FingerTouchEvent touch;
     GestureEvent gesture;
     DragDropEvent drop;
@@ -587,21 +555,10 @@ struct Event
     TextEditingEvent edit;
     UserEvent user;
   };
-
-  /// \brief The event type.
-  ///
-  /// \todo Change to enumeration type?
-  uint32 type;
-
-  /// \brief The recorded time at the moment of the event.
-  uint32 timestamp;
-
-  void dump( void ) const
-  {
-    NOM_DUMP( type );
-    NOM_DUMP( timestamp );
-  }
 };
+
+typedef std::function<void(const Event&)> event_callback;
+typedef std::function<void(const Event&, void* data)> event_filter;
 
 } // namespace nom
 

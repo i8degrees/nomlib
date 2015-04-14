@@ -151,7 +151,7 @@ void ActionTest::SetUp()
     switch(ev.type) {
       default: break;
 
-      case SDL_KEYDOWN:
+      case Event::KEY_PRESS:
       {
         switch(ev.key.sym) {
           default: break;
@@ -180,25 +180,25 @@ void ActionTest::SetUp()
           } break;
 
         } break; // end switch ev.key.sym
-      } break; // end SDL_KEYDOWN case
+      } break; // end Event::KEY_PRESS case
 
-      case SDL_WINDOWEVENT:
+      case Event::WINDOW_EVENT:
       {
         switch(ev.window.event) {
           default: break;
 
           // This event will always be posted first
-          case SDL_WINDOWEVENT_RESIZED:
+          case WindowEvent::RESIZED:
           {
             this->player.pause();
           } break;
 
-          case SDL_WINDOWEVENT_SIZE_CHANGED:
+          case WindowEvent::SIZE_CHANGED:
           {
             this->player.resume();
           } break;
         } break; // end switch ev.window.event
-      } break; // end SDL_WINDOWEVENT case
+      } break; // end Event::WINDOW_EVENT case
 
     } // end switch ev.type
   });

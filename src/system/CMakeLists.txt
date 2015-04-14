@@ -15,24 +15,22 @@ set(  NOM_SYSTEM_SOURCE
 
       ${INC_DIR}/system/Event.hpp
 
-      ${SRC_DIR}/system/EventCallback.cpp
-      ${INC_DIR}/system/EventCallback.hpp
-
-      ${SRC_DIR}/system/EventDispatcher.cpp
-      ${INC_DIR}/system/EventDispatcher.hpp
-
       ${SRC_DIR}/system/EventHandler.cpp
       ${INC_DIR}/system/EventHandler.hpp
+      ${SRC_DIR}/system/JoystickEventHandler.cpp
+      ${INC_DIR}/system/JoystickEventHandler.hpp
+      ${SRC_DIR}/system/GameControllerEventHandler.cpp
+      ${INC_DIR}/system/GameControllerEventHandler.hpp
+      ${SRC_DIR}/system/Joystick.cpp
+      ${INC_DIR}/system/Joystick.hpp
+      ${SRC_DIR}/system/GameController.cpp
+      ${INC_DIR}/system/GameController.hpp
 
       ${SRC_DIR}/system/FPS.cpp
       ${INC_DIR}/system/FPS.hpp
 
-      ${INC_DIR}/system/IJoystick.hpp
       ${SRC_DIR}/system/IState.cpp
       ${INC_DIR}/system/IState.hpp
-
-      ${SRC_DIR}/system/Joystick.cpp
-      ${INC_DIR}/system/Joystick.hpp
 
       ${INC_DIR}/system/ResourceCache.hpp
       ${SRC_DIR}/system/ResourceFile.cpp
@@ -40,9 +38,6 @@ set(  NOM_SYSTEM_SOURCE
 
       ${SRC_DIR}/system/SDLApp.cpp
       ${INC_DIR}/system/SDLApp.hpp
-
-      ${SRC_DIR}/system/SDLJoystick.cpp
-      ${INC_DIR}/system/SDLJoystick.hpp
 
       ${SRC_DIR}/system/SDL_helpers.cpp
       ${INC_DIR}/system/SDL_helpers.hpp

@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Public header file
 
-#include <nomlib/config.hpp>
 #include <nomlib/system/FPS.hpp>
 #include <nomlib/system/StateMachine.hpp>
 #include <nomlib/system/IState.hpp>
@@ -41,6 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system/SDLApp.hpp>
 #include <nomlib/system/EventHandler.hpp>
 #include <nomlib/system/Joystick.hpp>
+#include <nomlib/system/GameController.hpp>
 #include <nomlib/system/Timer.hpp>
 #include <nomlib/system/HighResolutionTimer.hpp>
 
@@ -49,8 +49,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <nomlib/system/SDL_helpers.hpp>
 #include <nomlib/system/Event.hpp>
-#include <nomlib/system/EventCallback.hpp>
-#include <nomlib/system/EventDispatcher.hpp>
 #include <nomlib/system/InputMapper/InputAction.hpp>
 #include <nomlib/system/InputMapper/InputStateMapper.hpp>
 #include <nomlib/system/InputMapper/InputActionMapper.hpp>

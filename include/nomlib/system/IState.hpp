@@ -30,17 +30,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_SYSTEM_ISTATE_HPP
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/EventHandler.hpp"
 
 namespace nom {
 
 // Forward declarations
 class RenderWindow;
+struct Event;
 
 /// \brief Abstract interface for game states
 ///
 /// \remarks See also nom::StateMachine, nom::SDLApp
-class IState: public EventHandler
+class IState
 {
   public:
     typedef std::unique_ptr<IState> unique_ptr;
@@ -120,19 +120,13 @@ class IState: public EventHandler
     ///
     /// \param ev The passed nom::Event object.
     ///
-    /// \remarks This method provides a means of control for event propagation
-    /// flow.
-    ///
-    /// \fixme This is currently required for GUI events processing in TTcards,
-    /// and probably can be handled better...
-    ///
     /// \returns This method should return Boolean TRUE when the nom::Event
     /// object has been processed (think: consumed) by the user-implemented
     /// method, and boolean FALSE when the nom::Event object has not been
     /// processed (think: consumed). The default implementation returns false.
     ///
     /// \see StateMachine::on_event
-    virtual bool on_event( const nom::Event& ev );
+    virtual bool on_event(const nom::Event& ev);
 
     /// \brief User-defined implementation of the state's update logic.
     ///

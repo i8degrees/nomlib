@@ -28,16 +28,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/SDLApp.hpp"
 
-// Private headers (third-party libs)
-// #include <SDL.h>
-
 // Private headers
+#include "nomlib/core/err.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 #include "nomlib/system/init.hpp"
 #include "nomlib/system/ColorDatabase.hpp"
 
 // Forward declarations
 #include "nomlib/system/Event.hpp"
+#include "nomlib/system/EventHandler.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/system/StateMachine.hpp"
 
@@ -86,18 +85,6 @@ sint SDLApp::Run( void )
   return NOM_EXIT_SUCCESS;
 }
 
-void SDLApp::on_event( const Event& ev )
-{
-  // First, handle our own events
-  EventHandler::process_event( ev );
-
-  // Next, handle the state machine's event loop:
-  if( this->state_ != nullptr )
-  {
-    this->state()->on_event( ev );
-  }
-}
-
 void SDLApp::on_update( float delta )
 {
   if( this->state_ != nullptr )
@@ -112,26 +99,6 @@ void SDLApp::on_draw( RenderWindow& target )
   {
     this->state()->draw( target );
   }
-}
-
-void SDLApp::on_window_close( const Event& ev )
-{
-  // A call is made here to the virtual method being re-implemented here in
-  // order to catch debugging output with debug builds compiled in; see
-  // EventHandler.hpp.
-  EventHandler::on_window_close( ev );
-
-  this->on_app_quit( ev );
-}
-
-void SDLApp::on_app_quit( const Event& ev )
-{
-  // A call is made here to the virtual method being re-implemented here in
-  // order to catch debugging output with debug builds compiled in; see
-  // EventHandler.hpp.
-  EventHandler::on_app_quit( ev );
-
-  this->quit();
 }
 
 bool SDLApp::running( void )
@@ -194,7 +161,260 @@ void SDLApp::set_state_machine( StateMachine* mech )
   this->state_.reset( mech );
 }
 
+void SDLApp::set_event_handler(EventHandler& evt_handler)
+{
+  this->event_handler_ = &evt_handler;
+
+  auto event_watch = nom::event_filter( [=](const Event& evt, void* data) {
+    this->on_app_event(evt);
+  });
+
+  this->event_handler_->append_event_watch(event_watch, nullptr);
+}
+
+// Protected scope
+
+void SDLApp::on_app_quit(const Event& ev)
+{
+  // Default implementation
+
+  this->quit();
+}
+
+void SDLApp::on_window_shown(const Event& ev)
+{
+  // Default implementation
+}
+
+void SDLApp::on_window_hidden(const Event& ev)
+{
+  // Default implementation
+}
+
+void SDLApp::on_window_exposed(const Event& ev)
+{
+  // Default implementation
+}
+
+void SDLApp::on_window_moved(const Event& ev)
+{
+  // Default implementation
+}
+
+void SDLApp::on_window_resized(const Event& ev)
+{
+  // Default implementation
+}
+
+void SDLApp::on_window_size_changed(const Event& ev)
+{
+  // Default implementation
+}
+
+void SDLApp::on_window_minimized(const Event& ev)
+{
+  // Default implementation
+}
+
+void SDLApp::on_window_maximized(const Event& ev)
+{
+  // Default implementation
+}
+
+void SDLApp::on_window_restored(const Event& ev)
+{
+  // Default implementation
+}
+
+void SDLApp::on_window_mouse_focus(const Event& ev)
+{
+  // Default implementation
+}
+
+void SDLApp::on_window_mouse_focus_lost(const Event& ev)
+{
+  // Default implementation
+}
+
+void SDLApp::on_window_keyboard_focus(const Event& ev)
+{
+  // Default implementation
+}
+
+void SDLApp::on_window_keyboard_focus_lost(const Event& ev)
+{
+  // Default implementation
+}
+
+void SDLApp::on_window_close(const Event& ev)
+{
+  // Default implementation
+
+  this->on_app_quit(ev);
+}
+
+void SDLApp::on_input_event(const Event& ev)
+{
+  // Default implementation
+}
+
+void SDLApp::on_drag_drop(const Event& ev)
+{
+  // Default implementation
+}
+
+void SDLApp::on_user_event(const Event& ev)
+{
+  // Default implementation
+}
+
+void SDLApp::on_render_targets_reset(const Event& ev)
+{
+  // Default implementation
+}
+
+// NOTE: Not available until the release of SDL 2.0.4
+#if 0
+void SDLApp::on_render_device_reset(const Event& ev)
+{
+  // Default implementation
+}
+#endif
+
 // Private scope
+
+void SDLApp::on_app_event(const Event& ev)
+{
+  // Handle our events
+  this->process_event(ev);
+
+  // Handle the state's events
+  if( this->state_ != nullptr ) {
+    this->state()->on_event(ev);
+  }
+}
+
+void SDLApp::process_event(const Event& ev)
+{
+  switch(ev.type)
+  {
+    case Event::QUIT_EVENT:
+    {
+      this->on_app_quit(ev);
+    } break;
+
+    case Event::WINDOW_EVENT:
+    {
+      switch(ev.window.event)
+      {
+        default: break;
+
+        case WindowEvent::NONE: break;
+
+        case WindowEvent::SHOWN:
+        {
+          this->on_window_shown(ev);
+        } break;
+
+        case WindowEvent::HIDDEN:
+        {
+          this->on_window_hidden(ev);
+        } break;
+
+        case WindowEvent::EXPOSED:
+        {
+          this->on_window_exposed(ev);
+        } break;
+
+        case WindowEvent::MOVED:
+        {
+          this->on_window_moved(ev);
+        } break;
+
+        case WindowEvent::RESIZED:
+        {
+          this->on_window_resized(ev);
+        } break;
+
+        case WindowEvent::SIZE_CHANGED:
+        {
+          this->on_window_size_changed(ev);
+        } break;
+
+        case WindowEvent::MINIMIZED:
+        {
+          this->on_window_minimized(ev);
+        } break;
+
+        case WindowEvent::MAXIMIZED:
+        {
+          this->on_window_maximized(ev);
+        } break;
+
+        case WindowEvent::RESTORED:
+        {
+          this->on_window_restored(ev);
+        } break;
+
+        case WindowEvent::MOUSE_FOCUS_GAINED:
+        {
+          this->on_window_mouse_focus(ev);
+        } break;
+
+        case WindowEvent::MOUSE_FOCUS_LOST:
+        {
+          this->on_window_mouse_focus_lost(ev);
+        } break;
+
+        case WindowEvent::KEYBOARD_FOCUS_GAINED:
+        {
+          this->on_window_keyboard_focus(ev);
+        } break;
+
+        case WindowEvent::KEYBOARD_FOCUS_LOST:
+        {
+          this->on_window_keyboard_focus_lost(ev);
+        } break;
+
+        case WindowEvent::CLOSE:
+        {
+          this->on_window_close(ev);
+        } break;
+      } // end switch ev.window.event
+
+    } break; // end case WINDOW_EVENT
+
+    case Event::SYSWMEVENT: break;
+
+    case Event::DROP_FILE:
+    {
+      this->on_drag_drop(ev);
+    } break;
+
+    case Event::RENDER_TARGETS_RESET:
+    {
+      this->on_render_targets_reset(ev);
+    } break;
+
+// NOTE: Not available until the release of SDL 2.0.4
+#if 0
+    case Event::RENDER_DEVICE_RESET:
+    {
+      this->on_render_device_reset(ev);
+    } break;
+#endif
+
+    case Event::USER_EVENT:
+    {
+      this->on_user_event(ev);
+    } break;
+
+    default:
+    {
+      this->on_input_event(ev);
+    } break;
+  } // end switch ev.type
+}
 
 bool SDLApp::initialize( uint32 flags )
 {

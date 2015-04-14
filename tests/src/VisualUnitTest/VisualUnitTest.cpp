@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/init.hpp"
 #include "nomlib/system/Path.hpp"
 #include "nomlib/system/File.hpp"
+#include "nomlib/system/InputMapper/InputAction.hpp"
 #include "nomlib/serializers/IValueSerializer.hpp"
 #include "nomlib/serializers/IValueDeserializer.hpp"
 #include "nomlib/serializers/JsonCppSerializer.hpp"
@@ -163,19 +164,17 @@ void VisualUnitTest::SetUp( void )
   // Register default input bindings
   InputActionMapper state;
 
-  EventCallback ev_quit( [&] ( const Event& evt ) { this->quit(); } );
+  auto ev_quit = ( [&](const Event& evt) {
+    this->quit();
+  });
 
-  EventCallback ev_screenshot( [&] ( const Event& evt )
-    {
-      this->render_window().save_screenshot( this->test_name() + ".png" );
-    }
-  );
+  auto ev_screenshot = ( [&](const Event& evt) {
+    this->render_window().save_screenshot( this->test_name() + ".png" );
+  });
 
-  EventCallback ev_fullscreen( [&] ( const Event& evt )
-    {
-      this->render_window().toggle_fullscreen();
-    }
-  );
+  auto ev_fullscreen = ( [&](const Event& evt) {
+    this->render_window().toggle_fullscreen();
+  });
 
   // A convenient key binding for *quickly* terminating all unit tests and test
   // cases within the executable immediately.
@@ -187,59 +186,33 @@ void VisualUnitTest::SetUp( void )
   //
   // NOTE: This key binding (along with any other registered binding) is not
   // available during non-interactive test executions.
-  EventCallback term_tests( [&] ( const Event& evt )
-    {
-      std::exit( this->failed_test_count() );
-    }
-  );
+  auto term_tests = ( [&](const Event& evt) {
+    std::exit( this->failed_test_count() );
+  });
 
-  state.insert  (
-                  "ev_quit",
-                  nom::KeyboardAction( SDL_KEYDOWN, SDLK_ESCAPE ),
-                  ev_quit
-                );
+  state.insert("ev_quit", nom::KeyboardAction(SDLK_ESCAPE), ev_quit);
 
-  state.insert  (
-                  "ev_quit",
-                  nom::KeyboardAction( SDL_KEYDOWN, SDLK_q ),
-                  ev_quit
-                );
+  state.insert("ev_quit", nom::KeyboardAction(SDLK_q), ev_quit);
 
-  state.insert  (
-                  "ev_screenshot",
-                  nom::KeyboardAction( SDL_KEYDOWN, SDLK_F1 ),
-                  ev_screenshot
-                );
+  state.insert("ev_screenshot", nom::KeyboardAction(SDLK_F1), ev_screenshot);
 
-  state.insert  (
-                  "ev_fullscreen",
-                  nom::KeyboardAction( SDL_KEYDOWN, SDLK_f ),
-                  ev_fullscreen
-                );
+  state.insert("ev_fullscreen", nom::KeyboardAction(SDLK_f), ev_fullscreen);
 
-  state.insert  (
-                  "term_tests",
-
-                  // Try to use native platform key modifiers
-                  #if defined( NOM_PLATFORM_OSX ) // Use CMD key modifier
-                    nom::KeyboardAction( SDL_KEYDOWN, SDLK_ESCAPE, KMOD_LGUI ),
-                  #else
-                    // Use SHIFT key modifier; KMOD_GUI is probably going
-                    // to be the Windows logo key...
-                    //
-                    // FIXME: Find a better key modifier to use here...?
-                    // On Win7, ALT+ESCAPE switches windows and CTRL+ESCAPE
-                    // brings up the Start menu.
-                    nom::KeyboardAction( SDL_KEYDOWN, SDLK_BACKQUOTE, KMOD_LCTRL ),
-                  #endif // defined NOM_PLATFORM_OSX
-
-                  term_tests
-                );
+// TODO: Find a better key modifier to use here that fits both operating
+// systems?? On Windows 7, ALT+ESCAPE switches windows and CTRL+ESCAPE
+// both brings up the Start menu...
+#if defined(NOM_PLATFORM_OSX)
+  state.insert( "term_tests", nom::KeyboardAction(SDLK_ESCAPE, KMOD_LGUI),
+                term_tests );
+#else
+  state.insert( "term_tests", nom::KeyboardAction(SDLK_BACKQUOTE, KMOD_LCTRL),
+                term_tests );
+#endif
 
   this->input_mapper_.insert( this->test_set(), state, true );
 
-  // Register the default callbacks to be used within the game loop
-  this->append_event_callback( [&] ( Event ev ) { this->input_mapper_.on_event( ev ); } );
+  this->input_mapper_.set_event_handler(this->evt_);
+
   this->append_update_callback( this->default_update_callback() );
 
   // Default background color to use for the render window
@@ -378,24 +351,24 @@ int VisualUnitTest::on_run( void )
     NOM_LOG_ERR( NOM, "Did you forget to append screen-shot frames to the unit test before calling ::on_run?" );
   }
 
-  Event ev;
-  while( this->app_state() == true )
-  {
-    while( this->evt_.poll_event( ev ) )
-    {
-      // This plumbs in proper quit functionality for when the end-user requests
-      // program termination through the window manager's close button; this
-      // includes Windows ALT+F4 signal.
-      //
-      // Perhaps the event handling system needs a bit of rethinking...
-      if( ev.type == SDL_WINDOWEVENT && ev.window.event == SDL_WINDOWEVENT_CLOSE )
+  while( this->app_state() == true ) {
+
+    Event ev;
+    while( this->evt_.poll_event(ev) == true ) {
+
+      if( ev.type == Event::WINDOW_EVENT &&
+          ev.window.event == WindowEvent::CLOSE )
       {
+        this->set_app_state(false);
+      } else if( ev.type == Event::QUIT_EVENT ) {
         this->set_app_state(false);
       }
 
-      for( auto itr = this->event_callbacks_.begin(); itr != this->event_callbacks_.end(); ++itr )
+      for(  auto itr = this->event_callbacks_.begin();
+            itr != this->event_callbacks_.end();
+            ++itr )
       {
-        itr->operator()( ev );
+        itr->operator()(ev);
       }
     }
 

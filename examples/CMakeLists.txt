@@ -24,6 +24,8 @@ set( NOM_BUILD_APP_EXAMPLE ON )
 set( NOM_BUILD_AUDIO_EXAMPLE ON )
 set( NOM_BUILD_DEVICE_INFO_EXAMPLE ON )
 set( NOM_BUILD_EVENTS_EXAMPLE ON )
+set( NOM_BUILD_JOYSTICK_EXAMPLE ON )
+set( NOM_BUILD_GAME_CONTROLLER_EXAMPLE ON )
 set( NOM_BUILD_FONTS_EXAMPLE ON )
 set( NOM_BUILD_MOUSE_CURSORS_EXAMPLE ON )
 set( NOM_BUILD_MACROS_EXAMPLE ON )
@@ -155,24 +157,52 @@ if( NOM_BUILD_AUDIO_EXAMPLE )
   endif( NOM_BUILD_AUDIO_EXAMPLE )
 
 if( NOM_BUILD_EVENTS_EXAMPLE )
-  add_executable ( events "${EXECUTABLE_FLAGS}" "events.cpp" )
 
-  set( EVENTS_DEPS nomlib-graphics )
+  set( APP_NAME events )
+  add_executable ( ${APP_NAME} "${EXECUTABLE_FLAGS}" "${APP_NAME}.cpp" )
+
+  set( APP_DEPS nomlib-system nomlib-graphics )
 
   if( PLATFORM_WINDOWS )
     # We need to link to SDL2main library on Windows
-    list( APPEND EVENTS_DEPS ${SDL2MAIN_LIBRARY} )
+    list( APPEND APP_DEPS ${SDL2MAIN_LIBRARY} )
   endif( PLATFORM_WINDOWS )
 
-  target_link_libraries( events ${EVENTS_DEPS} )
-
-  install ( DIRECTORY
-            "${EXAMPLES_SRC_DIR}/events/Resources"
-            DESTINATION
-            "${EXAMPLES_INSTALL_DIR}"
-            PATTERN ".*" EXCLUDE
-          )
+  target_link_libraries( ${APP_NAME} ${APP_DEPS} )
 endif( NOM_BUILD_EVENTS_EXAMPLE )
+
+if( NOM_BUILD_JOYSTICK_EXAMPLE )
+
+  set( APP_NAME "joystick_events" )
+  add_executable( ${APP_NAME} "${EXECUTABLE_FLAGS}" "${APP_NAME}.cpp" )
+
+  set( APP_DEPS nomlib-system nomlib-graphics )
+
+  if( PLATFORM_WINDOWS )
+    # We need to link to SDL2main library on Windows
+    list( APPEND APP_DEPS ${SDL2MAIN_LIBRARY} )
+  endif( PLATFORM_WINDOWS )
+
+  target_link_libraries( ${APP_NAME} ${APP_DEPS} )
+endif( NOM_BUILD_JOYSTICK_EXAMPLE )
+
+if( NOM_BUILD_GAME_CONTROLLER_EXAMPLE )
+
+  set( APP_NAME "gamecontroller_events" )
+  add_executable( ${APP_NAME} "${EXECUTABLE_FLAGS}" "${APP_NAME}.cpp" )
+
+  set( APP_DEPS nomlib-system nomlib-graphics )
+
+  if( PLATFORM_WINDOWS )
+    # We need to link to SDL2main library on Windows
+    list( APPEND APP_DEPS ${SDL2MAIN_LIBRARY} )
+  endif( PLATFORM_WINDOWS )
+
+  target_link_libraries( ${APP_NAME} ${APP_DEPS} )
+
+  install(  FILES "${NOM_EXAMPLES_RESOURCES_DIR}/${APP_NAME}.json"
+            DESTINATION "${EXAMPLES_INSTALL_DIR}" )
+endif( NOM_BUILD_GAME_CONTROLLER_EXAMPLE )
 
 if( NOM_BUILD_DEVICE_INFO_EXAMPLE )
 
@@ -246,6 +276,9 @@ if( NOM_BUILD_MOUSE_CURSORS_EXAMPLE )
   endif( PLATFORM_WINDOWS )
 
   target_link_libraries( cursors ${CURSORS_DEPS} )
+
+  install(  FILES "${NOMLIB_RESOURCES_DIR}/icon.png"
+            DESTINATION "${EXAMPLES_INSTALL_DIR}/Resources" )
 endif( NOM_BUILD_MOUSE_CURSORS_EXAMPLE )
 
 if( NOM_BUILD_MACROS_EXAMPLE )

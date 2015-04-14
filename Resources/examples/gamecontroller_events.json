@@ -1,0 +1,13 @@
+{
+  "resources":
+  {
+    "search_prefix":
+    [
+      "../../../",
+      "../../",
+      "./"
+    ],
+
+    "path": "Resources/examples/gamecontroller_events/"
+  }
+}

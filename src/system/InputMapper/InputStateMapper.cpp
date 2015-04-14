@@ -28,6 +28,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/InputMapper/InputStateMapper.hpp"
 
+// Private headers
+#include "nomlib/core/err.hpp"
+
+// Forward declarations
+#include "nomlib/system/Event.hpp"
+#include "nomlib/system/EventHandler.hpp"
+#include "nomlib/system/InputMapper/InputAction.hpp"
+
 namespace nom {
 
 InputStateMapper::InputStateMapper( void )
@@ -76,23 +84,22 @@ bool InputStateMapper::insert( const std::string& key, const InputActionMapper& 
   return true;
 }
 
-bool InputStateMapper::erase( const std::string& key )
+bool InputStateMapper::erase(const std::string& key)
 {
-  InputStateMap::const_iterator itr = this->states_.find( key );
+  bool result = false;
 
-  // No match found; do nothing.
-  if( itr == this->states_.end() )
-  {
-    NOM_LOG_ERR( NOM, "Could not remove specified state key: " + key );
-    return false;
-  }
-  else // Match found; remove the context mapping
-  {
-    this->states_.erase( itr );
-    return true;
+  InputStateMap::const_iterator itr = this->states_.find(key);
+
+  if( itr == this->states_.end() ) {
+    // Err -- match **not** found
+    result = false;
+  } else {
+    this->states_.erase(itr);
+    // Success -- match found
+    result = true;
   }
 
-  return false;
+  return result;
 }
 
 bool InputStateMapper::activate( const std::string& key )
@@ -194,12 +201,10 @@ void InputStateMapper::dump( void )
       {
         NOM_DUMP( itr->first );
 
-        if ( itr->second != nullptr )
-        {
-          itr->second->dump();
-        }
-        else
-        {
+        if( itr->second != nullptr ) {
+          NOM_DUMP(itr->second->event_.type);
+          NOM_DUMP(itr->second->event_.timestamp);
+        } else {
           NOM_LOG_ERR( NOM, "Invalid input mapping state." );
         }
       }
@@ -207,75 +212,121 @@ void InputStateMapper::dump( void )
   }
 }
 
-void InputStateMapper::on_event( const Event& ev )
+void InputStateMapper::set_event_handler(EventHandler& evt_handler)
 {
-  for( auto itr = this->states_.begin(); itr != this->states_.end(); ++itr )
-  {
-    if( itr->second.active == true )
-    {
+  this->event_handler_ = &evt_handler;
+
+  auto event_watch = nom::event_filter( [=](const Event& evt, void* data) {
+    this->on_event(evt);
+  });
+
+  this->event_handler_->append_event_watch(event_watch, nullptr);
+}
+
+// Private scope
+
+void InputStateMapper::on_event(const Event& ev)
+{
+  for( auto itr = this->states_.begin(); itr != this->states_.end(); ++itr ) {
+
+    if( itr->second.active == true ) {
+
       InputActionMapper::ActionMap input_map = itr->second.actions;
-      for( InputActionMapper::ActionMap::const_iterator itr = input_map.begin(); itr != input_map.end(); ++itr )
-      {
-        if( ev.type == SDL_KEYDOWN || ev.type == SDL_KEYUP )
+
+      for( auto itr = input_map.begin(); itr != input_map.end(); ++itr ) {
+
+        switch(ev.type)
         {
-          if( this->on_key_press( *itr->second, ev ) )
+          default: break;
+
+          case Event::KEY_PRESS:
+          case Event::KEY_RELEASE:
           {
-            itr->second->operator()( ev );
-          }
-        }
-        else if( ev.type == SDL_MOUSEBUTTONDOWN || ev.type == SDL_MOUSEBUTTONUP )
-        {
-          if( this->on_mouse_button( *itr->second, ev ) )
+            if( this->on_key_press(*itr->second, ev) == true ) {
+              itr->second->operator()(ev);
+            }
+          } break;
+
+          case Event::MOUSE_BUTTON_CLICK:
+          case Event::MOUSE_BUTTON_RELEASE:
           {
-            itr->second->operator()( ev );
-          }
-        }
-        else if( ev.type == SDL_MOUSEWHEEL || ev.type == SDL_MOUSEWHEEL )
-        {
-          if( this->on_mouse_wheel( *itr->second, ev ) )
+            if( this->on_mouse_button(*itr->second, ev) == true ) {
+              itr->second->operator()(ev);
+            }
+          } break;
+
+          case Event::MOUSE_WHEEL:
           {
-            itr->second->operator()( ev );
-          }
-        }
-        else if( ev.type == SDL_JOYBUTTONDOWN || ev.type == SDL_JOYBUTTONUP )
-        {
-          if( this->on_joystick_button( *itr->second, ev ) )
+            if( this->on_mouse_wheel(*itr->second, ev) == true ) {
+              itr->second->operator()(ev);
+            }
+          } break;
+
+          case Event::JOYSTICK_AXIS_MOTION:
           {
-            itr->second->operator()( ev );
-          }
-        }
-        else if( ev.type == SDL_JOYAXISMOTION )
-        {
-          if( this->on_joystick_axis( *itr->second, ev ) )
+            if( this->on_joystick_axis(*itr->second, ev) == true ) {
+              itr->second->operator()(ev);
+            }
+          } break;
+
+          case Event::JOYSTICK_BUTTON_PRESS:
+          case Event::JOYSTICK_BUTTON_RELEASE:
           {
-            itr->second->operator()( ev );
-          }
+            if( this->on_joystick_button(*itr->second, ev) == true ) {
+              itr->second->operator()(ev);
+            }
+          } break;
+
+          case Event::JOYSTICK_HAT_MOTION:
+          {
+            if( this->on_joystick_hat(*itr->second, ev) == true ) {
+              itr->second->operator()(ev);
+            }
+          } break;
+
+          case Event::GAME_CONTROLLER_AXIS_MOTION:
+          {
+            if( this->on_game_controller_axis(*itr->second, ev) == true ) {
+              itr->second->operator()(ev);
+            }
+          } break;
+
+          case Event::GAME_CONTROLLER_BUTTON_PRESS:
+          case Event::GAME_CONTROLLER_BUTTON_RELEASE:
+          {
+            if( this->on_game_controller_button(*itr->second, ev) == true ) {
+              itr->second->operator()(ev);
+            }
+          } break;
         }
       } // end input_map iteration
     } // end conditional active input state
   }
 }
 
-bool InputStateMapper::on_key_press( const InputAction& mapping, const Event& ev )
+bool
+InputStateMapper::on_key_press(const InputAction& mapping, const Event& ev)
 {
   Event evt = mapping.event();
 
-  if( evt.type != ev.type ) return false;
+  if( evt.type != ev.type ) {
+    return false;
+  }
 
   // Handle a keyboard action with repeat; only trigger if the event is a
   // repeating one
-  if( evt.key.repeat != 0 )
-  {
+  if( evt.key.repeat != 0 ) {
     if( evt.key.sym == ev.key.sym && evt.key.mod == ev.key.mod &&
-        evt.key.repeat == ev.key.repeat )
+        evt.key.repeat == ev.key.repeat && evt.key.state == ev.key.state )
     {
       // Matched
       return true;
     }
-  }
-  else  // Handle normal keyboard action; repeating makes no difference to us
-  {
-    if( evt.key.sym == ev.key.sym && evt.key.mod == ev.key.mod ) {
+  } else {
+  // Handle normal keyboard action; repeating makes no difference to us
+    if( evt.key.sym == ev.key.sym && evt.key.mod == ev.key.mod &&
+        evt.key.state == ev.key.state )
+    {
       // Matched
       return true;
     }
@@ -289,11 +340,14 @@ bool InputStateMapper::on_mouse_button( const InputAction& mapping, const Event&
 {
   Event evt = mapping.event();
 
-  if( evt.type != ev.type ) return false;
+  if( evt.type != ev.type ) {
+    return false;
+  }
 
   // Successful match is a mouse click that matches both the button used
   // (left, middle, right, ...) and its number of clicks (single, double, ...)
-  if( evt.mouse.clicks == ev.mouse.clicks && evt.mouse.button == ev.mouse.button )
+  if( evt.mouse.clicks == ev.mouse.clicks &&
+      evt.mouse.button == ev.mouse.button && evt.mouse.state == ev.mouse.state )
   {
     // Match
     return true;
@@ -307,9 +361,9 @@ bool InputStateMapper::on_mouse_wheel( const InputAction& mapping, const Event& 
 {
   Event evt = mapping.event();
 
-  // if( mapping.wheel == nullptr ) return false;
-
-  if( evt.type != ev.type ) return false;
+  if( evt.type != ev.type ) {
+    return false;
+  }
 
   // NOTE: X & Y coordinate values depend on the construction of a WheelAction
   // object.
@@ -350,56 +404,109 @@ bool InputStateMapper::on_mouse_wheel( const InputAction& mapping, const Event& 
   return false;
 }
 
-bool InputStateMapper::on_joystick_button( const InputAction& mapping, const Event& ev )
+bool InputStateMapper::
+on_joystick_button(const InputAction& mapping, const Event& ev)
 {
   Event evt = mapping.event();
 
-  // if( mapping.jbutton == nullptr ) return false;
+  if( evt.type != ev.type ) {
+    return false;
+  }
 
-  if( evt.type != ev.type ) return false;
+  if( evt.jbutton.id != ev.jbutton.id ) {
+    return false;
+  }
 
-  if( evt.jbutton.id != ev.jbutton.id ) return false;
-
-  if( evt.jbutton.button == ev.jbutton.button ) return true;
+  if( evt.jbutton.button == ev.jbutton.button &&
+      evt.jbutton.state == ev.jbutton.state )
+  {
+    return true;
+  }
 
   return false;
 }
 
-// FIXME: Implementation is incomplete!
-bool InputStateMapper::on_joystick_axis( const InputAction& mapping, const Event& ev )
+bool InputStateMapper::
+on_joystick_axis(const InputAction& mapping, const Event& ev)
 {
   Event evt = mapping.event();
 
-  // if( mapping.jaxis == nullptr ) return false;
+  if( evt.type != ev.type ) {
+    return false;
+  }
 
-  if( evt.type != ev.type ) return false;
+  if( evt.jaxis.id != ev.jaxis.id ) {
+    return false;
+  }
 
-  if( evt.jaxis.id != ev.jaxis.id ) return false;
+  if( evt.jaxis.axis == ev.jaxis.axis ) {
+    return true;
+  }
 
-  if( evt.jaxis.axis != ev.jaxis.axis ) return false;
+  return false;
+}
 
-  // Within dead-zone tolerance
-  if( ( ev.jaxis.value < -3200 ) || ( ev.jaxis.value > 3200 ) )
+bool InputStateMapper::
+on_joystick_hat(const InputAction& mapping, const Event& ev)
+{
+  Event evt = mapping.event();
+
+  if( evt.type != ev.type ) {
+    return false;
+  }
+
+  if( evt.jhat.id != ev.jhat.id ) {
+    return false;
+  }
+
+  if( evt.jhat.hat != ev.jhat.hat ) {
+    return false;
+  }
+
+  if( evt.jhat.value ^ ev.jhat.value ) {
+    return true;
+  }
+
+  return false;
+}
+
+bool InputStateMapper::
+on_game_controller_button(const InputAction& mapping, const Event& ev)
+{
+  Event evt = mapping.event();
+
+  if( evt.type != ev.type ) {
+    return false;
+  }
+
+  if( evt.cbutton.id != ev.cbutton.id ) {
+    return false;
+  }
+
+  if( evt.cbutton.button == ev.cbutton.button &&
+      evt.cbutton.state == ev.cbutton.state )
   {
-    // Up-down axis (Sony PS3 game controller)
-    if( evt.jaxis.axis == 0 )
-    {
-      // Up
-      if( evt.jaxis.value < 0 ) return true;
+    return true;
+  }
 
-      // Down
-      if( evt.jaxis.value > 0 ) return true;
-    }
+  return false;
+}
 
-    // Left-right axis (Sony PS3 game controller)
-    if( evt.jaxis.axis == 1 )
-    {
-      // Left
-      if( evt.jaxis.value < 0 ) return true;
+bool InputStateMapper::
+on_game_controller_axis(const InputAction& mapping, const Event& ev)
+{
+  Event evt = mapping.event();
 
-      // Right
-      if( evt.jaxis.value > 0 ) return true;
-    }
+  if( evt.type != ev.type ) {
+    return false;
+  }
+
+  if( evt.caxis.id != ev.caxis.id ) {
+    return false;
+  }
+
+  if( evt.caxis.axis == ev.caxis.axis ) {
+    return true;
   }
 
   return false;

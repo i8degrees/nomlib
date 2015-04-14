@@ -26,319 +26,167 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_SDL2_SYSTEM_INPUT_HEADERS
-#define NOMLIB_SDL2_SYSTEM_INPUT_HEADERS
+#ifndef NOMLIB_SYSTEM_EVENT_HANDLER_HPP
+#define NOMLIB_SYSTEM_EVENT_HANDLER_HPP
 
-#include <string>
-#include <cstring>
-#include <queue>
+#include <deque>
+#include <vector>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/SDL_helpers.hpp"
-#include "nomlib/system/Joystick.hpp"
 #include "nomlib/system/Event.hpp"
 
-// Enable debugging output of quit (end program execution) events.
-// #define NOM_DEBUG_SDL2_QUIT_EVENT
-
-// Enable debugging output of user defined events.
-// #define NOM_DEBUG_SDL2_USER_EVENT
-
-// Enable debugging output of window events.
-// #define NOM_DEBUG_SDL2_WINDOW_INPUT
-
-// Enable debugging output of window focus events.
-// #define NOM_DEBUG_SDL2_WINDOW_FOCUS_INPUT
-
-// Enable debugging output of key press & release events.
-// #define NOM_DEBUG_SDL2_KEYBOARD_INPUT
-
-// Enable debugging output of mouse button events.
-// #define NOM_DEBUG_SDL2_MOUSE_INPUT
-
-// Enable debugging output of mouse motion events.
-// #define NOM_DEBUG_SDL2_MOUSE_MOTION_INPUT
-
-// Enable debugging output of joystick button events.
-// #define NOM_DEBUG_SDL2_JOYSTICK_BUTTON_INPUT
-
-// Enable debugging output of joystick axis events.
-// #define NOM_DEBUG_SDL2_JOYSTICK_AXIS_INPUT
-
-// Enable debugging output of joystick addition & removal events.
-// #define NOM_DEBUG_SDL2_JOYSTICK_EVENT
-
-// Enable debugging output of touch motion events.
-// #define NOM_DEBUG_SDL2_TOUCH_MOTION_EVENT
-
-// Enable debugging output of finger touch events.
-// #define NOM_DEBUG_SDL2_TOUCH_EVENT
-
-// Enable debugging output of multiple finger gesture events.
-// #define NOM_DEBUG_SDL2_GESTURE_EVENT
-
-// Enable debugging output of Drag 'N' Drop events.
-#define NOM_DEBUG_SDL2_DRAG_DROP_INPUT
-
-// Enable debugging output of text input events.
-// #define NOM_DEBUG_SDL2_TEXT_INPUT_EVENT
-
-// Enable debugging output of text editing events.
-// #define NOM_DEBUG_SDL2_TEXT_EDIT_EVENT
+// Forward declarations (third-party)
+union SDL_Event;
 
 namespace nom {
 
-/// \brief High-level events handling.
+// Forward declarations
+struct event_watcher;
+class JoystickEventHandler;
+class GameControllerEventHandler;
+
+/// \brief Event handling abstraction
 class EventHandler
 {
   public:
-    /// \brief Default constructor.
-    ///
-    /// \remarks The joystick subsystem is initialized here.
+    typedef EventHandler self_type;
+
+    enum JoystickHandlerType
+    {
+      NO_EVENT_HANDLER = 0,
+      SDL_JOYSTICK_EVENT_HANDLER,
+      GAME_CONTROLLER_EVENT_HANDLER,
+    };
+
     EventHandler();
 
-    /// \brief Destructor.
-    ///
-    /// \remarks The joystick subsystem is shutdown within nom::SDLApp.
-    virtual ~EventHandler();
+    ~EventHandler();
 
-    /// \brief The high-level events handler.
-    ///
-    /// \remarks This method is required when overloading the event handlers
-    /// provided (via inheritance) from this class.
-    void process_event( const Event& ev );
+    /// \brief Disabled copy constructor.
+    EventHandler(const EventHandler& rhs) = delete;
 
-    /// \brief Enumerate the available events from the high-level events
-    /// subsystem (queue).
+    /// \brief Disabled copy assignment operator.
+    EventHandler& operator =(const EventHandler& rhs) = delete;
+
+    /// \brief Get the total number of enqueued events.
+    nom::size_type num_events() const;
+
+    /// \brief Get the total number of event watchers.
+    nom::size_type num_event_watchers() const;
+
+    /// \brief Get a non-owned pointer to the joystick device event handler.
     ///
-    /// \param ev The nom::Event structure used to place the top (most current)
-    /// event into (if any).
+    /// \remarks This pointer is invalid until an explicit call has been made
+    /// to nom::EventHandler::enable_joystick_polling.
     ///
-    /// \note This method must still be called even when using the optional
-    /// event handlers provided by this class.
+    /// \see nom::EventHandler::joystick_event_type
+    JoystickEventHandler* joystick_event_handler() const;
+
+    /// \brief Get a non-owned pointer to the game controller device event
+    /// handler.
+    ///
+    /// \remarks This pointer is invalid until an explicit call has been made
+    /// to nom::EventHandler::enable_game_controller_polling.
+    ///
+    /// \see nom::EventHandler::joystick_event_type
+    GameControllerEventHandler* game_controller_event_handler() const;
+
+    JoystickHandlerType joystick_event_type() const;
+
+    /// \brief Initialize joystick events polling.
+    ///
+    /// \see nom::JoystickEventHandler
+    bool enable_joystick_polling();
+
+    /// \brief Initialize game controller events polling.
+    ///
+    /// \see nom::GameControllerEventHandler
+    bool enable_game_controller_polling();
+
+    /// \brief Shutdown the joystick events polling subsystem.
+    void disable_joystick_polling();
+
+    /// \brief Shutdown the game controller events polling subsystem.
+    void disable_game_controller_polling();
+
+    /// \brief Enumerate the available events.
+    ///
+    /// \param ev The nom::Event to use for the retrieved event.
     bool poll_event(Event& ev);
 
-    // virtual bool poll_event( SDL_Event* ev );
-
-  protected:
-    /// \brief The application level event generated by either the user or API
-    /// requesting that the program execution be shutdown.
+    /// \brief Enqueue an event.
     ///
-    /// \note This event is necessary for Command + Q functionality under
-    /// Mac OS X.
-    virtual void on_app_quit( const Event& ev );
-
-    /// \brief The window event generated once the nom::RenderWindow instance
-    /// has been shown.
-    virtual void on_window_shown( const Event& ev );
-
-    /// \brief The window event generated once the nom::RenderWindow instance
-    /// has been hidden.
-    virtual void on_window_hidden( const Event& ev );
-
-    /// \brief The window event generated once the nom::RenderWindow instance
-    /// has been exposed and should be redrawn.
-    virtual void on_window_exposed( const Event& ev );
-
-    /// \brief The window event generated once the nom::RenderWindow instance
-    /// has been moved.
-    ///
-    /// \param ev The resulting X & Y coordinates of the moved window is
-    /// assigned in ev.window.data1 and ev.window.data2, respectively.
-    virtual void on_window_moved( const Event& ev );
-
-    /// \brief The window event generated once the nom::RenderWindow instance
-    /// has been resized.
-    ///
-    /// \param ev The resulting width & height coordinates of the resized
-    /// nom::RenderWindow instance is assigned in ev.window.data1 and
-    /// ev.window.data2, respectively.
-    ///
-    /// \see ::on_window_size_changed
-    virtual void on_window_resized( const Event& ev );
-
-    /// \brief The window event generated after the nom::RenderWindow instance
-    /// size -- width & height (in pixels) -- has been changed, either as a
-    /// result of an API call, through the system (window manager?) or by the
-    /// end-user.
-    ///
-    /// \param ev The resulting width & height coordinates of the resized
-    /// nom::RenderWindow instance is assigned in ev.window.data1 and
-    /// ev.window.data2, respectively.
-    ///
-    /// \remarks This event will be posted **after** ::on_window_resized
-    /// (SDL_WINDOWEVENT_RESIZED) if the size was changed by an external event,
-    /// such as the user or the window manager.
-    virtual void on_window_size_changed( const Event& ev );
-
-    /// \brief The window event generated after the nom::RenderWindow instance
-    /// has been minimized.
-    virtual void on_window_minimized( const Event& ev );
-
-    /// \brief The window event generated after the nom::RenderWindow instance
-    /// has been maximized.
-    virtual void on_window_maximized( const Event& ev );
-
-    /// \brief The window event generated after the nom::RenderWindow instance
-    /// has been restored to normal size and position.
-    virtual void on_window_restored( const Event& ev );
-
-    /// \brief The window event generated once the nom::RenderWindow instance
-    /// has gained mouse focus.
-    virtual void on_window_mouse_focus( const Event& ev );
-
-    /// \brief The window event generated once the nom::RenderWindow instance
-    /// has lost mouse focus.
-    virtual void on_window_mouse_focus_lost( const Event& ev );
-
-    /// \brief The window event generated once the nom::RenderWindow instance
-    /// has gained keyboard focus.
-    virtual void on_window_keyboard_focus( const Event& ev );
-
-    /// \brief The window event generated once the nom::RenderWindow instance
-    /// has lost keyboard focus.
-    virtual void on_window_keyboard_focus_lost( const Event& ev );
-
-    /// \brief The window event generated (by from the window manager)
-    /// requesting that the nom::RenderWindow instance be closed.
-    virtual void on_window_close( const Event& ev );
-
-    /// \brief The keyboard event generated by a key press.
-    virtual void on_key_down( const Event& ev );
-
-    /// \brief The keyboard event generated by a key release.
-    virtual void on_key_up( const Event& ev );
-
-    virtual void on_mouse_motion( const Event& ev );
-
-    virtual void on_mouse_left_button_down( const Event& ev );
-    virtual void on_mouse_middle_button_down( const Event& ev );
-    virtual void on_mouse_right_button_down( const Event& ev );
-    virtual void on_mouse_button_four_down( const Event& ev );
-    virtual void on_mouse_button_five_down( const Event& ev );
-
-    virtual void on_mouse_left_button_up( const Event& ev );
-    virtual void on_mouse_middle_button_up( const Event& ev );
-    virtual void on_mouse_right_button_up( const Event& ev );
-    virtual void on_mouse_button_four_up( const Event& ev );
-    virtual void on_mouse_button_five_up( const Event& ev );
-
-    /// \brief Handler for mouse wheel events.
-    ///
-    /// \remarks Upward wheel motion (scroll forward) generates a positive y
-    /// value and downward wheel motion (scroll backward) generates a negative
-    /// Y value.
-    ///     Wheel motion to the left generates a negative X value and motion to
-    /// the right generates a positive X value.
-    ///
-    /// \note The end-user's platform may invert the wheel values documented
-    /// here (i.e.: Mac OS X's "Scroll direction: natural" Mouse preference).
-    ///
-    /// \code
-    /// y > 0 = Up
-    /// y < 0 = Down
-    /// x > 0 = Left
-    /// x < 0 = Right
-    /// \endcode
-    ///
-    /// \todo Verify documentation notes regarding left and right wheel axis
-    /// values mapping (it's presently only been checked with virtual / fake
-    /// hardware).
-    virtual void on_mouse_wheel( const Event& ev );
-
-    virtual void on_joy_axis( const Event& ev );
-
-    virtual void on_joy_button_down( const Event& ev );
-    virtual void on_joy_button_up( const Event& ev );
-
-    virtual void on_joystick_connected( const Event& ev );
-    virtual void on_joystick_disconnected( const Event& ev );
-
-    virtual void on_touch_motion( const Event& ev );
-    virtual void on_touch_down( const Event& ev );
-    virtual void on_touch_up( const Event& ev );
-
-    /// \brief The finger touch event generated when a multiple finger touch
-    /// gesture event is received.
-    virtual void on_gesture( const Event& ev );
-
-    /// Drag 'N' Drop events
-    ///
-    /// \remarks To enable drag and drop events on Mac OS X, you must add the
-    /// appropriate keys in your application bundle's Info.plist, like so:
-    ///
-    /// <key>CFBundleDocumentTypes</key>
-    /// <array>
-    ///   <dict>
-    ///     <key>CFBundleTypeRole</key>
-    ///     <string>Editor</string>
-    ///     <key>CFBundleTypeName</key>
-    ///     <string>TTcards</string>
-    ///     <key>CFBundleTypeExtensions</key>
-    ///     <array>
-    ///         <string>json</string>
-    ///     </array>
-    ///     <key>CFBundleTypeIconFile</key>
-    ///     <string>TTcards</string>
-    ///   </dict>
-    /// </array>
-    ///
-    /// \note The SDL2 documentation stated for CFBundleMIMETypes did not work
-    /// for me.
-    virtual void on_drag_drop( const Event& ev );
-
-    /// \brief The text input event.
-    virtual void on_text_input( const Event& ev );
-
-    /// \brief Text editing event.
-    ///
-    /// \todo Finish implementation.
-    virtual void on_text_edit( const Event& ev );
-
-    /// \brief The event handler for user-defined events.
-    virtual void on_user_event( const Event& ev );
-
-    /// \brief Remove the top event from the high-level events queue.
-    bool pop_event(Event& ev);
-
-    /// \brief Insert an event into the high-level events queue.
-    ///
-    /// \remarks This can be used to simulate input events; i.e.: key press,
-    /// mouse click, ...
+    /// \remarks This can be used to simulate synthetic input events.
     void push_event(const Event& ev);
 
-  private:
-    /// \brief Enumerate the available events from the underlying events
-    /// subsystem (SDL_Event).
+    /// \brief Clear an event from the queue.
     ///
-    /// \remarks This is where the wrapping of SDL_Event(s) onto our high-level
-    /// events queue happens.
-    void process_event( const SDL_Event* ev );
+    /// \param The type of event to remove.
+    void flush_event(Event::EventType type);
 
-    /// \brief Enumerate the available events from the underlying events
-    /// subsystem (SDL_Event).
+    /// \brief Clear events from the queue.
+    ///
+    /// \param The type of event to remove.
+    void flush_events(Event::EventType type);
+
+    /// \brief Clear the events queue.
+    void flush_events();
+
+    /// \brief Add an event listener.
+    ///
+    /// \param data User-defined data; it is your responsibility to free this
+    /// data pointer!
+    void append_event_watch(const event_filter& filter, void* data);
+
+    /// \brief Erase an event listener.
+    void remove_event_watch(const event_filter& filter);
+
+    /// \brief Erase all event watchers.
+    void remove_event_watchers();
+
+  private:
+    bool pop_event(Event& ev);
+
+    /// \brief Enumerate the available events from the underlying platform.
     void process_events();
 
-    /// \brief The high-level queue of available events.
-    ///
-    ///
-    /// \remarks Decouple our high-level events handling system from this class?
-    ///
-    /// \note This queue wraps the underlying events subsystem (SDL_Event) and
-    /// should always contain the same top event as a polled SDL_Event union
-    /// does, less and except any events omitted from processing within the
-    /// nom::EventHandler::process_event method.
-    std::queue<Event> events_;
+    /// \brief Enumerate the available events from the underlying platform.
+    void process_event(const SDL_Event* ev);
 
-    /// \brief The number of enqueued events.
-    nom::size_type num_events_ = 0;
+    void process_joystick_event(const SDL_Event* ev);
+    void process_game_controller_event(const SDL_Event* ev);
+
+    /// \brief Enqueued events.
+    ///
+    /// \see nom::EventHandler::process_event
+    std::deque<Event> events_;
+
+    std::vector<std::unique_ptr<event_watcher>> event_watchers_;
 
     /// \brief The maximum number of events processed per queue cycle -- i.e.:
     /// one frame of the game's update loop.
     nom::size_type max_events_count_ = 0;
 
-    Joystick joystick;
+    void* joystick_event_handler_ = nullptr;
+    JoystickHandlerType joystick_event_type_ = NO_EVENT_HANDLER;
 };
+
+Event create_key_press(int32 sym, uint16 mod, uint8 repeat);
+Event create_key_release(int32 sym, uint16 mod, uint8 repeat);
+Event create_mouse_button_click(uint8 button, uint8 clicks, uint32 window_id);
+Event create_mouse_button_release(uint8 button, uint8 clicks, uint32 window_id);
+
+Event create_joystick_button_press(JoystickID id, uint8 button);
+Event create_joystick_button_release(JoystickID id, uint8 button);
+
+Event create_joystick_hat_motion(JoystickID id, uint8 hat, uint8 value);
+
+Event create_game_controller_button_press(JoystickID id, uint8 button);
+Event create_game_controller_button_release(JoystickID id, uint8 button);
+
+Event create_user_event(int32 code, void* data1, void* data2, uint32 window_id);
+
+Event create_quit_event(void* data1, void* data2);
 
 } // namespace nom
 
@@ -348,16 +196,4 @@ class EventHandler
 /// \ingroup system
 ///
 ///         [DESCRIPTION STUB]
-///
-/// See also
-///
-///   nom::SDLApp,
-///   examples/app/app.cpp,
-///   Resources/SharedSupport/ExamplesTemplate.cpp
-///
-/// References
-///
-/// 1. http://www.sdltutorials.com/sdl-app-states
-///
-/// \todo Relocate the debugging preprocessors & code to the events example.
 ///

@@ -57,11 +57,11 @@ void UIContextEventHandler::process_event( const Event& ev )
   {
     default: break;
 
-    case SDL_WINDOWEVENT:
+    case nom::Event::WINDOW_EVENT:
     {
-      switch( ev.window.event )
+      switch(ev.window.event)
       {
-        case SDL_WINDOWEVENT_SIZE_CHANGED:
+        case nom::WindowEvent::SIZE_CHANGED:
         {
           // Update desktop dimensions; this should not be used with SDL2's
           // independent resolution scale feature (logical view-port),
@@ -69,42 +69,36 @@ void UIContextEventHandler::process_event( const Event& ev )
           // the internally calculated aspect ratio that SDL2 does when using
           // the feature upon a size change.
           // this->ctx_->set_size( Size2i( ev.window.data1, ev.window.data2 ) );
-          break;
-        }
+        } break;
       }
-      break;
-    }
+    } break;
 
-    case SDL_MOUSEMOTION:
+    case nom::Event::MOUSE_MOTION:
     {
       this->ctx_->context()->ProcessMouseMove(  ev.motion.x,
                                                 ev.motion.y,
                                                 this->translate_key_modifiers(ev) );
-      break;
-    }
+    } break;
 
-    case SDL_MOUSEBUTTONDOWN:
+    case nom::Event::MOUSE_BUTTON_CLICK:
     {
       this->ctx_->context()->ProcessMouseButtonDown(  this->translate_mouse_button(ev),
                                                       this->translate_key_modifiers(ev) );
-      break;
-    }
+    } break;
 
-    case SDL_MOUSEBUTTONUP:
+    case nom::Event::MOUSE_BUTTON_RELEASE:
     {
       this->ctx_->context()->ProcessMouseButtonUp(  this->translate_mouse_button(ev),
                                                     this->translate_key_modifiers(ev) );
-      break;
-    }
+    } break;
 
-    case SDL_MOUSEWHEEL:
+    case nom::Event::MOUSE_WHEEL:
     {
       this->ctx_->context()->ProcessMouseWheel( this->translate_mouse_wheel(ev),
                                                 this->translate_key_modifiers(ev) );
-      break;
-    }
+    } break;
 
-    case SDL_KEYDOWN:
+    case Event::KEY_PRESS:
     {
       // Intercept key input shift-~ for toggling the visual debugger
       if( ev.key.sym == SDLK_BACKQUOTE && ev.key.mod == KMOD_LSHIFT )
@@ -119,24 +113,19 @@ void UIContextEventHandler::process_event( const Event& ev )
 
       this->ctx_->context()->ProcessKeyDown(  this->translate_key(ev),
                                               this->translate_key_modifiers(ev) );
-      break;
-    } // end SDL_KEYDOWN
+    } break;
 
-    case SDL_KEYUP:
+    case Event::KEY_RELEASE:
     {
       this->ctx_->context()->ProcessKeyUp(  this->translate_key(ev),
                                             this->translate_key_modifiers(ev) );
-      break;
-    } // end SDL_KEYUP
+    } break;
 
-    // TODO: Support Unicode text input with SDL_StartTextInput and
-    // SDL_StopTextInput; on mobile platforms, this will bring up the
-    // virtual keyboard for the end-user.
-    case SDL_TEXTINPUT:
+    // TODO: Implement
+    case Event::TEXT_INPUT:
     {
-      this->ctx_->context()->ProcessTextInput( ev.text.text );
-      break;
-    }
+      this->ctx_->context()->ProcessTextInput(ev.text.text);
+    } break;
   }
 }
 
@@ -483,55 +472,67 @@ UIContextEventHandler::translate_key( const Event& ev )
   }
 }
 
-int UIContextEventHandler::translate_mouse_button( const Event& ev )
+int UIContextEventHandler::translate_mouse_button(const Event& ev)
 {
-  switch( ev.mouse.button )
+  int result = ev.mouse.button;
+
+  switch(ev.mouse.button)
   {
     default:
     {
-      // Try to match what SDL2 appears to be returning
-      return ev.mouse.button + 1;
-    }
+      NOM_ASSERT_INVALID_PATH();
+    } break;
 
-    case SDL_BUTTON_LEFT:
+    case nom::MouseButton::LEFT_MOUSE_BUTTON:
     {
-      return 0;
-    }
+      result = 0;
+    } break;
 
-    case SDL_BUTTON_RIGHT:
+    case nom::MouseButton::RIGHT_MOUSE_BUTTON:
     {
-      return 1;
-    }
+      result = 1;
+    } break;
 
-    case SDL_BUTTON_MIDDLE:
+    case nom::MouseButton::MIDDLE_MOUSE_BUTTON:
     {
-      return 2;
-    }
+      result = 2;
+    } break;
+
+    case nom::MouseButton::X1_MOUSE_BUTTON:
+    {
+      result = 3;
+    } break;
+
+    case nom::MouseButton::X2_MOUSE_BUTTON:
+    {
+      result = 4;
+    } break;
   }
+
+  return result;
 }
 
-int UIContextEventHandler::translate_mouse_wheel( const Event& ev )
+int UIContextEventHandler::translate_mouse_wheel(const Event& ev)
 {
-  if( ev.wheel.y > 0 )  // Up
-  {
-    return -1;
+  int result = 0;
+
+  if( ev.wheel.y > 0 ) {
+    // Up
+    result = -1;
+  } else if( ev.wheel.y < 0 ) {
+    // Down
+    result = 1;
+  } else if( ev.wheel.x > 0 ) {
+    // Left
+    result = -1;
+  } else if( ev.wheel.x < 0 ) {
+    // Right
+    result = 1;
+  } else {
+    NOM_ASSERT_INVALID_PATH();
   }
-  else if( ev.wheel.y < 0 ) // Down
-  {
-    return 1;
-  }
-  else if( ev.wheel.x > 0 ) // Left
-  {
-    return -1;
-  }
-  else if( ev.wheel.x < 0 ) // Right
-  {
-    return 1;
-  }
-  else  // *shrug* Assume downward motion
-  {
-    return 1;
-  }
+
+  return result;
 }
 
 int UIContextEventHandler::translate_key_modifiers( const Event& ev )

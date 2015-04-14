@@ -107,11 +107,8 @@ class StateMachine
 
     /// \brief Event handling logic for the active state.
     ///
-    /// \remarks EventHandler::process_event for the state is *not* executed if
-    /// nom::IState::on_event returns boolean FALSE (the default implementation).
-    ///
     /// \see nom::IState::on_event.
-    void on_event( const Event& ev );
+    void on_event(const Event& ev);
 
     /// \brief State logic handling
     ///

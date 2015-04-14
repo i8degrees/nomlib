@@ -200,11 +200,6 @@ void quit( void )
   TTF_Quit();
   IMG_Quit();
 
-  if( SDL_WasInit( SDL_INIT_JOYSTICK ) )
-  {
-    SDL_QuitSubSystem( SDL_INIT_JOYSTICK );
-  }
-
   SDL_Quit();
 
   NOM_LOG_DEBUG( NOM_LOG_CATEGORY_MEMORY_TOTALS, "Total memory allocation (in bytes): ", IObject::total_alloc_bytes );

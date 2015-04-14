@@ -30,12 +30,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_SYSTEM_INPUT_MAPPER_INPUT_ACTION_HPP
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/EventCallback.hpp"
 #include "nomlib/system/Event.hpp"
+#include "nomlib/system/GameController.hpp"
 
 namespace nom {
-
-typedef std::function<void(const Event&)> event_callback;
 
 /// \brief Base class for mapping an action to an input device
 ///
@@ -43,8 +41,10 @@ typedef std::function<void(const Event&)> event_callback;
 class InputAction
 {
   public:
-    /// \brief Destructor.
-    virtual ~InputAction( void );
+    /// \brief Default constructor; constructs an invalid action state.
+    InputAction();
+
+    virtual ~InputAction();
 
     /// \brief Get the underlying event associated with the input action.
     ///
@@ -53,51 +53,50 @@ class InputAction
     virtual const Event& event( void ) const;
 
     /// \brief Get the callback assigned to the input action.
-    const EventCallback& callback( void ) const;
+    const nom::event_callback& callback( void ) const;
 
-    void set_callback( const EventCallback& delegate );
+    void set_callback(const nom::event_callback& delegate);
 
     /// \brief C++ functor; execute the callback assigned for the input action.
-    void operator() ( const Event& evt ) const;
+    void operator()(const Event& evt) const;
 
-    /// \brief Diagnostic output of the object state.
-    virtual void dump( void ) const;
-
-  protected:
     /// \brief The event type and relevant input data; the criteria is used to
     /// match against user input.
     Event event_;
 
   private:
     /// \brief The delegate to call upon a successful action to event match.
-    EventCallback callback_;
+    nom::event_callback callback_;
 };
 
 /// \brief A structure containing information on a keyboard action.
 struct KeyboardAction: public InputAction
 {
-  /// \brief Destructor.
-  virtual ~KeyboardAction( void );
+  virtual ~KeyboardAction();
 
   /// \brief Constructor for initializing an object to a valid action state.
+  ///
+  /// \param state One of the nom::InputState enumeration values.
   ///
   /// \remarks The key modifier is initialized to KMOD_NONE.
-  KeyboardAction( uint32 type, int32 sym );
+  KeyboardAction(int32 sym, InputState state = InputState::PRESSED);
 
   /// \brief Constructor for initializing an object to a valid action state.
   ///
   /// \param mod An enumeration of key modifier masks; see also: the SDL2 wiki
   /// documentation page for [SDL_Keymod](https://wiki.libsdl.org/SDL_Keymod).
-  KeyboardAction( uint32 type, int32 sym, uint16 mod );
+  ///
+  /// \param state One of the nom::InputState enumeration values.
+  KeyboardAction(int32 sym, uint16 mod, InputState state = InputState::PRESSED);
 
   /// \brief Constructor for initializing an object to a valid action state.
   ///
   /// \param mod An enumeration of key modifier masks; see also: the SDL2 wiki
   /// documentation page for [SDL_Keymod](https://wiki.libsdl.org/SDL_Keymod).
-  KeyboardAction( uint32 type, int32 sym, uint16 mod, uint8 repeat );
-
-  /// \brief Diagnostic output of the object state.
-  void dump( void ) const;
+  ///
+  /// \param state One of the nom::InputState enumeration values.
+  KeyboardAction( int32 sym, uint16 mod, uint8 repeat,
+                  InputState state = InputState::PRESSED );
 };
 
 /// \brief A structure containing information on a mouse button action.
@@ -107,36 +106,27 @@ struct KeyboardAction: public InputAction
 /// device).
 struct MouseButtonAction: public InputAction
 {
-  /// \brief Destructor.
   virtual ~MouseButtonAction();
 
   /// \brief Constructor for initializing an object to a valid action state.
   ///
-  /// \param type   One of the following event enumeration values:
-  /// SDL_MOUSEBUTTONDOWN or SDL_MOUSEBUTTONUP.
-  ///
-  /// \param button One of the following enumeration values: SDL_BUTTON_LEFT,
-  /// SDL_BUTTON_MIDDLE, SDL_BUTTON_RIGHT, SDL_BUTTON_X1 or SDL_BUTTON_X2.
+  /// \param button One of the nom::MouseButton enumeration values.
+  /// \param state One of the nom::InputState enumeration values.
   ///
   /// \remarks The number of mouse button clicks for this action will be
   /// initialized to one (a single mouse button click).
-  MouseButtonAction( uint32 type, uint8 button );
+  MouseButtonAction(uint8 button, InputState state = InputState::PRESSED);
 
   /// \brief Constructor for initializing an object to a valid action state.
   ///
-  /// \param type   One of the following event enumeration values:
-  /// SDL_MOUSEBUTTONDOWN or SDL_MOUSEBUTTONUP.
-  ///
-  /// \param button One of the following enumeration values: SDL_BUTTON_LEFT,
-  /// SDL_BUTTON_MIDDLE, SDL_BUTTON_RIGHT, SDL_BUTTON_X1 or SDL_BUTTON_X2.
+  /// \param button One of the nom::MouseButton enumeration values.
+  /// \param state One of the nom::InputState enumeration values.
   ///
   /// \param clicks The number of button clicks to react on; one (1) for
   /// a single-click, two (2) for a double-click, three (3) for a triple-click,
   /// and so on (hardware-dependent).
-  MouseButtonAction( uint32 type, uint8 button, uint8 clicks );
-
-  /// \brief Diagnostic output of the object state.
-  void dump( void ) const;
+  MouseButtonAction(  uint8 button, uint8 clicks,
+                      InputState state = InputState::PRESSED );
 };
 
 /// \brief A structure containing information on a mouse wheel action.
@@ -169,42 +159,89 @@ struct MouseWheelAction: public InputAction
     null = 0
   };
 
-  /// \brief Destructor.
-  virtual ~MouseWheelAction( void );
+  virtual ~MouseWheelAction();
 
   /// \brief Constructor for initializing an object to a valid action state.
-  MouseWheelAction( uint32 type, uint8 axis, int32 value );
-
-  /// \brief Diagnostic output of the object state.
-  void dump( void ) const;
+  MouseWheelAction(uint8 axis, int32 value);
 };
 
 /// \brief A structure containing information on a joystick button action.
-///
-/// \todo Implement button state (SDL_PRESSED or SDL_RELEASED).
 struct JoystickButtonAction: public InputAction
 {
-  /// \brief Destructor.
-  virtual ~JoystickButtonAction( void );
+  virtual ~JoystickButtonAction();
 
   /// \brief Constructor for initializing an object to a valid action state.
-  JoystickButtonAction( SDL_JoystickID id, uint32 type, uint8 button );
-
-  /// \brief Diagnostic output of the object state.
-  void dump( void ) const;
+  ///
+  /// \param id The unique instance ID given to the joystick by the underlying
+  /// platform.
+  /// \param button One of the nom::Joystick::Button enumeration values.
+  /// \param state One of the nom::InputState enumeration values.
+  ///
+  /// \see Joystick::device_id
+  JoystickButtonAction(JoystickID id, uint8 button, InputState state);
 };
 
-/// \brief A structure containing information on a joystick axis motion action.
+/// \brief A structure containing information on a joystick axis action.
 struct JoystickAxisAction: public InputAction
 {
-  /// \brief Destructor.
-  virtual ~JoystickAxisAction( void );
+  virtual ~JoystickAxisAction();
 
   /// \brief Constructor for initializing an object to a valid action state.
-  JoystickAxisAction( SDL_JoystickID id, uint32 type, uint8 axis, int16 value );
+  ///
+  /// \param id The unique instance ID given to the joystick by the underlying
+  /// platform.
+  /// \param axis One of the nom::Joystick::Axis enumeration values.
+  ///
+  /// \see Joystick::device_id
+  JoystickAxisAction(JoystickID id, uint8 axis);
+};
 
-  /// \brief Diagnostic output of the object state.
-  void dump( void ) const;
+/// \brief A structure containing information on a joystick POV hat action.
+struct JoystickHatAction: public InputAction
+{
+  virtual ~JoystickHatAction();
+
+  /// \brief Constructor for initializing an object to a valid action state.
+  ///
+  /// \param id The unique instance ID given to the joystick by the underlying
+  /// platform.
+  /// \param hat One of the nom::Joystick::Hat enumeration values.
+  /// \param value One of the nom::Joystick::HatPosition enumeration values.
+  ///
+  /// \see Joystick::device_id
+  JoystickHatAction(JoystickID id, uint8 hat, uint8 value);
+};
+
+/// \brief Create a game controller button action.
+struct GameControllerButtonAction: public InputAction
+{
+  virtual ~GameControllerButtonAction();
+
+  /// \brief Constructor for initializing an object to a valid action state.
+  ///
+  /// \param id The unique instance ID given to the joystick by the underlying
+  /// platform.
+  /// \param button One of the nom::GameController::Button enumeration values.
+  /// \param state One of the nom::InputState enumeration values.
+  ///
+  /// \see GameController::device_id
+  GameControllerButtonAction( JoystickID id, GameController::Button button,
+                              InputState state = InputState::PRESSED );
+};
+
+/// \brief Create a game controller axis action.
+struct GameControllerAxisAction: public InputAction
+{
+  virtual ~GameControllerAxisAction();
+
+  /// \brief Constructor for initializing an object to a valid action state.
+  ///
+  /// \param id The unique instance ID given to the joystick by the underlying
+  /// platform.
+  /// \param axis One of the nom::GameController::Axis enumeration values.
+  ///
+  /// \see GameController::device_id
+  GameControllerAxisAction(JoystickID id, GameController::Axis axis);
 };
 
 } // namespace nom

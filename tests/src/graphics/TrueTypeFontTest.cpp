@@ -550,7 +550,7 @@ TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
   // Register additional input bindings
   InputActionMapper wheel;
 
-  EventCallback zoom_in( [&] (const Event& evt) {
+  auto zoom_in = ( [&](const Event& evt) {
     int current_size = this->rendered_text.text_size();
 
     if( current_size < MAX_POINT_SIZE ) {
@@ -558,7 +558,7 @@ TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
     }
   });
 
-  EventCallback zoom_out( [&] (const Event& evt) {
+  auto zoom_out = ( [&](const Event& evt) {
     int current_size = this->rendered_text.text_size();
 
     if( current_size >= MIN_POINT_SIZE ) {
@@ -566,15 +566,11 @@ TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
     }
   });
 
-  wheel.insert( "zoom_in",
-                 MouseWheelAction(  SDL_MOUSEWHEEL,
-                                    MouseWheelAction::AXIS_Y,
-                                    MouseWheelAction::UP ), zoom_in );
+  wheel.insert( "zoom_in", MouseWheelAction(MouseWheelAction::AXIS_Y,
+                MouseWheelAction::UP), zoom_in );
 
-  wheel.insert( "zoom_out",
-                 MouseWheelAction(  SDL_MOUSEWHEEL,
-                                    MouseWheelAction::AXIS_Y,
-                                    MouseWheelAction::DOWN ), zoom_out );
+  wheel.insert( "zoom_out", MouseWheelAction(MouseWheelAction::AXIS_Y,
+                MouseWheelAction::DOWN), zoom_out );
 
   this->input_mapper_.insert("zoom_in", wheel, true);
   this->input_mapper_.insert("zoom_out", wheel, true);

@@ -46,7 +46,7 @@ class IAudioDevice
     }
 
     // virtual std::shared_ptr<ALCdevice> getAudioDevice( void ) const = 0;
-    virtual const std::string getDeviceName( void ) const = 0;
+    virtual std::string getDeviceName() const = 0;
     virtual bool isExtensionSupported ( const std::string& extension ) const = 0;
 };
 

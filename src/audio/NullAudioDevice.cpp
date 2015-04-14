@@ -45,7 +45,7 @@ NullAudioDevice::~NullAudioDevice( void )
 //   return nullptr;
 // }
 
-const std::string NullAudioDevice::getDeviceName( void ) const
+std::string NullAudioDevice::getDeviceName() const
 {
   return "NullAudioDevice";
 }

@@ -36,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-// TODO: Remove nom::priv namespace
+// TODO: Remove nom::priv namespace for the string helper funcs
 namespace priv {
 
 /// \brief Maximum size a nom::Value string type may be
@@ -53,13 +53,13 @@ nom::size_type string_length(const std::string& str);
 int compare_string(const char* str1, const char* str2);
 int compare_string(const std::string& str1, const std::string& str2);
 
-/// \brief Clone a C style string value.
+void copy_string(const char* source, char* dest);
+
+/// \brief Create a deep-copy instance a C style string.
 ///
 /// \param length Size of the string to copy.
 ///
 /// \returns Null-terminated string up to MAX_STRING_LENGTH.
-///
-/// \todo Find a better home for this function?
 const char* duplicate_string(const char* str, nom::size_type length);
 
 const char* duplicate_string(const std::string& str, nom::size_type length);

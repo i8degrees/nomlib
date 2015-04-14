@@ -365,41 +365,27 @@ bool InputStateMapper::on_mouse_wheel( const InputAction& mapping, const Event& 
     return false;
   }
 
-  // NOTE: X & Y coordinate values depend on the construction of a WheelAction
-  // object.
-  // if( evt.wheel.axis == MouseWheelAction::AXIS_X )
-  if( evt.wheel.x != MouseWheelAction::null )
+  if( evt.wheel.x == MOUSE_WHEEL_INVALID &&
+      evt.wheel.y == MOUSE_WHEEL_INVALID )
   {
-    // Left
-    if( evt.wheel.x >= MouseWheelAction::LEFT && ev.wheel.x >= MouseWheelAction::LEFT )
-    {
+    return false;
+  }
+
+  if( evt.wheel.x == MOUSE_WHEEL_INVALID ) {
+
+    if( evt.wheel.y == MOUSE_WHEEL_UP && ev.wheel.y > 0 ) {
+      return true;
+    } else if( evt.wheel.y == MOUSE_WHEEL_DOWN && ev.wheel.y < 0 ) {
       return true;
     }
+  } else if( evt.wheel.y == MOUSE_WHEEL_INVALID ) {
 
-    // Right
-    if( evt.wheel.x <= MouseWheelAction::RIGHT && ev.wheel.x <= MouseWheelAction::RIGHT )
-    {
+    if( evt.wheel.x == MOUSE_WHEEL_LEFT && ev.wheel.x < 0 ) {
+      return true;
+    } else if( evt.wheel.x == MOUSE_WHEEL_RIGHT && ev.wheel.x > 0 ) {
       return true;
     }
   }
-  // else if( evt.wheel.axis == MouseWheelAction::AXIS_Y )
-  else if( evt.wheel.y != MouseWheelAction::null )
-  {
-    // Up
-    if( evt.wheel.y >= MouseWheelAction::UP && ev.wheel.y >= MouseWheelAction::UP )
-    {
-      return true;
-    }
-
-    // Down
-    if( evt.wheel.y <= MouseWheelAction::DOWN && ev.wheel.y <= MouseWheelAction::DOWN )
-    {
-      return true;
-    }
-  }
-
-  // Initialized to an invalid state!
-  NOM_ASSERT( evt.wheel.x == 0 || evt.wheel.y == 0 );
 
   return false;
 }

@@ -205,8 +205,6 @@ struct MouseButtonEvent
   uint8 clicks;
 
   /// \brief The identifier of the window at the moment of the event.
-  ///
-  /// \note ev->button.windowID
   uint32 window_id;
 };
 
@@ -225,17 +223,6 @@ struct MouseWheelEvent
 
   /// \brief Y axis value, relative to the direction of the wheel.
   int32 y;
-
-  // /// \brief The direction of the wheel.
-  // ///
-  // /// \remarks The axis of the wheel event; zero (0) for X-axis and one (1)
-  // /// for Y-axis.
-  // ///
-  // /// \note This is only implemented for internal usage within
-  // /// nom::InputMapper.
-  // ///
-  // /// \see nom::MouseWheelAction
-  // uint8 axis;
 
   /// \brief The identifier of the window at the moment of event.
   uint32 window_id;

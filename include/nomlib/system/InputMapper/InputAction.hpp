@@ -129,40 +129,24 @@ struct MouseButtonAction: public InputAction
                       InputState state = InputState::PRESSED );
 };
 
+enum MouseWheelDirection: uint8
+{
+  MOUSE_WHEEL_INVALID = 0,
+  MOUSE_WHEEL_LEFT = 1,
+  MOUSE_WHEEL_RIGHT = 2,
+  MOUSE_WHEEL_UP = 4,
+  MOUSE_WHEEL_DOWN = 8,
+};
+
 /// \brief A structure containing information on a mouse wheel action.
 struct MouseWheelAction: public InputAction
 {
-  /// \brief Left-right and up-down axis.
-  ///
-  /// \remarks Conceptually, a wheel action event has been modeled similarly to a
-  /// joystick axis -- note the axis field -- with the left-right axis being zero
-  /// (0) and the up-down axis being one (1).
-  enum: int
-  {
-    INVALID = -1,
-    AXIS_X = 0,
-    AXIS_Y = 1
-  };
-
-  /// \brief Sensitivity ranges to action mapping.
-  enum: int
-  {
-    UP = 1,
-    DOWN = -1,
-    RIGHT = -1,
-    LEFT = 1
-  };
-
-  /// \brief An enumeration of the invalid state(s).
-  enum: int
-  {
-    null = 0
-  };
-
   virtual ~MouseWheelAction();
 
-  /// \brief Constructor for initializing an object to a valid action state.
-  MouseWheelAction(uint8 axis, int32 value);
+  /// \brief Construct a mouse wheel action.
+  ///
+  /// \param dir One of the MouseWheelDirection enumeration values.
+  MouseWheelAction(MouseWheelDirection dir);
 };
 
 /// \brief A structure containing information on a joystick button action.

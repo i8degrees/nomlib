@@ -51,7 +51,7 @@ UIContextEventHandler::~UIContextEventHandler()
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-void UIContextEventHandler::process_event( const Event& ev )
+void UIContextEventHandler::process_event(const nom::Event& ev)
 {
   switch( ev.type )
   {
@@ -522,14 +522,8 @@ int UIContextEventHandler::translate_mouse_wheel(const Event& ev)
   } else if( ev.wheel.y < 0 ) {
     // Down
     result = 1;
-  } else if( ev.wheel.x > 0 ) {
-    // Left
-    result = -1;
-  } else if( ev.wheel.x < 0 ) {
-    // Right
-    result = 1;
   } else {
-    NOM_ASSERT_INVALID_PATH();
+    // Invalid
   }
 
   return result;

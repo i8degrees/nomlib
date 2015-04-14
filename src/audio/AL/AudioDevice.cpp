@@ -88,17 +88,19 @@ bool AudioDevice::initialize ( const ALCchar* device_name )
 {
   NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
 
-  audio_device.reset();
-  audio_context.reset();
-
   // audio device handle
   this->audio_device = std::shared_ptr<ALCdevice> ( alcOpenDevice ( device_name ), nom::priv::AL_FreeAudioDevice );
 
   // attach a context (think: listener) to device
-  if ( this->audio_device )
-  {
+  if( this->audio_device ) {
+
     // Store the audio device name now that it is confirmed valid
-    this->device_name = alcGetString ( this->audio_device.get(), ALC_DEFAULT_DEVICE_SPECIFIER );
+    if( device_name != nullptr ) {
+      this->device_name_ = device_name;
+    } else {
+      this->device_name_ =
+        alcGetString(this->audio_device.get(), ALC_DEFAULT_DEVICE_SPECIFIER);
+    }
 
     this->audio_context = std::shared_ptr<ALCcontext> ( alcCreateContext ( this->audio_device.get(), nullptr ), nom::priv::AL_FreeAudioContext );
 
@@ -136,9 +138,9 @@ bool AudioDevice::initialized ( void ) const
 //   return this->audio_device;
 // }
 
-const std::string AudioDevice::getDeviceName ( void ) const
+std::string AudioDevice::getDeviceName() const
 {
-  return this->device_name;
+  return this->device_name_;
 }
 
 bool AudioDevice::isExtensionSupported ( const std::string& extension ) const

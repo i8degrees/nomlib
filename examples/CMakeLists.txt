@@ -25,7 +25,6 @@ set( NOM_BUILD_AUDIO_EXAMPLE ON )
 set( NOM_BUILD_DEVICE_INFO_EXAMPLE ON )
 set( NOM_BUILD_EVENTS_EXAMPLE ON )
 set( NOM_BUILD_FONTS_EXAMPLE ON )
-set( NOM_BUILD_GAMEOFLIFE_EXAMPLE ON )
 set( NOM_BUILD_MOUSE_CURSORS_EXAMPLE ON )
 set( NOM_BUILD_MACROS_EXAMPLE ON )
 
@@ -235,26 +234,6 @@ if( NOM_BUILD_FONTS_EXAMPLE )
   target_link_libraries( renderfont ${FONTS_DEPS} )
 
 endif( NOM_BUILD_FONTS_EXAMPLE )
-
-if( NOM_BUILD_GAMEOFLIFE_EXAMPLE )
-  add_executable ( GameOfLife "${EXECUTABLE_FLAGS}" "GameOfLife/GameOfLife.cpp" )
-
-  set( GAMEOFLIFE_DEPS nomlib-graphics )
-
-  if( PLATFORM_WINDOWS )
-    # We need to link to SDL2main library on Windows
-    list( APPEND GAMEOFLIFE_DEPS ${SDL2MAIN_LIBRARY} )
-  endif( PLATFORM_WINDOWS )
-
-  target_link_libraries( GameOfLife ${GAMEOFLIFE_DEPS} )
-
-  install ( DIRECTORY
-            "${EXAMPLES_SRC_DIR}/GameOfLife/Resources"
-            DESTINATION
-            "${EXAMPLES_INSTALL_DIR}"
-            PATTERN ".*" EXCLUDE
-          )
-endif( NOM_BUILD_GAMEOFLIFE_EXAMPLE )
 
 if( NOM_BUILD_MOUSE_CURSORS_EXAMPLE )
   add_executable( cursors "${EXECUTABLE_FLAGS}" "cursors.cpp" )

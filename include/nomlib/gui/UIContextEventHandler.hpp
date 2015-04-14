@@ -58,7 +58,7 @@ class UIContextEventHandler: public IUIEventHandler
     /// \brief Injection of libRocket's event loop.
     ///
     /// \remarks Implements IUIEventHandler::process_event.
-    virtual void process_event( const Event& ev );
+    virtual void process_event(const nom::Event& ev);
 
   protected:
     virtual Rocket::Core::Input::KeyIdentifier translate_key( const Event& ev );

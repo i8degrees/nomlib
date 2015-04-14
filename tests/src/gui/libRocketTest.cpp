@@ -312,16 +312,17 @@ class libRocketTest: public nom::VisualUnitTest
       // Additional input bindings for VisualUnitTest's event loop.
       this->input_mapper_.insert("reload_docs", state, true);
 
-      /// Put our event polling within the main event's loop
-      this->append_event_callback( [&](const Event ev) {
-        this->desktop.process_event(ev);
-      });
+      this->desktop.set_event_handler(this->evt_);
 
       // Register GUI updates onto our main loop (::on_run).
-      this->append_update_callback( [&] ( float delta ) { this->desktop.update(); } );
+      this->append_update_callback( [&] (float delta) {
+        this->desktop.update();
+      });
 
       // Register GUI rendering onto our main loop (::on_run).
-      this->append_render_callback( [&] ( const RenderWindow& win ) { this->desktop.draw(); } );
+      this->append_render_callback( [&] (const RenderWindow& win) {
+        this->desktop.draw();
+      });
     }
 
     /// \remarks This method is called before destruction, at the end of each

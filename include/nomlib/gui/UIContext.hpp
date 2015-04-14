@@ -50,6 +50,7 @@ namespace nom {
 
 // Forward declarations
 struct Event;
+class EventHandler;
 class IUIEventHandler;
 
 /// \brief libRocket context abstraction
@@ -188,11 +189,14 @@ class UIContext
     /// as set with SDL2 (logical size).
     void set_size(const Size2i& dims);
 
-    /// \brief Event handler for the context's instance.
+    /// \brief Install the event handler used by the context.
     ///
-    /// \remarks This should be called within the main loop, typically once per
-    /// frame.
-    void process_event( const Event& event );
+    /// \remarks The application's events will not be processed until a call is
+    /// made to the event handler's ::poll_event method.
+    ///
+    /// \note The installed event handler must outlive the destruction of
+    /// this interface!
+    void set_event_handler(nom::EventHandler& evt_handler);
 
     /// \remarks The boolean return from the context's ::Update method is
     /// currently ignored.
@@ -212,6 +216,9 @@ class UIContext
     /// independent scale.
     void initialize_debugger();
 
+    /// \brief Internal event processing loop for the context.
+    void process_event(const nom::Event& evt);
+
     /// \brief Active state of libRocket's visual debugger.
     bool debugger_;
 
@@ -225,9 +232,11 @@ class UIContext
     /// \remarks This is a pointer managed by libRocket and must not be freed.
     Rocket::Core::RenderInterface* renderer_;
 
-    /// \brief The event handler for this context; automatically initialized to
-    /// nom::UIContextEventHandler.
-    std::shared_ptr<IUIEventHandler> evt_;
+    /// \brief The internal event handler for the context.
+    std::unique_ptr<IUIEventHandler> evt_;
+
+    // Non-owned pointer
+    EventHandler* event_handler_ = nullptr;
 
     /// \brief The dimensions of the context.
     Size2i res_;

@@ -236,6 +236,8 @@ class App: public nom::SDLApp
         return false;
       }
 
+      this->desktop.set_event_handler(this->evt_handler);
+
       if( this->desktop.load_font( "Delicious-Bold.otf" ) == false )
       {
         NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not load font file: Delicious-Bold.otf" );
@@ -389,8 +391,6 @@ class App: public nom::SDLApp
         while( this->evt_handler.poll_event(evt) == true ) {
           // NOTE: Pending events will be handled by the event listeners that
           // were given an EventHandler object via ::set_event_handler.
-
-          this->desktop.process_event(evt);
         }
 
         for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )

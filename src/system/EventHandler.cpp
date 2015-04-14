@@ -53,8 +53,6 @@ static_assert(  nom::MouseButton::X1_MOUSE_BUTTON ==
                 SDL_BUTTON_X1, "Event mismatch" );
 static_assert(  nom::MouseButton::X2_MOUSE_BUTTON ==
                 SDL_BUTTON_X2, "Event mismatch" );
-static_assert(  nom::TOUCH_MOUSE_ID ==
-                SDL_TOUCH_MOUSEID, "Event mismatch" );
 
 namespace nom {
 

@@ -76,6 +76,11 @@ int compare_string(const std::string& str1, const std::string& str2)
   return str1.compare(str2);
 }
 
+void copy_string(const char* source, char* dest)
+{
+  const char* result = std::strcpy(dest, source);
+}
+
 const char* duplicate_string(const char* str, nom::size_type length)
 {
   // Buffer overflow protection

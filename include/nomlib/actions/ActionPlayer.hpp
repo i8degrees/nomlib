@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 #include <functional>
+#include <vector>
 #include <map>
 #include <deque>
 
@@ -49,6 +50,9 @@ class ActionPlayer
 {
   public:
     typedef ActionPlayer self_type;
+
+    /// \see ::actions_running, ::cancel_actions
+    typedef std::vector<const char*> action_names;
 
     /// \brief The status of the player.
     enum State
@@ -123,6 +127,8 @@ class ActionPlayer
     ///
     /// \see nom::IActionObject::set_name.
     bool cancel_action(const std::string& action_id);
+
+    void cancel_actions(const action_names& actions);
 
     /// \brief Stop executing the enqueued actions.
     ///

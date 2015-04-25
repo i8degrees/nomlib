@@ -119,6 +119,14 @@ bool ActionPlayer::cancel_action(const std::string& action_id)
   return false;
 }
 
+void
+ActionPlayer::cancel_actions(const ActionPlayer::action_names& actions)
+{
+  for( auto itr = actions.begin(); itr != actions.end(); ++itr ) {
+    this->cancel_action(*itr);
+  }
+}
+
 void ActionPlayer::cancel_actions()
 {
   this->free_list_.clear();

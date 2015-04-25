@@ -66,7 +66,10 @@ std::string error()
 err make_error(const char* message)
 {
   err error;
-  error.message << message;
+
+  if( message != nullptr ) {
+    error.message << message;
+  }
 
   return error;
 }
@@ -82,7 +85,9 @@ void set_error(const char* message)
 {
   nom::clear_error();
 
-  err_buffer.message << message;
+  if( message != nullptr ) {
+    err_buffer.message << message;
+  }
 }
 
 void clear_error()

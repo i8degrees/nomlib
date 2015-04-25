@@ -47,8 +47,11 @@ int string_to_integer(const std::string& str);
 nom::size_type string_length(const char* str);
 nom::size_type string_length(const std::string& str);
 
-int compare_string(const char* str1, const char* str2);
-int compare_string(const std::string& str1, const std::string& str2);
+int compare_cstr_insensitive(const char* str1, const char* str2);
+int compare_cstr_sensitive(const char* str1, const char* str2);
+
+int compare_string_insensitive(const std::string& str1, const std::string& str2);
+int compare_string_sensitive(const std::string& str1, const std::string& str2);
 
 void copy_string(const char* source, char* dest);
 

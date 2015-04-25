@@ -302,7 +302,7 @@ bool Value::operator <(const Value& rhs) const
         }
       } else {
         comp_result =
-          nom::compare_string(this->value_.string_, rhs.value_.string_) < 0;
+          nom::compare_cstr_sensitive(this->value_.string_, rhs.value_.string_) < 0;
       }
     } break;
 
@@ -380,7 +380,7 @@ bool Value::operator ==(const Value& rhs) const
         comp_result = this->value_.string_ == rhs.value_.string_;
       } else {
         comp_result =
-          nom::compare_string(this->value_.string_, rhs.value_.string_) == 0;
+          nom::compare_cstr_sensitive(this->value_.string_, rhs.value_.string_) == 0;
       }
     } break;
 

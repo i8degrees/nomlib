@@ -455,6 +455,8 @@ typedef std::vector<Color4f> Color4fColors;
 /// \brief A container of Color4u objects.
 typedef std::vector<Color4u> Color4uColors;
 
+Color4i make_color_from_string(const std::string& color);
+
 } // namespace nom
 
 #endif // include guard defined

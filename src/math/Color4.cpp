@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/math/Color4.hpp"
 
+// Private headers
+#include "nomlib/core/helpers.hpp"
+
 namespace nom {
 
 template <> const uint8 Color4u::ALPHA_TRANSPARENT = 0;
@@ -70,5 +73,44 @@ template <> const Color4f Color4f::Blue (0.0f, 0.0f, 1.0f);
 template <> const Color4f Color4f::Yellow (1.0f, 1.0f, 0.0f);
 template <> const Color4f Color4f::Magenta (1.0f, 0.0f, 1.0f);
 template <> const Color4f Color4f::Cyan (0.0f, 1.0f, 1.0f);
+
+Color4i make_color_from_string(const std::string& color)
+{
+  Color4i result(Color4i::Transparent);
+
+  if( nom::compare_string_insensitive(color, "transparent") == 0 ) {
+    result = Color4i::Transparent;
+  } else if( nom::compare_string_insensitive(color, "white") == 0 ) {
+    result = Color4i::White;
+  } else if( nom::compare_string_insensitive(color, "red") == 0 ) {
+    result = Color4i::Red;
+  } else if( nom::compare_string_insensitive(color, "green") == 0 ) {
+    result = Color4i::Green;
+  } else if( nom::compare_string_insensitive(color, "blue") == 0 ) {
+    result = Color4i::Blue;
+  } else if( nom::compare_string_insensitive(color, "yellow") == 0 ) {
+    result = Color4i::Yellow;
+  } else if( nom::compare_string_insensitive(color, "magenta") == 0 ) {
+    result = Color4i::Magenta;
+  } else if( nom::compare_string_insensitive(color, "cyan") == 0 ) {
+    result = Color4i::Cyan;
+  } else if( nom::compare_string_insensitive(color, "silver") == 0 ) {
+    result = Color4i::Silver;
+  } else if( nom::compare_string_insensitive(color, "purple") == 0 ) {
+    result = Color4i::Purple;
+  } else if( nom::compare_string_insensitive(color, "orange") == 0 ) {
+    result = Color4i::Orange;
+  } else if(  nom::compare_string_insensitive(color, "lightgray") == 0 ||
+              nom::compare_string_insensitive(color, "light gray") == 0 )
+  {
+    result = Color4i::LightGray;
+  } else if( nom::compare_string_insensitive(color, "gray") == 0 ) {
+    result = Color4i::Gray;
+  } else if( nom::compare_string_insensitive(color, "skyblue") == 0 ) {
+    result = Color4i::SkyBlue;
+  }
+
+  return result;
+}
 
 } // namespace nom

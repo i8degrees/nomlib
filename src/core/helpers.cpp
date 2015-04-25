@@ -64,14 +64,33 @@ nom::size_type string_length(const std::string& str)
   return str.length();
 }
 
-int compare_string(const char* str1, const char* str2)
+int compare_cstr_insensitive(const char* str1, const char* str2)
 {
-  return strcmp(str1, str2);
+  auto result = strncmp(str1, str2, MAX_STRING_LENGTH);
+
+  return result;
 }
 
-int compare_string(const std::string& str1, const std::string& str2)
+int compare_cstr_sensitive(const char* str1, const char* str2)
 {
-  return str1.compare(str2);
+  auto result = strcmp(str1, str2);
+
+  return result;
+}
+
+int compare_string_insensitive(const std::string& str1, const std::string& str2)
+{
+  auto result =
+    nom::compare_cstr_insensitive( str1.c_str(), str2.c_str() );
+
+  return result;
+}
+
+int compare_string_sensitive(const std::string& str1, const std::string& str2)
+{
+  auto result = str1.compare(str2);
+
+  return result;
 }
 
 void copy_string(const char* source, char* dest)

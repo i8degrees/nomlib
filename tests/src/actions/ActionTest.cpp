@@ -654,7 +654,7 @@ bool init_cmd_line_args(int argc, char** argv)
 
   // nom::Linear is the default timing mode when none is given
   nom::IActionObject::timing_curve_func mode =
-    nom::timing_curve_from_str( timing_mode_arg.getValue() );
+    nom::make_timing_curve_from_string( timing_mode_arg.getValue() );
 
   NOM_ACTION_TEST_FLAG(timing_curve) = mode;
   NOM_ACTION_TEST_FLAG(timing_mode_str) = timing_mode_arg.getValue();
@@ -670,78 +670,6 @@ bool init_cmd_line_args(int argc, char** argv)
   NOM_ACTION_TEST_FLAG(enable_queue_logging) = queue_logging_arg.getValue();
 
   return true;
-}
-
-IActionObject::timing_curve_func
-timing_curve_from_str(const std::string& timing_mode)
-{
-  // Default timing mode
-  IActionObject::timing_curve_func mode =
-    nom::Linear::ease_in_out;
-
-  if( timing_mode == "quad_ease_in" ) {
-    mode = nom::Quad::ease_in;
-  } else if( timing_mode == "quad_ease_out" ) {
-    mode = nom::Quad::ease_out;
-  } else if( timing_mode == "quad_ease_in_out" ) {
-    mode = nom::Quad::ease_in_out;
-  } else if( timing_mode == "cubic_ease_in" ) {
-    mode = nom::Cubic::ease_in;
-  } else if( timing_mode == "cubic_ease_out" ) {
-    mode = nom::Cubic::ease_out;
-  } else if( timing_mode == "cubic_ease_in_out" ) {
-    mode = nom::Cubic::ease_in_out;
-  } else if( timing_mode == "quart_ease_in" ) {
-    mode = nom::Quart::ease_in;
-  } else if( timing_mode == "quart_ease_out" ) {
-    mode = nom::Quart::ease_out;
-  } else if( timing_mode == "quart_ease_in_out" ) {
-    mode = nom::Quart::ease_in_out;
-  } else if( timing_mode == "quint_ease_in" ) {
-    mode = nom::Quint::ease_in;
-  } else if( timing_mode == "quint_ease_out" ) {
-    mode = nom::Quint::ease_out;
-  } else if( timing_mode == "quint_ease_in_out" ) {
-    mode = nom::Quint::ease_in_out;
-  } else if( timing_mode == "back_ease_in" ) {
-    mode = nom::Back::ease_in;
-  } else if( timing_mode == "back_ease_out" ) {
-    mode = nom::Back::ease_out;
-  } else if( timing_mode == "back_ease_in_out" ) {
-    mode = nom::Back::ease_in_out;
-  } else if( timing_mode == "bounce_ease_in" ) {
-    mode = nom::Bounce::ease_in;
-  } else if( timing_mode == "bounce_ease_out" ) {
-    mode = nom::Bounce::ease_out;
-  } else if( timing_mode == "bounce_ease_in_out" ) {
-    mode = nom::Bounce::ease_in_out;
-  } else if( timing_mode == "circ_ease_in" ) {
-    mode = nom::Circ::ease_in;
-  } else if( timing_mode == "circ_ease_out" ) {
-    mode = nom::Circ::ease_out;
-  } else if( timing_mode == "circ_ease_in_out" ) {
-    mode = nom::Circ::ease_in_out;
-  } else if( timing_mode == "elastic_ease_in" ) {
-    mode = nom::Elastic::ease_in;
-  } else if( timing_mode == "elastic_ease_out" ) {
-    mode = nom::Elastic::ease_out;
-  } else if( timing_mode == "elastic_ease_in_out" ) {
-    mode = nom::Elastic::ease_in_out;
-  } else if( timing_mode == "expo_ease_in" ) {
-    mode = nom::Expo::ease_in;
-  } else if( timing_mode == "expo_ease_out" ) {
-    mode = nom::Expo::ease_out;
-  } else if( timing_mode == "expo_ease_in_out" ) {
-    mode = nom::Expo::ease_in_out;
-  } else if( timing_mode == "sine_ease_in" ) {
-    mode = nom::Sine::ease_in;
-  } else if( timing_mode == "sine_ease_out" ) {
-    mode = nom::Sine::ease_out;
-  } else if( timing_mode == "sine_ease_in_out" ) {
-    mode = nom::Sine::ease_in_out;
-  }
-
-  return mode;
 }
 
 /// \brief Test animation timing sanity.

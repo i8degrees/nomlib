@@ -385,6 +385,9 @@ struct Sine
   static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
+std::function<real32(real32, real32, real32, real32)>
+make_timing_curve_from_string(const std::string& timing_mode);
+
 } // namespace nom
 
 #endif // include guard defined

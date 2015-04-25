@@ -31,6 +31,7 @@ Easing algorithms are Copyright (c) 2001 Robert Penner
 #include "nomlib/actions/ActionTimingCurves.hpp"
 
 // Private headers
+#include "nomlib/core/helpers.hpp" // string helpers
 #include "nomlib/math/math_helpers.hpp" // definition of PI
 
 namespace nom {
@@ -355,5 +356,80 @@ real32 Sine::ease_in_out(real32 t, real32 b, real32 c, real32 d)
 }
 
 #pragma clang diagnostic pop
+
+std::function<real32(real32, real32, real32, real32)>
+make_timing_curve_from_string(const std::string& timing_mode)
+{
+  // Default timing mode
+  auto mode = nom::Linear::ease_in_out;
+
+  if( nom::compare_string_insensitive(timing_mode, "linear_ease_in") == 0 ) {
+    mode = nom::Linear::ease_in;
+  } else if( nom::compare_string_insensitive(timing_mode, "linear_ease_out") == 0 ) {
+    mode = nom::Linear::ease_out;
+  } else if( nom::compare_string_insensitive(timing_mode, "quad_ease_in") == 0 ) {
+    mode = nom::Quad::ease_in;
+  } else if( nom::compare_string_insensitive(timing_mode, "quad_ease_out") == 0 ) {
+    mode = nom::Quad::ease_out;
+  } else if( nom::compare_string_insensitive(timing_mode, "quad_ease_in_out") == 0 ) {
+    mode = nom::Quad::ease_in_out;
+  } else if( nom::compare_string_insensitive(timing_mode, "cubic_ease_in") == 0 ) {
+    mode = nom::Cubic::ease_in;
+  } else if( nom::compare_string_insensitive(timing_mode, "cubic_ease_out") == 0 ) {
+    mode = nom::Cubic::ease_out;
+  } else if( nom::compare_string_insensitive(timing_mode, "cubic_ease_in_out") == 0 ) {
+    mode = nom::Cubic::ease_in_out;
+  } else if( nom::compare_string_insensitive(timing_mode, "quart_ease_in") == 0 ) {
+    mode = nom::Quart::ease_in;
+  } else if( nom::compare_string_insensitive(timing_mode, "quart_ease_out") == 0 ) {
+    mode = nom::Quart::ease_out;
+  } else if( nom::compare_string_insensitive(timing_mode, "quart_ease_in_out") == 0 ) {
+    mode = nom::Quart::ease_in_out;
+  } else if( nom::compare_string_insensitive(timing_mode, "quint_ease_in") == 0 ) {
+    mode = nom::Quint::ease_in;
+  } else if( nom::compare_string_insensitive(timing_mode, "quint_ease_out") == 0 ) {
+    mode = nom::Quint::ease_out;
+  } else if( nom::compare_string_insensitive(timing_mode, "quint_ease_in_out") == 0 ) {
+    mode = nom::Quint::ease_in_out;
+  } else if( nom::compare_string_insensitive(timing_mode, "back_ease_in") == 0 ) {
+    mode = nom::Back::ease_in;
+  } else if( nom::compare_string_insensitive(timing_mode, "back_ease_out") == 0 ) {
+    mode = nom::Back::ease_out;
+  } else if( nom::compare_string_insensitive(timing_mode, "back_ease_in_out") == 0 ) {
+    mode = nom::Back::ease_in_out;
+  } else if( nom::compare_string_insensitive(timing_mode, "bounce_ease_in") == 0 ) {
+    mode = nom::Bounce::ease_in;
+  } else if( nom::compare_string_insensitive(timing_mode, "bounce_ease_out") == 0 ) {
+    mode = nom::Bounce::ease_out;
+  } else if( nom::compare_string_insensitive(timing_mode, "bounce_ease_in_out") == 0 ) {
+    mode = nom::Bounce::ease_in_out;
+  } else if( nom::compare_string_insensitive(timing_mode, "circ_ease_in") == 0 ) {
+    mode = nom::Circ::ease_in;
+  } else if( nom::compare_string_insensitive(timing_mode, "circ_ease_out") == 0 ) {
+    mode = nom::Circ::ease_out;
+  } else if( nom::compare_string_insensitive(timing_mode, "circ_ease_in_out") == 0 ) {
+    mode = nom::Circ::ease_in_out;
+  } else if( nom::compare_string_insensitive(timing_mode, "elastic_ease_in") == 0 ) {
+    mode = nom::Elastic::ease_in;
+  } else if( nom::compare_string_insensitive(timing_mode, "elastic_ease_out") == 0 ) {
+    mode = nom::Elastic::ease_out;
+  } else if( nom::compare_string_insensitive(timing_mode, "elastic_ease_in_out") == 0 ) {
+    mode = nom::Elastic::ease_in_out;
+  } else if( nom::compare_string_insensitive(timing_mode, "expo_ease_in") == 0 ) {
+    mode = nom::Expo::ease_in;
+  } else if( nom::compare_string_insensitive(timing_mode, "expo_ease_out") == 0 ) {
+    mode = nom::Expo::ease_out;
+  } else if( nom::compare_string_insensitive(timing_mode, "expo_ease_in_out") == 0 ) {
+    mode = nom::Expo::ease_in_out;
+  } else if( nom::compare_string_insensitive(timing_mode, "sine_ease_in") == 0 ) {
+    mode = nom::Sine::ease_in;
+  } else if( nom::compare_string_insensitive(timing_mode, "sine_ease_out") == 0 ) {
+    mode = nom::Sine::ease_out;
+  } else if( nom::compare_string_insensitive(timing_mode, "sine_ease_in_out") == 0 ) {
+    mode = nom::Sine::ease_in_out;
+  }
+
+  return mode;
+}
 
 } // namespace nom

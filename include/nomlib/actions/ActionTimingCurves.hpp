@@ -33,6 +33,8 @@ Easing algorithms are Copyright (c) 2001 Robert Penner
 
 #include "nomlib/config.hpp"
 
+#include <functional>
+
 namespace nom {
 
 // Standard easing classes

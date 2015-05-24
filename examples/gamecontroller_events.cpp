@@ -196,8 +196,6 @@ class App: public nom::SDLApp
         return false;
       }
 
-      this->initialize_game_controller_db(this->db_filename);
-
       NOM_ASSERT( this->evt_handler.joystick_event_type() ==
                   EventHandler::NO_EVENT_HANDLER );
 
@@ -210,6 +208,8 @@ class App: public nom::SDLApp
 
       NOM_ASSERT( this->evt_handler.joystick_event_type() ==
                   EventHandler::GAME_CONTROLLER_EVENT_HANDLER );
+
+      this->initialize_game_controller_db(this->db_filename);
 
       // NOTE: Ensure that closing the joystick device more than once does not
       // crash with a double-free memory violation from SDL_GameControllerClose
@@ -259,6 +259,30 @@ class App: public nom::SDLApp
       }
 #endif
 
+      Joystick jdev;
+      for(  auto joystick_index = 0;
+            joystick_index != Joystick::num_joysticks();
+            ++joystick_index )
+      {
+        if( jdev.open(joystick_index) == true ) {
+
+          std::string guid_str = "0x" + jdev.device_guid_string();
+
+          NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Joystick",
+                        joystick_index, ":", Joystick::name(joystick_index) );
+
+          NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
+                        "\taxes:", jdev.num_axes() );
+          NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
+                        "\ttrack balls:", jdev.num_track_balls() );
+          NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
+                        "\tbuttons:", jdev.num_buttons() );
+          NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
+                        "\tPOV hats:", jdev.num_hats() );
+
+          NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION, "\tguid:", guid_str);
+        }
+      }
       for(  auto joystick_index = 0;
             joystick_index != Joystick::num_joysticks();
             ++joystick_index )

@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace nom;
 
 /// \brief The file used for resource path lookups for this example.
-const std::string RES_FILE = "gamecontroller_events.json";
+const std::string RES_FILE = "InputDevices.json";
 
 class App: public nom::SDLApp
 {

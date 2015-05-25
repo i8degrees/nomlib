@@ -200,7 +200,7 @@ if( NOM_BUILD_GAME_CONTROLLER_EXAMPLE )
 
   target_link_libraries( ${APP_NAME} ${APP_DEPS} )
 
-  install(  FILES "${NOM_EXAMPLES_RESOURCES_DIR}/${APP_NAME}.json"
+  install(  FILES "${NOMLIB_SHARED_SUPPORT_DIR}/InputDevices.json"
             DESTINATION "${EXAMPLES_INSTALL_DIR}" )
 endif( NOM_BUILD_GAME_CONTROLLER_EXAMPLE )
 

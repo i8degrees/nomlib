@@ -116,6 +116,8 @@ include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )
 set( SRC_DIR "${PROJECT_SOURCE_DIR}/src" )
 set( NOMLIB_RESOURCES_DIR "${PROJECT_SOURCE_DIR}/Resources" )
 
+set( NOMLIB_SHARED_SUPPORT_DIR "${NOMLIB_RESOURCES_DIR}/SharedSupport" )
+
 # TODO: Rename to NOMLIB_INCLUDE_ROOT_DIR..?
 set( INC_ROOT_DIR "${PROJECT_SOURCE_DIR}/include" )
 
@@ -319,6 +321,12 @@ if( PLATFORM_OSX AND FRAMEWORK )
   #   )
   # endif( NOM_INSTALL_GENERATED_DOCS )
 
+  # Install hardware definitions for input devices (game controllers)
+  install(  DIRECTORY "${NOMLIB_SHARED_SUPPORT_DIR}/InputDevices"
+            DESTINATION "${PROJECT_NAME}.framework/Resources/SharedSupport"
+            OPTIONAL
+            PATTERN ".*" EXCLUDE )
+
 # POSIX install layout scheme is the default installation scheme. This is
 # applicable to OS X when FRAMEWORK=off.
 elseif( NOM_PLATFORM_POSIX OR PLATFORM_WINDOWS )
@@ -349,6 +357,13 @@ elseif( NOM_PLATFORM_POSIX OR PLATFORM_WINDOWS )
               "CMake"
               PATTERN ".*" EXCLUDE
             )
+
+    # Install hardware definitions for input devices (game controllers)
+    install(  DIRECTORY "${NOMLIB_SHARED_SUPPORT_DIR}/InputDevices"
+              DESTINATION "SharedSupport"
+              OPTIONAL
+              PATTERN ".*" EXCLUDE )
+
   else( NOT PLATFORM_WINDOWS )
     # i.e.: /usr/local/share/nomlib/CMake
     install(  DIRECTORY

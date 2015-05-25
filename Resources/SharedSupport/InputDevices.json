@@ -8,6 +8,6 @@
       "./"
     ],
 
-    "path": "Resources/examples/gamecontroller_events/"
+    "path": "Resources/SharedSupport/InputDevices/"
   }
 }

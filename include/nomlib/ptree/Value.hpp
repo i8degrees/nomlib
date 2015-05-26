@@ -214,7 +214,7 @@ class Value
     /// \brief Obtain a reference to the object.
     ///
     /// \returns A reference to the object.
-    const Value::Reference ref();
+    Value::Reference ref();
 
     /// \brief Obtain the enumeration type of the object.
     ///

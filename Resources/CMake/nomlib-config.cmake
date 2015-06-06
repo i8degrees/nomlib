@@ -67,6 +67,24 @@
 # To distribute this file outside of CMake, substitute the full license text
 # for the above reference.
 
+set( NOMLIB_DEPS_ROOT "NOTFOUND" )
+
+if( EXISTS ${NOMLIB_DEPS_PREFIX} )
+  # IMPORTANT: NOMLIB_DEPS_PREFIX will be an external CMake variable within
+  # this scope, of which **must** already be set by the parent script calling
+  # FIND_PACKAGE, and should **never** be modified for sake of the parent
+  # script.
+  list( APPEND NOMLIB_DEPS_ROOT ${NOMLIB_DEPS_PREFIX} )
+endif( EXISTS ${NOMLIB_DEPS_PREFIX} )
+
+if( DEFINED ENV{NOMLIB_DEPS_PREFIX} AND EXISTS ENV{NOMLIB_DEPS_PREFIX} )
+  list( APPEND NOMLIB_DEPS_ROOT ENV{NOMLIB_DEPS_PREFIX} )
+endif( DEFINED ENV{NOMLIB_DEPS_PREFIX} AND EXISTS ENV{NOMLIB_DEPS_PREFIX} )
+
+if( NOMLIB_DEPS_ROOT STREQUAL "NOTFOUND" )
+  message( FATAL_ERROR "An absolute directory path to the engine's dependencies must be set. See README.md for details." )
+endif( NOMLIB_DEPS_ROOT STREQUAL "NOTFOUND" )
+
 if( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
   set( NOM_PLATFORM_OSX TRUE )
 elseif( CMAKE_SYSTEM_NAME STREQUAL "Windows" )
@@ -180,7 +198,6 @@ macro( find_nom_dependency output_var output_name )
   find_library( ${output_var} NAMES ${ARGN}
                 PATHS
                 ${NOMLIB_DEPS_ROOT}
-                $ENV{NOMLIB_DEPS_ROOT}
                 ${NOM_SEARCH_PREFIX_PATHS}
                 PATH_SUFFIXES
                 ${NOM_LIBRARY_PATH_SUFFIXES} # osx, *nix
@@ -215,7 +232,6 @@ if( NOMLIB_CORE_FOUND )
   find_path(  SDL2_INCLUDE_DIR SDL.h
               PATHS
               ${NOMLIB_DEPS_ROOT}
-              $ENV{NOMLIB_DEPS_ROOT}
               ${NOM_SEARCH_PREFIX_PATHS}
               PATH_SUFFIXES SDL2/include include
   )
@@ -263,7 +279,6 @@ if( NOMLIB_GUI_FOUND )
   find_path(  LIBROCKET_INCLUDE_DIR Rocket/Core
               PATHS
               ${NOMLIB_DEPS_ROOT}
-              $ENV{NOMLIB_DEPS_ROOT}
               ${NOM_SEARCH_PREFIX_PATHS}
               PATH_SUFFIXES libRocket/include include
   )

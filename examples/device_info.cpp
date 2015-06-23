@@ -57,6 +57,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics.hpp"
 #include "nomlib/system.hpp"
 
+namespace nom {
+
 void nomlib_version_info( void )
 {
   NOM_LOG_INFO  (
@@ -223,11 +225,16 @@ void libs_version_info( void )
   #endif
 }
 
+} // namespace nom
+
 int main ( int argc, char* argv[] )
 {
+  using namespace nom;
+
   nom::RenderWindow window;
   nom::Size2i window_size( nom::Size2i::zero );
   nom::RendererInfo renderer_info;
+  uint32 window_flags = SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL;
 
   // We need SDL2 video initialization so we can obtain the available rendering
   // caps
@@ -261,14 +268,18 @@ int main ( int argc, char* argv[] )
   // Output the versions used of nomlib and its dependencies.
   libs_version_info();
 
-  if( window.create( "device_info", window_size, SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL ) == false )
-  {
-    NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not create a window." );
-    exit( NOM_EXIT_FAILURE );
+  if( window.create("device_info", window_size, window_flags) == false ) {
+    NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not create a window." );
+    exit(NOM_EXIT_FAILURE);
   }
 
   renderer_info = window.caps();
 
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
+                "Primary display name:", window.display_name() );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
+                "Refresh Rate:", window.refresh_rate() );
   NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Renderer: ", renderer_info.name() );
   NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "SDL_RENDERER_TARGETTEXTURE: ", renderer_info.target_texture() ? "YES" : "NO" );
   NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "SDL_RENDERER_ACCELERATED: ", renderer_info.accelerated() ? "YES" : "NO" );

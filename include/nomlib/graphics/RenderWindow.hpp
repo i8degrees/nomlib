@@ -223,10 +223,29 @@ class RenderWindow: public Renderer
     /// \todo Rename to window_from_id?
     static SDL_WINDOW::RawPtr window_id( uint32 id );
 
-    /// Obtain this window's display index
+    /// \brief Get the display index associated with this window.
     ///
-    /// \return This window's display index
-    int window_display_id ( void ) const;
+    /// \returns The index of the display containing the center of the window
+    /// on success, and a negative error code on failure.
+    ///
+    /// \remarks The display identifier order is platform-dependent.
+    int window_display_id() const;
+
+    /// \brief Get the display name associated with a window.
+    ///
+    /// \returns The name of the display on success, and a NULL-terminated
+    /// string on failure.
+    ///
+    /// \remarks The display name is platform-dependent.
+    static std::string display_name(int display_id);
+
+    /// \brief Get the display name associated with this window.
+    ///
+    /// \returns The name of the display on success, and a NULL-terminated
+    /// string on failure.
+    ///
+    /// \remarks The display name is platform-dependent.
+    std::string display_name() const;
 
     /// \brief Get the window which currently has mouse focus.
     ///
@@ -359,10 +378,10 @@ class RenderWindow: public Renderer
 
     SDL_WINDOW::UniquePtr window_;
 
-    /// Cache the unique window identifier we get from SDL upon initialization
+    /// \brief The unique identifier as recognized internally by SDL.
     uint32 window_id_;
 
-    /// Cache the display identifier we get from SDL upon initialization
+    /// \brief The unique identifier given to the display.
     int window_display_id_;
 
     /// State of the window (visible or not)

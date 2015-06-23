@@ -384,9 +384,28 @@ SDL_Window* RenderWindow::mouse_focus( void ) const
   return SDL_GetMouseFocus();
 }
 
-int RenderWindow::window_display_id ( void ) const
+int RenderWindow::window_display_id() const
 {
   return this->window_display_id_;
+}
+
+// static
+std::string RenderWindow::display_name(int display_id)
+{
+  const char* result_str = nullptr;
+  std::string result = "\0";
+
+  result_str = SDL_GetDisplayName(display_id);
+  if( result_str != nullptr ) {
+    result = result_str;
+  }
+
+  return result;
+}
+
+std::string RenderWindow::display_name() const
+{
+  return this->display_name(this->window_display_id_);
 }
 
 void RenderWindow::disable_screensaver ( void )

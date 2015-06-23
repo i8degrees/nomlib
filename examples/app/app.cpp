@@ -393,24 +393,27 @@ class App: public nom::SDLApp
           // were given an EventHandler object via ::set_event_handler.
         }
 
-        for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
-        {
+        for( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ ) {
+
           this->window[idx].update();
           this->desktop.update();
           this->actions.update(0);
           this->fps[idx].update();
 
           // Refresh the frames per second at 1 second intervals
-          if ( this->update[idx].ticks() > 1000 )
-          {
-            if ( this->show_fps() == true )
-            {
-              this->window[idx].set_window_title ( APP_NAME + " - " + this->fps[idx].asString() + ' ' + "fps" );
-            }
-            else
-            {
-              this->window[idx].set_window_title ( APP_NAME + " [" + std::to_string(this->window[idx].window_id()) + "]" + " - " + "Display" + ' ' + std::to_string ( this->window[idx].window_display_id() ) );
-            }
+          if( this->update[idx].ticks() > 1000 ) {
+
+            auto fps_str = this->fps[idx].asString();
+            std::stringstream window_str;
+            auto window_id_str =
+              std::to_string( this->window[idx].window_id() );
+            auto window_display_id =
+              std::to_string( this->window[idx].window_display_id() );
+
+            window_str << "WID: " << window_id_str << " - Display ID: "
+            << window_display_id << " - " << fps_str << " fps";
+
+            this->window[idx].set_window_title( window_str.str() );
 
             this->update[idx].restart();
           } // end refresh cycle

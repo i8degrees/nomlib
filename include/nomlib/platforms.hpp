@@ -34,17 +34,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// I have platform detection separated from nomlib/config.hpp specifically so
 /// that one may include this header file for use in an external project without
 /// worry of polluting the namespace with any unnecessary definitions.
-///
-/// \todo Rename NOM_PLATFORM_POSIX to NOM_PLATFORM_UNIX..?
 
-#if defined ( _WIN32) || defined ( __WIN32__ )
+#if defined(_WIN32) || defined(__WIN32__)
   #define NOM_PLATFORM_WINDOWS
-#elif defined ( linux ) || defined ( __linux )
+// NOTE: The following two macros -- linux and __linux -- are obsolete and are
+// not POSIX compliant!
+#elif defined(__linux__) || defined(linux) || defined(__linux)
   #define NOM_PLATFORM_LINUX
-  #define NOM_PLATFORM_POSIX // Assume POSIX-compliant Unix
-#elif defined ( __APPLE__ ) || defined ( MACOSX ) || defined ( macintosh ) || defined ( Macintosh )
+  #define NOM_PLATFORM_POSIX
+#elif defined(__APPLE__) || defined(__MAC__) || defined(MACOSX) || defined(macintosh) || defined(Macintosh)
   #define NOM_PLATFORM_OSX
   #define NOM_PLATFORM_POSIX // Assume POSIX-compliant Unix
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || \
+      defined(__bsdi__) || defined(__DragonFly__)
+  #define NOM_PLATFORM_BSD
+  #define NOM_PLATFORM_POSIX
 #endif
 
 /// Platform architecture detection; we only check for a 32-bit or 64-bit
@@ -95,5 +99,39 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// 1. http://stackoverflow.com/questions/833291/is-there-an-equivalent-to-winapis-max-path-under-linux-unix
 /// 2.
 #define PATH_MAX 256
+
+namespace nom {
+
+enum Platform
+{
+  PLATFORM_UNKNOWN = 0,   /// Undetected
+  PLATFORM_WINDOWS,       /// Microsoft
+  PLATFORM_LINUX,         /// GNU
+  PLATFORM_BSD,           /// FreeBSD, NetBSD, OpenBSD, DragonFly, ...
+  PLATFORM_OSX,           /// Apple
+  NUM_PLATFORMS,          /// Total number of platforms
+};
+
+struct PlatformSpec
+{
+  /// \brief The platform name.
+  const char* name = "Unknown";
+
+  /// \brief The platform's environment.
+  Platform env = PLATFORM_UNKNOWN;
+
+  /// \brief The number of available CPUs.
+  int num_cpus = 1;
+
+  /// \brief The L1 cache size of the CPU (in bytes).
+  int cpu_cache_size = 0;
+
+  /// \brief The total available system RAM (in bytes).
+  int total_ram = 0;
+};
+
+PlatformSpec platform_info();
+
+} // namespace nom
 
 #endif // include guard

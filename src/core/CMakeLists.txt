@@ -9,7 +9,10 @@ set( NOM_CORE_LIBRARY "nomlib-core" )
 set(  NOM_CORE_SOURCE
       ${INC_DIR}/core.hpp
       ${INC_DIR}/macros.hpp
+
+      ${SRC_DIR}/platforms.cpp
       ${INC_DIR}/platforms.hpp
+
       ${INC_DIR}/types.hpp
 
       ${INC_DIR}/config.hpp # auto-generated

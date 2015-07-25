@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Must be included before NOM_USE_* preprocessor definitions are checked
 #include "nomlib/config.hpp"
+#include "nomlib/platforms.hpp"
 
 #if defined( NOM_USE_SDL2_IMAGE )
   #include <SDL_image.h>
@@ -244,19 +245,16 @@ int main ( int argc, char* argv[] )
     exit( NOM_EXIT_FAILURE );
   }
 
-  atexit( nom::quit );
+  atexit(nom::quit);
 
-  #if defined( NOM_PLATFORM_OSX )
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Platform: Mac OS X" );
-  #elif defined( NOM_PLATFORM_LINUX )
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Platform: GNU/Linux" );
-  #elif defined( NOM_PLATFORM_POSIX )
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Platform: POSIX Unix" );
-  #elif defined( NOM_PLATFORM_WINDOWS )
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Platform: MS Windows" );
-  #else
-    NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Platform: Unknown" );
-  #endif
+  auto spec = nom::platform_info();
+  NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION, "Platform name:", spec.name);
+  NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION, "Number of CPUs:",
+               spec.num_cpus);
+  NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION, "L1 Cache Size (bytes):",
+               spec.cpu_cache_size);
+  NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION, "System RAM (bytes):",
+               spec.total_ram);
 
   // Fix for getting incorrect OpenGL version of 2.1 on my MacBook Air
   // (Mid 2011) -- when in reality, it is v3.3. We must request a core

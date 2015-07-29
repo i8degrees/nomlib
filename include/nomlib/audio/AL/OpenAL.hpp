@@ -44,28 +44,40 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #include <alc.h>
 #endif
 
+#if defined(NOM_DEBUG)
+  // IMPORTANT: This macro is DEPRECATED, in favor of AL_CHECK_ERR_VOID.
+  // The rationale for this decision is readability (clarity); the argument,
+  // "function", serves no purpose and therefore can be misleading in its use.
+  #define AL_CHECK_ERR(Function) \
+    ( (Function), nom::priv::al_err(NOM_FUNC, __FILE__, __LINE__) )
+
+  // TODO: Rename this macro to AL_CHECK_ERR after we have phased AL_CHECK_ERR
+  // out of the code base
+  #define AL_CHECK_ERR_VOID() \
+    ( nom::priv::al_err(NOM_FUNC, __FILE__, __LINE__) )
+#else
+  #define AL_CHECK_ERR(Function) (Function)
+  #define AL_CHECK_ERR_VOID()
+#endif
+
+// Clear the error state of OpenAL
+//
+// TODO: Clear the error state before calling functions that we check err state
+// on -- the err messages we see are potentially out of sync otherwise!
+#define AL_CLEAR_ERR() alGetError();
+
+namespace nom {
+
 /// Optimal sound frame size (in bytes); used by libsndfile
 const nom::uint32 BUFFER_SIZE = 4096;
 const nom::uint32 NUM_SOURCES = 16; // not implemented
 
-const float MIN_VOLUME = 0.0;
-const float MAX_VOLUME = 100.0;
+namespace priv {
 
-#ifdef NOM_DEBUG
-  #define AL_CHECK_ERR(Function) \
-    ( (Function ), nom::priv::al_err ( __FILE__, __LINE__ ) )
-#else
-  #define AL_CHECK_ERR(Function) ( Function )
-#endif
+void al_err(const std::string& func, const std::string& file, uint32 line);
 
-namespace nom {
-  namespace priv {
-
-void al_err ( const std::string& file, uint32 line );
-
-  } // namespace priv
+} // namespace priv
 } // namespace nom
-
 
 #endif // NOMLIB_OPENAL_HEADERS defined
 

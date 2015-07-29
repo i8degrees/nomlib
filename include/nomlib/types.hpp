@@ -233,6 +233,40 @@ enum Anchor: uint32
   BottomRight = Y_BOTTOM | X_RIGHT      // Hex: 0x44, Dec: 68
 };
 
+const nom::size_type NOM_BYTE = 1024;
+
+inline
+nom::size_type kilobyte(nom::size_type bytes)
+{
+  nom::size_type result = (bytes * NOM_BYTE);
+
+  return result;
+}
+
+inline
+nom::size_type megabyte(nom::size_type bytes)
+{
+  nom::size_type result = ( kilobyte(bytes) * NOM_BYTE);
+
+  return result;
+}
+
+inline
+nom::size_type gigabyte(nom::size_type bytes)
+{
+  nom::size_type result = ( megabyte(bytes) * NOM_BYTE );
+
+  return result;
+}
+
+inline
+nom::size_type terabyte(nom::size_type bytes)
+{
+  nom::size_type result = ( gigabyte(bytes) * NOM_BYTE );
+
+  return result;
+}
+
 } // namespace nom
 
 /// Ensure our data types have the right sizes using C++11 compile-time asserts.
@@ -284,6 +318,11 @@ const nom::sint NOM_EXIT_SUCCESS = 0; // EXIT_SUCCESS from cstdlib headers
 //#if defined(HAVE_SDL2)
 const nom::sint SDL_SUCCESS = 0; // Non-error return value for SDL2 API
 //#endif
+
+#define NOM_KILOBYTES(bytes) kilobyte(bytes)
+#define NOM_MEGABYTES(bytes) megabyte(bytes)
+#define NOM_GIGABYTES(bytes) gigabyte(bytes)
+#define NOM_TERABYTES(bytes) terabytes(bytes)
 
 // Configuration variables for the engine
 

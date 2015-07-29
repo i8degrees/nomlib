@@ -52,8 +52,8 @@ PlatformSpec platform_info()
   auto total_ram_kb =  SDL_GetSystemRAM();
 
   // Conversion to bytes
-  spec.cpu_cache_size = cpu_cache_size_kb * 1024;
-  spec.total_ram =  total_ram_kb * 1024;
+  spec.cpu_cache_size = cpu_cache_size_kb * nom::NOM_BYTE;
+  spec.total_ram =  total_ram_kb * nom::NOM_BYTE;
 
 #if defined(NOM_PLATFORM_OSX)
   spec.name = "Mac OS X";

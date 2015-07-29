@@ -254,7 +254,8 @@ static_assert ( sizeof ( nom::real64 ) == 8, "nom::real64" );
 static_assert ( sizeof ( nom::uchar ) == 1, "nom::uchar" );
 
 // Blindly assumes we are on either a 64-bit or 32-bit platform.
-#if defined( NOM_PLATFORM_ARCH_X86_64 )
+// TODO: Relocate this def to run-time (cmake gen)
+#if defined(NOM_PLATFORM_ARCH_X86_64)
   static_assert( sizeof ( nom::ulong ) == 8, "nom::ulong" );
   static_assert( sizeof ( nom::size_type ) == 8, "nom::size_type" );
 #else // #elif defined( NOM_PLATFORM_ARCH_X86_86 )
@@ -263,7 +264,7 @@ static_assert ( sizeof ( nom::uchar ) == 1, "nom::uchar" );
 #endif
 
 // Blindly assumes we are on either a 64-bit or 32-bit platform.
-#if defined( NOM_PLATFORM_ARCH_X86_64 )
+#if defined(NOM_PLATFORM_ARCH_X86_64)
   static_assert( sizeof(nom::int_ptr) == 8, "nom::int_ptr" );
   static_assert( sizeof(nom::uint_ptr) == 8, "nom::uint_ptr" );
   static_assert( sizeof ( nom::int32_ptr ) == ( sizeof(long) ), "nom::int32_ptr" );

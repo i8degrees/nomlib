@@ -100,6 +100,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// 2.
 #define PATH_MAX 256
 
+// Cross-platform macro for obtaining the CPU's Time Stamp Counter (RDTSC)
+//
+//    See also
+// 1. http://handmadehero.com
+// 2. http://www.strchr.com/performance_measurements_with_rdtsc
+#if defined(NOM_PLATFORM_WINDOWS) && defined(NOM_COMPILER_MSVCPP)
+  // Use built-in compiler intrinsic
+  #define NOM_RDTSC() __rdtsc();
+#else // Assume clang compiler
+  #define NOM_RDTSC() nom::rdtsc()
+#endif // MS Windows && MSVCPP
+
 namespace nom {
 
 enum Platform

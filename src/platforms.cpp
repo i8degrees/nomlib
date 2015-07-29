@@ -27,10 +27,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 #include "nomlib/platforms.hpp"
+#include "nomlib/types.hpp"
 
 #include <SDL.h>
 
 namespace nom {
+
+// Source: http://www.brue.org/2013/01/using-rdtsc-in-gcc-and-clang/
+volatile uint64 rdtsc()
+{
+  uint32 a = 0.0f;
+  uint32 d = 0.0f;
+  asm volatile
+      (".byte 0x0f, 0x31 #rdtsc\n" // edx:eax
+       :"=a"(a), "=d"(d)::);
+  return( ( (uint64) d) << 32) | (uint64) a;
+}
 
 PlatformSpec platform_info()
 {

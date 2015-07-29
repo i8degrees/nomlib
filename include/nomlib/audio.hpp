@@ -45,7 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/audio/NullMusic.hpp"
 #include "nomlib/audio/AudioDeviceLocator.hpp"
 
-#if defined( NOM_USE_OPENAL )
+#if defined(NOM_USE_OPENAL)
   #include "nomlib/audio/AL/AudioDevice.hpp"
   #include "nomlib/audio/AL/Listener.hpp"
   #include "nomlib/audio/AL/Music.hpp"

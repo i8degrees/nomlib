@@ -139,7 +139,7 @@ endif( NOM_BUILD_APP_EXAMPLE )
 if( NOM_BUILD_AUDIO_EXAMPLE )
   add_executable ( audio "${EXECUTABLE_FLAGS}" "audio/audio.cpp" )
 
-  set( AUDIO_DEPS nomlib-system nomlib-audio )
+  set( AUDIO_DEPS nomlib-math nomlib-system nomlib-audio )
 
   if( PLATFORM_WINDOWS )
     # We need to link to SDL2main library on Windows

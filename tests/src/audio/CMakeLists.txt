@@ -7,7 +7,8 @@ if( NOM_BUILD_OPENAL_AUDIO_TESTS )
   add_executable( ALAudioTest "ALAudioTest.cpp" )
 
   # FIXME: We only need init from nomlib-system
-  set( AUDIO_DEPS ${GTEST_LIBRARY} nomlib-core nomlib-audio nomlib-system )
+  set(  AUDIO_DEPS ${GTEST_LIBRARY} nomlib-core nomlib-math nomlib-audio
+        nomlib-system )
 
   if( PLATFORM_WINDOWS )
     list( APPEND AUDIO_DEPS ${SDL2MAIN_LIBRARY} )

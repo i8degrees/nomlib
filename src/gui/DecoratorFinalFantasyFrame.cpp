@@ -110,7 +110,7 @@ void DecoratorFinalFantasyFrame::RenderElement(Rocket::Core::Element* element, R
     // window, else it will vanish on us
     if( this->bounds_.x <= 0 )
     {
-      int x_offset = abs(this->bounds_.x);
+      int x_offset = fabs(this->bounds_.x);
 
       // We need to recalculate widths when the object is partially off-screen,
       // otherwise stretching of the layout occurs -- a possible bug in

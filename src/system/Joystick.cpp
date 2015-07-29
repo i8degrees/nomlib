@@ -257,11 +257,7 @@ std::string Joystick::device_guid_string(JoystickGUID guid)
 
   SDL_JoystickGetGUIDString(dev_guid, output_guid, sizeof(output_guid) );
 
-  if( output_guid != nullptr ) {
-    result = output_guid;
-  } else {
-    nom::set_error( SDL_GetError() );
-  }
+  result = output_guid;
 
   return result;
 }

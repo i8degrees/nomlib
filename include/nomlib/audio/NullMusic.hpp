@@ -46,8 +46,6 @@ class NullMusic: public NullSoundSource
     void Stop( void );
     void Pause( void );
     void togglePause( void );
-
-    void fadeOut( float seconds );
 };
 
 } // namespace nom

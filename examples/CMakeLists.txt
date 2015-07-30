@@ -102,6 +102,9 @@ if( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
   )
 else( EXISTS ${TCLAP_INCLUDE_DIR} )
   message( STATUS "TCLAP headers found: ${TCLAP_INCLUDE_DIR}" )
+
+  # Header file inclusion; third-party -- TCLAP
+  include_directories("${NOM_THIRD_PARTY_COMMON_DIR}")
 endif( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
 
 if( PLATFORM_WINDOWS )
@@ -257,9 +260,6 @@ if( NOM_BUILD_FONTS_EXAMPLE )
     # We need to link to SDL2main library on Windows
     list( APPEND FONTS_DEPS ${SDL2MAIN_LIBRARY} )
   endif( PLATFORM_WINDOWS )
-
-  # Header file inclusion; third-party -- TCLAP
-  include_directories("${NOM_THIRD_PARTY_COMMON_DIR}")
 
   target_link_libraries( renderfont ${FONTS_DEPS} )
 

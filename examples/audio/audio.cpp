@@ -27,42 +27,113 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 
-/// \brief Audio playback usage example
-
-#include <iostream>
-#include <string>
-#include <cstdlib>
-#include <cassert>
+// NOTE: Audio playback usage example
 
 #include <nomlib/audio.hpp>
 #include <nomlib/math.hpp>
 #include <nomlib/system.hpp>
+#include <nomlib/version.hpp>
 
-/// Name of our application.
-const std::string APP_NAME = "Audio Playback";
+#include "tclap/CmdLine.h"
 
-/// File path name of the resources directory; this must be a relative file path.
+using namespace nom;
+
+const std::string APP_NAME = "nomlib: audio";
+
+/// File path of the resources directory; this must be a relative to the parent
+/// working directory.
 const std::string APP_RESOURCES_DIR = "Resources";
 
-/// Relative file path name of our resource example
+/// The platform specific file delimiter; '/' on Posix and '\' on Windows.
 const nom::Path p;
 
 /// Sound effect resource file
-const std::string RESOURCE_AUDIO_SOUND = APP_RESOURCES_DIR + p.native() + "cursor_wrong.wav";
+const std::string RESOURCE_AUDIO_SOUND = APP_RESOURCES_DIR + p.native() +
+  "cursor_wrong.wav";
 
-int main ( int argc, char* argv[] )
+/// \remarks See program usage by passing --help
+struct AppFlags
 {
+  /// The input file source to play
+  std::string audio_input = RESOURCE_AUDIO_SOUND;
+
+  /// Test input source with the null audio back-end
+  bool use_null_interface = false;
+
+  /// Test input source with the music audio interface
+  ///
+  /// \fixme This interface is broken; the sound buffer memory is not properly
+  /// deallocated.
+  bool use_music_interface = false;
+};
+
+int parse_cmdline(int argument_count, char* arguments[], AppFlags& opts)
+{
+  using namespace TCLAP;
+
+  if( argument_count < 0 ) {
+    return NOM_EXIT_FAILURE;
+  }
+
+  try
+  {
+    CmdLine cmd( APP_NAME, ' ', nom::NOM_VERSION.version_string() );
+
+    std::string null_interface_desc =
+      "Test the usage of the null interface (defaults to FALSE).";
+    std::string music_interface_desc =
+      "Test the usage of the music interface (defaults to FALSE).";
+
+    SwitchArg use_null_interface_arg("n", "use-null", null_interface_desc,
+                                     cmd, false);
+    SwitchArg use_music_interface_arg("", "use-music", music_interface_desc,
+                                      cmd, false);
+
+    ValueArg<std::string> audio_file_arg("i", "input",
+                                         "File path to audio to play from",
+                                         false, opts.audio_input,
+                                         "Resources/audio/hello.wav", cmd );
+
+    cmd.parse(argument_count, arguments);
+
+    opts.use_null_interface = use_null_interface_arg.getValue();
+    opts.use_music_interface = use_music_interface_arg.getValue();
+    opts.audio_input = audio_file_arg.getValue();
+  }
+  catch(TCLAP::ArgException &e)
+  {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  e.error(), "for arg", e.argId() );
+
+    return NOM_EXIT_FAILURE;
+  }
+
+  return NOM_EXIT_SUCCESS;
+}
+
+int main(int argc, char* argv[])
+{
+  AppFlags args;
+
   nom::IAudioDevice* dev = nullptr; // this must be declared first
   nom::IListener* listener = nullptr; // Global audio volume control
   nom::ISoundBuffer* buffer = nullptr;
+  nom::ISoundSource* snd = nullptr;
   nom::Timer loops;
+
+  nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_AUDIO,
+                                        NOM_LOG_PRIORITY_DEBUG);
+
+  if( parse_cmdline(argc, argv, args) != 0 ) {
+    exit(NOM_EXIT_FAILURE);
+  }
 
   // Fatal error; if we are not able to complete this step, it means that
   // we probably cannot rely on our resource paths!
-  if ( nom::init ( argc, argv ) == false )
-  {
-    nom::DialogMessageBox ( APP_NAME, "Could not initialize nomlib." );
-    exit ( NOM_EXIT_FAILURE );
+  if( nom::init(argc, argv) == false ) {
+    NOM_LOG_CRIT(NOM_LOG_CATEGORY_APPLICATION,
+                 "Could not initialize nomlib.");
+    exit(NOM_EXIT_FAILURE);
   }
   atexit(nom::quit);
 
@@ -70,103 +141,92 @@ int main ( int argc, char* argv[] )
   // #undef NOM_USE_OPENAL
 
   // Initialize audio subsystem...
-  #if defined( NOM_USE_OPENAL )
-    dev = new nom::AudioDevice();
-    listener = new nom::Listener();
-    buffer = new nom::SoundBuffer();
-  #else
+  if( args.use_null_interface == true ) {
     dev = new nom::NullAudioDevice();
     listener = new nom::NullListener();
     buffer = new nom::NullSoundBuffer();
-  #endif // defined NOM_USE_OPENAL
-
-  NOM_DUMP( dev->getDeviceName() );
-
-  listener->setVolume( 100.0f );
-
-  if ( argv[1] != nullptr )
-  {
-    if( buffer->load( argv[1] ) == false )
-    {
-      NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not load audio file:", argv[1] );
-      return NOM_EXIT_FAILURE;
-    }
-  }
-  else
-  {
-    if( buffer->load( RESOURCE_AUDIO_SOUND ) == false )
-    {
-      NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, "Could not load audio file: ", RESOURCE_AUDIO_SOUND );
-      return NOM_EXIT_FAILURE;
-    }
+  } else {
+    dev = new nom::AudioDevice();
+    listener = new nom::Listener();
+    buffer = new nom::SoundBuffer();
   }
 
-  #if defined( NOM_USE_OPENAL )
-    // nom::ISoundSource* snd = new nom::Sound();
-  #else
-    // nom::ISoundSource* snd = new nom::NullSound();
-  #endif // defined NOM_USE_OPENAL
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Audio device name:",
+                dev->getDeviceName() );
 
-  #if defined( NOM_USE_OPENAL )
-    nom::ISoundSource* snd = new nom::Music();
-  #else
-    nom::ISoundSource* snd = new nom::NullMusic();
-  #endif // defined NOM_USE_OPENAL
+  listener->set_volume(nom::Listener::max_volume() / 2.0f); // 50%
 
-  snd->setBuffer( *buffer );
+  if( buffer->load(args.audio_input) == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION, "Could not load audio file: ",
+                  RESOURCE_AUDIO_SOUND );
+    return NOM_EXIT_FAILURE;
+  }
 
-  snd->setPitch ( 1.0 );
-  snd->setVolume ( 100.0f );
-  snd->setPosition ( nom::Point3f ( 0.0, 0.0, 0.0 ) );
-  snd->setVelocity ( nom::Point3f ( 0.0, 0.0, 0.0 ) );
-  snd->setLooping ( true );
+  if( args.use_music_interface == true ) {
+    if( args.use_null_interface == true ) {
+      snd = new nom::NullMusic();
+    } else {
+      // FIXME: This interface is broken; the sound buffer memory is not
+      // properly deallocated.
+      snd = new nom::Music();
+    }
+  } else if( args.use_music_interface == false ) {
+    if( args.use_null_interface == true ) {
+      snd = new nom::NullSound();
+    } else {
+      snd = new nom::Sound();
+    }
+  }
 
-  if ( snd->getStatus() != nom::SoundStatus::Playing ) snd->Play();
+  NOM_ASSERT(snd != nullptr);
+
+  snd->setBuffer(*buffer);
+
+  snd->setPitch(1.0f);
+  snd->set_volume( nom::Listener::max_volume() );
+  snd->setPosition( nom::Point3f(0.0f, 0.0f, 0.0f) );
+  snd->set_velocity( nom::Point3f(0.0f, 0.0f, 0.0f) );
+  snd->setLooping(true);
+
+  snd->Play();
 
   nom::uint32 duration = buffer->getDuration();
-  float duration_seconds = duration / 1000.0f;
-  NOM_DUMP( duration_seconds );
+  real32 duration_seconds = duration / 1000.0f;
+  NOM_DUMP(duration_seconds);
 
-  loops.start();
+  real32 initial_volume = snd->volume();
+  real32 current_volume = initial_volume;
 
-  //float step = 1.0;
-  // volume / seconds = step
+  real32 fade_seconds = 4.0f;
+  real32 fade_step = current_volume / fade_seconds;
 
-  //float step = snd->getVolume();
-  //float step_by = step / 4; // 4s or 4000ms
-
-  float pos = snd->getPlayPosition();
-
-  snd->fadeOut( 4 );
-
-  while ( ( loops.ticks() <= duration * 2 ) && ( snd->getStatus() != nom::SoundStatus::Paused && snd->getStatus() != nom::SoundStatus::Stopped ) )
+  while(  (snd->getStatus() != nom::SoundStatus::Paused) &&
+          (snd->getStatus() != nom::SoundStatus::Stopped)
+       )
   {
-    // 0.455*2/4
-    // ( duration * total_loops ) / milliseconds*2 where seconds is desired fade
-    // out (over time)
-    // duration / milliseconds*2 where milliseconds is desired fade out
-    // ( over time)
-
-    if ( snd->getPlayPosition() >= 1.0 )
-    {
-      // ...
+    if( current_volume > nom::Listener::min_volume() ) {
+      std::cout << "\nFading out\n";
+      snd->set_volume(current_volume);
+    } else {
+      snd->Stop();
     }
 
-    if ( snd->getPlayPosition() >= ( pos + 2.5 ) )
-    {
-      // ...
-    }
-  }
+    current_volume = current_volume - fade_step;
+    nom::sleep(1000);
+  } // end loop
 
-  loops.stop();
-  NOM_DUMP( loops.ticks() );
+  // NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
+  //               "Sample Count: ", buffer->getSampleCount() );
+  // NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
+  //               "Channel Count: ", buffer->getChannelCount() );
+  // NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
+  //               "Sample Rate: ", buffer->getSampleRate() );
 
-  //std::cout << "Sample Count: " << snd->getSampleCount() << std::endl;
-  //std::cout << "Channel Count: " << snd->getChannelCount() << std::endl;
-  //std::cout << "Sample Rate: " << snd->getSampleRate() << std::endl;
+  NOM_DELETE_PTR(snd);
+  NOM_DELETE_PTR(buffer);
+  NOM_DELETE_PTR(dev);
+  NOM_DELETE_PTR(listener);
 
-  NOM_DELETE_PTR( dev );
-  NOM_DELETE_PTR( listener );
 
   return NOM_EXIT_SUCCESS;
 }

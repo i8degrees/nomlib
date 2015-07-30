@@ -55,26 +55,39 @@ Music::~Music ( void )
   this->Stop();
 }
 
-void Music::setBuffer ( const ISoundBuffer& copy )
+void Music::setBuffer(const ISoundBuffer& copy)
 {
   NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
 
-AL_CHECK_ERR ( alSourcei ( source_id, AL_BUFFER, copy.get() ) );
+  // FIXME: Rethink where we should be doing this!
+  AL_CLEAR_ERR();
+  alGenSources(1, &this->source_id_);
+  AL_CHECK_ERR_VOID();
+
+  AL_CLEAR_ERR();
+  alSourcei(this->source_id_, AL_BUFFER, copy.get() );
+  AL_CHECK_ERR_VOID();
 }
 
 void Music::Play ( void )
 {
-AL_CHECK_ERR ( alSourcePlay ( source_id ) );
+  AL_CLEAR_ERR();
+  alSourcePlay(this->source_id_);
+  AL_CHECK_ERR_VOID();
 }
 
 void Music::Stop ( void )
 {
-AL_CHECK_ERR ( alSourceStop ( source_id ) );
+  AL_CLEAR_ERR();
+  alSourceStop(this->source_id_);
+  AL_CHECK_ERR_VOID();
 }
 
-void Music::Pause ( void )
+void Music::Pause()
 {
-AL_CHECK_ERR ( alSourcePause ( source_id ) );
+  AL_CLEAR_ERR();
+  alSourcePause(this->source_id_);
+  AL_CHECK_ERR_VOID();
 }
 
 } // namespace nom

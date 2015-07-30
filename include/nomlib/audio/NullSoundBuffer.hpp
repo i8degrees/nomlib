@@ -44,7 +44,7 @@ class NullSoundBuffer: public ISoundBuffer
 
     uint32 get( void ) const;
     int64 getDuration( void ) const;
-    bool load( const std::string& filename );
+    bool load(const std::string& filename);
 
   private:
     void attach( Sound* sound ) const;

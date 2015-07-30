@@ -30,97 +30,110 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-NullSoundSource::NullSoundSource( void )
+const nom::real32 MIN_VOLUME = 0.0f;
+const nom::real32 MAX_VOLUME = 100.0f;
+
+NullSoundSource::NullSoundSource()
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_AUDIO, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-NullSoundSource::~NullSoundSource( void )
+NullSoundSource::~NullSoundSource()
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_AUDIO, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-float NullSoundSource::getVolume( void ) const
+real32 NullSoundSource::volume() const
+{
+  auto gain_level = nom::MAX_VOLUME;
+
+  return gain_level;
+}
+
+real32 NullSoundSource::min_volume() const
+{
+  auto min_gain = nom::MIN_VOLUME;
+
+  return min_gain;
+}
+
+real32 NullSoundSource::max_volume() const
+{
+  auto max_gain = nom::MAX_VOLUME;
+
+  return max_gain;
+}
+
+real32 NullSoundSource::getPitch() const
 {
   return 0.0f;
 }
 
-float NullSoundSource::getMinVolume( void ) const
-{
-  return 0.0f;
-}
-
-float NullSoundSource::getMaxVolume( void ) const
-{
-  return 0.0f;
-}
-
-float NullSoundSource::getPitch( void ) const
-{
-  return 0.0f;
-}
-
-bool NullSoundSource::getLooping( void ) const
+bool NullSoundSource::getLooping() const
 {
   return false;
 }
 
-Point3f NullSoundSource::getPosition( void ) const
+Point3f NullSoundSource::position() const
 {
-  return Point3f( 0.0f, 0.0f, 0.0f );
+  auto result = Point3f::zero;
+
+  return(result);
 }
 
-Point3f NullSoundSource::getVelocity( void ) const
+Point3f NullSoundSource::velocity() const
 {
-  return Point3f( 0.0f, 0.0f, 0.0f );
+  auto result = Point3f::zero;
+
+  return result;
 }
 
-bool NullSoundSource::getPositionRelativeToListener( void ) const
+bool NullSoundSource::getPositionRelativeToListener() const
 {
   return false;
 }
 
-float NullSoundSource::getMinDistance( void ) const
+real32 NullSoundSource::getMinDistance() const
 {
   return 0.0f;
 }
 
-float NullSoundSource::getAttenuation( void ) const
+real32 NullSoundSource::getAttenuation() const
 {
   return 0.0f;
 }
 
-int32 NullSoundSource::getBufferID( void ) const
+int32 NullSoundSource::getBufferID() const
 {
   return -1;
 }
 
-float NullSoundSource::getPlayPosition( void ) const
+real32 NullSoundSource::getPlayPosition() const
 {
   return 0.0f;
 }
 
-SoundStatus NullSoundSource::getStatus( void ) const
+SoundStatus NullSoundSource::getStatus() const
 {
   return SoundStatus::Stopped;
 }
 
-void NullSoundSource::setVolume( float gain )
+void NullSoundSource::set_volume(real32 gain)
 {
   // Do nothing
 }
 
-void NullSoundSource::setMinVolume( float gain )
+void NullSoundSource::set_min_volume(real32 gain)
 {
   // Do nothing
 }
 
-void NullSoundSource::setMaxVolume( float gain )
+void NullSoundSource::set_max_volume(real32 gain)
 {
   // Do nothing
 }
 
-void NullSoundSource::setPitch( float pitch )
+void NullSoundSource::setPitch( real32 pitch )
 {
   // Do nothing
 }
@@ -130,7 +143,7 @@ void NullSoundSource::setLooping( bool loops )
   // Do nothing
 }
 
-void NullSoundSource::setPosition( float x, float y, float z )
+void NullSoundSource::setPosition( real32 x, real32 y, real32 z )
 {
   // Do nothing
 }
@@ -140,12 +153,12 @@ void NullSoundSource::setPosition( const Point3f& position )
   // Do nothing
 }
 
-void NullSoundSource::setVelocity( float x, float y, float z )
+void NullSoundSource::set_velocity(real32 x, real32 y, real32 z)
 {
   // Do nothing
 }
 
-void NullSoundSource::setVelocity( const Point3f& velocity )
+void NullSoundSource::set_velocity(const Point3f& velocity)
 {
   // Do nothing
 }
@@ -155,27 +168,22 @@ void NullSoundSource::setPositionRelativeToListener( bool relative )
   // Do nothing
 }
 
-void NullSoundSource::setMinDistance( float distance )
+void NullSoundSource::setMinDistance( real32 distance )
 {
   // Do nothing
 }
 
-void NullSoundSource::setAttenuation( float attenuation )
+void NullSoundSource::setAttenuation( real32 attenuation )
 {
   // Do nothing
 }
 
-void NullSoundSource::setPlayPosition( float seconds )
+void NullSoundSource::setPlayPosition( real32 seconds )
 {
   // Do nothing
 }
 
-void NullSoundSource::togglePause( void )
-{
-  // Do nothing
-}
-
-void NullSoundSource::fadeOut( float seconds )
+void NullSoundSource::togglePause()
 {
   // Do nothing
 }

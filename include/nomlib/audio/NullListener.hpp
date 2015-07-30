@@ -38,20 +38,17 @@ namespace nom {
 class NullListener: public IListener
 {
   public:
-    NullListener( void );
-    virtual ~NullListener( void );
+    NullListener();
+    virtual ~NullListener();
 
-    float getVolume ( void ) const;
-    const Point3f getPosition ( void ) const;
-    const Point3f getVelocity ( void ) const;
-    const Point3f getDirection ( void ) const;
-    void setPosition ( float x, float y, float z );
-    void setPosition ( const Point3f& position );
-    void setVelocity ( float x, float y, float z );
-    void setVelocity ( const Point3f& velocity );
-    void setDirection ( float x, float y, float z );
-    void setDirection ( const Point3f& direction );
-    void setVolume ( float gain );
+    real32 volume() const override;
+    Point3f position() const override;
+    Point3f velocity() const override;
+    Point3f direction() const override;
+    void set_position( const Point3f& position) override;
+    void set_velocity(const Point3f& velocity) override;
+    void set_direction(const Point3f& at, const Point3f& up) override;
+    void set_volume(real32 gain) override;
 };
 
 } // namespace nom

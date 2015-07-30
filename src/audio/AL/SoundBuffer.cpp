@@ -38,8 +38,9 @@ namespace nom {
 SoundBuffer::SoundBuffer ( void ) : buffer ( 0 )
 {
   NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
-
-AL_CHECK_ERR ( alGenBuffers ( 1, &this->buffer ) );
+  AL_CLEAR_ERR();
+  alGenBuffers(1, &this->buffer);
+  AL_CHECK_ERR_VOID();
 }
 
 SoundBuffer::~SoundBuffer( void )
@@ -47,15 +48,15 @@ SoundBuffer::~SoundBuffer( void )
   NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
 
   // First, release attached sound resources from this buffer
-  for ( auto it = this->sounds.begin(); it != this->sounds.end(); ++it )
-  {
+  for( auto it = this->sounds.begin(); it != this->sounds.end(); ++it ) {
     (*it)->reset();
   }
 
   // Goodbye buffer!
-  if ( this->buffer )
-  {
-AL_CHECK_ERR ( alDeleteBuffers ( 1, &this->buffer ) );
+  if( this->buffer ) {
+    AL_CLEAR_ERR();
+    alDeleteBuffers(1, &this->buffer);
+    AL_CHECK_ERR_VOID();
   }
 }
 
@@ -87,11 +88,12 @@ NOM_LOG_ERR ( NOM, "Could not read audio samples: " + filename );
 
   this->buffer_duration = ( 1000 * fp.getSampleCount() / fp.getSampleRate() / fp.getChannelCount() );
 
-// Fill the audio buffer with loaded sample data
-AL_CHECK_ERR  ( alBufferData (  this->buffer, fp.getChannelFormat(),
-                          &this->samples.front(), fp.getDataByteSize(),
-                          fp.getSampleRate() )
-        );
+  AL_CLEAR_ERR();
+  // Fill the audio buffer with loaded sample data
+  alBufferData(this->buffer, fp.getChannelFormat(),
+               &this->samples.front(), fp.getDataByteSize(),
+               fp.getSampleRate() );
+  AL_CHECK_ERR_VOID();
 
   return true;
 }

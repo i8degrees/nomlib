@@ -30,67 +30,63 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-NullListener::NullListener( void )
+// const nom::real32 MIN_VOLUME = 0.0f;
+const nom::real32 MAX_VOLUME = 100.0f;
+
+NullListener::NullListener()
 {
   NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
 }
 
-NullListener::~NullListener( void )
+NullListener::~NullListener()
 {
   NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
 }
 
-float NullListener::getVolume ( void ) const
+real32 NullListener::volume() const
 {
-  return 0.0f;
+  auto gain_level = nom::MAX_VOLUME;
+
+  return gain_level;
 }
 
-const Point3f NullListener::getPosition ( void ) const
+Point3f NullListener::position() const
 {
-  return Point3f( 0.0f, 0.0f, 0.0f );
+  Point3f result(Point3f::zero);
+
+  return result;
 }
 
-const Point3f NullListener::getVelocity ( void ) const
+Point3f NullListener::velocity() const
 {
-  return Point3f( 0.0f, 0.0f, 0.0f );
+  Point3f result(Point3f::zero);
+
+  return result;
 }
 
-const Point3f NullListener::getDirection ( void ) const
+Point3f NullListener::direction() const
 {
-  return Point3f( 0.0f, 0.0f, -1.0f );
+  auto result = Point3f(0.0f, 0.0f, -1.0f);
+
+  return result;
 }
 
-void NullListener::setPosition ( float x, float y, float z )
-{
-  // Do nothing
-}
-
-void NullListener::setPosition ( const Point3f& position )
-{
-  // Do nothing
-}
-
-void NullListener::setVelocity ( float x, float y, float z )
+void NullListener::set_position(const Point3f& position)
 {
   // Do nothing
 }
 
-void NullListener::setVelocity ( const Point3f& velocity )
+void NullListener::set_velocity(const Point3f& velocity)
 {
   // Do nothing
 }
 
-void NullListener::setDirection ( float x, float y, float z )
+void NullListener::set_direction(const Point3f& at, const Point3f& up)
 {
   // Do nothing
 }
 
-void NullListener::setDirection ( const Point3f& direction )
-{
-  // Do nothing
-}
-
-void NullListener::setVolume ( float gain )
+void NullListener::set_volume(real32 gain)
 {
   // Do nothing
 }

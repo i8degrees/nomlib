@@ -42,44 +42,43 @@ class NullSoundSource: public ISoundSource
   public:
     virtual ~NullSoundSource( void );
 
-    float getVolume ( void ) const;
-    float getMinVolume ( void ) const;
-    float getMaxVolume ( void ) const;
-    float getPitch ( void ) const;
-    bool getLooping ( void ) const;
+    real32 volume() const;
+    real32 min_volume() const;
+    real32 max_volume() const;
+    real32 getPitch() const;
+    bool getLooping() const;
 
-    Point3f getPosition ( void ) const;
-    Point3f getVelocity ( void ) const;
+    Point3f position() const;
+    Point3f velocity() const;
 
-    bool getPositionRelativeToListener ( void ) const;
-    float getMinDistance ( void ) const;
-    float getAttenuation ( void ) const;
+    bool getPositionRelativeToListener() const;
+    real32 getMinDistance() const;
+    real32 getAttenuation() const;
 
-    int32 getBufferID ( void ) const;
+    int32 getBufferID() const;
 
-    float getPlayPosition ( void ) const;
+    real32 getPlayPosition() const;
 
-    SoundStatus getStatus ( void ) const;
+    SoundStatus getStatus() const;
 
-    void setVolume ( float gain );
-    void setMinVolume ( float gain );
-    void setMaxVolume ( float gain );
-    void setPitch ( float pitch );
+    void set_volume(real32 gain);
+    void set_min_volume(real32 gain);
+    void set_max_volume(real32 gain);
+    void setPitch ( real32 pitch );
     void setLooping ( bool loops );
 
-    void setPosition ( float x, float y, float z );
+    void setPosition ( real32 x, real32 y, real32 z );
     void setPosition ( const Point3f& position );
 
-    void setVelocity ( float x, float y, float z );
-    void setVelocity ( const Point3f& velocity );
+    void set_velocity(real32 x, real32 y, real32 z);
+    void set_velocity(const Point3f& velocity);
 
     void setPositionRelativeToListener ( bool position );
-    void setMinDistance ( float distance );
-    void setAttenuation ( float attenuation );
-    void setPlayPosition ( float seconds );
+    void setMinDistance ( real32 distance );
+    void setAttenuation ( real32 attenuation );
+    void setPlayPosition ( real32 seconds );
 
     void togglePause( void );
-    void fadeOut( float seconds );
 
   protected:
     /// Constructor can only be called from deriving classes

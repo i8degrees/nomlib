@@ -42,65 +42,84 @@ namespace nom {
 class SoundSource: public ISoundSource
 {
   public:
-    virtual ~SoundSource( void );
+    virtual ~SoundSource();
 
-    /// Get source volume level
+    /// \brief Get the gain level of this audio source.
     ///
-    /// Volume is between 0 (muted) and 100 (max volume)
+    /// \returns A number between 0..100 (min/max).
+    real32 volume() const;
+
+    /// \brief Get the minimum gain level of this audio source.
     ///
-    /// Default: 100
-    float getVolume ( void ) const;
-    float getMinVolume ( void ) const;
-    float getMaxVolume ( void ) const;
-    float getPitch ( void ) const;
-    bool getLooping ( void ) const;
+    /// \returns A number between 0..100 (min/max).
+    real32 min_volume() const;
 
-    Point3f getPosition ( void ) const;
-    Point3f getVelocity ( void ) const;
+    /// \brief Get the maximum gain level of this audio source.
+    ///
+    /// \returns A number between 0..100 (min/max).
+    real32 max_volume() const;
 
-    bool getPositionRelativeToListener ( void ) const;
-    float getMinDistance ( void ) const;
-    float getAttenuation ( void ) const;
+    real32 getPitch() const;
+    bool getLooping() const;
+
+    Point3f position() const;
+    Point3f velocity() const;
+
+    bool getPositionRelativeToListener() const;
+    real32 getMinDistance() const;
+    real32 getAttenuation() const;
 
     /// Obtain buffer identifier of source
-    int32 getBufferID ( void ) const;
+    int32 getBufferID() const;
     /// Obtain the current playback position of source in seconds
-    float getPlayPosition ( void ) const;
+    real32 getPlayPosition() const;
     /// Obtain current state of sound
-    SoundStatus getStatus ( void ) const;
+    SoundStatus getStatus() const;
 
-    /// Set source volume level
+    /// \brief Set a new gain level for this audio source.
     ///
-    /// Volume is between 0 (muted) and 100 (max volume)
+    /// \param gain A 32-bit floating-point number between 0..100 (min/max).
     ///
-    /// Default: 100
-    void setVolume ( float gain );
-    void setMinVolume ( float gain );
-    void setMaxVolume ( float gain );
-    void setPitch ( float pitch );
-    void setLooping ( bool loops );
+    /// \remarks This controls the gain level of this audio source.
+    void set_volume(real32 gain);
 
-    void setPosition ( float x, float y, float z );
+    /// \brief Set a new minimum gain level for this audio source.
+    ///
+    /// \param gain A 32-bit floating-point number between 0..100 (min/max).
+    ///
+    /// \remarks This controls the minimum gain level of this audio source.
+    void set_min_volume(real32 gain);
+
+    /// \brief Set a new maximum gain level for this audio source.
+    ///
+    /// \param gain A 32-bit floating-point number between 0..100 (min/max).
+    ///
+    /// \remarks This controls the maximum gain level of this audio source.
+    void set_max_volume(real32 gain);
+
+    void setPitch(real32 pitch);
+    void setLooping(bool loops);
+
+    void setPosition ( real32 x, real32 y, real32 z );
     void setPosition ( const Point3f& position );
 
-    void setVelocity ( float x, float y, float z );
-    void setVelocity ( const Point3f& velocity );
+    void set_velocity(real32 x, real32 y, real32 z);
+    void set_velocity(const Point3f& velocity);
 
     void setPositionRelativeToListener ( bool position );
-    void setMinDistance ( float distance );
-    void setAttenuation ( float attenuation );
+    void setMinDistance ( real32 distance );
+    void setAttenuation ( real32 attenuation );
     /// Set playback position of source in seconds
-    void setPlayPosition ( float seconds );
+    void setPlayPosition ( real32 seconds );
 
-    virtual void togglePause( void );
-    virtual void fadeOut( float seconds );
+    virtual void togglePause();
 
   protected:
     /// Constructor can only be called from deriving classes
-    SoundSource( void );
+    SoundSource();
 
     /// Source identification; used by OpenAL
-    uint32 source_id;
+    uint32 source_id_ = 0;
 };
 
 } // namespace nom

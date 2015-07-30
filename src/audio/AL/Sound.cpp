@@ -36,81 +36,87 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Sound::Sound ( void ) : buffer ( nullptr )
+Sound::Sound() :
+buffer(nullptr)
 {
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
+  NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE_AUDIO);
 }
 
-Sound::Sound ( const ISoundBuffer& copy )  : buffer ( nullptr )
+Sound::Sound(const ISoundBuffer& copy)  :
+  buffer(nullptr)
 {
-  this->setBuffer ( copy );
+  this->setBuffer(copy);
 }
 
-Sound::~Sound ( void )
+Sound::~Sound()
 {
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
+  NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE_AUDIO);
 
   this->Stop();
 
-  if ( this->buffer )
-    this->buffer->detach ( this );
+  AL_CLEAR_ERR();
+  alDeleteSources(1, &this->source_id_);
+  AL_CHECK_ERR_VOID();
+
+  if( this->buffer != nullptr ) {
+    this->buffer->detach(this);
+  }
 }
 
-void Sound::setBuffer ( const ISoundBuffer& copy )
+void Sound::setBuffer(const ISoundBuffer& copy)
 {
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
+  NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE_AUDIO);
 
   // First, detach previous buffer
-  if ( this->buffer )
-  {
+  if ( this->buffer != nullptr ) {
     this->Stop();
-    this->buffer->detach ( this );
+    this->buffer->detach(this);
   }
 
   // Assign new buffer & use it
   this->buffer = &copy;
-  this->buffer->attach ( this );
+  this->buffer->attach(this);
 
-AL_CHECK_ERR ( alSourcei ( source_id, AL_BUFFER, this->buffer->get() ) );
+  // FIXME: Rethink where we should be doing this!
+  AL_CLEAR_ERR();
+  alGenSources(1, &this->source_id_);
+  AL_CHECK_ERR_VOID();
+
+  AL_CLEAR_ERR();
+  alSourcei(this->source_id_, AL_BUFFER, this->buffer->get() );
+  AL_CHECK_ERR_VOID();
 }
 
-void Sound::Play ( void )
+void Sound::Play()
 {
-AL_CHECK_ERR ( alSourcePlay ( source_id ) );
+  AL_CLEAR_ERR();
+  alSourcePlay(this->source_id_);
+  AL_CHECK_ERR_VOID();
 }
 
-void Sound::Stop ( void )
+void Sound::Stop()
 {
-AL_CHECK_ERR ( alSourceStop ( source_id ) );
+  if( this->getStatus() != nom::SoundStatus::Stopped ) {
+    AL_CLEAR_ERR();
+    alSourceStop(this->source_id_);
+    AL_CHECK_ERR_VOID();
+  }
 }
 
-void Sound::Pause ( void )
+void Sound::Pause()
 {
-AL_CHECK_ERR ( alSourcePause ( source_id ) );
+  AL_CLEAR_ERR();
+  alSourcePause(this->source_id_);
+  AL_CHECK_ERR_VOID();
 }
 
-// TODO
-/*
-float Sound::getPlayPosition ( void ) const
-{
-  ALfloat playback_position;
-
-  alGetSourcef ( source_id, AL_SEC_OFFSET, &playback_position );
-
-  return playback_position;
-}
-
-void Sound::setPlayPosition ( float seconds )
-{
-  alSourcef ( source_id, AL_SEC_OFFSET, seconds );
-}
-*/
-
-void Sound::reset( void )
+void Sound::reset()
 {
   this->Stop();
 
-  AL_CHECK_ERR( alSourcei( source_id, AL_BUFFER, 0 ) );
+  AL_CLEAR_ERR();
+  AL_CHECK_ERR_VOID();
+  alSourcei(this->source_id_, AL_BUFFER, 0);
 
   buffer = nullptr;
 }

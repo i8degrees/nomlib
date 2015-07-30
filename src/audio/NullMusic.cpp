@@ -65,9 +65,4 @@ void NullMusic::togglePause( void )
   // Do nothing
 }
 
-void NullMusic::fadeOut( float seconds )
-{
-  // Do nothing
-}
-
 } // namespace nom

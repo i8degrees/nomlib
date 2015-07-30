@@ -43,17 +43,14 @@ class IListener
       NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_AUDIO, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
     }
 
-    virtual float getVolume ( void ) const = 0;
-    virtual const Point3f getPosition ( void ) const = 0;
-    virtual const Point3f getVelocity ( void ) const = 0;
-    virtual const Point3f getDirection ( void ) const = 0;
-    virtual void setPosition ( float x, float y, float z ) = 0;
-    virtual void setPosition ( const Point3f& position ) = 0;
-    virtual void setVelocity ( float x, float y, float z ) = 0;
-    virtual void setVelocity ( const Point3f& velocity ) = 0;
-    virtual void setDirection ( float x, float y, float z ) = 0;
-    virtual void setDirection ( const Point3f& direction ) = 0;
-    virtual void setVolume ( float gain ) = 0;
+    virtual real32 volume() const = 0;
+    virtual Point3f position() const = 0;
+    virtual Point3f velocity() const = 0;
+    virtual Point3f direction() const = 0;
+    virtual void set_position( const Point3f& position) = 0;
+    virtual void set_velocity(const Point3f& velocity) = 0;
+    virtual void set_direction(const Point3f& at, const Point3f& up) = 0;
+    virtual void set_volume(real32 gain) = 0;
 };
 
 } // namespace nom

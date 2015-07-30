@@ -45,43 +45,50 @@ namespace nom {
 class Listener: public IListener
 {
   public:
-    Listener ( void );
-    virtual ~Listener( void );
+    Listener();
+    virtual ~Listener();
 
-    /// Obtain master gain (volume)
+    /// \brief Get the gain level of the current audio context.
     ///
-    /// Volume is between 0 (muted) and 100 (max volume)
+    /// \returns A number between 0..100 (min/max).
+    real32 volume() const override;
+
+    /// \brief Get the minimum gain level of the current audio context.
     ///
-    /// Default: 100
-    float getVolume ( void ) const;
+    /// \returns A number between 0..100 (min/max).
+    static real32 min_volume();
+
+    /// \brief Get the maximum gain level of the current audio context.
+    ///
+    /// \returns A number between 0..100 (min/max).
+    static real32 max_volume();
 
     /// Obtain position
-    const Point3f getPosition ( void ) const;
+    Point3f position() const override;
 
-    /// Obtain velocity
-    const Point3f getVelocity ( void ) const;
+    /// \brief Get the velocity of incoming volume.
+    Point3f velocity() const override;
 
     /// Obtain direction
-    const Point3f getDirection ( void ) const;
+    Point3f direction() const override;
 
     /// Set position
-    void setPosition ( float x, float y, float z );
-    void setPosition ( const Point3f& position );
+    void set_position(const Point3f& position) override;
 
     /// Set velocity
-    void setVelocity ( float x, float y, float z );
-    void setVelocity ( const Point3f& velocity );
+    void set_velocity(const Point3f& velocity) override;
 
     /// Set direction
-    void setDirection ( float x, float y, float z );
-    void setDirection ( const Point3f& direction );
+    void set_direction(const Point3f& direction, const Point3f& up) override;
 
-    /// Set master gain (volume)
+    /// \brief Set a new master gain.
     ///
-    /// Volume is between 0 (muted) and 100 (max volume)
+    /// \param gain A 32-bit floating-point number between 0..100 (min/max) to
+    /// represent the volume.
     ///
-    /// Default: 100
-    void setVolume ( float gain );
+    /// \remarks This controls the "master" (global) volume level of the audio
+    /// context.
+    void set_volume(real32 gain) override;
 };
 
 } // namespace nom

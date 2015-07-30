@@ -33,102 +33,132 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-Listener::Listener ( void )
+const nom::real32 MIN_VOLUME = 0.0f;
+const nom::real32 MAX_VOLUME = 100.0f;
+
+Listener::Listener()
 {
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
+  NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE_AUDIO);
 
   // Defaults as per OpenAL/al.h
-  ALfloat position[] = { 0.0, 0.0, 0.0 };
-  ALfloat velocity[] = { 0.0, 0.0, 0.0 };
+  Point3f position = {0.0f, 0.0f, 0.0f};
+  Point3f velocity = {0.0f, 0.0f, 0.0f};
+
   // Listener is facing into the screen
-  ALfloat direction[] = { 0.0, 0.0, -1.0, 0.0, 1.0, 0.0 };
-  ALfloat gain = 1.0;
+  Point3f direction_at(0.0f, 0.0f, -1.0f);
+  Point3f direction_up(0.0f, 1.0f, 0.0f);
 
-  // Initialize with sane defaults to be on the safe side; note that you must
-  // have the audio card initialized before-hand or these will be invalid
-  // presets
-AL_CHECK_ERR ( alListenerf ( AL_GAIN, gain ) );
-AL_CHECK_ERR ( alListenerfv ( AL_POSITION, position ) );
-AL_CHECK_ERR ( alListenerfv ( AL_VELOCITY, velocity ) );
-AL_CHECK_ERR ( alListenerfv ( AL_ORIENTATION, direction ) );
+  auto gain = nom::MAX_VOLUME;
+
+  this->set_volume(gain);
+  this->set_position(position);
+  this->set_velocity(velocity);
+  this->set_direction(direction_at, direction_up);
 }
 
-Listener::~Listener( void )
+Listener::~Listener()
 {
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
-
-  // Clean up instance variables
+  NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE_AUDIO);
 }
 
-float Listener::getVolume ( void ) const
+real32 Listener::volume() const
 {
-  ALfloat master_volume;
+  auto gain_level = nom::MAX_VOLUME;
 
-AL_CHECK_ERR ( alGetListenerf ( AL_GAIN, &master_volume ) );
+  AL_CLEAR_ERR();
+  alGetListenerf(AL_GAIN, &gain_level);
+  AL_CHECK_ERR_VOID();
 
-  return master_volume * 100.f;
+  // de-normalized gain level; 0..1 -> 0..100
+  return(gain_level * 100.0f);
 }
 
-const Point3f Listener::getPosition ( void ) const
+// static
+real32 Listener::min_volume()
+{
+  auto gain_level = nom::MIN_VOLUME;
+
+  return(gain_level);
+}
+
+// static
+real32 Listener::max_volume()
+{
+  auto gain_level = nom::MAX_VOLUME;
+
+  return(gain_level);
+}
+
+Point3f Listener::position() const
 {
   Point3f position;
 
-AL_CHECK_ERR ( alGetListener3f ( AL_POSITION, &position.x, &position.y, &position.z ) );
+  AL_CLEAR_ERR();
+  alGetListener3f(AL_POSITION, &position.x, &position.y, &position.z);
+  AL_CHECK_ERR_VOID();
 
   return position;
 }
 
-const Point3f Listener::getVelocity ( void ) const
+Point3f Listener::velocity() const
 {
-  Point3f velocity;
+  Point3f v(Point3f::zero);
 
-AL_CHECK_ERR ( alGetListener3f ( AL_VELOCITY, &velocity.x, &velocity.y, &velocity.z ) );
+  AL_CLEAR_ERR();
+  alGetListener3f(AL_VELOCITY, &v.x, &v.y, &v.z);
+  AL_CHECK_ERR_VOID();
 
-  return velocity;
+  return v;
 }
 
-const Point3f Listener::getDirection ( void ) const
+Point3f Listener::direction() const
 {
   Point3f direction;
+  real32 d[] = {};
 
-AL_CHECK_ERR ( alGetListener3f ( AL_ORIENTATION, &direction.x, &direction.y, &direction.z ) );
+  AL_CLEAR_ERR();
+  alGetListenerfv(AL_ORIENTATION, d);
+  AL_CHECK_ERR_VOID();
+
+  direction.x = d[0];
+  direction.y = d[1];
+  direction.z = d[2];
 
   return direction;
 }
 
-void Listener::setPosition ( float x, float y, float z )
+void Listener::set_position(const Point3f& position)
 {
-AL_CHECK_ERR ( alListener3f ( AL_POSITION, x, y, z ) );
+  AL_CLEAR_ERR();
+  alListener3f(AL_POSITION, position.x, position.y, position.z);
+  AL_CHECK_ERR_VOID();
 }
 
-void Listener::setPosition ( const Point3f& position )
+void Listener::set_velocity(const Point3f& velocity)
 {
-  this->setPosition ( position.x, position.y, position.z );
+  AL_CLEAR_ERR();
+  alListener3f(AL_VELOCITY, velocity.x, velocity.y, velocity.z);
+  AL_CHECK_ERR_VOID();
 }
 
-void Listener::setVelocity ( float x, float y, float z )
+void Listener::set_direction(const Point3f& at, const Point3f& up)
 {
-AL_CHECK_ERR ( alListener3f ( AL_VELOCITY, x, y, z ) );
+  real32 direction[] = {at.x, at.y, at.z, up.x, up.y, up.z};
+
+  AL_CLEAR_ERR();
+  alListenerfv(AL_ORIENTATION, direction);
+  AL_CHECK_ERR_VOID();
 }
 
-void Listener::setVelocity ( const Point3f& velocity )
+void Listener::set_volume(real32 gain)
 {
-  this->setVelocity ( velocity.x, velocity.y, velocity.z );
-}
+  if( gain >= nom::MIN_VOLUME && gain <= nom::MAX_VOLUME ) {
+    AL_CLEAR_ERR();
 
-void Listener::setDirection ( float x, float y, float z )
-{
-AL_CHECK_ERR ( alListener3f ( AL_ORIENTATION, x, y, z ) );
-}
-
-void Listener::setDirection ( const Point3f& direction )
-{
-  this->setDirection ( direction.x, direction.y, direction.z );
-}
-
-void Listener::setVolume ( float gain )
-{
-AL_CHECK_ERR ( alListenerf ( AL_GAIN, gain * 0.01f ) );
+    // normalize the gain
+    alListenerf(AL_GAIN, gain * 0.01f);
+    AL_CHECK_ERR_VOID();
+  }
 }
 
 } // namespace nom

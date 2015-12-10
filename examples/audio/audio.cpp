@@ -36,6 +36,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "tclap/CmdLine.h"
 
+#include <thread>
+
 using namespace nom;
 
 const std::string APP_NAME = "nomlib: audio";
@@ -65,6 +67,8 @@ struct AppFlags
   /// \fixme This interface is broken; the sound buffer memory is not properly
   /// deallocated.
   bool use_music_interface = false;
+
+  real32 audio_volume = 100.0f;
 };
 
 int parse_cmdline(int argument_count, char* arguments[], AppFlags& opts)
@@ -89,6 +93,11 @@ int parse_cmdline(int argument_count, char* arguments[], AppFlags& opts)
     SwitchArg use_music_interface_arg("", "use-music", music_interface_desc,
                                       cmd, false);
 
+    ValueArg<real32> audio_volume_arg("v", "volume",
+                                         "Gain level of audio playback",
+                                         false, opts.audio_volume,
+                                         "A number between 0.0f .. 100.0f",
+                                         cmd );
     ValueArg<std::string> audio_file_arg("i", "input",
                                          "File path to audio to play from",
                                          false, opts.audio_input,
@@ -99,6 +108,7 @@ int parse_cmdline(int argument_count, char* arguments[], AppFlags& opts)
     opts.use_null_interface = use_null_interface_arg.getValue();
     opts.use_music_interface = use_music_interface_arg.getValue();
     opts.audio_input = audio_file_arg.getValue();
+    opts.audio_volume = audio_volume_arg.getValue();
   }
   catch(TCLAP::ArgException &e)
   {
@@ -117,11 +127,12 @@ int main(int argc, char* argv[])
 
   nom::IAudioDevice* dev = nullptr; // this must be declared first
   nom::IListener* listener = nullptr; // Global audio volume control
-  nom::ISoundBuffer* buffer = nullptr;
-  nom::ISoundSource* snd = nullptr;
+  nom::SoundBuffer* buffer = nullptr;
   nom::Timer loops;
 
   nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_AUDIO,
+                                        NOM_LOG_PRIORITY_DEBUG);
+  nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_TRACE_AUDIO,
                                         NOM_LOG_PRIORITY_DEBUG);
 
   if( parse_cmdline(argc, argv, args) != 0 ) {
@@ -141,92 +152,75 @@ int main(int argc, char* argv[])
   // #undef NOM_USE_OPENAL
 
   // Initialize audio subsystem...
-  if( args.use_null_interface == true ) {
-    dev = new nom::NullAudioDevice();
-    listener = new nom::NullListener();
-    buffer = new nom::NullSoundBuffer();
-  } else {
-    dev = new nom::AudioDevice();
+  if( args.use_null_interface == false ) {
+    dev = nom::create_audio_device(nullptr);
     listener = new nom::Listener();
-    buffer = new nom::SoundBuffer();
+    buffer = nom::create_audio_buffer();
   }
 
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Audio device name:",
-                dev->getDeviceName() );
+  NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION, "Audio device name:",
+               nom::audio_device_name(dev) );
 
-  listener->set_volume(nom::Listener::max_volume() / 2.0f); // 50%
+  // listener->set_volume(args.audio_volume);
+  nom::set_audio_volume(dev, args.audio_volume);
 
-  if( buffer->load(args.audio_input) == false ) {
+  buffer = nom::create_audio_buffer(args.audio_input, dev);
+  if( buffer == nullptr ) {
     NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION, "Could not load audio file: ",
                   RESOURCE_AUDIO_SOUND );
     return NOM_EXIT_FAILURE;
   }
 
   if( args.use_music_interface == true ) {
-    if( args.use_null_interface == true ) {
-      snd = new nom::NullMusic();
-    } else {
-      // FIXME: This interface is broken; the sound buffer memory is not
-      // properly deallocated.
-      snd = new nom::Music();
-    }
+    // ...
   } else if( args.use_music_interface == false ) {
-    if( args.use_null_interface == true ) {
-      snd = new nom::NullSound();
-    } else {
-      snd = new nom::Sound();
-    }
+    // ...
   }
 
-  NOM_ASSERT(snd != nullptr);
+  nom::set_audio_volume(buffer, dev, args.audio_volume);
+  nom::set_audio_pitch(buffer, dev, 1.00f);
+  nom::set_audio_position(buffer, dev, nom::Point3f(0.0f, 0.0f, 0.0f) );
+  nom::set_audio_velocity( buffer, dev, nom::Point3f(0.0f, 0.0f, 0.0f) );
+  nom::set_audio_state(buffer, dev, AUDIO_STATE_LOOPING);
 
-  snd->setBuffer(*buffer);
+  NOM_DUMP( nom::audio_playback_position(buffer, dev) );
 
-  snd->setPitch(1.0f);
-  snd->set_volume( nom::Listener::max_volume() );
-  snd->setPosition( nom::Point3f(0.0f, 0.0f, 0.0f) );
-  snd->set_velocity( nom::Point3f(0.0f, 0.0f, 0.0f) );
-  snd->setLooping(true);
+  auto queued_audio = [=]() {
+    nom::play_audio(buffer, dev);
+  };
 
-  snd->Play();
+  auto audio_thread = std::thread(queued_audio);
 
-  nom::uint32 duration = buffer->getDuration();
+  auto duration = nom::audio_duration(buffer);
+
+  // FIXME:
   real32 duration_seconds = duration / 1000.0f;
+
+  Timer kill_timer;
+  kill_timer.start();
+
   NOM_DUMP(duration_seconds);
 
-  real32 initial_volume = snd->volume();
-  real32 current_volume = initial_volume;
+  audio_thread.join();
 
-  real32 fade_seconds = 4.0f;
-  real32 fade_step = current_volume / fade_seconds;
+  NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION,
+               "Frame count:", nom::frame_count(buffer) );
+  NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION,
+               "Sample count:", nom::sample_count(buffer) );
+  NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION,
+               "Sample rate:", nom::sample_rate(buffer) );
+  NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION,
+               "Channel count:", nom::channel_count(buffer) );
+  NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION,
+               "Audio in bytes:", nom::audio_bytes(buffer) );
 
-  while(  (snd->getStatus() != nom::SoundStatus::Paused) &&
-          (snd->getStatus() != nom::SoundStatus::Stopped)
-       )
-  {
-    if( current_volume > nom::Listener::min_volume() ) {
-      std::cout << "\nFading out\n";
-      snd->set_volume(current_volume);
-    } else {
-      snd->Stop();
-    }
+  while( kill_timer.ticks() < duration ) {}
+  // while( nom::audio_state(buffer) != SOUND_STOPPED ) {}
 
-    current_volume = current_volume - fade_step;
-    nom::sleep(1000);
-  } // end loop
-
-  // NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
-  //               "Sample Count: ", buffer->getSampleCount() );
-  // NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
-  //               "Channel Count: ", buffer->getChannelCount() );
-  // NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
-  //               "Sample Rate: ", buffer->getSampleRate() );
-
-  NOM_DELETE_PTR(snd);
-  NOM_DELETE_PTR(buffer);
-  NOM_DELETE_PTR(dev);
+  nom::free_buffer(buffer);
   NOM_DELETE_PTR(listener);
-
+  nom::shutdown_audio(dev);
+  NOM_DELETE_PTR(dev);
 
   return NOM_EXIT_SUCCESS;
 }

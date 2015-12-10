@@ -29,40 +29,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_AL_SOUND_HEADERS
 #define NOMLIB_AL_SOUND_HEADERS
 
-#include <iostream>
-
 #include "nomlib/config.hpp"
 #include "nomlib/audio/AL/SoundSource.hpp"
 
 namespace nom {
 
-// forward declarations
-class ISoundBuffer;
-
 /// \brief Audio interface for sound samples
+
 class Sound: public SoundSource
 {
   public:
-    /// \brief SoundBuffer needs access to Sound::reset.
-    friend class SoundBuffer;
-
     Sound();
-    Sound(const ISoundBuffer& copy);
     virtual ~Sound();
-
-    void setBuffer(const ISoundBuffer& copy);
-
-    void Play();
-    void Stop();
-    void Pause();
-
-  private:
-    /// Internally used by SoundBuffer class for properly freeing a sound from
-    /// its attached buffer
-    void reset();
-
-    /// Buffer that this sound is attached to
-    const ISoundBuffer* buffer = nullptr;
 };
 
 } // namespace nom

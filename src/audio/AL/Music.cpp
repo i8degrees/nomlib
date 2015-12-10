@@ -31,63 +31,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Private headers
 #include "nomlib/audio/AL/OpenAL.hpp"
 
-// Forward declarations
-#include "nomlib/audio/ISoundBuffer.hpp"
-
 namespace nom {
 
-Music::Music ( void )
+Music::Music()
 {
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
-
-  // Initialize here
+  NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE_AUDIO);
 }
 
-Music::Music ( const ISoundBuffer& copy )
+Music::~Music()
 {
-  this->setBuffer ( copy );
-}
+  NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE_AUDIO);
 
-Music::~Music ( void )
-{
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
-
-  this->Stop();
-}
-
-void Music::setBuffer(const ISoundBuffer& copy)
-{
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
-
-  // FIXME: Rethink where we should be doing this!
-  AL_CLEAR_ERR();
-  alGenSources(1, &this->source_id_);
-  AL_CHECK_ERR_VOID();
-
-  AL_CLEAR_ERR();
-  alSourcei(this->source_id_, AL_BUFFER, copy.get() );
-  AL_CHECK_ERR_VOID();
-}
-
-void Music::Play ( void )
-{
-  AL_CLEAR_ERR();
-  alSourcePlay(this->source_id_);
-  AL_CHECK_ERR_VOID();
-}
-
-void Music::Stop ( void )
-{
-  AL_CLEAR_ERR();
-  alSourceStop(this->source_id_);
-  AL_CHECK_ERR_VOID();
-}
-
-void Music::Pause()
-{
-  AL_CLEAR_ERR();
-  alSourcePause(this->source_id_);
-  AL_CHECK_ERR_VOID();
+  // this->Stop();
 }
 
 } // namespace nom

@@ -36,18 +36,28 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Forward declarations
+class IOAudioEngine;
+struct AudioSpec;
+
 /// \brief Abstract audio device interface
 class IAudioDevice
 {
   public:
-    virtual ~IAudioDevice( void )
+    virtual ~IAudioDevice()
     {
-      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_AUDIO, LogPriority::NOM_LOG_PRIORITY_VERBOSE );
+      NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_AUDIO,
+                         LogPriority::NOM_LOG_PRIORITY_VERBOSE);
     }
 
-    // virtual std::shared_ptr<ALCdevice> getAudioDevice( void ) const = 0;
-    virtual std::string getDeviceName() const = 0;
-    virtual bool isExtensionSupported ( const std::string& extension ) const = 0;
+    virtual void free_device() = 0;
+    virtual void* device() = 0;
+    virtual bool valid() const = 0;
+    virtual bool initialize(const AudioSpec* spec) = 0;
+
+    virtual IOAudioEngine* caps() = 0;
+    virtual void set_caps(IOAudioEngine* caps) = 0;
+    virtual std::string device_name() const = 0;
 };
 
 } // namespace nom

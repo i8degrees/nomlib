@@ -35,15 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 // Forward declarations
-class ISoundBuffer;
-
-/// Sound source is one of the three states: stopped, paused or playing
-enum SoundStatus
-{
-  Stopped = 0,
-  Paused = 1,
-  Playing = 2
-};
+// class ISoundBuffer;
+// struct SoundBuffer;
 
 class ISoundSource
 {
@@ -56,16 +49,16 @@ class ISoundSource
     virtual real32 volume() const = 0;
     virtual real32 min_volume() const = 0;
     virtual real32 max_volume() const = 0;
-    virtual real32 getPitch() const = 0;
-    virtual bool getLooping() const = 0;
+    virtual real32 pitch() const = 0;
+    virtual bool loop() const = 0;
     virtual Point3f position() const = 0;
     virtual Point3f velocity() const = 0;
     virtual bool getPositionRelativeToListener() const = 0;
     virtual real32 getMinDistance() const = 0;
     virtual real32 getAttenuation() const = 0;
-    virtual int32 getBufferID() const = 0;
+    virtual uint32 buffer_id() const = 0;
     virtual real32 getPlayPosition() const = 0;
-    virtual SoundStatus getStatus() const = 0;
+    virtual uint32 status() const = 0;
     virtual void set_volume(real32 gain) = 0;
     virtual void set_min_volume(real32 gain) = 0;
     virtual void set_max_volume(real32 gain) = 0;
@@ -80,11 +73,16 @@ class ISoundSource
     virtual void setAttenuation(real32 attenuation) = 0;
     virtual void setPlayPosition(real32 seconds) = 0;
 
-    virtual void setBuffer(const ISoundBuffer& copy) = 0;
-    virtual void Play() = 0;
-    virtual void Stop() = 0;
-    virtual void Pause() = 0;
-    virtual void togglePause() = 0;
+    virtual void play() = 0;
+    // virtual void play(uint32 sound_id) = 0;
+    virtual void stop() = 0;
+    virtual void pause() = 0;
+    virtual void resume() = 0;
+
+    // virtual bool load_buffer(SoundBuffer& rhs) = 0;
+    // virtual bool load_file(const std::string& filename) = 0;
+
+    virtual uint32 sound_id() const = 0;
 };
 
 } // namespace nom

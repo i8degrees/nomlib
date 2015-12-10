@@ -29,9 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_AL_MUSIC_HEADERS
 #define NOMLIB_AL_MUSIC_HEADERS
 
-#include <iostream>
-#include <memory>
-
 #include "nomlib/config.hpp"
 #include "nomlib/audio/AL/SoundSource.hpp"
 
@@ -40,18 +37,8 @@ namespace nom {
 class Music: public SoundSource
 {
   public:
-    Music ( void );
-    Music ( const ISoundBuffer& copy );
-    virtual ~Music( void );
-
-    void setBuffer ( const ISoundBuffer& copy );
-
-    void Play ( void );
-    void Stop ( void );
-    void Pause ( void );
-
-  private:
-    //SoundFile *fp;
+    Music();
+    virtual ~Music();
 };
 
 } // namespace nom

@@ -37,15 +37,8 @@ namespace nom {
 class NullMusic: public NullSoundSource
 {
   public:
-    NullMusic( void );
-    virtual ~NullMusic( void );
-
-    void setBuffer( const ISoundBuffer& copy );
-
-    void Play( void );
-    void Stop( void );
-    void Pause( void );
-    void togglePause( void );
+    NullMusic();
+    virtual ~NullMusic();
 };
 
 } // namespace nom

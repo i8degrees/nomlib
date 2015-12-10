@@ -35,8 +35,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system/init.hpp>
 #include <nomlib/system/Path.hpp>
 #include <nomlib/audio.hpp>
-#include <OpenAL/al.h>
-#include <OpenAL/alc.h>
 
 using namespace nom;
 
@@ -44,9 +42,7 @@ class ALAudioTest: public ::testing::Test
 {
   public:
     /// \remarks This method is called at the start of each unit test.
-    ALAudioTest() :
-      dev(nullptr),
-      listener(nullptr)
+    ALAudioTest()
     {
       // NOM_LOG_TRACE( NOM );
       nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_AUDIO,
@@ -91,59 +87,36 @@ class ALAudioTest: public ::testing::Test
     const std::string RESOURCE_AUDIO_SOUND = APP_RESOURCES_DIR +
       p.native() + "cursor_wrong.wav";
 
-    std::unique_ptr<IAudioDevice> dev;
-    std::unique_ptr<IListener> listener;
+    IAudioDevice* dev = nullptr;
+    IListener* listener = nullptr;
 };
 
 namespace test {
 
-std::unique_ptr<AudioDevice> create_audio_handle()
-{
-  std::unique_ptr<AudioDevice> dev;
-  dev.reset( new AudioDevice() );
-
-  return std::move(dev);
-}
-
-std::unique_ptr<NullAudioDevice> create_null_audio_handle()
-{
-  std::unique_ptr<NullAudioDevice> dev;
-  dev.reset( new NullAudioDevice() );
-
-  return std::move(dev);
-}
-
-std::unique_ptr<Listener> create_audio_listener_handle()
-{
-  std::unique_ptr<Listener> dev;
-  dev.reset( new Listener() );
-
-  return std::move(dev);
-}
-
-std::unique_ptr<NullListener> create_null_audio_listener_handle()
-{
-  std::unique_ptr<NullListener> dev;
-  dev.reset( new NullListener() );
-
-  return std::move(dev);
-}
-
 } // namespace test
 
+// FIXME: create audio_device_name() function
+#if 0
 TEST_F(ALAudioTest, NullAudioDevice)
 {
-  dev = test::create_null_audio_handle();
+  ASSERT_TRUE(dev == nullptr);
 
-  EXPECT_EQ( "NullAudioDevice", dev->getDeviceName() );
+  EXPECT_EQ("NullAudioDevice", dev->device_name() );
+  NOM_LOG_INFO(NOM_LOG_CATEGORY_TEST, dev->device_name() );
 
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, dev->getDeviceName() );
+  nom::shutdown_audio(dev);
 }
+#endif
 
-TEST_F( ALAudioTest, NullAudioListener )
+// FIXME: create listener audio functions
+#if 0
+TEST_F(ALAudioTest, NullAudioListener)
 {
-  dev = test::create_null_audio_handle();
-  listener = test::create_null_audio_listener_handle();
+  ASSERT_TRUE(dev == nullptr);
+
+  // FIXME:
+  // listener.reset( new nom::NullListener() );
+  listener.reset( new nom::Listener() );
 
   EXPECT_EQ(100.0f, listener->volume() );
   EXPECT_EQ( Point3f(0,0,0), listener->position() );
@@ -152,62 +125,80 @@ TEST_F( ALAudioTest, NullAudioListener )
 
   EXPECT_EQ( 0.0f, nom::Listener::min_volume() );
   EXPECT_EQ( 100.0f, nom::Listener::max_volume() );
+
+  nom::shutdown_audio(dev);
+}
+#endif
+
+TEST_F(ALAudioTest, NullSoundBuffer)
+{
+  SoundBuffer* buffer = nullptr;
+
+  ASSERT_TRUE(dev == nullptr);
+
+  buffer = nom::create_audio_buffer();
+  EXPECT_TRUE(buffer != nullptr);
+
+  EXPECT_EQ(0, nom::audio_id(buffer, AudioID::AUDIO_BUFFER_ID) );
+  EXPECT_EQ(0, nom::audio_id(buffer, AudioID::SOUND_ID) );
+  EXPECT_EQ(0, nom::audio_duration(buffer) );
+  EXPECT_NE(AUDIO_STATE_LOOPING, nom::audio_state(buffer, dev) );
+
+  nom::free_buffer(buffer);
+  EXPECT_TRUE(buffer != nullptr);
+  nom::shutdown_audio(dev);
 }
 
-TEST_F( ALAudioTest, NullSoundBuffer )
+TEST_F(ALAudioTest, NullSound)
 {
-  dev = test::create_null_audio_handle();
+  ASSERT_TRUE(dev == nullptr);
 
-  SoundBuffer buffer;
-  EXPECT_TRUE( buffer.load(RESOURCE_AUDIO_SOUND) );
-  EXPECT_EQ( 2400, buffer.get() );
-  EXPECT_EQ( 455, buffer.getDuration() );
+  auto buffer = nom::create_audio_buffer();
+  EXPECT_TRUE(buffer != nullptr);
+
+  EXPECT_EQ(AUDIO_STATE_STOPPED, nom::audio_state(buffer, dev) );
+  EXPECT_FLOAT_EQ(0.0f, nom::audio_volume(buffer, dev) );
+  EXPECT_FLOAT_EQ(0.0f, nom::audio_min_volume(buffer, dev) );
+  EXPECT_FLOAT_EQ(0.0f, nom::audio_max_volume(buffer, dev) );
+  EXPECT_FLOAT_EQ(0.0f, nom::audio_pitch(buffer, dev) );
+  EXPECT_EQ(Point3f::zero, nom::audio_position(buffer, dev) );
+  EXPECT_EQ(Point3f::zero, nom::audio_velocity(buffer, dev) );
+
+  EXPECT_EQ(0.0f, nom::audio_playback_position(buffer, dev) );
+  EXPECT_EQ(0.0f, nom::audio_playback_samples_position(buffer, dev) );
+
+  nom::free_buffer(buffer);
+
+  // FIXME:
+  // EXPECT_TRUE(buffer != nullptr);
+
+  // TODO: Check for proper shutdown?
+  nom::shutdown_audio(dev);
 }
 
-TEST_F( ALAudioTest, NullSound )
+#if 0
+TEST_F(ALAudioTest, NullMusic)
 {
-  NullSoundBuffer buffer;
-  NullSound sound;
-
-  dev = test::create_null_audio_handle();
-
-  EXPECT_TRUE( buffer.load(RESOURCE_AUDIO_SOUND) );
-  EXPECT_EQ( 0, buffer.get() );
-  EXPECT_EQ( 0, buffer.getDuration() );
-
-  sound.setBuffer(buffer);
-  EXPECT_EQ( nom::SoundStatus::Stopped, sound.getStatus() );
-  EXPECT_EQ(100.0f, sound.volume() );
-  EXPECT_EQ(0.0f, sound.min_volume() );
-  EXPECT_EQ(100.0f, sound.max_volume() );
-  EXPECT_EQ( 0.0f, sound.getPitch() );
-  EXPECT_EQ( false, sound.getLooping() );
-  EXPECT_EQ( Point3f::zero, sound.position() );
-  EXPECT_EQ( Point3f::zero, sound.velocity() );
-  EXPECT_EQ( false, sound.getPositionRelativeToListener() );
-  EXPECT_EQ( 0.0f, sound.getMinDistance() );
-  EXPECT_EQ( 0.0f, sound.getAttenuation() );
-  EXPECT_EQ( -1, sound.getBufferID() );
-  EXPECT_EQ( 0.0f, sound.getPlayPosition() );
-}
-
-TEST_F( ALAudioTest, NullMusic )
-{
-  NullSoundBuffer buffer;
+  // SoundBuffer* buffer = nullptr;
   NullMusic sound;
 
   dev = test::create_null_audio_handle();
 
-  EXPECT_TRUE( buffer.load(RESOURCE_AUDIO_SOUND) );
-  EXPECT_EQ( 0, buffer.get() );
-  EXPECT_EQ( 0, buffer.getDuration() );
+  // buffer = nom::create_audio_buffer();
+  // ASSERT_TRUE(buffer != nullptr);
 
-  sound.setBuffer(buffer);
-  EXPECT_EQ( nom::SoundStatus::Stopped, sound.getStatus() );
+  // IMPORTANT: The buffer id result is internally dependent on the platform
+  // architecture, i.e.: x86, x64 -- because of the variable size of ALuint.
+  EXPECT_GT(0, nom::audio_id(buffer, AudioID::AUDIO_BUFFER_ID) );
+  EXPECT_GT(0, nom::audio_id(buffer, AudioID::SOUND_ID) );
+  // EXPECT_EQ(0, nom::audio_duration(buffer) );
+
+  EXPECT_TRUE( sound.load_file(RESOURCE_AUDIO_SOUND) );
+  EXPECT_EQ(SOUND_STOPPED, sound.status() );
   EXPECT_EQ(100.0f, sound.volume() );
   EXPECT_EQ(0.0f, sound.min_volume() );
   EXPECT_EQ(100.0f, sound.max_volume() );
-  EXPECT_EQ( 0.0f, sound.getPitch() );
+  EXPECT_EQ( 0.0f, sound.pitch() );
   EXPECT_EQ( false, sound.getLooping() );
   EXPECT_EQ( Point3f::zero, sound.position() );
   EXPECT_EQ( Point3f::zero, sound.velocity() );
@@ -216,6 +207,9 @@ TEST_F( ALAudioTest, NullMusic )
   EXPECT_EQ( 0.0f, sound.getAttenuation() );
   EXPECT_EQ( -1, sound.getBufferID() );
   EXPECT_EQ( 0.0f, sound.getPlayPosition() );
+
+  // nom::free_buffer(buffer);
+  // EXPECT_TRUE(buffer != nullptr);
 }
 
 TEST_F( ALAudioTest, NullAudioDeviceLocatorAPI )
@@ -225,22 +219,29 @@ TEST_F( ALAudioTest, NullAudioDeviceLocatorAPI )
   EXPECT_EQ( "NullAudioDevice", nom::AudioDeviceLocator::audio_device().getDeviceName() );
   NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, nom::AudioDeviceLocator::audio_device().getDeviceName() );
 }
+#endif
 
 // EOF NullAudio tests
 
-#if defined( NOM_USE_OPENAL )
+#if defined(NOM_USE_OPENAL)
 
-TEST_F( ALAudioTest, AudioDevice )
+TEST_F(ALAudioTest, AudioDevice)
 {
-  dev = test::create_audio_handle();
-  EXPECT_NE( "", dev->getDeviceName() );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, dev->getDeviceName() );
+  dev = nom::create_audio_device(nullptr);
+  ASSERT_TRUE(dev != nullptr);
+
+  EXPECT_NE("", dev->device_name() );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, dev->device_name() );
+
+  nom::shutdown_audio(dev);
 }
 
 TEST_F(ALAudioTest, AudioListener)
 {
-  dev = test::create_audio_handle();
-  listener = test::create_audio_listener_handle();
+  dev = nom::create_audio_device(nullptr);
+  ASSERT_TRUE(dev != nullptr);
+
+  listener = new Listener();
 
   EXPECT_EQ( 100.0f, listener->volume() );
   EXPECT_EQ( Point3f(0,0,0), listener->position() );
@@ -248,71 +249,109 @@ TEST_F(ALAudioTest, AudioListener)
   EXPECT_EQ( Point3f(0.0f, 0.0f, -1.0f), listener->direction() );
   EXPECT_EQ( 0.0f, nom::Listener::min_volume() );
   EXPECT_EQ( 100.0f, nom::Listener::max_volume() );
+
+  nom::shutdown_audio(dev);
 }
 
 TEST_F(ALAudioTest, SoundBuffer)
 {
-  dev = test::create_audio_handle();
+  dev = nom::create_audio_device(nullptr);
 
-  SoundBuffer buffer;
-  EXPECT_TRUE( buffer.load(RESOURCE_AUDIO_SOUND) );
+  SoundBuffer* buffer = nullptr;
+  buffer = nom::create_audio_buffer(RESOURCE_AUDIO_SOUND, dev);
+  ASSERT_TRUE(buffer != nullptr);
+  EXPECT_EQ(455, nom::audio_duration(buffer) );
 
-  // EXPECT_EQ( 2400, buffer.get() );
-  EXPECT_EQ( 455, buffer.getDuration() );
+  nom::free_buffer(buffer);
+  EXPECT_TRUE(buffer != nullptr);
+
+  nom::shutdown_audio(dev);
 }
 
 TEST_F(ALAudioTest, Sound)
 {
-  SoundBuffer buffer;
-  Sound sound;
-  dev = test::create_audio_handle();
+  dev = nom::create_audio_device(nullptr);
+  EXPECT_TRUE(dev != nullptr);
 
-  EXPECT_TRUE( buffer.load(RESOURCE_AUDIO_SOUND) );
-  // EXPECT_EQ( 2401, buffer.get() );
-  EXPECT_EQ(455, buffer.getDuration() );
+  auto buffer = nom::create_audio_buffer(RESOURCE_AUDIO_SOUND, dev);
+  ASSERT_TRUE(buffer != nullptr);
+  EXPECT_FLOAT_EQ(455, nom::audio_duration(buffer) );
 
-  sound.setBuffer(buffer);
-  EXPECT_EQ(nom::SoundStatus::Stopped, sound.getStatus() );
+  EXPECT_EQ(AUDIO_STATE_STOPPED, nom::audio_state(buffer, dev) );
+  EXPECT_FLOAT_EQ(100.0f, nom::audio_volume(buffer, dev) );
+  EXPECT_FLOAT_EQ(0.0f, nom::audio_min_volume(buffer, dev) );
+  EXPECT_FLOAT_EQ(100.0f, nom::audio_max_volume(buffer, dev) );
+  EXPECT_FLOAT_EQ(1.0f, nom::audio_pitch(buffer, dev) );
+  EXPECT_EQ(Point3f::zero, nom::audio_position(buffer, dev) );
+  EXPECT_EQ(Point3f::zero, nom::audio_velocity(buffer, dev) );
 
-  EXPECT_FLOAT_EQ( 100.0f, sound.volume() );
-  EXPECT_EQ( 0.0f, sound.min_volume() );
-  EXPECT_EQ( 100.0f, sound.max_volume() );
-  EXPECT_EQ( 1, sound.getPitch() );
-  EXPECT_EQ( false, sound.getLooping() );
-  EXPECT_EQ( Point3f::zero, sound.position() );
-  EXPECT_EQ( Point3f(0.0f,0.0f,0.0f), sound.velocity() );
-  EXPECT_EQ( false, sound.getPositionRelativeToListener() );
-  EXPECT_FLOAT_EQ( 1, sound.getMinDistance() );
-  EXPECT_FLOAT_EQ( 1, sound.getAttenuation() );
-  // EXPECT_EQ( 2401, sound.getBufferID() );
-  EXPECT_FLOAT_EQ( 0.0f, sound.getPlayPosition() );
+  // IMPORTANT: The buffer id result is internally dependent on the platform
+  // architecture, i.e.: x86, x64 -- because of the variable size of ALuint.
+  EXPECT_NE(0, nom::audio_id(buffer, AudioID::AUDIO_BUFFER_ID) );
+  EXPECT_NE(0, nom::audio_id(buffer, AudioID::SOUND_ID) );
+
+  EXPECT_EQ( 0.0f, nom::audio_playback_position(buffer, dev) );
+  EXPECT_EQ( 0.0f, nom::audio_playback_samples_position(buffer, dev) );
+
+  nom::free_buffer(buffer);
+  nom::shutdown_audio(dev);
+  EXPECT_TRUE(dev != nullptr);
 }
-
-// FIXME: This interface is broken; the sound buffer memory is not properly
-// deallocated.
+#if 0
 TEST_F(ALAudioTest, Music)
 {
-  SoundBuffer buffer;
   Music sound;
   dev = test::create_audio_handle();
 
-  EXPECT_TRUE( buffer.load(RESOURCE_AUDIO_SOUND) );
-  // EXPECT_EQ( 2404, buffer.get() );
-  EXPECT_EQ( 455, buffer.getDuration() );
+  // auto buffer = nom::create_audio_buffer(RESOURCE_AUDIO_SOUND);
+  // ASSERT_TRUE(buffer != nullptr);
+  // EXPECT_FLOAT_EQ(455, nom::audio_duration(buffer) );
 
-  sound.setBuffer(buffer);
-  EXPECT_EQ( nom::SoundStatus::Stopped, sound.getStatus() );
+  sound.load_file(RESOURCE_AUDIO_SOUND);
+  EXPECT_EQ(SOUND_STOPPED, sound.status() );
+
+  // nom::free_buffer(buffer);
+  // EXPECT_TRUE(buffer != nullptr);
 }
-
+#endif
+#if 0
 TEST_F(ALAudioTest, AudioDeviceLocatorAPI)
 {
   dev = test::create_audio_handle();
-  nom::AudioDeviceLocator::set_provider( dev.get() );
+  nom::AudioDeviceLocator::set_provider(dev);
 
   EXPECT_NE( "", nom::AudioDeviceLocator::audio_device().getDeviceName() );
   NOM_LOG_INFO( NOM_LOG_CATEGORY_TEST, nom::AudioDeviceLocator::audio_device().getDeviceName() );
 
-  EXPECT_TRUE( this->dev.get() == &nom::AudioDeviceLocator::audio_device() );
+  EXPECT_TRUE( dev == &nom::AudioDeviceLocator::audio_device() );
+}
+#endif
+
+// TODO: Finish implementation of test!
+TEST_F(ALAudioTest, OpenALExtensions)
+{
+  bool ret = false;
+  // uint32 freq = 0;
+
+  dev = nom::create_audio_device(nullptr);
+  ASSERT_TRUE(dev != nullptr);
+
+  // i.e., check for available audio outputs (by device name)
+  ret = nom::extension_availableT("ALC_enumeration_all_EXT", dev);
+
+  // freq = nom::sound_frequency(dev);
+  // NOM_DUMP(freq);
+
+  ASSERT_TRUE(ret)
+  << "The OpenAL extension for device enumeration is not supported";
+
+  // ret = nom::extension_available("ALC_DEFAULT_DEVICE_SPECIFIER", dev);
+
+  // FIXME
+  // ASSERT_TRUE(ret)
+  // << "FIXME: enumeration of output devices";
+
+  nom::shutdown_audio(dev);
 }
 
 #endif // defined NOM_USE_OPENAL

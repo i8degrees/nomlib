@@ -26,61 +26,43 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef NOMLIB_AL_SOUNDBUFFER_HEADERS
-#define NOMLIB_AL_SOUNDBUFFER_HEADERS
+#ifndef NOMLIB_AL_SOUND_BUFFER_HPP
+#define NOMLIB_AL_SOUND_BUFFER_HPP
 
-#include <set>
 #include <vector>
 
 #include "nomlib/config.hpp"
-#include "nomlib/audio/ISoundBuffer.hpp"
 
 namespace nom {
 
-class SoundBuffer: public ISoundBuffer
+// Forward declarations
+class IAudioDevice;
+
+struct SoundBuffer
 {
-  public:
-    SoundBuffer ( void );
-    virtual ~SoundBuffer( void );
+  /// \brief The unique identifier for the buffer.
+  ///
+  /// \remarks This is the internal referencing system used by OpenAL.
+  uint32 buffer_id = 0;
 
-    /// Obtain buffer data
-    uint32 get ( void ) const;
+  uint32 sound_id = 0;
 
-    /// Obtain buffer duration in milliseconds
-    ///
-    /// Default: zero (0)
-    int64 getDuration( void ) const;
+  /// \brief The audio buffer.
+  std::vector<int16> samples;
 
-    // getSampleRate
-    // getChannelCount
-    // ...
+  /// \brief The total duration -- in seconds -- of the buffer.
+  real32 duration = 0.0f;
 
-    bool load ( const std::string& filename );
+  uint32 channel_count = 0;
+  uint32 channel_format = 0;
+  uint32 sample_rate = 0;
+  nom::size_type sample_count = 0;
+  nom::size_type audio_bytes = 0;
 
-  private:
-    friend class Sound; // Sound class needs access to attach & detach methods
-
-    /// Internal list of sounds loaded onto a buffer object
-    mutable std::set<Sound*> sounds;
-
-    /// Internally used for attaching a sound to our list
-    void attach ( Sound* sound ) const;
-
-    /// Internally used for detaching a sound from our list
-    void detach ( Sound* sound ) const;
-
-    /// Used internally by OpenAL for identification of audio buffer
-    uint32 buffer;
-
-    /// We load our audio data into this buffer
-    std::vector<int16> samples;
-
-    /// Duration of sound buffer
-    ///
-    /// Default: zero (0)
-    int64 buffer_duration;
+  /// \brief The total number of frames in this sample instance
+  nom::size_type frame_count;
 };
 
 } // namespace nom
 
-#endif // NOMLIB_AL_SOUNDBUFFER_HEADERS defined
+#endif // include guard defined

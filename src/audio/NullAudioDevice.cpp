@@ -28,31 +28,57 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/audio/NullAudioDevice.hpp"
 
+// FIXME:
+#include "AL/ALAudioDeviceCaps.hpp"
+
 namespace nom {
 
-NullAudioDevice::NullAudioDevice( void )
+NullAudioDevice::NullAudioDevice()
 {
   NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
+
+  this->impl_ = new NullAudioEngine();
 }
 
-NullAudioDevice::~NullAudioDevice( void )
+NullAudioDevice::~NullAudioDevice()
 {
   NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
+  this->free_device();
 }
 
-// std::shared_ptr<ALCdevice> NullAudioDevice::getAudioDevice( void ) const
-// {
-//   return nullptr;
-// }
+void NullAudioDevice::free_device()
+{
+  NOM_DELETE_PTR(this->impl_);
+}
 
-std::string NullAudioDevice::getDeviceName() const
+bool NullAudioDevice::valid() const
+{
+  return false;
+}
+
+bool NullAudioDevice::initialize(const AudioSpec* spec)
+{
+  return true;
+}
+
+IOAudioEngine* NullAudioDevice::caps()
+{
+  return this->impl_;
+}
+
+void NullAudioDevice::set_caps(IOAudioEngine* caps)
+{
+  this->impl_ = caps;
+}
+
+std::string NullAudioDevice::device_name() const
 {
   return "NullAudioDevice";
 }
 
-bool NullAudioDevice::isExtensionSupported( const std::string& extension ) const
-{
-  return false;
-}
+// bool NullAudioDevice::isExtensionSupported( const std::string& extension ) const
+// {
+//   return false;
+// }
 
 } // namespace nom

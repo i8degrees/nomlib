@@ -85,8 +85,8 @@ endif ( PLATFORM_WINDOWS )
 
 # TODO: We should be setting CMAKE_BUILD_TYPE directly from the command line
 # instead of DEBUG
+set ( CMAKE_VERBOSE_MAKEFILE ON )
 if ( DEBUG )
-  # set ( CMAKE_VERBOSE_MAKEFILE ON )
   set ( CMAKE_BUILD_TYPE "Debug" )
   # >> Explicit `DEBUG_ASSERT` option will be deprecated in a future version...
   if ( NOT DISABLE_DEBUG_ASSERTIONS )

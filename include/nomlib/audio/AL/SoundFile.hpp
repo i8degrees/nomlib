@@ -33,42 +33,90 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <memory>
 #include <vector>
+#include <fstream>
 
 #include "nomlib/config.hpp"
 
 // Forward declarations
-struct SNDFILE_tag {};
+namespace nom {
+
+struct SoundBuffer;
+
+} // namespace nom
+
+struct SNDFILE_tag
+{
+  SNDFILE_tag* fp = nullptr;
+  // nom::SoundBuffer* info = nullptr;
+  nom::SoundBuffer* buffer = nullptr;
+};
 
 namespace nom {
 
-class SoundFile
+// typedef std::ifstream file_handle;
+typedef SNDFILE_tag file_handle;
+// typedef SoundBuffer file_handle;
+// struct SoundBuffer;
+
+class IStream
 {
   public:
-    SoundFile ( void );
-    ~SoundFile ( void );
+    //
+    IStream();
+    ~IStream();
 
+    virtual bool valid() = 0;
+    virtual bool good();
+    // virtual bool eof() = 0;
+
+    virtual bool open(file_handle* in, const std::string& filename) = 0;
+    virtual bool read(file_handle* in, nom::size_type read_size) = 0;
+    virtual bool seek(file_handle* in, int offset) = 0;
+    virtual void close() = 0;
+};
+
+class SoundFile: public IStream
+{
+  public:
+    SoundFile();
+    virtual ~SoundFile();
+
+    // TODO: Remove!
     /// Obtain number of samples in audio file
-    int64 getSampleCount ( void ) const;
+    int64 getSampleCount() const;
 
+    // TODO: Remove!
     /// Obtain number of channels used by audio file
-    uint32 getChannelCount ( void ) const;
+    uint32 getChannelCount() const;
 
+    // TODO: Remove!
     /// Obtain audio sampling rate; this is the number of samples per second
-    uint32 getSampleRate ( void ) const;
+    uint32 getSampleRate() const;
 
-    /// Obtain channel format; used internally by OpenAL
-    uint32 getChannelFormat ( void ) const;
-
+    // TODO: Remove!
     /// Obtain audio data size in bytes
-    int64 getDataByteSize ( void ) const;
+    int64 getDataByteSize() const;
 
-    bool open ( const std::string& filename );
-    bool read ( std::vector<int16>& data );
+    virtual bool good() override;
+    virtual bool valid() override;
+    // virtual bool eof() const override;
 
-  private:
-    /// SNDFILE* file descriptor
-    /// \todo Change me to a std::unique_ptr
-    std::shared_ptr<SNDFILE_tag> fp;
+    // WAVFileStream (i.e.: WAVMemoryStream, WAVCompressedStream, etc.)
+    // file_handle = WAVFileStream
+    virtual bool open(file_handle* in, const std::string& filename) override;
+    virtual bool read(file_handle* in, nom::size_type read_size) override;
+    virtual bool seek(file_handle* in, int offset) override;
+    virtual void close() override;
+
+  // private:
+    /// \brief A third-party file descriptor whose owned by the end-user.
+    ///
+    /// \see libsndfile
+    // TODO: Remove stored pointer; pass in as file_handle, i.e.: external
+    SNDFILE_tag* fp_;
+    // SoundBuffer* fp_;
+
+    // TODO: Use nom::SoundBuffer from **here** on out
     /// Extracted audio stream from file
     std::vector<int16> samples;
     /// Total number of samples in the file
@@ -77,8 +125,8 @@ class SoundFile
     uint32 channel_count;
     /// Number of samples per second
     uint32 sample_rate;
-    /// OpenAL compatible audio channels used by sound
-    int32 channel_format;
+
+    uint32 frame_count = 0;
 };
 
 std::string libsndfile_version();

@@ -30,13 +30,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_AUDIO_ISOUND_BUFFER_HPP
 
 #include <string>
+#include <vector>
 
 #include "nomlib/config.hpp"
 
 namespace nom {
 
 // Forward declarations
-class Sound;
+// class Sound;
 
 /// \brief Abstract audio buffer interface
 class ISoundBuffer
@@ -47,13 +48,16 @@ class ISoundBuffer
       NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_AUDIO, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
     }
 
-    virtual uint32 get( void ) const = 0;
-    virtual int64 getDuration( void ) const = 0;
-    virtual bool load( const std::string& filename ) = 0;
-
-  // protected:
-    virtual void attach( Sound* sound ) const = 0;
-    virtual void detach( Sound* sound ) const = 0;
+    virtual uint32 buffer_id() const = 0;
+    virtual const std::vector<int16>& samples() const = 0;
+    virtual int64 duration() const = 0;
+    virtual uint32 channel_count() const = 0;
+    virtual uint32 channel_format() const = 0;
+    virtual uint32 sample_rate() const = 0;
+    virtual nom::size_type sample_count() const = 0;
+    virtual nom::size_type audio_bytes() const = 0;
+    virtual void set_buffer(const std::vector<int16>& samples) = 0;
+    virtual bool load_file(const std::string& filename) = 0;
 };
 
 } // namespace nom

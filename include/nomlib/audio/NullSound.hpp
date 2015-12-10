@@ -38,13 +38,10 @@ namespace nom {
 class NullSound: public NullSoundSource
 {
   public:
-    virtual ~NullSound( void );
+    NullSound();
+    virtual ~NullSound();
 
-    void setBuffer( const ISoundBuffer& copy );
-    void Play( void );
-    void Stop( void );
-    void Pause( void );
-    void togglePause( void );
+    void togglePause();
 };
 
 } // namespace nom

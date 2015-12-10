@@ -42,6 +42,7 @@ class NullSoundSource: public ISoundSource
   public:
     virtual ~NullSoundSource( void );
 
+    real64 duration() const override;
     real32 volume() const;
     real32 min_volume() const;
     real32 max_volume() const;
@@ -78,7 +79,13 @@ class NullSoundSource: public ISoundSource
     void setAttenuation ( real32 attenuation );
     void setPlayPosition ( real32 seconds );
 
-    void togglePause( void );
+    virtual void play() override;
+    virtual void stop() override;
+    virtual void pause() override;
+    virtual void resume() override;
+
+    virtual bool load_buffer(SoundBuffer& rhs) override;
+    virtual bool load_file(const std::string& filename) override;
 
   protected:
     /// Constructor can only be called from deriving classes

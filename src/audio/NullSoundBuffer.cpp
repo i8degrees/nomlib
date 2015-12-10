@@ -30,39 +30,75 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-NullSoundBuffer::NullSoundBuffer( void )
+NullSoundBuffer::NullSoundBuffer()
 {
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
+  NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE_AUDIO);
 }
 
-NullSoundBuffer::~NullSoundBuffer( void )
+NullSoundBuffer::~NullSoundBuffer()
 {
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
+  NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE_AUDIO);
 }
 
-uint32 NullSoundBuffer::get( void ) const
-{
-  return 0;
-}
-
-int64 NullSoundBuffer::getDuration( void ) const
+uint32 NullSoundBuffer::buffer_id() const
 {
   return 0;
 }
 
-bool NullSoundBuffer::load(const std::string& filename)
+const std::vector<int16>&
+NullSoundBuffer::samples() const
+{
+  return this->samples_;
+}
+
+void NullSoundBuffer::set_buffer(const std::vector<int16>& samples)
+{
+  this->samples_ = samples;
+}
+
+int64 NullSoundBuffer::duration() const
+{
+  return 0;
+}
+
+uint32 NullSoundBuffer::channel_count() const
+{
+  return 0;
+}
+
+uint32 NullSoundBuffer::channel_format() const
+{
+  return 0;
+}
+
+uint32 NullSoundBuffer::sample_rate() const
+{
+  return 0;
+}
+
+nom::size_type NullSoundBuffer::sample_count() const
+{
+  return 0;
+}
+
+nom::size_type NullSoundBuffer::audio_bytes() const
+{
+  return 0;
+}
+
+bool NullSoundBuffer::load_file(const std::string& filename)
 {
   return true;
 }
 
-void NullSoundBuffer::attach( Sound* sound ) const
-{
-  // Do nothing
-}
+// void NullSoundBuffer::attach(Sound* sound) const
+// {
+//   // Do nothing
+// }
 
-void NullSoundBuffer::detach( Sound* sound ) const
-{
-  // Do nothing
-}
+// void NullSoundBuffer::detach(Sound* sound) const
+// {
+//   // Do nothing
+// }
 
 } // namespace nom

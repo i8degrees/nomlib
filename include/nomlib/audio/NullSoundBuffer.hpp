@@ -39,16 +39,24 @@ namespace nom {
 class NullSoundBuffer: public ISoundBuffer
 {
   public:
-    NullSoundBuffer( void );
-    virtual ~NullSoundBuffer( void );
+    NullSoundBuffer();
+    virtual ~NullSoundBuffer();
 
-    uint32 get( void ) const;
-    int64 getDuration( void ) const;
-    bool load(const std::string& filename);
+    uint32 buffer_id() const override;
+    const std::vector<int16>& samples() const override;
+    int64 duration() const override;
+
+    uint32 channel_count() const override;
+    uint32 channel_format() const override;
+    uint32 sample_rate() const override;
+    nom::size_type sample_count() const override;
+    nom::size_type audio_bytes() const override;
+    void set_buffer(const std::vector<int16>& samples) override;
+
+    bool load_file(const std::string& filename) override;
 
   private:
-    void attach( Sound* sound ) const;
-    void detach( Sound* sound ) const;
+    std::vector<int16> samples_;
 };
 
 } // namespace nom

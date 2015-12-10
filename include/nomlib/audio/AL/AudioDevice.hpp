@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
+#include "nomlib/math/Point3.hpp"
 #include "nomlib/audio/IAudioDevice.hpp"
 
 // Forward declarations
@@ -54,47 +55,77 @@ void AL_FreeAudioContext ( ALCcontext_struct* );
 
 namespace nom {
 
-class AudioDevice: public IAudioDevice
+struct AudioSpec
+{
+  // audio output name
+  char* device_name = nullptr;
+
+  ///\brief The number of samples per one frame period -- TODO: VERIFY THIS!
+  uint32 frequency = 44100;
+};
+
+// ???
+// static bool audio_subsystem_initialized = false;
+
+class ALAudioDevice: public IAudioDevice
 {
   public:
     /// Default constructor for initializing the default audio device
-    AudioDevice ( void );
+    ALAudioDevice();
+    virtual ~ALAudioDevice();
 
-    /// Constructor variant for initializing a specific audio device
-    AudioDevice ( const std::string& device_name );
+    // TODO: Rename
+    // void release_device();
+    void free_device() override;
 
-    virtual ~AudioDevice( void );
+    virtual void* device() override;
 
-    /// Obtain the initialized OpenAL audio device
-    // std::shared_ptr<ALCdevice> getAudioDevice ( void ) const;
+    virtual bool valid() const override;
 
     /// Obtain the initialized audio device name
-    std::string getDeviceName() const override;
-
-    /// Obtain support info regarding a particular extension
-    bool isExtensionSupported ( const std::string& extension ) const;
-
-    static bool extension_available(const std::string& ext);
+    std::string device_name() const override;
 
     // frequency
     // Suspend context
     // Resume context
 
-  private:
+    virtual bool initialize(const AudioSpec* spec) override;
+
+  // protected:
+    IOAudioEngine* caps() override;
+    void set_caps(IOAudioEngine* caps) override;
     /// This keeps OpenAL from all sorts of odd crashes by only allowing
     /// initialization to occur once
-    static bool audio_initialized;
-    bool initialize ( const ALCchar* device_name );
+    // static
+  public:
+    bool audio_initialized_;
+
+  // private:
     /// ...
-    bool initialized ( void ) const;
+    bool initialized() const;
+
     /// Audio device handle
-    std::shared_ptr<ALCdevice_struct> audio_device;
+    // std::shared_ptr<ALCdevice_struct> audio_device;
+    ALCdevice_struct* audio_device = nullptr;
     /// Audio device context
-    std::shared_ptr<ALCcontext_struct> audio_context;
+    // std::shared_ptr<ALCcontext_struct> audio_context;
+    ALCcontext_struct* audio_context = nullptr;
 
     /// device name
     std::string device_name_;
+
+    IOAudioEngine* impl_ = nullptr;
 };
+
+/// Obtain support info regarding a particular extension
+bool extension_available(const std::string& ext, IAudioDevice* dev);
+bool extension_availableT(const std::string& ext, IAudioDevice* dev);
+
+IAudioDevice* create_audio_device(const AudioSpec* spec);
+void shutdown_audio(IAudioDevice* dev);
+
+std::string
+audio_device_name(IAudioDevice* dev);
 
 } // namespace nom
 

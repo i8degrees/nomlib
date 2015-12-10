@@ -46,11 +46,18 @@ Linux builds are broken at the moment.
 
 **NOTE:** Alpha build quality. This has only been tested on MS Windows 7.
 
-After you have the dependencies taken care of, execute the following commands at the DOS prompt:
+```console
+# Download engine dependencies (binaries only)
+set NOM_DEPS_URL="http://downloads.sourceforge.net/project/nomlib/windows/2015-03-15_nomlib-ed23aff_windows-dependencies.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fnomlib%2Ffiles%2Fwindows%2F&ts=1448178827&use_mirror=iweb"
 
-```
-git clone https://github.com/i8degrees/nomlib
+wget -O c:\temp\deps.zip %NOM_DEPS_URL%
+
+git clone https://github.com/i8degrees/nomlib.git
 cd nomlib
+
+# Install dependency binaries
+7z x c:\temp\deps.zip -othird-party
+
 mkdir build && cd build
 cmake -G"Visual Studio 12" -DARCH_32=on -DDEBUG=on -DDEBUG_ASSERT=on -DEXAMPLES=off -DNOM_BUILD_TESTS=on ..
 ```

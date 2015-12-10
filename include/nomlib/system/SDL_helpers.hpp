@@ -80,6 +80,29 @@ enum BlendMode
   BLEND_MODE_MOD = SDL_BLENDMODE_MOD
 };
 
+/// \brief The encoding scheme of a set of pixels.
+enum PixelFormat
+{
+  /// \brief An invalid pixel format.
+  ///
+  /// \remarks Conditions that could create this state include, but are not
+  /// limited to: invalid or missing data, unsupported memory layout by the
+  /// platform or GPU and so on.
+  PIXEL_FORMAT_INVALID = SDL_PIXELFORMAT_UNKNOWN,
+
+  /// \brief Each pixel is a four (4) byte (32-bits) unsigned integer value.
+  PIXEL_FORMAT_ARGB8888 = SDL_PIXELFORMAT_ARGB8888,
+
+  /// planar mode: Y + V + U (3 planes)
+  PIXEL_FORMAT_YV12 = SDL_PIXELFORMAT_YV12,
+
+  /// planar mode: Y + U + V (3 planes)
+  PIXEL_FORMAT_IYUV = SDL_PIXELFORMAT_IYUV,
+
+  /// packed mode: U0+Y0+V0+Y1 (1 plane)
+  PIXEL_FORMAT_UYVY = SDL_PIXELFORMAT_UYVY,
+};
+
 /// \brief Convenience definitions for pointer types
 ///
 /// \todo Remove or perhaps better yet, refer to as a light-weight handle,

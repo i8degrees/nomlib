@@ -37,15 +37,31 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// Forward declarations
+// struct SoundBuffer;
+class IOAudioEngine;
+
+// void null_set_audio_volume(SoundBuffer* target, real32 gain);
+
 class NullAudioDevice: public IAudioDevice
 {
   public:
-    NullAudioDevice( void );
-    virtual ~NullAudioDevice( void );
+    NullAudioDevice();
+    virtual ~NullAudioDevice();
+
+    virtual void free_device() override;
+    virtual bool valid() const override;
+    virtual bool initialize(const AudioSpec* spec) override;
+
+    virtual IOAudioEngine* caps() override;
+    virtual void set_caps(IOAudioEngine* caps) override;
 
     // std::shared_ptr<ALCdevice> getAudioDevice( void ) const;
-    std::string getDeviceName() const override;
-    bool isExtensionSupported( const std::string& extension ) const;
+    std::string device_name() const override;
+    // bool isExtensionSupported( const std::string& extension ) const override;
+
+  private:
+    IOAudioEngine* impl_ = nullptr;
 };
 
 } // namespace nom

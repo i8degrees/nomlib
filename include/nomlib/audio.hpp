@@ -37,21 +37,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/audio/IListener.hpp"
 #include "nomlib/audio/ISoundBuffer.hpp"
 #include "nomlib/audio/ISoundSource.hpp"
-#include "nomlib/audio/NullAudioDevice.hpp"
+
+// #include "nomlib/audio/NullAudioDevice.hpp"
+#if 0
 #include "nomlib/audio/NullListener.hpp"
 #include "nomlib/audio/NullSoundBuffer.hpp"
 #include "nomlib/audio/NullSoundSource.hpp"
 #include "nomlib/audio/NullSound.hpp"
 #include "nomlib/audio/NullMusic.hpp"
 #include "nomlib/audio/AudioDeviceLocator.hpp"
-
+#endif
 #if defined(NOM_USE_OPENAL)
   #include "nomlib/audio/AL/AudioDevice.hpp"
   #include "nomlib/audio/AL/Listener.hpp"
-  #include "nomlib/audio/AL/Music.hpp"
-  #include "nomlib/audio/AL/Sound.hpp"
-  #include "nomlib/audio/AL/SoundBuffer.hpp"
-  #include "nomlib/audio/AL/SoundFile.hpp"
+  // #include "nomlib/audio/AL/Music.hpp"
+  // #include "nomlib/audio/AL/Sound.hpp"
+  // #include "nomlib/audio/AL/SoundBuffer.hpp"
+  // #include "nomlib/audio/AL/SoundFile.hpp"
   #include "nomlib/audio/AL/SoundSource.hpp"
 #endif
 

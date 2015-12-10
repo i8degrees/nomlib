@@ -66,8 +66,8 @@ endif ( PLATFORM_WINDOWS )
 
 # TODO: We should be setting CMAKE_BUILD_TYPE directly from the command line
 # instead of DEBUG
+set ( CMAKE_VERBOSE_MAKEFILE ON )
 if ( DEBUG )
-  # set ( CMAKE_VERBOSE_MAKEFILE ON )
   set ( CMAKE_BUILD_TYPE "Debug" )
 
   if ( NOT PLATFORM_WINDOWS )

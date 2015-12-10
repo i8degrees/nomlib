@@ -30,32 +30,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-NullSound::~NullSound( void )
+NullSound::NullSound()
 {
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
+  NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE_AUDIO);
 }
 
-void NullSound::setBuffer( const ISoundBuffer& copy )
+NullSound::~NullSound()
 {
-  // Do nothing
+  NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE_AUDIO);
 }
 
-void NullSound::Play( void )
-{
-  // Do nothing
-}
-
-void NullSound::Stop( void )
-{
-  // Do nothing
-}
-
-void NullSound::Pause( void )
-{
-  // Do nothing
-}
-
-void NullSound::togglePause( void )
+void NullSound::togglePause()
 {
   // Do nothing
 }

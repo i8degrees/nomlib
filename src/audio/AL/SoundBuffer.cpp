@@ -26,86 +26,161 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/audio/AL/SoundBuffer.hpp"
+// #include "nomlib/audio/AL/SoundBuffer.hpp"
+#include "SoundBuffer_priv.hpp"
+
+// Forward declrations
+#include "nomlib/audio/AL/AudioDevice.hpp"
+// #include "nomlib/audio/AL/SoundSource.hpp"
+#include "ALAudioDeviceCaps.hpp"
 
 // Private headers
 #include "nomlib/audio/AL/OpenAL.hpp"
-#include "nomlib/audio/AL/Sound.hpp"
+
 #include "nomlib/audio/AL/SoundFile.hpp"
 
 namespace nom {
 
-SoundBuffer::SoundBuffer ( void ) : buffer ( 0 )
+/*
+SoundBuffer::SoundBuffer()
 {
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
+  NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE_AUDIO);
+
+  // Generate an audio buffer identifier from OpenAL
   AL_CLEAR_ERR();
-  alGenBuffers(1, &this->buffer);
+  alGenBuffers(1, &this->buffer_id_);
   AL_CHECK_ERR_VOID();
 }
 
-SoundBuffer::~SoundBuffer( void )
+SoundBuffer::~SoundBuffer()
 {
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
-
-  // First, release attached sound resources from this buffer
-  for( auto it = this->sounds.begin(); it != this->sounds.end(); ++it ) {
-    (*it)->reset();
-  }
+  NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE_AUDIO);
 
   // Goodbye buffer!
-  if( this->buffer ) {
-    AL_CLEAR_ERR();
-    alDeleteBuffers(1, &this->buffer);
-    AL_CHECK_ERR_VOID();
-  }
+  AL_CLEAR_ERR();
+  alDeleteBuffers(1, &this->buffer_id_);
+  AL_CHECK_ERR_VOID();
 }
 
-uint32 SoundBuffer::get ( void ) const
+uint32 SoundBuffer::buffer_id() const
 {
-  return this->buffer;
+  return this->buffer_id_;
 }
 
-int64 SoundBuffer::getDuration( void ) const
+const std::vector<int16>&
+SoundBuffer::samples() const
 {
-  return this->buffer_duration;
+  return this->samples_;
 }
 
-bool SoundBuffer::load ( const std::string& filename )
+int64 SoundBuffer::duration() const
+{
+  return this->buffer_duration_;
+}
+
+bool SoundBuffer::load_file(const std::string& filename)
 {
   SoundFile fp;
+  SoundBufferB* buffer = nom::create_audio_buffer();
+  std::vector<int16> samples;
 
-  if ( ! fp.open ( filename ) )
-  {
-NOM_LOG_ERR ( NOM, "Could not load audio: " + filename );
-    return false;
+  // if( fp.open(filename) == false ) {
+  //   NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+  //                 "Could not load audio from file:", filename );
+  //   return false;
+  // }
+
+  // if ( fp.read(samples) == false ) {
+  //   NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+  //                 "Could not read audio samples from file:", filename );
+  //   return false;
+  // }
+
+  buffer = nom::create_audio_buffer(filename);
+
+  buffer->buffer_id = this->buffer_id_;
+  // buffer->data = samples;
+  // buffer->channel_count = fp.getChannelCount();
+  // buffer->channel_format = fp.getChannelFormat();
+  // buffer->sample_rate = fp.getSampleRate();
+  // buffer->sample_count = fp.getSampleCount();
+  // buffer->audio_bytes = fp.getDataByteSize();
+  // buffer->duration =
+  //   (1000.0f * buffer->sample_count / buffer->sample_rate / buffer->channel_count);
+
+  if( nom::fill_audio_buffer(buffer) == false ) {
+    NOM_ASSERT_INVALID_PATH();
   }
+  NOM_ASSERT(buffer != nullptr);
 
-  if ( ! fp.read ( this->samples ) )
-  {
-NOM_LOG_ERR ( NOM, "Could not read audio samples: " + filename );
-    return false;
-  }
+  // buffer->buffer_id = this->buffer_id_;
+  this->channel_count_ = buffer->channel_count;
+  this->channel_format_ = buffer->channel_format;
+  this->sample_rate_ = buffer->sample_rate;
+  this->sample_count_ = buffer->sample_count;
+  this->audio_bytes_ = buffer->audio_bytes;
+  this->samples_ = buffer->samples;
+  this->buffer_duration_ = buffer->duration;
 
-  this->buffer_duration = ( 1000 * fp.getSampleCount() / fp.getSampleRate() / fp.getChannelCount() );
-
-  AL_CLEAR_ERR();
-  // Fill the audio buffer with loaded sample data
-  alBufferData(this->buffer, fp.getChannelFormat(),
-               &this->samples.front(), fp.getDataByteSize(),
-               fp.getSampleRate() );
-  AL_CHECK_ERR_VOID();
+  // AL_CLEAR_ERR();
+  // // Fill the audio buffer with file's sample data
+  // alBufferData(this->buffer_id_, this->channel_format_,
+  //              &this->samples_.front(), fp.getDataByteSize(),
+  //              this->sample_rate_);
+  // AL_CHECK_ERR_VOID();
 
   return true;
 }
 
-void SoundBuffer::attach ( Sound* sound ) const
+uint32 SoundBuffer::channel_count() const
 {
-  sounds.insert ( sound );
+  auto result = this->channel_count_;
+  return(result);
 }
 
-void SoundBuffer::detach ( Sound* sound ) const
+uint32 SoundBuffer::channel_format() const
 {
-  sounds.erase ( sound );
+  auto result = this->channel_format_;
+  return(result);
 }
+
+uint32 SoundBuffer::sample_rate() const
+{
+  auto result = this->sample_rate_;
+  return(result);
+}
+
+nom::size_type SoundBuffer::sample_count() const
+{
+  auto result = this->sample_count_;
+  return(result);
+}
+
+nom::size_type SoundBuffer::audio_bytes() const
+{
+  auto result = this->audio_bytes_;
+  return(result);
+}
+
+void SoundBuffer::set_buffer(const std::vector<int16>& samples)
+{
+  this->samples_ = samples;
+}
+*/
+
+// static
+// uint32 generate_buffer_id()
+// {
+//   uint32 buffer_id = 0;
+
+//   // Generate an audio buffer identifier from OpenAL
+//   AL_CLEAR_ERR();
+//   alGenBuffers(1, &buffer_id);
+//   AL_CHECK_ERR_VOID();
+
+//   return buffer_id;
+// }
+
+
 
 } // namespace nom

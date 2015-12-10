@@ -43,6 +43,13 @@ NullSoundSource::~NullSoundSource()
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_AUDIO, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 }
 
+real64 NullSoundSource::duration() const
+{
+  auto result = 0.0f;
+
+  return result;
+}
+
 real32 NullSoundSource::volume() const
 {
   auto gain_level = nom::MAX_VOLUME;
@@ -183,9 +190,34 @@ void NullSoundSource::setPlayPosition( real32 seconds )
   // Do nothing
 }
 
-void NullSoundSource::togglePause()
+void NullSoundSource::play()
 {
   // Do nothing
+}
+
+void NullSoundSource::stop()
+{
+  // Do nothing
+}
+
+void NullSoundSource::pause()
+{
+  // Do nothing
+}
+
+void NullSoundSource::resume()
+{
+  // Do nothing
+}
+
+bool NullSoundSource::load_buffer(SoundBuffer& rhs)
+{
+  return true;
+}
+
+bool NullSoundSource::load_file(const std::string& filename)
+{
+  return true;
 }
 
 } // namespace nom

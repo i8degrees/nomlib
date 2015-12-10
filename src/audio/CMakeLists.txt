@@ -9,31 +9,31 @@ set( NOM_AUDIO_LIBRARY "nomlib-audio" )
 # Default implementation sources (always built)
 set(  NOM_AUDIO_SOURCE
       ${INC_DIR}/audio.hpp
-      ${SRC_DIR}/audio/AudioDeviceLocator.cpp
-      ${INC_DIR}/audio/AudioDeviceLocator.hpp
+      # ${SRC_DIR}/audio/AudioDeviceLocator.cpp
+      # ${INC_DIR}/audio/AudioDeviceLocator.hpp
 
       ${INC_DIR}/audio/IAudioDevice.hpp
       ${INC_DIR}/audio/IListener.hpp
-      ${INC_DIR}/audio/ISoundBuffer.hpp
-      ${INC_DIR}/audio/ISoundSource.hpp
+      # ${INC_DIR}/audio/ISoundBuffer.hpp
+      # ${INC_DIR}/audio/ISoundSource.hpp
 
-      ${SRC_DIR}/audio/NullAudioDevice.cpp
-      ${INC_DIR}/audio/NullAudioDevice.hpp
+      # ${SRC_DIR}/audio/NullAudioDevice.cpp
+      # ${INC_DIR}/audio/NullAudioDevice.hpp
 
-      ${SRC_DIR}/audio/NullListener.cpp
-      ${INC_DIR}/audio/NullListener.hpp
+      # ${SRC_DIR}/audio/NullListener.cpp
+      # ${INC_DIR}/audio/NullListener.hpp
 
-      ${SRC_DIR}/audio/NullMusic.cpp
-      ${INC_DIR}/audio/NullMusic.hpp
+      # ${SRC_DIR}/audio/NullMusic.cpp
+      # ${INC_DIR}/audio/NullMusic.hpp
 
-      ${SRC_DIR}/audio/NullSound.cpp
-      ${INC_DIR}/audio/NullSound.hpp
+      # ${SRC_DIR}/audio/NullSound.cpp
+      # ${INC_DIR}/audio/NullSound.hpp
 
-      ${SRC_DIR}/audio/NullSoundBuffer.cpp
-      ${INC_DIR}/audio/NullSoundBuffer.hpp
+      # ${SRC_DIR}/audio/NullSoundBuffer.cpp
+      # ${INC_DIR}/audio/NullSoundBuffer.hpp
 
-      ${SRC_DIR}/audio/NullSoundSource.cpp
-      ${INC_DIR}/audio/NullSoundSource.hpp
+      # ${SRC_DIR}/audio/NullSoundSource.cpp
+      # ${INC_DIR}/audio/NullSoundSource.hpp
 )
 
 # Common dependencies on all platforms
@@ -46,23 +46,26 @@ if( NOM_BUILD_AUDIO_UNIT )
         ${SRC_DIR}/audio/AL/AudioDevice.cpp
         ${INC_DIR}/audio/AL/AudioDevice.hpp
 
+        ${SRC_DIR}/audio/AL/ALAudioDeviceCaps.cpp
+
         ${SRC_DIR}/audio/AL/Listener.cpp
         ${INC_DIR}/audio/AL/Listener.hpp
 
-        ${SRC_DIR}/audio/AL/Music.cpp
-        ${INC_DIR}/audio/AL/Music.hpp
+        # ${SRC_DIR}/audio/AL/Music.cpp
+        # ${INC_DIR}/audio/AL/Music.hpp
 
         ${SRC_DIR}/audio/AL/OpenAL.cpp
         ${INC_DIR}/audio/AL/OpenAL.hpp
 
-        ${SRC_DIR}/audio/AL/Sound.cpp
-        ${INC_DIR}/audio/AL/Sound.hpp
+        # ${SRC_DIR}/audio/AL/Sound.cpp
+        # ${INC_DIR}/audio/AL/Sound.hpp
 
         ${SRC_DIR}/audio/AL/SoundBuffer.cpp
-        ${INC_DIR}/audio/AL/SoundBuffer.hpp
+        # ${INC_DIR}/audio/AL/SoundBuffer.hpp
 
         ${SRC_DIR}/audio/AL/SoundFile.cpp
-        ${INC_DIR}/audio/AL/SoundFile.hpp
+        # ${INC_DIR}/audio/AL/SoundFile.hpp
+        # ${SRC_DIR}/audio/AL/SoundFile.hpp
 
         ${SRC_DIR}/audio/AL/SoundSource.cpp
         ${INC_DIR}/audio/AL/SoundSource.hpp

@@ -96,7 +96,6 @@ macro(nom_add_library target lib_type source headers external_deps)
                             "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
                             MACOSX_FRAMEWORK_IDENTIFIER
                             "net.i8degrees.${target}"
-                            # TODO?
                             # PUBLIC_HEADER
                             # "${source}"
     )

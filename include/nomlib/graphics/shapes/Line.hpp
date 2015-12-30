@@ -68,7 +68,7 @@ class Line: public Shape
     /// \brief Re-implements the IObject::type method.
     ///
     /// \remarks This uniquely identifies the object's type.
-    ObjectTypeInfo type( void ) const;
+    ObjectTypeInfo type() const override;
 
     /// Do nothing method; we have it only because it is required by interface
     /// contract with IDrawable (which is fine).
@@ -77,12 +77,12 @@ class Line: public Shape
     /// using a return / abort on rendering when our line object is up-to-date
     /// and determine if it is worth the implementation VS risk of inconsistency.
     /// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-03
-    void update ( void );
+    void update() override;
 
     /// \brief Render the line segments.
     ///
     /// \param target nom::RenderWindow object to render to.
-    void draw ( RenderTarget& target ) const;
+    void draw(RenderTarget& target) const override;
 };
 
 } // namespace nom

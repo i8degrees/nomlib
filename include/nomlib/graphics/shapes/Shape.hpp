@@ -54,7 +54,7 @@ class Shape: public Transformable
     /// \brief Re-implements the IObject::type method.
     ///
     /// \remarks This uniquely identifies the object's type.
-    ObjectTypeInfo type( void ) const;
+    ObjectTypeInfo type() const override;
 
     /// \brief Obtain the outline color used in rendering a shape.
     const Color4i& outline_color ( void ) const;

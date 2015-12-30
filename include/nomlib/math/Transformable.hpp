@@ -54,7 +54,7 @@ class Transformable: public virtual IDrawable
     /// \brief Re-implements the IObject::type method.
     ///
     /// \remarks This uniquely identifies the object's type.
-    ObjectTypeInfo type( void ) const;
+    ObjectTypeInfo type() const override;
 
     /// \brief Getter for stored positioning coordinates.
     const Point2i& position( void ) const;

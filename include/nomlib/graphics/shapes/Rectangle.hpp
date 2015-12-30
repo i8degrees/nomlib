@@ -66,7 +66,7 @@ class Rectangle: public Shape
     /// \brief Re-implements the IObject::type method.
     ///
     /// \remarks This uniquely identifies the object's type.
-    ObjectTypeInfo type() const;
+    ObjectTypeInfo type() const override;
 
     /// \note Implements the required Shape::clone method.
     virtual Shape* clone() const override;
@@ -86,7 +86,7 @@ class Rectangle: public Shape
     /// \brief Render the rectangle shape.
     ///
     /// \param target nom::RenderWindow object to render to.
-    void draw(RenderTarget& target) const;
+    void draw(RenderTarget& target) const override;
 };
 
 } // namespace nom

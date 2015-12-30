@@ -68,7 +68,7 @@ class SpriteBatch: public Sprite
     /// \brief Re-implements the IObject::type method.
     ///
     /// \remarks This uniquely identifies the object's type.
-    ObjectTypeInfo type() const;
+    ObjectTypeInfo type() const override;
 
     /// \brief Implements the required IDrawable::clone method.
     SpriteBatch* clone() const;

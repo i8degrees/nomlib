@@ -115,7 +115,7 @@ class Text: public Transformable
     /// \brief Re-implements the IObject::type method.
     ///
     /// \remarks This uniquely identifies the object's type.
-    ObjectTypeInfo type( void ) const;
+    ObjectTypeInfo type() const override;
 
     const Font& font() const;
 
@@ -208,7 +208,7 @@ class Text: public Transformable
     /// Render text to a target
     ///
     /// \todo Test horizontal tabbing '\t'
-    void draw(RenderTarget& target) const;
+    void draw(RenderTarget& target) const override;
 
   private:
     void render_text(RenderTarget& target) const;
@@ -220,7 +220,7 @@ class Text: public Transformable
     /// need to worry about using the API in a particular order.
     ///
     /// \note Implements nom::IDrawable::update.
-    void update();
+    void update() override;
 
     /// \brief Get the current text width.
     int width() const;

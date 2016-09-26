@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/ptree/Value.hpp"
 
 // Private headers
-#include "nomlib/core/helpers.hpp"
+#include "nomlib/core/strings.hpp"
 #include <cassert>
 
 // Forward declarations

@@ -179,7 +179,7 @@ void ActionTest::SetUp()
           case SDLK_c:
           {
             this->player.cancel_actions();
-            //this->clear_render_callbacks();
+            this->clear_render_callbacks();
           } break;
 
         } break; // end switch ev.key.sym

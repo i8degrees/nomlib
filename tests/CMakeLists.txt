@@ -88,13 +88,8 @@ elseif ( NOT SDL2_FOUND )
   message ( FATAL_ERROR "Missing SDL2 headers at ${SDL2_INCLUDE_DIR}." )
 endif ( SDL2_FOUND )
 
-<<<<<<< HEAD
-if(NOM_BUILD_AUDIO_UNIT)
-  # nomlib-audio external deps
-=======
 if ( NOM_BUILD_AUDIO_TESTS )
   # nomlib-audio external deps; OpenAL-Soft or Apple's OpenAL
->>>>>>> ba1fb044 (Improve library headers handling)
   find_package( OpenAL REQUIRED )
   if( OPENAL_FOUND )
     include_directories( ${OPENAL_INCLUDE_DIR} )
@@ -102,11 +97,7 @@ if ( NOM_BUILD_AUDIO_TESTS )
   else ( NOT OPENAL_FOUND )
     message ( FATAL_ERROR "Missing OpenAL headers at ${OPENAL_INCLUDE_DIR}." )
   endif ( OPENAL_FOUND )
-<<<<<<< HEAD
-endif(NOM_BUILD_AUDIO_UNIT)
-=======
 endif ( NOM_BUILD_AUDIO_TESTS )
->>>>>>> ba1fb044 (Improve library headers handling)
 
 # nomlib-gui external deps
 find_package( LibRocket REQUIRED )

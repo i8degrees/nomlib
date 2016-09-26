@@ -1,0 +1,9 @@
+<tags>
+	<tag name="ALBUM" value="Debug Samples"/>
+	<tag name="TITLE" value="Sine Wave at 900 Hz"/>
+	<tag name="COMMENTS" value="Data format is encoded in 32-bit floating-point"/>
+	<tag name="TRACKNUMBER" value="04"/>
+	<tag name="ARTIST" value="Jeffrey Carpenter"/>
+	<tag name="YEAR" value="2016"/>
+	<tag name="GENRE" value="gamedev"/>
+</tags>

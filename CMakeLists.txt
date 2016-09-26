@@ -97,7 +97,7 @@ if ( DEBUG )
     # TODO: Enable -Wsign-conversion, -Wextra
     # TODO: Consider enabling some of these run-time checks that clang offers,
     # i.e.:: -fsanitize=address, -fsanitize=integer, -fsanitize=undefined,
-    # -fsanitize=unsigned-integer-overflow, etc.
+    # -fsanitize=unsigned-integer-overflow, -fsanitize=float-divide-by-zero, etc.
     # See also: http://clang.llvm.org/docs/UsersManual.html#controlling-code-generation
     # See also: Malloc Debugging under OSX: https://developer.apple.com/library/mac/documentation/Performance/Conceptual/ManagingMemory/Articles/MallocDebug.html#//apple_ref/doc/uid/20001884-CJBJFIDD
     set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused -O0" )

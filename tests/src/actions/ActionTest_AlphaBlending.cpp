@@ -309,7 +309,7 @@ TEST_F(ActionTest, FadeAlphaByAction)
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
   const uint8 INITIAL_ALPHA = Color4i::ALPHA_TRANSPARENT;
   const real32 FADE_BY = 129;
-  const uint8 EXPECTED_ALPHA = (INITIAL_ALPHA + abs(FADE_BY) );
+  const uint8 EXPECTED_ALPHA = (INITIAL_ALPHA + fabs(FADE_BY) );
 
   // Initial texture position and size
   const Point2i TEX_POS(Point2i::zero);
@@ -442,7 +442,7 @@ TEST_F(ActionTest, FadeAlphaByActionWithNegativeValue)
   const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
   const uint8 INITIAL_ALPHA = Color4i::ALPHA_OPAQUE;
   const real32 FADE_BY = -129;
-  const uint8 EXPECTED_ALPHA = (INITIAL_ALPHA - abs(FADE_BY) );
+  const uint8 EXPECTED_ALPHA = (INITIAL_ALPHA - fabs(FADE_BY) );
 
   // Initial texture position and size
   const Point2i TEX_POS(Point2i::zero);

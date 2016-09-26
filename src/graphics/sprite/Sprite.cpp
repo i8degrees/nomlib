@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Private headers
 #include "nomlib/graphics/shapes/Rectangle.hpp"
-#include "nomlib/core/helpers.hpp"
+#include "nomlib/core/unique_ptr.hpp"
 
 // Forward declarations
 #include "nomlib/graphics/Texture.hpp"

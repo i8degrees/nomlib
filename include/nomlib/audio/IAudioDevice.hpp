@@ -30,11 +30,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOMLIB_AUDIO_IAUDIO_DEVICE_HPP
 
 #include <string>
-#include <memory>
 
 #include "nomlib/config.hpp"
 
 namespace nom {
+namespace audio {
 
 // Forward declarations
 class IOAudioEngine;
@@ -50,16 +50,20 @@ class IAudioDevice
                          LogPriority::NOM_LOG_PRIORITY_VERBOSE);
     }
 
-    virtual void free_device() = 0;
-    virtual void* device() = 0;
-    virtual bool valid() const = 0;
-    virtual bool initialize(const AudioSpec* spec) = 0;
+    // virtual void* device() const = 0;
+    // virtual void* context() const = 0;
+    // virtual IOAudioEngine* caps() const = 0;
 
-    virtual IOAudioEngine* caps() = 0;
-    virtual void set_caps(IOAudioEngine* caps) = 0;
+    virtual bool valid() const = 0;
     virtual std::string device_name() const = 0;
+
+    virtual IOAudioEngine* open(const audio::AudioSpec* spec) = 0;
+    virtual void suspend() = 0;
+    virtual void resume() = 0;
+    virtual void close() = 0;
 };
 
+} // namespace audio
 } // namespace nom
 
 #endif // include guard defined

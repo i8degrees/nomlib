@@ -31,7 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Private headers
 #include "nomlib/core/err.hpp"
 #include "nomlib/core/clock.hpp"
-#include "nomlib/core/helpers.hpp"
+#include "nomlib/core/strings.hpp"
+#include "nomlib/core/unique_ptr.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 #include "nomlib/system/JoystickEventHandler.hpp"
 #include "nomlib/system/GameControllerEventHandler.hpp"
@@ -75,7 +76,7 @@ EventHandler::~EventHandler()
                       NOM_LOG_PRIORITY_VERBOSE );
 
   auto enable_report = nom::hint("NOM_EVENT_QUEUE_STATISTICS");
-  if( nom::string_to_integer(enable_report) != 0 ) {
+  if( nom::string_to_int(enable_report.c_str()) != 0 ) {
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_APPLICATION,
                     "num_events:", this->num_events() );
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_APPLICATION,

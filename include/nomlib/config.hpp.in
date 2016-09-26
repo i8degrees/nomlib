@@ -222,8 +222,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOM_ASSERT_INVALID_PATH(reserved) \
   NOM_ASSERT(!"Invalid execution path assertion triggered")
 
+#if defined(NOM_COMPILER_CLANG)
+  // SOURCE: http://clang.llvm.org/docs/UsersManual.html#controlling-diagnostics-via-pragmas
+  #define NOM_PRAGMA_STR(msg) #msg
+  #define NOM_PRAGMA_DEFER(arg, ...) arg(__VA_ARGS__)
+  #define NOM_PRAGMA_ERROR(msg) \
+    _Pragma(NOM_PRAGMA_STR(GCC error(msg " in " \
+    NOM_PRAGMA_DEFER(NOM_PRAGMA_STR, __FILE__) \
+    ":" NOM_PRAGMA_DEFER(NOM_PRAGMA_STR,__LINE__) )))
+#else
+  // NO OPCODE defined
+  #define NOM_PRAGMA_STR(msg)
+  #define NOM_PRAGMA_DEFER(arg, ...)
+  #define NOM_PRAGMA_ERROR(msg)
+#endif
+
 #ifndef __cplusplus
-  #pragma message ( "nomlib requires a C++11 capable compiler." )
+  NOM_PRAGMA_ERROR("nomlib requires a C++11 capable compiler.")
 #endif
 
 /// \brief See nomlib/platforms.hpp for compiler detection handling. Note that
@@ -261,6 +276,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif  // defined(NOM_DEBUG) && defined(NOM_COMPILER_CLANG)
 
+// NOTE(jeff): See src/CMakeLists.txt for declarations
+
 // Image loader
 #cmakedefine NOM_USE_SDL2_IMAGE @NOM_USE_SDL2_IMAGE@
 
@@ -268,7 +285,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #cmakedefine NOM_USE_SDL2_TTF @NOM_USE_SDL2_TTF@
 
 // Audio
-#cmakedefine NOM_USE_OPENAL @NOM_USE_OPENAL@
+#cmakedefine NOM_USE_CREATIVE_OPENAL @NOM_USE_CREATIVE_OPENAL@
+#cmakedefine NOM_USE_APPLE_OPENAL @NOM_USE_APPLE_OPENAL@
+#cmakedefine NOM_USE_OPENAL_SOFT @NOM_USE_OPENAL_SOFT@
+
+#if defined(NOM_USE_CREATIVE_OPENAL) || defined(NOM_USE_APPLE_OPENAL) || \
+    defined(NOM_USE_OPENAL_SOFT)
+  #define NOM_USE_OPENAL
+#endif
+
+#ifndef NOM_USE_OPENAL
+  // One of the above variables must be set in src/CMakeLists.txt
+  NOM_PRAGMA_ERROR("Audio Unit: One of the OpenAL audio engines must be selected")
+#endif
+
 #cmakedefine NOM_USE_LIBSNDFILE @NOM_USE_LIBSNDFILE@
 
 // High-quality rescaling algorithms for low-resolution sprites

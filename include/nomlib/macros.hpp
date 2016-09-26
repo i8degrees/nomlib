@@ -64,4 +64,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOM_GTEST_FRIEND(test_case_name, test_name)\
 friend class test_case_name##_##test_name##_Test
 
+#define NOM_ARRAY_COUNT(arr) \
+  ( sizeof(arr) / sizeof((arr)[0]) )
+
 #endif // include guard defined

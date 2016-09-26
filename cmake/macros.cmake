@@ -175,6 +175,11 @@ macro( nom_add_test test_name test_executable )
   add_test( ${test_name} ${test_executable} ${ARGN} )
 endmacro()
 
+# Copy resource files for engine examples and tests.
+macro(nom_install_resources source_path destination_path)
+  install(FILES ${source_path} DESTINATION "${destination_path}")
+endmacro()
+
 macro(NOM_LOG_INFO msg)
   message( STATUS "INFO: ${msg}" )
 endmacro(NOM_LOG_INFO msg)

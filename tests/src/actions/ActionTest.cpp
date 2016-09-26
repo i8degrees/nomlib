@@ -177,6 +177,7 @@ void ActionTest::SetUp()
           case SDLK_3:
           {
             this->player.cancel_actions();
+            this->clear_render_callbacks();
           } break;
 
         } break; // end switch ev.key.sym
@@ -1056,8 +1057,8 @@ TEST_F(ActionTest, ScaleByActionWithNegativeFactor)
   const Point2i TEX_POS(Point2i::zero);
   const Size2i TEX_SIZE(128, 128);
   const Size2i EXPECTED_TEX_SIZE(
-    nom::round_float<int>( (real32)(TEX_SIZE.w) / abs(SCALE_FACTOR.w) ),
-    nom::round_float<int>( (real32)(TEX_SIZE.h) / abs(SCALE_FACTOR.h) )
+    nom::round_float<int>( (real32)(TEX_SIZE.w) / fabs(SCALE_FACTOR.w) ),
+    nom::round_float<int>( (real32)(TEX_SIZE.h) / fabs(SCALE_FACTOR.h) )
   );
 
   std::string TEX_FILE_PATH = resources[0].path() + "card.png";

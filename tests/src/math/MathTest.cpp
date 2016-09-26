@@ -29,12 +29,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gtest/gtest.h"
 
 #include <nomlib/math.hpp>
+#include <nomlib/core/strings.hpp> // scratch
 
 // #define NOM_DEBUG_MATH_TEST_OUTPUT_COLORS
 // #define NOM_DEBUG_MATH_TEST_OUTPUT_POINTS
 // #define NOM_DEBUG_MATH_TEST_OUTPUT_RECTS
 
 namespace nom {
+
+#define EXPECT_COLOR_EQ(expected, actual) \
+  { EXPECT_EQ(expected.r, actual.r); \
+    EXPECT_EQ(expected.g, actual.g); \
+    EXPECT_EQ(expected.b, actual.b); \
+    EXPECT_EQ(expected.a, actual.a); }
 
 class MathTest: public ::testing::Test
 {
@@ -562,6 +569,77 @@ TEST_F(MathTest, Size2iDivisionOperators)
   EXPECT_EQ( Size2i(1, 0), 2 / dims);
   EXPECT_EQ( Size2i(1, 2), dims / 2);
   EXPECT_EQ( Size2i(1, 1), dims /= dims);
+}
+
+// TODO(jeff): Finish test (make every color that we can from string input!)
+TEST_F(MathTest, GenerateColorsFromStrings)
+{
+  nom::Color4i gen_color;
+
+  gen_color = nom::make_color_from_string("ORANGE");
+  EXPECT_COLOR_EQ(Color4i::Orange, gen_color);
+
+  gen_color = nom::make_color_from_string("orange");
+  EXPECT_COLOR_EQ(Color4i::Orange, gen_color);
+
+  gen_color = nom::make_color_from_string("transparent");
+  EXPECT_COLOR_EQ(Color4i::Transparent, gen_color);
+
+  gen_color = nom::make_color_from_string("TRANSparent");
+  EXPECT_COLOR_EQ(Color4i::Transparent, gen_color);
+}
+
+TEST_F(MathTest, CreateColorFromInvalidHexString)
+{
+  nom::Color4i ret_color;
+
+  // no # prefix, empty string
+  ret_color = nom::make_color_from_hex_string("");
+  EXPECT_COLOR_EQ(nom::Color4i::Black, ret_color);
+
+  // no # prefix, string length of two (2)
+  ret_color = nom::make_color_from_hex_string("AA");
+  EXPECT_COLOR_EQ(nom::Color4i(170, 0, 0), ret_color);
+
+  // no # prefix, string length of four (4)
+  ret_color = nom::make_color_from_hex_string("FFFF");
+  EXPECT_COLOR_EQ(nom::Color4i(255, 255, 0), ret_color);
+
+  // no # prefix
+  ret_color = nom::make_color_from_hex_string("0FFFFF");
+  EXPECT_COLOR_EQ(nom::Color4i(15, 255, 255), ret_color);
+
+  // no # prefix, one character over (7)
+  ret_color = nom::make_color_from_hex_string("0FFFFF0");
+  EXPECT_COLOR_EQ(nom::Color4i(15, 255, 255), ret_color);
+}
+
+TEST_F(MathTest, CreateColorFromValidHexString)
+{
+  nom::Color4i ret_color;
+
+  ret_color = nom::make_color_from_hex_string("#ff00ff");
+  EXPECT_COLOR_EQ(nom::Color4i(255,0,255), ret_color);
+
+  ret_color = nom::make_color_from_hex_string("#FF00FF");
+  EXPECT_COLOR_EQ(nom::Color4i(255,0,255), ret_color);
+
+  ret_color = nom::make_color_from_hex_string("#ffffff");
+  EXPECT_COLOR_EQ(nom::Color4i::White, ret_color);
+
+  ret_color = nom::make_color_from_hex_string("#FFFFFF");
+  EXPECT_COLOR_EQ(nom::Color4i::White, ret_color);
+
+  // string length of seven (7) -- one over
+  ret_color = nom::make_color_from_hex_string("#FFFFFF0");
+  EXPECT_COLOR_EQ(nom::Color4i::White, ret_color);
+
+  // string length of seven (8) -- two over
+  ret_color = nom::make_color_from_hex_string("#0FFFAAF0");
+  EXPECT_COLOR_EQ(nom::Color4i(15, 255, 170), ret_color);
+
+  ret_color = nom::make_color_from_hex_string("#0FFFAA");
+  EXPECT_COLOR_EQ(nom::Color4i(15, 255, 170), ret_color);
 }
 
 /// \remarks This test should always be ran before nom::init_rand is used.

@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/actions/SpriteBatchAction.hpp"
 
 // Private headers
-#include "nomlib/core/helpers.hpp"
+#include "nomlib/core/unique_ptr.hpp"
 #include "nomlib/math/math_helpers.hpp"
 
 // Forward declarations

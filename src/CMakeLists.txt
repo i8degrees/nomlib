@@ -42,10 +42,23 @@ if( NOM_BUILD_GUI_UNIT )
   # set( NOM_USE_LIBROCKET_LUA FALSE )
 endif( NOM_BUILD_GUI_UNIT )
 
-if( NOM_BUILD_AUDIO_UNIT )
-  set( NOM_USE_OPENAL TRUE )
-  set( NOM_USE_LIBSNDFILE TRUE )
-endif( NOM_BUILD_AUDIO_UNIT )
+if(NOM_BUILD_AUDIO_UNIT)
+  # TODO(jeff): Consider setting NOM_USE_OPENAL when one of these three are
+  # set; it might also be good to add a check inside the OpenAL header file
+  # ensuring that only one of these three options are toggled at any given
+  # time.
+
+  # NOTE(jeff): OpenAL-Soft offers quad, 5.1, 6.1 and 7.1 channel
+  # configurations.
+  #
+  # http://openal.996291.n3.nabble.com/Openal-S-PDIF-and-surround-td2410.html
+  # http://steamcommunity.com/sharedfiles/filedetails/?id=230642515
+  set(NOM_USE_CREATIVE_OPENAL FALSE)
+  set(NOM_USE_APPLE_OPENAL TRUE)
+  set(NOM_USE_OPENAL_SOFT FALSE)
+
+  set(NOM_USE_LIBSNDFILE TRUE)
+endif(NOM_BUILD_AUDIO_UNIT)
 
 if( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT )
   set( NOM_USE_SCALEX TRUE )
@@ -89,7 +102,9 @@ if( NOM_BUILD_SYSTEM_UNIT )
 endif( NOM_BUILD_SYSTEM_UNIT )
 
 # nomlib-graphics
-add_subdirectory("graphics")
+if(NOM_BUILD_GRAPHICS_UNIT)
+  add_subdirectory("graphics")
+endif(NOM_BUILD_GRAPHICS_UNIT)
 
 # nomlib-gui
 if( NOM_BUILD_GUI_UNIT )
@@ -97,4 +112,10 @@ if( NOM_BUILD_GUI_UNIT )
 endif( NOM_BUILD_GUI_UNIT )
 
 # nomlib-audio
-add_subdirectory("audio")
+if(NOM_BUILD_AUDIO_UNIT)
+  add_subdirectory("audio")
+endif(NOM_BUILD_AUDIO_UNIT)
+
+if(NOM_BUILD_ACTIONS_UNIT)
+  add_subdirectory("actions")
+endif(NOM_BUILD_ACTIONS_UNIT)

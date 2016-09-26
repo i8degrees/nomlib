@@ -43,9 +43,13 @@ struct err
   err(const err& rhs);
 
   std::stringstream message;
+  // const char* message = nullptr;
 };
 
 inline std::stringstream& operator <<(std::stringstream& os, const err& error);
+
+/// \brief Get the error state (whether or not an error is set)
+bool error_state();
 
 /// \brief Get the current error.
 std::string error();
@@ -62,6 +66,11 @@ void set_error(const err& error);
 ///
 /// \remarks The global error buffer is cleared.
 void set_error(const char* message);
+
+/// \brief Set the error message.
+///
+/// \remarks The global error buffer is cleared.
+void set_error(const std::string& message);
 
 /// \brief Clears the global error buffer.
 void clear_error();

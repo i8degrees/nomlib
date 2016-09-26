@@ -42,12 +42,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #include <SDL_ttf.h>
 #endif
 
-#if defined( NOM_USE_OPENAL )
+#if defined(NOM_USE_CREATIVE_OPENAL) || defined(NOM_USE_APPLE_OPENAL) || defined(NOM_USE_OPENAL_SOFT)
   #include "nomlib/audio/AL/OpenAL.hpp"
 #endif
 
-#if defined(NOM_USE_OPENAL) && defined(NOM_USE_LIBSNDFILE)
-  #include "nomlib/audio/AL/SoundFile.hpp"
+#if defined(NOM_USE_LIBSNDFILE)
+  #include "nomlib/audio/libsndfile/SoundFileReader.hpp"
 #endif
 
 #if defined( NOM_USE_LIBROCKET )
@@ -171,7 +171,7 @@ void SDL2_ttf_version_info( void )
 
 void OpenAL_version_info( void )
 {
-  #if defined( NOM_USE_OPENAL )
+#if defined(NOM_USE_CREATIVE_OPENAL) || defined(NOM_USE_APPLE_OPENAL) || defined(NOM_USE_OPENAL_SOFT)
 
     struct OpenALVersionInfo
     {
@@ -192,7 +192,7 @@ void OpenAL_version_info( void )
     NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL renderer: ", info.renderer );
     NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL vendor: ", info.vendor );
     NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL extensions: ", info.extensions );
-  #endif
+#endif // end if NOM_USE_OPENAL
 }
 
 void libsndfile_version_info( void )

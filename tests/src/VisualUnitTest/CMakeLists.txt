@@ -2,8 +2,8 @@
 
 add_executable( VisualUnitTestFrameworkTest "VisualUnitTestFrameworkTest.cpp" )
 
-target_link_libraries(  VisualUnitTestFrameworkTest
-                        nomlib-visual-unit-test )
+target_link_libraries(VisualUnitTestFrameworkTest nomlib-visual-unit-test
+                      nomlib-graphics)
 
 nom_add_visual_test(  VisualUnitTestFrameworkTestGenRefImages
                       ${TESTS_INSTALL_DIR}/VisualUnitTestFrameworkTest

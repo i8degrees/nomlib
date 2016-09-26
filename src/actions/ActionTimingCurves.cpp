@@ -31,7 +31,7 @@ Easing algorithms are Copyright (c) 2001 Robert Penner
 #include "nomlib/actions/ActionTimingCurves.hpp"
 
 // Private headers
-#include "nomlib/core/helpers.hpp" // string helpers
+#include "nomlib/core/strings.hpp" // string helpers
 #include "nomlib/math/math_helpers.hpp" // definition of PI
 
 namespace nom {

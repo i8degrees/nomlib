@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/actions/DispatchQueue.hpp"
 
-#include "nomlib/core/helpers.hpp"
+#include "nomlib/core/unique_ptr.hpp"
 
 // Forward declarations
 #include "nomlib/actions/IActionObject.hpp"
@@ -110,7 +110,7 @@ DispatchQueue::update(uint32 player_state, real32 delta_time)
   uint32 &last_action_state = (*itr)->last_action_state;
 
   IActionObject::FrameState action_status =
-    IActionObject::FrameState::COMPLETED;
+    // IActionObject::FrameState::COMPLETED;
 
   action_status = action->next_frame(delta_time);
 

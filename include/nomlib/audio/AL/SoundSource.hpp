@@ -2,7 +2,7 @@
 
   nomlib - C++11 cross-platform game engine
 
-Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
+Copyright (c) 2013, 2014, 2015, 2016 Jeffrey Carpenter <i8degrees@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -34,234 +34,228 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point3.hpp"
-#include "nomlib/audio/ISoundSource.hpp"
 
 namespace nom {
+namespace audio {
 
 // Forward declarations
-class IAudioDevice;
+class IOAudioEngine;
 struct SoundBuffer;
+class ISoundFileReader;
+struct SoundInfo;
 
 /// Sound source is one of the three states: stopped, paused or playing
 enum AudioState
 {
-  AUDIO_STATE_STOPPED = 0,
+  AUDIO_STATE_INITIAL = 0,
+  AUDIO_STATE_STOPPED,
   AUDIO_STATE_PAUSED,
   AUDIO_STATE_PLAYING,
+  AUDIO_STATE_STREAMING,
 
   // TODO: Bit mask..?
   AUDIO_STATE_LOOPING
 };
 
-// enum AudioFormat
-// {
-//   AUDIO_FORMAT_MONO16,
-//   AUDIO_FORMAT_STEREO16,
-//   AUDIO_FORMAT_QUAD16,
-//   AUDIO_FORMAT_51CHN16,
-//   AUDIO_FORMAT_61CHN16
-// };
-
-/// \brief Base class for audio inputs
-/*
-class SoundSource: public ISoundSource
+enum AudioSourceType
 {
-  public:
-    virtual ~SoundSource();
-
-    // real64 duration() const override;
-
-    /// \brief Get the gain level of this audio source.
-    ///
-    /// \returns A number between 0..100 (min/max).
-    real32 volume() const override;
-
-    /// \brief Get the minimum gain level of this audio source.
-    ///
-    /// \returns A number between 0..100 (min/max).
-    real32 min_volume() const override;
-
-    /// \brief Get the maximum gain level of this audio source.
-    ///
-    /// \returns A number between 0..100 (min/max).
-    real32 max_volume() const override;
-
-    real32 pitch() const override;
-    bool loop() const override;
-
-    Point3f position() const override;
-    Point3f velocity() const override;
-
-    bool getPositionRelativeToListener() const override;
-    real32 getMinDistance() const override;
-    real32 getAttenuation() const override;
-
-    /// Obtain buffer identifier of source
-    uint32 buffer_id() const override;
-
-    /// Obtain the current playback position of source in seconds
-    real32 getPlayPosition() const override;
-
-    /// Obtain current state of sound
-    uint32 state() const override;
-
-    /// \brief Set a new gain level for this audio source.
-    ///
-    /// \param gain A 32-bit floating-point number between 0..100 (min/max).
-    ///
-    /// \remarks This controls the gain level of this audio source.
-    void set_volume(real32 gain) override;
-
-    /// \brief Set a new minimum gain level for this audio source.
-    ///
-    /// \param gain A 32-bit floating-point number between 0..100 (min/max).
-    ///
-    /// \remarks This controls the minimum gain level of this audio source.
-    void set_min_volume(real32 gain) override;
-
-    /// \brief Set a new maximum gain level for this audio source.
-    ///
-    /// \param gain A 32-bit floating-point number between 0..100 (min/max).
-    ///
-    /// \remarks This controls the maximum gain level of this audio source.
-    void set_max_volume(real32 gain) override;
-
-    void setPitch(real32 pitch) override;
-    void setLooping(bool loops) override;
-
-    void setPosition(real32 x, real32 y, real32 z) override;
-    void setPosition(const Point3f& position) override;
-
-    void set_velocity(real32 x, real32 y, real32 z) override;
-    void set_velocity(const Point3f& velocity) override;
-
-    void setPositionRelativeToListener(bool position) override;
-    void setMinDistance(real32 distance) override;
-    void setAttenuation(real32 attenuation) override;
-    /// Set playback position of source in seconds
-    void setPlayPosition(real32 seconds) override;
-
-    virtual void play() override;
-    // virtual void play(uint32 sound_id) override;
-    virtual void stop() override;
-    virtual void pause() override;
-    virtual void resume() override;
-
-    // virtual bool load_buffer(SoundBuffer& rhs) override;
-    // virtual bool load_file(const std::string& filename) override;
-
-    uint32 sound_id() const override;
-
-SoundSource();
-  protected:
-    /// Constructor can only be called from deriving classes
-    // SoundSource();
-
-    /// \brief A handle to the stored audio buffer data.
-    ///
-    /// \remarks Temporary, non-owned handle pointer.
-    SoundBuffer* buffer_ = nullptr;
-
-  private:
-    bool buffer_created_ = false;
-
-    /// Source identification; used by OpenAL
-    // uint32 source_id_ = 0;
+  AUDIO_TYPE_UNKNOWN = 0,
+  AUDIO_TYPE_STATIC,
+  AUDIO_TYPE_STREAMING,
 };
-*/
 
 // buffer creation
 
-SoundBuffer*
-create_audio_buffer();
+uint32 channel_format(uint32 num_channels, uint32 channel_format,
+                      IOAudioEngine* target);
+
+bool write_info(SoundBuffer* buffer, const SoundInfo& metadata);
+
+void* create_samples(nom::size_type alloc_bytes, uint32 num_channels,
+                     uint32 channel_format);
+
+void free_samples(uint32 channel_format, void* data);
+
+SoundBuffer* create_buffer_memory();
 
 SoundBuffer*
-create_audio_buffer(const std::string& filename, IAudioDevice* target);
+create_buffer_memory(nom::size_type total_sample_bytes, uint32 num_channels,
+                     uint32 channel_format);
 
-bool
-fill_audio_buffer(SoundBuffer* buffer, IAudioDevice* target);
+SoundBuffer*
+create_buffer(void* samples, const SoundInfo& metadata, IOAudioEngine* target);
 
-void free_buffer(SoundBuffer* buffer);
+// TODO(jeff): Restructure this function..? Perhaps split it up.
+SoundBuffer*
+create_buffer(const std::string& filename, ISoundFileReader* fp,
+                    IOAudioEngine* target);
 
-real32 audio_duration(SoundBuffer*);
+SoundBuffer*
+create_buffer(const std::string& filename, IOAudioEngine* target);
 
-enum AudioID
-{
-  AUDIO_BUFFER_ID = 0,
-  SOUND_ID
-};
+bool valid_buffer(SoundBuffer* buffer, IOAudioEngine* target);
+bool valid_source(SoundBuffer* buffer, IOAudioEngine* target);
 
-uint32 audio_id(SoundBuffer*, AudioID);
-nom::size_type sample_count(SoundBuffer*);
-nom::size_type frame_count(SoundBuffer* buffer);
-uint32 channel_count(SoundBuffer*);
-uint32 sample_rate(SoundBuffer*);
-nom::size_type audio_bytes(SoundBuffer*);
+SoundInfo info(SoundBuffer* buffer);
+
+void free_buffer(SoundBuffer* buffer, IOAudioEngine* target);
 
 // audio control
 
-void
-play_audio(SoundBuffer* buffer, IAudioDevice* target);
+// void queue(SoundBuffer* buffer, IOAudioEngine* target);
 
-void
-stop_audio(SoundBuffer* buffer, IAudioDevice* target);
+void play(SoundBuffer* buffer, IOAudioEngine* target);
 
-void
-pause_audio(SoundBuffer* buffer, IAudioDevice* target);
+void stop(SoundBuffer* buffer, IOAudioEngine* target);
 
-void
-resume_audio(SoundBuffer* buffer, IAudioDevice* target);
+void pause(SoundBuffer* buffer, IOAudioEngine* target);
 
-uint32
-audio_state(SoundBuffer* buffer, IAudioDevice* target);
+void resume(SoundBuffer* buffer, IOAudioEngine* target);
 
-real32 audio_pitch(SoundBuffer* buffer, IAudioDevice* target);
+uint32 state(SoundBuffer* buffer, IOAudioEngine* target);
+
+real32 pitch(SoundBuffer* buffer, IOAudioEngine* target);
 
 Point3f
-audio_position(SoundBuffer* buffer, IAudioDevice* target);
+position(SoundBuffer* buffer, IOAudioEngine* target);
 
 Point3f
-audio_velocity(SoundBuffer* buffer, IAudioDevice* target);
+velocity(SoundBuffer* buffer, IOAudioEngine* target);
+
+/// \brief Get the volume level of an audio device.
+///
+/// \returns A number between 0..100 (min/max).
+real32
+volume(IOAudioEngine* target);
+
+Point3f
+position(IOAudioEngine* target);
+
+/// \brief Get the volume level of an audio buffer.
+///
+/// \returns A number between 0..100 (min/max).
+real32
+volume(SoundBuffer* buffer, IOAudioEngine* target);
+
+/// \brief Get the minimum volume level of an audio buffer.
+///
+/// \returns A number between 0..100 (min/max).
+real32
+min_volume(SoundBuffer* buffer, IOAudioEngine* target);
+
+/// \brief Get the maximum volume level of an audio buffer.
+///
+/// \returns A number between 0..100 (min/max).
+real32
+max_volume(SoundBuffer* buffer, IOAudioEngine* target);
 
 real32
-audio_volume(SoundBuffer* buffer, IAudioDevice* target);
+playback_position(SoundBuffer* buffer, IOAudioEngine* target);
 
 real32
-audio_min_volume(SoundBuffer* buffer, IAudioDevice* target);
+playback_samples(SoundBuffer* buffer, IOAudioEngine* target);
 
-real32
-audio_max_volume(SoundBuffer* buffer, IAudioDevice* target);
+// TODO(jeff): Update me
+SoundBuffer* clone_buffer(const SoundBuffer* rhs);
 
-real32
-audio_playback_position(SoundBuffer* buffer, IAudioDevice* target);
+// void
+// set_state(SoundBuffer* buffer, IOAudioEngine* target, uint32 state);
 
-real32
-audio_playback_samples_position(SoundBuffer* buffer, IAudioDevice* target);
-
-void
-set_audio_state(SoundBuffer* buffer, IAudioDevice* target, AudioState);
-
-void set_audio_volume(IAudioDevice* target, real32 gain);
-
-void
-set_audio_volume(SoundBuffer* buffer, IAudioDevice* target, real32 gain);
-
-void set_min_volume(SoundBuffer* buffer, IAudioDevice* target, real32 gain);
-
-void set_max_volume(SoundBuffer* buffer, IAudioDevice* target, real32 gain);
-
-void set_audio_pitch(SoundBuffer* buffer, IAudioDevice* target, real32 pitch);
+/// \brief Set the master volume level of an audio output.
+///
+/// \param gain A 32-bit floating-point number between 0..100 (min/max),
+/// representing the volume level.
+///
+/// \remarks This overrides an audio buffer's local volume level.
+void set_volume(real32 gain, IOAudioEngine* target);
 
 void
-set_audio_velocity(SoundBuffer* buffer, IAudioDevice* target, const Point3f& v);
+set_volume(SoundBuffer* buffer, IOAudioEngine* target, real32 gain);
+
+/// \brief Set the minimum volume level for an audio buffer.
+///
+/// \param gain A 32-bit floating-point number between 0..100 (min/max).
+void set_min_volume(SoundBuffer* buffer, IOAudioEngine* target, real32 gain);
+
+/// \brief Set the maximum volume level for an audio buffer.
+///
+/// \param gain A 32-bit floating-point number between 0..100 (min/max).
+void set_max_volume(SoundBuffer* buffer, IOAudioEngine* target, real32 gain);
+
+void set_pitch(SoundBuffer* buffer, IOAudioEngine* target, real32 pitch);
 
 void
-set_audio_position(SoundBuffer* buffer, IAudioDevice* target, const Point3f& pos);
+set_velocity(SoundBuffer* buffer, IOAudioEngine* target, const Point3f& v);
 
 void
-set_audio_playback_position(SoundBuffer* buffer, IAudioDevice* target,
+set_position(SoundBuffer* buffer, IOAudioEngine* target, const Point3f& pos);
+
+void
+set_playback_position(SoundBuffer* buffer, IOAudioEngine* target,
                             real32 offset_seconds);
 
+void suspend(IOAudioEngine* target);
+void resume(IOAudioEngine* target);
+
+} // namespace audio
 } // namespace nom
 
 #endif // NOMLIB_AL_SOUNDSOURCE_HEADERS defined
+
+/// \class nom::SoundFileReader
+/// \ingroup audio
+///
+/// **NOTE:** This documentation section is a *work in progress*!
+///
+/// ### Using std::vector with nom::SoundFileReader
+///
+/// \code
+///
+///  ISoundFileReader fp = new SoundFileReader();
+///  NOM_ASSERT(fp != nullptr);
+///  if(fp == nullptr) {
+///    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION,
+///                "Failed to create audio buffer: out of memory!");
+///    return;
+///  }
+///
+///  if(fp->open(filename, metadata) == false) {
+///    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION,
+///               "Could not load audio from input file:", filename);
+///    return;
+///  }
+///
+///  NOM_ASSERT(fp->valid() == true);
+///
+///  // The number of bytes to read into our temporary read buffer in a single
+///  // update cycle
+///  const nom::size_type CHUNK_SIZE = metadata.total_bytes;
+///
+///  // Temporary input buffer
+///  std::vector<int16> read_buffer;
+///
+///  // Output buffer; the audio samples for audio playback with one of nomlib's
+///  // audio engines, i.e.: OpenAL
+///  std::vector<int16> buffer = nullptr;
+///
+///  nom::size_type total_samples_read = 0;
+///  int64 samples_read = -1;
+///  while(samples_read != 0) {
+///    samples_read = fp->read(read_buffer.data(), CHUNK_SIZE);
+///
+///    auto& samples = buffer;
+///    samples.insert(samples.end(), read_buffer.begin(),
+///                   read_buffer.begin() + samples_read);
+///
+///    total_samples_read += samples_read;
+///
+///    if(total_samples_read >= CHUNK_SIZE) {
+///      break;
+///     }
+///  }
+///
+///  delete NOM_SCAST(int16*, buffer);
+///  buffer = nullptr;
+///
+/// \endcode
+///

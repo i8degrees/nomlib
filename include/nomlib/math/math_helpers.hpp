@@ -96,6 +96,8 @@ const Point2d rotate_points ( float angle, float x, float y, float pivot_x, floa
 ///
 /// \remarks The number is round up when it is greater than 0.5 and rounded
 /// down when the number is less than 0.5
+///
+/// \TODO Rename to round_real32
 template <typename T>
 inline T round_float(real32 number)
 {
@@ -106,6 +108,8 @@ inline T round_float(real32 number)
 /// \brief Round a fractional value down to the nearest integral number.
 ///
 /// \param number The 32-bit floating-point number to round.
+///
+/// \TODO Rename to round_real32_down
 template <typename T>
 inline T round_float_down(real32 number)
 {
@@ -116,6 +120,8 @@ inline T round_float_down(real32 number)
 /// \brief Round a fractional value up to the largest integral number.
 ///
 /// \param number The 32-bit floating-point number to round.
+///
+/// \TODO Rename to round_real32_up
 template <typename T>
 inline T round_float_up(real32 number)
 {
@@ -129,6 +135,8 @@ inline T round_float_up(real32 number)
 ///
 /// \remarks The number is round up when it is greater than 0.5 and rounded
 /// down when the number is less than 0.5.
+///
+/// \TODO Rename to round_double64
 template <typename T>
 inline T round_double(real64 number)
 {
@@ -136,6 +144,7 @@ inline T round_double(real64 number)
   return NOM_SCAST(T, ret);
 }
 
+// TODO(jeff): Rename to truncate_real32
 template <typename T>
 inline T truncate_float(real32 number)
 {
@@ -143,11 +152,27 @@ inline T truncate_float(real32 number)
   return(ret);
 }
 
-template <typename T>
-inline T absolute_float(real32 number)
+// FIXME(jeff): We should provide two separate functions here, absolute_real32
+// and absolute_real64. See also: man 3 fabs
+inline real32 absolute_real32(real32 number)
 {
-  T ret = fabs(number);
-  return(ret);
+  real32 result = fabsf(number);
+
+  return result;
+}
+
+inline real64 absolute_real64(real64 number)
+{
+  real64 result = fabs(number);
+
+  return result;
+}
+
+inline int absolute_int(int number)
+{
+  int result = std::abs(number);
+
+  return result;
 }
 
 /// \brief Compare two numbers for the smaller of the two values.
@@ -167,6 +192,22 @@ template <typename T>
 inline T maximum(const T& a, const T& b)
 {
   T result = (a < b) ? b : a;
+  return result;
+}
+
+/// \see nom::minimum
+template <typename T>
+inline T clamp_min(const T& a, const T& b)
+{
+  auto result = nom::minimum<T>(a, b);
+  return result;
+}
+
+/// \see nom::maximum
+template <typename T>
+inline T clamp_max(const T& a, const T& b)
+{
+  auto result = nom::maximum<T>(a, b);
   return result;
 }
 

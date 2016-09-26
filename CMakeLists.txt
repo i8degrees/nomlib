@@ -39,16 +39,17 @@ option ( EXAMPLES "Build nomlib usage examples" off )
 option( NOM_BUILD_TESTS "Build unit tests" off )
 set( NOM_INSTALL_GENERATED_DOCS off )
 
+option( NOM_BUILD_ACTIONS_UNIT "Actions subsystem" ON)
+option( NOM_BUILD_AUDIO_UNIT "Audio subsystem" ON)
 option( NOM_BUILD_CORE_UNIT "Engine core" ON )
 option( NOM_BUILD_MATH_UNIT "Math utilities" ON )
 option( NOM_BUILD_FILE_UNIT "Filesystem access" ON )
-option( NOM_BUILD_AUDIO_UNIT "Audio subsystem" ON )
-option( NOM_BUILD_GRAPHICS_UNIT "Graphics core" ON )
+option( NOM_BUILD_GRAPHICS_UNIT "Graphics core" ON)
 option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Build with scale2x & hqx algorithms" ON )
 option( NOM_BUILD_SYSTEM_UNIT "System unit" ON )
 option( NOM_BUILD_PTREE_UNIT "Generic container for serialization" ON )
 option( NOM_BUILD_SERIALIZERS_UNIT "Serialization for JSON, XML, HTML" ON )
-option( NOM_BUILD_GUI_UNIT "GUI subsystem" ON )
+option( NOM_BUILD_GUI_UNIT "GUI subsystem" OFF)
 
 project( nomlib ) # Sets PROJECT_NAME variable for us
 
@@ -74,7 +75,7 @@ if ( DEBUG )
     # TODO: Enable -Wsign-conversion, -Wextra
     # TODO: Consider enabling some of these run-time checks that clang offers,
     # i.e.:: -fsanitize=address, -fsanitize=integer, -fsanitize=undefined,
-    # -fsanitize=unsigned-integer-overflow, etc.
+    # -fsanitize=unsigned-integer-overflow, -fsanitize=float-divide-by-zero, etc.
     # See also: http://clang.llvm.org/docs/UsersManual.html#controlling-code-generation
     # See also: Malloc Debugging under OSX: https://developer.apple.com/library/mac/documentation/Performance/Conceptual/ManagingMemory/Articles/MallocDebug.html#//apple_ref/doc/uid/20001884-CJBJFIDD
     set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused -O0" )

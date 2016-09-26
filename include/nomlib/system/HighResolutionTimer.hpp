@@ -76,6 +76,13 @@ class HighResolutionTimer
     /// \param hires_ticks A high resolution timing value to convert.
     ///
     /// \see ::ticks, nom::hires_ticks
+    real64 to_seconds() const;
+
+    /// \brief Convert a high resolution timing value to seconds.
+    ///
+    /// \param hires_ticks A high resolution timing value to convert.
+    ///
+    /// \see ::ticks, nom::hires_ticks
     static real64 to_seconds(uint64 hires_ticks);
 
   private:

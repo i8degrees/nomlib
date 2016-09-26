@@ -94,54 +94,6 @@ if( NOM_BUILD_GRAPHICS_UNIT )
         ${INC_DIR}/math/Transformable.hpp
   )
 
-  # TODO: Consider breaking the actions engine off into its own library? It
-  # appears to be a strong candidate for doing so. I'll see how future build
-  # times are affected by leaving things as is for now -- because we are able
-  # to forward declare all graphical components used here, we may well be OK.
-  set(  NOM_ACTIONS_SOURCE
-        ${INC_DIR}/actions.hpp
-        ${SRC_DIR}/actions/ActionTimingCurves.cpp
-        ${INC_DIR}/actions/ActionTimingCurves.hpp
-        ${SRC_DIR}/actions/IActionObject.cpp
-        ${INC_DIR}/actions/IActionObject.hpp
-        ${SRC_DIR}/actions/AnimateTexturesAction.cpp
-        ${INC_DIR}/actions/AnimateTexturesAction.hpp
-        ${SRC_DIR}/actions/SpriteBatchAction.cpp
-        ${INC_DIR}/actions/SpriteBatchAction.hpp
-        ${SRC_DIR}/actions/FadeInAction.cpp
-        ${INC_DIR}/actions/FadeInAction.hpp
-        ${SRC_DIR}/actions/FadeOutAction.cpp
-        ${INC_DIR}/actions/FadeOutAction.hpp
-        ${SRC_DIR}/actions/FadeAlphaByAction.cpp
-        ${INC_DIR}/actions/FadeAlphaByAction.hpp
-        ${SRC_DIR}/actions/WaitForDurationAction.cpp
-        ${INC_DIR}/actions/WaitForDurationAction.hpp
-        ${SRC_DIR}/actions/MoveByAction.cpp
-        ${INC_DIR}/actions/MoveByAction.hpp
-        ${SRC_DIR}/actions/ScaleByAction.cpp
-        ${INC_DIR}/actions/ScaleByAction.hpp
-        ${SRC_DIR}/actions/ReversedAction.cpp
-        ${INC_DIR}/actions/ReversedAction.hpp
-        ${SRC_DIR}/actions/RepeatForAction.cpp
-        ${INC_DIR}/actions/RepeatForAction.hpp
-        ${SRC_DIR}/actions/RepeatForeverAction.cpp
-        ${INC_DIR}/actions/RepeatForeverAction.hpp
-        ${SRC_DIR}/actions/CallbackAction.cpp
-        ${INC_DIR}/actions/CallbackAction.hpp
-        ${SRC_DIR}/actions/RemoveAction.cpp
-        ${INC_DIR}/actions/RemoveAction.hpp
-        ${SRC_DIR}/actions/GroupAction.cpp
-        ${INC_DIR}/actions/GroupAction.hpp
-        ${SRC_DIR}/actions/SequenceAction.cpp
-        ${INC_DIR}/actions/SequenceAction.hpp
-        ${SRC_DIR}/actions/DispatchQueue.cpp
-        ${INC_DIR}/actions/DispatchQueue.hpp
-        ${SRC_DIR}/actions/ActionPlayer.cpp
-        ${INC_DIR}/actions/ActionPlayer.hpp )
-
-  # Actions engine
-  list( APPEND NOM_GRAPHICS_SOURCE ${NOM_ACTIONS_SOURCE} )
-
   # Common dependencies on all platforms
   set(  NOM_GRAPHICS_DEPS nomlib-core nomlib-math nomlib-file
         nomlib-serializers nomlib-system )

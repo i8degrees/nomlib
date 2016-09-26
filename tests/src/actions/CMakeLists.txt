@@ -21,7 +21,8 @@ if( NOM_BUILD_ACTION_TESTS )
 
   add_executable( ActionTest ${ACTION_SRC} )
 
-  target_link_libraries( ActionTest nomlib-visual-unit-test nomlib-graphics )
+  target_link_libraries(ActionTest nomlib-visual-unit-test nomlib-actions
+                        nomlib-graphics)
 
   set( ACTION_TEST_BIN "${TESTS_INSTALL_DIR}/ActionTest" )
 
@@ -102,8 +103,8 @@ if( NOM_BUILD_ACTION_TIMING_CURVES_TESTS )
 
   add_executable( ActionTimingCurvesTest ${ACTION_TIMING_CURVES_SRC} )
 
-  target_link_libraries(  ActionTimingCurvesTest nomlib-graphics
-                          nomlib-unit-test )
+  target_link_libraries(ActionTimingCurvesTest nomlib-unit-test
+                        nomlib-actions)
 
   GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/ActionTimingCurvesTest
                     "" # args

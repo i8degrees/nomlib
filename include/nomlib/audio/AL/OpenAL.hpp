@@ -29,17 +29,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_OPENAL_HEADERS
 #define NOMLIB_OPENAL_HEADERS
 
-#include <iostream>
-#include <string>
-#include <ctime>
-
 #include "nomlib/config.hpp"
-#include "nomlib/core/clock.hpp"
 
-#if defined(NOM_PLATFORM_OSX) // Use platform-distributed OpenAL headers
+#if defined(NOM_USE_CREATIVE_OPENAL) || defined(NOM_USE_OPENAL_SOFT)
+  // Use OpenAL-soft distributed SDK headers
+  #include <AL/al.h>
+  #include <AL/alc.h>
+  #include <AL/alext.h>
+#elif defined(NOM_PLATFORM_OSX) && defined(NOM_USE_APPLE_OPENAL)
+  // Use Apple's distributed OpenAL SDK headers
   #include <OpenAL/al.h>
   #include <OpenAL/alc.h>
-#else // As per the header inclusion path that FindOpenAL.cmake offers us
+  #include <OpenAL/MacOSX_OALExtensions.h>
+#else
   #include <al.h>
   #include <alc.h>
 #endif
@@ -67,16 +69,37 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define AL_CLEAR_ERR() alGetError();
 
 namespace nom {
-
-/// Optimal sound frame size (in bytes); used by libsndfile
-const nom::uint32 BUFFER_SIZE = 4096;
-const nom::uint32 NUM_SOURCES = 16; // not implemented
-
 namespace priv {
 
 void al_err(const std::string& func, const std::string& file, uint32 line);
 
 } // namespace priv
+} // namespace nom
+
+namespace nom {
+namespace audio {
+
+// enum AudioError
+// {
+//   ERR_NO_ERROR = 0,
+//   ERR_SYSTEM_CALL_FAILURE,
+//   ERR_OUT_OF_MEMORY,
+//   ERR_INVALID_OPERATION,
+// };
+
+// struct err_t
+// {
+//   uint32 error_code = 0;
+// };
+
+// // uint32 err(err_t* err);
+// uint32 err();
+// const char* err_str(uint32 errno);
+
+// void set_err(uint32 errno);
+// void set_err(err_t* err);
+
+} // namespace audio
 } // namespace nom
 
 #endif // NOMLIB_OPENAL_HEADERS defined

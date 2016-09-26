@@ -36,10 +36,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/audio/IAudioDevice.hpp"
 
 namespace nom {
+namespace audio {
 
 // Forward declarations
 // struct SoundBuffer;
-class IOAudioEngine;
+// class IOAudioEngine;
 
 // void null_set_audio_volume(SoundBuffer* target, real32 gain);
 
@@ -49,21 +50,27 @@ class NullAudioDevice: public IAudioDevice
     NullAudioDevice();
     virtual ~NullAudioDevice();
 
-    virtual void free_device() override;
+    // virtual void* device() const override;
+    // virtual void* context() const override;
+    // virtual IOAudioEngine* caps() const override;
+
     virtual bool valid() const override;
-    virtual bool initialize(const AudioSpec* spec) override;
-
-    virtual IOAudioEngine* caps() override;
-    virtual void set_caps(IOAudioEngine* caps) override;
-
-    // std::shared_ptr<ALCdevice> getAudioDevice( void ) const;
     std::string device_name() const override;
-    // bool isExtensionSupported( const std::string& extension ) const override;
+
+    virtual IOAudioEngine* open(const audio::AudioSpec* spec) override;
+    virtual void suspend() override;
+    virtual void resume() override;
+    virtual void close() override;
 
   private:
-    IOAudioEngine* impl_ = nullptr;
+    bool initialized_ = false;
+    // IOAudioEngine* impl_ = nullptr;
+    std::string device_name_;
 };
 
+IOAudioEngine* create_null_audio_device(const audio::AudioSpec* spec);
+
+} // namespace audio
 } // namespace nom
 
 #endif // include guard defined

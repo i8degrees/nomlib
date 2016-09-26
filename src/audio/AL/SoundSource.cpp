@@ -2,7 +2,7 @@
 
   nomlib - C++11 cross-platform game engine
 
-Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
+Copyright (c) 2013, 2014, 2015, 2016 Jeffrey Carpenter <i8degrees@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -29,910 +29,580 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/audio/AL/SoundSource.hpp"
 
 // Private headers
-#include "nomlib/audio/AL/OpenAL.hpp"
-#include "nomlib/audio/AL/SoundFile.hpp"
-#include "nomlib/core/clock.hpp"
+#include "nomlib/audio/audio_defs.hpp"
+// #include "nomlib/audio/SoundFile.hpp"
+#include "nomlib/audio/libsndfile/SoundFileReader.hpp"
 
 // Forward declarations
-// #include "nomlib/audio/AL/SoundBuffer.hpp"
-#include "SoundBuffer_priv.hpp"
-#include "ALAudioDeviceCaps.hpp"
-#include "nomlib/audio/AL/AudioDevice.hpp"
-
-// Forward declarations (third-party)
-#include <sndfile.h>
+#include "nomlib/math/Point3.hpp"
+#include "nomlib/audio/SoundBuffer.hpp"
+#include "nomlib/audio/IOAudioEngine.hpp"
 
 namespace nom {
+namespace audio {
 
-const nom::real32 MIN_VOLUME = 0.0f;
-const nom::real32 MAX_VOLUME = 100.0f;
-
-
-#if 0
-// TOOD: REMOVE
-SoundSource::SoundSource()
+uint32 channel_format(uint32 num_channels, uint32 channel_format,
+                      IOAudioEngine* target)
 {
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
-}
-
-// TOOD: REMOVE
-SoundSource::~SoundSource()
-{
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
-
-  this->stop();
-
-  // if( this->buffer_ != nullptr ) {
-    // AL_CLEAR_ERR();
-    // alDeleteSources(1, &this->buffer_->sound_id);
-    // AL_CHECK_ERR_VOID();
-  // }
-
-  if( this->buffer_ != nullptr && this->buffer_created_ == true ) {
-    nom::free_buffer(this->buffer_);
-  }
-}
-
-// TOOD: REMOVE
-uint32 SoundSource::sound_id() const
-{
-  if( this->buffer_ != nullptr ) {
-    return this->buffer_->sound_id;
-  } else {
-    // Err
-    return 0;
-  }
-}
-
-// TODO: REMOVE
-// real64 SoundSource::duration() const
-// {
-//   real64 result = 0.0f;
-
-//   if( this->buffer_ != nullptr ) {
-//     result = this->buffer_->duration;
-//   }
-
-//   return result;
-// }
-
-// TOOD: REMOVE
-real32 SoundSource::volume() const
-{
-  real32 gain_level = nom::MIN_VOLUME;
-
-  if( this->buffer_ != nullptr ) {
-    AL_CLEAR_ERR();
-    alGetSourcef(this->buffer_->sound_id, AL_GAIN, &gain_level);
-    AL_CHECK_ERR_VOID();
+  if(num_channels > 0 && target != nullptr && target->valid() == true) {
+    target->channel_format(num_channels, channel_format);
   }
 
-  // De-normalize; 0..1 -> 0..100
-  gain_level = gain_level * 100.0f;
-
-  return(gain_level);
+  return channel_format;
 }
 
-// TOOD: REMOVE
-real32 SoundSource::min_volume() const
+bool write_info(SoundBuffer* buffer, const SoundInfo& metadata)
 {
-  real32 min_gain = nom::MIN_VOLUME;
-
-  if( this->buffer_ != nullptr ) {
-    AL_CLEAR_ERR();
-    alGetSourcef(this->buffer_->sound_id, AL_MIN_GAIN, &min_gain);
-    AL_CHECK_ERR_VOID();
-  }
-
-  // De-normalize; 0..1 -> 0..100
-  min_gain = min_gain * 100.0f;
-
-  return(min_gain);
-}
-
-// TOOD: REMOVE
-real32 SoundSource::max_volume() const
-{
-  real32 max_gain = nom::MIN_VOLUME;
-
-  if( this->buffer_ != nullptr ) {
-    AL_CLEAR_ERR();
-    alGetSourcef(this->buffer_->sound_id, AL_MAX_GAIN, &max_gain);
-    AL_CHECK_ERR_VOID();
-  }
-
-  // De-normalize; 0..1 -> 0..100
-  max_gain = max_gain * 100.0f;
-
-  return(max_gain);
-}
-
-// TOOD: REMOVE
-real32 SoundSource::pitch() const
-{
-  auto pitch = 1.0f;
-
-  if( this->buffer_ != nullptr ) {
-    AL_CLEAR_ERR();
-    alGetSourcef(this->buffer_->sound_id, AL_PITCH, &pitch);
-    AL_CHECK_ERR_VOID();
-  }
-
-  return pitch;
-}
-
-// TOOD: REMOVE
-bool SoundSource::loop() const
-{
-  auto result = 0;
-  return result;
-}
-
-// TOOD: REMOVE
-Point3f SoundSource::position() const
-{
-  auto result = Point3f::null;
-  return result;
-}
-
-// TOOD: REMOVE
-Point3f SoundSource::velocity() const
-{
-  auto result = Point3f::null;
-  return result;
-}
-
-// bool SoundSource::position_relative_listener() const
-bool SoundSource::getPositionRelativeToListener() const
-{
-  ALint relative = 0;
-
-  if( this->buffer_ != nullptr ) {
-    AL_CLEAR_ERR();
-    alGetSourcei(this->buffer_->sound_id, AL_SOURCE_RELATIVE, &relative);
-    AL_CHECK_ERR_VOID();
-  }
-
-  return (relative != 0);
-}
-
-real32 SoundSource::getMinDistance() const
-{
-  auto result = 0;
-  return result;
-}
-
-real32 SoundSource::getAttenuation() const
-{
-  auto result = 0;
-  return result;
-}
-
-// TOOD: REMOVE
-uint32 SoundSource::buffer_id() const
-{
-  uint32 result = 0;
-  return result;
-}
-
-// TOOD: REMOVE
-real32 SoundSource::getPlayPosition() const
-{
-  real32 playback_position = 0.0f;
-
-  if( this->buffer_ != nullptr ) {
-    AL_CLEAR_ERR();
-    alGetSourcef(this->buffer_->sound_id, AL_SEC_OFFSET, &playback_position);
-    AL_CHECK_ERR_VOID();
-  }
-
-  return playback_position;
-}
-
-// TOOD: REMOVE
-uint32 SoundSource::state() const
-{
-  return 0;
-}
-
-// TOOD: REMOVE
-void SoundSource::set_volume(real32 gain)
-{
-}
-
-// TOOD: REMOVE
-void SoundSource::set_min_volume(real32 gain)
-{
-  if( gain >= nom::MIN_VOLUME && gain <= nom::MAX_VOLUME ) {
-
-    // normalize the current gain level to a number between 0..1
-    if( this->buffer_ != nullptr ) {
-      AL_CLEAR_ERR();
-      alSourcef(this->buffer_->sound_id, AL_MIN_GAIN, gain * 0.01f);
-      AL_CHECK_ERR_VOID();
-    }
-  }
-}
-
-// TOOD: REMOVE
-void SoundSource::set_max_volume(real32 gain)
-{
-  if( gain >= nom::MIN_VOLUME && gain <= nom::MAX_VOLUME ) {
-
-    // normalize the gain
-    if( this->buffer_ != nullptr ) {
-      AL_CLEAR_ERR();
-      alSourcef(this->buffer_->sound_id, AL_MAX_GAIN, gain * 0.01f);
-      AL_CHECK_ERR_VOID();
-    }
-  }
-}
-
-void SoundSource::setPitch(real32 pitch)
-{
-  if( this->buffer_ != nullptr ) {
-    AL_CLEAR_ERR();
-    alSourcef(this->buffer_->sound_id, AL_PITCH, pitch);
-    AL_CHECK_ERR_VOID();
-  }
-}
-
-// TOOD: REMOVE
-void SoundSource::setLooping ( bool loops )
-{
-  if( this->buffer_ != nullptr ) {
-    AL_CLEAR_ERR();
-    alSourcei(this->buffer_->sound_id, AL_LOOPING, loops);
-    AL_CHECK_ERR_VOID();
-  }
-}
-
-// TOOD: REMOVE
-void SoundSource::setPosition ( real32 x, real32 y, real32 z )
-{
-  if( this->buffer_ != nullptr ) {
-    AL_CLEAR_ERR();
-    alSource3f(this->buffer_->sound_id, AL_POSITION, x, y, z);
-    AL_CHECK_ERR_VOID();
-  }
-}
-
-// TOOD: REMOVE
-void SoundSource::setPosition ( const Point3f& position )
-{
-  this->setPosition ( position.x, position.y, position.z );
-}
-
-// TOOD: REMOVE
-void SoundSource::set_velocity(real32 x, real32 y, real32 z)
-{
-  if( this->buffer_ != nullptr ) {
-    AL_CLEAR_ERR();
-    alSource3f(this->buffer_->sound_id, AL_VELOCITY, x, y, z);
-    AL_CHECK_ERR_VOID();
-  }
-}
-
-// TOOD: REMOVE
-void SoundSource::set_velocity(const Point3f& v)
-{
-  this->set_velocity(v.x, v.y, v.z);
-}
-
-void SoundSource::setPositionRelativeToListener ( bool relative )
-{
-  if( this->buffer_ != nullptr ) {
-    AL_CLEAR_ERR();
-    alSourcei(this->buffer_->sound_id, AL_SOURCE_RELATIVE, relative);
-    AL_CHECK_ERR_VOID();
-  }
-}
-
-void SoundSource::setMinDistance(real32 distance)
-{
-  if( this->buffer_ != nullptr ) {
-    AL_CLEAR_ERR();
-    alSourcef(this->buffer_->sound_id, AL_REFERENCE_DISTANCE, distance);
-    AL_CHECK_ERR_VOID();
-  }
-}
-
-void SoundSource::setAttenuation(real32 attenuation)
-{
-  if( this->buffer_ != nullptr ) {
-    AL_CLEAR_ERR();
-    alSourcef(this->buffer_->sound_id, AL_ROLLOFF_FACTOR, attenuation);
-    AL_CHECK_ERR_VOID();
-  }
-}
-
-// TOOD: REMOVE
-void SoundSource::setPlayPosition ( real32 seconds )
-{
-  if( this->buffer_ != nullptr ) {
-    AL_CLEAR_ERR();
-    alSourcef(this->buffer_->sound_id, AL_SEC_OFFSET, seconds);
-    AL_CHECK_ERR_VOID();
-  }
-}
-
-// TOOD: REMOVE
-void SoundSource::play()
-{
-}
-
-void SoundSource::stop()
-{
-
-}
-
-void SoundSource::pause()
-{
-}
-
-void SoundSource::resume()
-{
-  this->play();
-}
-#endif
-
-// bool SoundSource::load_buffer(const ISoundBuffer& rhs)
-// {
-//   NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE_AUDIO);
-
-//   this->buffer_ = &rhs;
-
-//   if( this->buffer_ != nullptr ) {
-//     // NOTE: Generate a unique source identifier for our audio buffer
-//     AL_CLEAR_ERR();
-//     alGenSources(1, &this->source_id_);
-//     AL_CHECK_ERR_VOID();
-
-//     auto buffer_id = this->buffer_->buffer_id;
-
-//     // NOTE: Attach the audio buffer as the sound source
-//     AL_CLEAR_ERR();
-//     alSourcei(this->source_id_, AL_BUFFER, buffer_id);
-//     AL_CHECK_ERR_VOID();
-//   }
-
-//   return true;
-// }
-
-// static
-// uint32 generate_sound_id()
-// {
-//   uint32 source_id = 0;
-
-//   AL_CLEAR_ERR();
-//   alGenSources(1, &source_id);
-//   AL_CHECK_ERR_VOID();
-
-//   return source_id;
-// }
-
-#if 0
-bool SoundSource::load_buffer(SoundBuffer& rhs)
-{
-  this->buffer_ = &rhs;
-
-  if( this->buffer_ != nullptr ) {
-    // NOTE: Generate a unique source identifier for our audio buffer
-    this->buffer_->sound_id = generate_sound_id();
-
-    auto buffer_id = this->buffer_->buffer_id;
-
-    // NOTE: Attach the audio buffer as the sound source
-    AL_CLEAR_ERR();
-    alSourcei(this->buffer_->sound_id, AL_BUFFER, buffer_id);
-    AL_CHECK_ERR_VOID();
-  }
-
-  return true;
-
-}
-#endif
-#if 0
-bool SoundSource::load_file(const std::string& filename)
-{
-  // NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE_AUDIO);
-
-  this->buffer_ = nom::create_audio_buffer(filename);
-  if( this->buffer_ != nullptr) {
-
-    // NOTE: Generate a unique source identifier for our audio buffer
-    buffer_->sound_id = generate_sound_id();
-
-    auto buffer_id = this->buffer_->buffer_id;
-
-    // NOTE: Attach the audio buffer as the sound source
-    AL_CLEAR_ERR();
-    alSourcei(buffer_->sound_id, AL_BUFFER, buffer_id);
-    AL_CHECK_ERR_VOID();
-
-    this->buffer_created_ = true;
-  } else {
-    // ERR
+  if(buffer == nullptr) {
     return false;
   }
 
+  buffer->frame_count = metadata.frame_count;
+  buffer->sample_count = metadata.sample_count;
+  buffer->sample_rate = metadata.sample_rate;
+  buffer->channel_count = metadata.channel_count;
+  buffer->channel_format = metadata.channel_format;
+  buffer->duration = metadata.duration;
+  buffer->total_bytes = metadata.total_bytes;
+  buffer->seekable = metadata.seekable;
+
   return true;
 }
-#endif
 
-// buffer creation
-
-SoundBuffer*
-create_audio_buffer()
+void*
+create_samples(nom::size_type alloc_bytes, uint32 num_channels,
+               uint32 channel_format)
 {
-  SoundBuffer* buffer = new SoundBuffer();
+  void* samples_buffer = nullptr;
 
-  return buffer;
+  switch(channel_format) {
+    default:
+    case AUDIO_FORMAT_UNKNOWN: {
+      // ...Err state...
+      samples_buffer = nullptr;
+    } break;
+
+    case AUDIO_FORMAT_S8:
+    case AUDIO_FORMAT_U8:
+    case AUDIO_FORMAT_S16: {
+      // FIXME(jeff): I'm not sure we need this large of a buffer here; verify!
+      samples_buffer = new int16[alloc_bytes * num_channels];
+    } break;
+
+    case AUDIO_FORMAT_S24: {
+      NOM_ASSERT_INVALID_PATH("Not implemented");
+    } break;
+
+    case AUDIO_FORMAT_S32:
+    case AUDIO_FORMAT_R32:
+    case AUDIO_FORMAT_R64: {
+      // FIXME(jeff): I'm not sure we need this large of a buffer here; verify!
+      samples_buffer = new real32[alloc_bytes * num_channels];
+    } break;
+  }
+
+  return samples_buffer;
 }
 
-// static uint32 channel_format(SoundBuffer* buffer)
-// {
-//   // Derives from channel_count
-//   auto channel_format = AL_FORMAT_STEREO16;
-//   auto channel_count = 0;
-
-//   if( buffer != nullptr ) {
-//     channel_count = buffer->channel_count;
-
-//     if( channel_count == 1 ) {
-//       channel_format = alGetEnumValue("AL_FORMAT_MONO16");
-//     } else if( channel_count == 2 ) {
-//       channel_format = alGetEnumValue("AL_FORMAT_STEREO16");
-//     } else if( channel_count == 4 ) {
-//       channel_format = alGetEnumValue("AL_FORMAT_QUAD16");
-//     } else if( channel_count == 5 ) {
-//       channel_format = alGetEnumValue("AL_FORMAT_51CHN16");
-//     } else if( channel_count == 6 ) {
-//       channel_format = alGetEnumValue("AL_FORMAT_61CHN16");
-//     } else if( channel_count == 7 ) {
-//       channel_format = alGetEnumValue("AL_FORMAT_71CHN16");
-//     }
-//   }
-
-//   return channel_format;
-// }
-
-SoundBuffer*
-create_audio_buffer(const std::string& filename, IAudioDevice* target)
-{
-  SoundFile fp;
-  // IMPORTANT: This is a pointer to SoundFile in disguise!
-  file_handle fpp;
-  // fpp->fp = new SNDFILE_tag;
-  // fpp->info = nom::create_audio_buffer();
-  // file_handle* fpp = nullptr;
-  // SF_INFO info = {};
-  // SoundBuffer* buffer = nom::create_audio_buffer();
-
-  // TODO: CHANGE ME BACK!
-  // SoundBuffer* buffer = fpp->info;
-  std::vector<int16> samples;
-
-  if( fp.open(&fpp, filename) == false ) {
-    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
-                  "Could not load audio from file:", filename );
-    // return buffer;
-    return fpp.buffer;
-  }
-
-  if ( fp.read(&fpp, 4096) == false ) {
-    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
-                  "Could not read audio samples from file:", filename );
-    // return buffer;
-    return fpp.buffer;
-  }
-
-  NOM_ASSERT(fpp.buffer != nullptr);
-  if( fpp.buffer != nullptr ) {
-
-    // buffer->buffer_id = buffer_id;
-    // fpp.buffer->sound_id = 0;
-    // fpp.buffer->samples = samples;
-    // FIXME(?):
-    // buffer->frame_count = fpp->fp->frame_count;
-    // buffer->channel_count = fpp->fp->channel_count;
-    // buffer->channel_format = channel_format(buffer);
-    // buffer->sample_rate = fpp->fp->sample_rate;
-    // buffer->sample_count = fpp->fp->frame_count * fpp->fp->channel_count;
-
-    // buffer->audio_bytes = (buffer->sample_count * sizeof(int16) )
-
-    // buffer->duration =
-      // (1000.0f * buffer->sample_count / buffer->sample_rate / buffer->channel_count);
-    // buffer->duration = floorf(buffer->duration);
-
-    // NOTE: Fill the audio buffer with the sampled data
-    if( target->caps()->fill_audio_buffer(fpp.buffer) == false ) {
-      return nullptr;
-    }
-  }
-
-  // return buffer;
-  return fpp.buffer;
-}
-
-void free_buffer(SoundBuffer* buffer)
+void free_samples(uint32 channel_format, void* data)
 {
   NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE_AUDIO);
 
   // Goodbye buffer!
-  if( buffer != nullptr ) {
+  if(data != nullptr) {
+    switch(channel_format) {
 
-    // NOTE: De-attach the sound (OpenAL)
-    if( buffer->sound_id > 0 ) {
-      AL_CLEAR_ERR();
-      alDeleteSources(1, &buffer->sound_id);
-      AL_CHECK_ERR_VOID();
+      default:
+      case AUDIO_FORMAT_UNKNOWN: {
+        // Err state; do nothing
+      } break;
+
+      case AUDIO_FORMAT_S8:
+      case AUDIO_FORMAT_U8:
+      case AUDIO_FORMAT_S16: {
+        delete NOM_SCAST(int16*, data);
+      } break;
+
+      case AUDIO_FORMAT_S24: {
+        NOM_ASSERT_INVALID_PATH("Not implemented");
+      } break;
+
+      case AUDIO_FORMAT_S32:
+      case AUDIO_FORMAT_R32:
+      case AUDIO_FORMAT_R64: {
+        delete NOM_SCAST(real32*, data);
+      } break;
     }
 
-    // NOTE: Remove the audio buffer (OpenAL)
-    if( buffer->buffer_id > 0 ) {
-      AL_CLEAR_ERR();
-      alDeleteBuffers(1, &buffer->buffer_id);
-      AL_CHECK_ERR_VOID();
-    }
-
-    NOM_DELETE_PTR(buffer);
+    data = nullptr;
   }
 }
 
-uint32 audio_id(SoundBuffer* buffer, AudioID type)
+SoundBuffer* create_buffer_memory()
 {
-  uint32 audio_id = 0;
-
-  if( buffer != nullptr ) {
-    if( type == AudioID::AUDIO_BUFFER_ID ) {
-      audio_id = buffer->buffer_id;
-    } else if( type == AudioID::SOUND_ID ) {
-      audio_id = buffer->sound_id;
-    }
-  }
-
-  return audio_id;
+  auto buffer = new SoundBuffer();
+  return buffer;
 }
 
-real32 audio_duration(SoundBuffer* buffer)
+SoundBuffer*
+create_buffer_memory(nom::size_type total_sample_bytes, uint32 num_channels,
+                     uint32 channel_format)
 {
-  real32 duration = 0.0f;
-
-  if( buffer != nullptr ) {
-    duration = buffer->duration;
+  auto buffer = audio::create_buffer_memory();
+  if(buffer != nullptr) {
+    // Generate PCM data that can be used by the audio engine
+    buffer->samples =
+      audio::create_samples(total_sample_bytes, num_channels, channel_format);
   }
 
-  return duration;
+  return buffer;
 }
 
-nom::size_type sample_count(SoundBuffer* buffer)
+SoundBuffer*
+create_buffer(void* samples, const SoundInfo& metadata, IOAudioEngine* target)
 {
-  nom::size_type sample_count = 0;
+  SoundBuffer* buffer = audio::create_buffer_memory();
+  const nom::size_type CHUNK_SIZE = metadata.total_bytes;
+  NOM_ASSERT(CHUNK_SIZE > 0);
 
-  if( buffer != nullptr ) {
-    sample_count = buffer->sample_count;
+  // NOM_ASSERT(buffer != nullptr);
+  if(buffer == nullptr) {
+    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION,
+                "Failed to create audio buffer: out of memory!");
+    return buffer;
   }
 
-  return sample_count;
+  if(target == nullptr) {
+    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION,
+                "Failed to create audio buffer: audio device is invalid.");
+    return buffer;
+  }
+
+  // Fill our audio buffer with audio samples given to us by the end-user
+  buffer->samples = samples;
+
+  if(audio::write_info(buffer, metadata) == false) {
+    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION,
+                "Failed to create audio buffer: NULL buffer");
+    return buffer;
+  }
+
+  // NOTE: Fill the audio buffer with the sampled data
+  if(target->push_buffer(buffer) == false) {
+    return nullptr;
+  }
+
+  return buffer;
 }
 
-nom::size_type frame_count(SoundBuffer* buffer)
+SoundBuffer*
+create_buffer(const std::string& filename, ISoundFileReader* fp,
+              IOAudioEngine* target)
 {
-  nom::size_type frame_count = 0;
+  SoundInfo metadata;
+  SoundBuffer* buffer = audio::create_buffer_memory();
 
-  if( buffer != nullptr ) {
-    frame_count = buffer->frame_count;
+  // NOM_ASSERT(buffer != nullptr);
+  if(buffer == nullptr) {
+    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION,
+                "Failed to create audio buffer: out of memory!");
+    return buffer;
   }
 
-  return frame_count;
+  if(target == nullptr) {
+    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION,
+                "Failed to create audio buffer: audio device is invalid.");
+    return buffer;
+  }
+
+  NOM_ASSERT(fp != nullptr);
+  if(fp == nullptr) {
+    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION,
+                "Failed to create audio buffer: out of memory!");
+    return buffer;
+  }
+
+  if(fp->open(filename, metadata) == false) {
+    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION,
+                "Could not load audio from input file:", filename);
+    return buffer;
+  }
+
+  if(audio::write_info(buffer, metadata) == false) {
+    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION,
+                "Failed to write audio metadata.");
+    return buffer;
+  }
+
+  const nom::size_type CHUNK_SIZE = metadata.total_bytes;
+  NOM_ASSERT(CHUNK_SIZE > 0);
+
+  auto channel_format = buffer->channel_format;
+  auto num_channels = buffer->channel_count;
+
+  // Generate PCM data that can be used by the audio engine
+  buffer->samples =
+    audio::create_samples(CHUNK_SIZE, num_channels, channel_format);
+
+  NOM_ASSERT(buffer->samples != nullptr);
+  if(buffer->samples == nullptr) {
+    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION,
+                "Failed to create audio buffer: out of memory for samples.");
+    return buffer;
+  }
+
+  if(fp->read(buffer->samples, channel_format, CHUNK_SIZE) == false) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not read audio samples from file:", filename );
+    return buffer;
+  }
+
+
+  // NOTE: Fill the audio buffer with the sampled data
+  if(target->push_buffer(buffer) == false) {
+    return buffer;
+  }
+
+  return buffer;
 }
 
-uint32 channel_count(SoundBuffer* buffer)
+SoundBuffer*
+create_buffer(const std::string& filename, IOAudioEngine* target)
 {
-  nom::size_type channel_count = 0;
+  SoundBuffer* result = nullptr;
+  ISoundFileReader* fp = new SoundFileReader();
 
-  if( buffer != nullptr ) {
-    channel_count = buffer->channel_count;
-  }
+  result = audio::create_buffer(filename, fp, target);
 
-  return channel_count;
+  return result;
 }
 
-uint32 sample_rate(SoundBuffer* buffer)
+bool valid_buffer(SoundBuffer* buffer, IOAudioEngine* target)
 {
-  nom::size_type sample_rate = 0;
+  bool result = false;
 
-  if( buffer != nullptr ) {
-    sample_rate = buffer->sample_rate;
+  if(buffer != nullptr && target->valid() == true) {
+    result = target->valid_buffer(buffer);
   }
 
-  return sample_rate;
+  return result;
 }
 
-nom::size_type audio_bytes(SoundBuffer* buffer)
+bool valid_source(SoundBuffer* buffer, IOAudioEngine* target)
 {
-  nom::size_type number_bytes = 0;
+  bool result = false;
 
-  if( buffer != nullptr ) {
-    number_bytes = buffer->audio_bytes;
+  if(buffer != nullptr && target->valid() == true) {
+    result = target->valid_source(buffer);
   }
 
-  return number_bytes;
+  return result;
 }
 
+SoundInfo info(SoundBuffer* buffer)
+{
+  SoundInfo metadata = {};
+
+  if(buffer == nullptr) {
+    return metadata;
+  }
+
+  metadata.frame_count = buffer->frame_count;
+  metadata.sample_count = buffer->sample_count;
+  metadata.sample_rate = buffer->sample_rate;
+  metadata.channel_count = buffer->channel_count;
+  metadata.channel_format = buffer->channel_format;
+  metadata.duration = buffer->duration;
+  metadata.total_bytes = buffer->total_bytes;
+  metadata.seekable = buffer->seekable;
+
+  return metadata;
+}
+
+void free_buffer(SoundBuffer* buffer, IOAudioEngine* target)
+{
+  NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE_AUDIO);
+
+  // Goodbye buffer!
+  if(buffer != nullptr && target != nullptr && target->valid() == true) {
+    target->free_buffer(buffer);
+  }
+
+  NOM_DELETE_PTR(buffer);
+}
 
 // audio control
 
-void
-play_audio(SoundBuffer* buffer, IAudioDevice* target)
+void play(SoundBuffer* buffer, IOAudioEngine* target)
 {
-  if( buffer != nullptr && target != nullptr && target->valid() ) {
-    target->caps()->play(buffer);
+  if(buffer != nullptr && target != nullptr && target->valid() == true) {
+    target->play(buffer);
   }
 }
 
 void
-stop_audio(SoundBuffer* buffer, IAudioDevice* target)
+stop(SoundBuffer* buffer, IOAudioEngine* target)
 {
-  if( buffer != nullptr && target != nullptr && target->valid() ) {
-    target->caps()->stop(buffer);
+  if( buffer != nullptr && target != nullptr && target->valid() == true) {
+    target->stop(buffer);
   }
 }
 
 void
-pause_audio(SoundBuffer* buffer, IAudioDevice* target)
+pause(SoundBuffer* buffer, IOAudioEngine* target)
 {
-  if( buffer != nullptr && target != nullptr && target->valid() ) {
+  if( buffer != nullptr && target != nullptr && target->valid() == true) {
 
-    auto state = nom::audio_state(buffer, target);
+    auto state = audio::state(buffer, target);
 
     if( state != AudioState::AUDIO_STATE_STOPPED ) {
-      target->caps()->pause(buffer);
+      target->pause(buffer);
     }
   }
 }
 
 void
-resume_audio(SoundBuffer* buffer, IAudioDevice* target)
+resume(SoundBuffer* buffer, IOAudioEngine* target)
 {
-  nom::play_audio(buffer, target);
+  audio::play(buffer, target);
 }
 
 uint32
-audio_state(SoundBuffer* buffer, IAudioDevice* target)
+state(SoundBuffer* buffer, IOAudioEngine* target)
 {
   uint32 result = AudioState::AUDIO_STATE_STOPPED;
 
-  if( buffer != nullptr && target != nullptr && target->valid() ) {
-    result = target->caps()->state(buffer);
+  if( buffer != nullptr && target != nullptr && target->valid() == true) {
+    result = target->state(buffer);
   }
 
   return NOM_SCAST(AudioState, result);
 }
 
 real32
-audio_pitch(SoundBuffer* buffer, IAudioDevice* target)
+pitch(SoundBuffer* buffer, IOAudioEngine* target)
 {
   auto result = 0.0f;
 
-  if( buffer != nullptr && target != nullptr && target->valid() ) {
-    result = target->caps()->pitch(buffer);
+  if( buffer != nullptr && target != nullptr && target->valid() == true) {
+    result = target->pitch(buffer);
   }
 
   return result;
 }
 
-Point3f
-audio_position(SoundBuffer* buffer, IAudioDevice* target)
+Point3f position(SoundBuffer* buffer, IOAudioEngine* target)
 {
   Point3f p(Point3f::zero);
 
-  if( buffer != nullptr && target != nullptr && target->valid() ) {
-    auto sound_id = buffer->sound_id;
-
-    AL_CLEAR_ERR();
-    alGetSource3f(sound_id, AL_POSITION, &p.x, &p.y, &p.z);
-    AL_CHECK_ERR_VOID();
+  if( buffer != nullptr && target != nullptr && target->valid() == true) {
+    target->position(buffer);
   }
 
   return p;
 }
 
 Point3f
-audio_velocity(SoundBuffer* buffer, IAudioDevice* target)
+velocity(SoundBuffer* buffer, IOAudioEngine* target)
 {
   Point3f v(Point3f::zero);
 
-  if( buffer != nullptr && target != nullptr && target->valid() ) {
-    auto sound_id = buffer->sound_id;
-
-    AL_CLEAR_ERR();
-    alGetSource3f(sound_id, AL_VELOCITY, &v.x, &v.y, &v.z);
-    AL_CHECK_ERR_VOID();
+  if( buffer != nullptr && target != nullptr && target->valid() == true) {
+    v = target->velocity(buffer);
   }
 
   return v;
 }
 
-real32
-audio_volume(SoundBuffer* buffer, IAudioDevice* target)
+real32 volume(IOAudioEngine* target)
 {
-  real32 gain_level = nom::MIN_VOLUME;
+  real32 gain_level = nom::audio::MIN_VOLUME;
 
-  if( buffer != nullptr && target != nullptr && target->valid() ) {
-    auto sound_id = buffer->sound_id;
-
-    AL_CLEAR_ERR();
-    alGetSourcef(sound_id, AL_GAIN, &gain_level);
-    AL_CHECK_ERR_VOID();
+  if(target != nullptr && target->valid() == true) {
+    gain_level = target->volume();
   }
 
-  // De-normalize; 0..1 -> 0..100
-  gain_level = gain_level * 100.0f;
+  return gain_level;
+}
+
+Point3f position(IOAudioEngine* target)
+{
+  Point3f pos(0.0f, 0.0f, 0.0f);
+
+  if(target != nullptr && target->valid() == true) {
+    pos = target->position();
+  }
+
+  return pos;
+}
+
+real32 volume(SoundBuffer* buffer, IOAudioEngine* target)
+{
+  real32 gain_level = nom::audio::MIN_VOLUME;
+
+  if(buffer != nullptr && target != nullptr && target->valid() == true) {
+    gain_level = target->volume(buffer);
+  }
 
   return gain_level;
 }
 
 real32
-audio_min_volume(SoundBuffer* buffer, IAudioDevice* target)
+min_volume(SoundBuffer* buffer, IOAudioEngine* target)
 {
-  real32 min_gain = nom::MIN_VOLUME;
+  real32 min_gain = nom::audio::MIN_VOLUME;
 
-  if( buffer != nullptr && target != nullptr && target->valid() ) {
-    auto sound_id = buffer->sound_id;
-
-    AL_CLEAR_ERR();
-    alGetSourcef(sound_id, AL_MIN_GAIN, &min_gain);
-    AL_CHECK_ERR_VOID();
+  if(buffer != nullptr && target != nullptr && target->valid() == true) {
+    min_gain = target->min_volume(buffer);
   }
-
-  // De-normalize; 0..1 -> 0..100
-  min_gain = min_gain * 100.0f;
 
   return min_gain;
 }
 
 real32
-audio_max_volume(SoundBuffer* buffer, IAudioDevice* target)
+max_volume(SoundBuffer* buffer, IOAudioEngine* target)
 {
-  real32 max_gain = nom::MIN_VOLUME;
+  real32 max_gain = nom::audio::MIN_VOLUME;
 
-  if( buffer != nullptr && target != nullptr && target->valid() ) {
-    auto sound_id = buffer->sound_id;
-
-    AL_CLEAR_ERR();
-    alGetSourcef(sound_id, AL_MAX_GAIN, &max_gain);
-    AL_CHECK_ERR_VOID();
+  if(buffer != nullptr && target != nullptr && target->valid() == true) {
+    max_gain = target->max_volume(buffer);
   }
-
-  // De-normalize; 0..1 -> 0..100
-  max_gain = max_gain * 100.0f;
 
   return max_gain;
 }
 
 real32
-audio_playback_position(SoundBuffer* buffer, IAudioDevice* target)
+playback_position(SoundBuffer* buffer, IOAudioEngine* target)
 {
-  real32 result = 0.0f;
+  real32 pos = 0.0f;
 
-  if( buffer != nullptr && target != nullptr && target->valid() ) {
-    auto sound_id = buffer->sound_id;
-
-    AL_CLEAR_ERR();
-    alGetSourcef(sound_id, AL_SEC_OFFSET, &result);
-    AL_CHECK_ERR_VOID();
+  if(buffer != nullptr && target != nullptr && target->valid() == true) {
+    pos = target->playback_position(buffer);
   }
 
-  return result;
+  return pos;
 }
 
 real32
-audio_playback_samples_position(SoundBuffer* buffer, IAudioDevice* target)
+playback_samples(SoundBuffer* buffer, IOAudioEngine* target)
 {
-  real32 result = 0.0f;
+  real32 pos = 0.0f;
 
-  if( buffer != nullptr && target != nullptr && target->valid() ) {
-    auto sound_id = buffer->sound_id;
-
-    AL_CLEAR_ERR();
-    alGetSourcef(sound_id, AL_SAMPLE_OFFSET, &result);
-    AL_CHECK_ERR_VOID();
+  if(buffer != nullptr && target != nullptr && target->valid() == true) {
+    pos = target->playback_samples(buffer);
   }
 
-  return result;
+  return pos;
 }
 
+SoundBuffer* clone_buffer(const SoundBuffer* rhs)
+{
+  SoundBuffer* buffer = new audio::SoundBuffer();
+  if(buffer != nullptr) {
+    buffer = {};
+    buffer->buffer_id = rhs->buffer_id;
+    buffer->source_id = rhs->source_id;
+    buffer->samples = rhs->samples;
+    buffer->frame_count = rhs->frame_count;
+    buffer->channel_count = rhs->channel_count;
+    buffer->channel_format = rhs->channel_format;
+    buffer->sample_rate = rhs->sample_rate;
+    buffer->sample_count = rhs->sample_count;
+    buffer->duration = rhs->duration;
+    buffer->total_bytes = rhs->total_bytes;
+    buffer->seekable = rhs->seekable;
+  }
+
+  return buffer;
+}
+#if 0
 void
-set_audio_state(SoundBuffer* buffer, IAudioDevice* target, AudioState state)
+set_state(SoundBuffer* buffer, IOAudioEngine* target, uint32 state)
 {
-  if( buffer != nullptr && target != nullptr && target->valid() ) {
-    target->caps()->set_state(buffer, state);
+  if(buffer != nullptr && target != nullptr && target->valid() == true) {
+    target->set_state(buffer, state);
   }
 }
-
-void set_audio_volume(IAudioDevice* target, real32 gain)
+#endif
+void set_volume(real32 gain, IOAudioEngine* target)
 {
-  if( gain >= nom::MIN_VOLUME && gain <= nom::MAX_VOLUME ) {
-    if( target != nullptr && target->valid() ) {
-      target->caps()->set_volume(gain);
+  if(gain >= nom::audio::MIN_VOLUME && gain <= nom::audio::MAX_VOLUME) {
+    if(target != nullptr && target->valid() == true) {
+      target->set_volume(gain);
     }
   }
 }
 
-void set_audio_volume(SoundBuffer* buffer, IAudioDevice* target, real32 gain)
+void set_volume(SoundBuffer* buffer, IOAudioEngine* target, real32 gain)
 {
-  if( gain >= nom::MIN_VOLUME && gain <= nom::MAX_VOLUME ) {
+  if(gain >= nom::audio::MIN_VOLUME && gain <= nom::audio::MAX_VOLUME) {
 
     // normalize the current gain level to a number between 0..1
-    if( buffer != nullptr && target != nullptr && target->valid() ) {
-      // auto sound_id = target->sound_id;
-
-      target->caps()->set_volume(buffer, gain);
+    if( buffer != nullptr && target != nullptr && target->valid() == true) {
+      target->set_volume(buffer, gain);
     }
   }
 }
 
-void set_min_volume(SoundBuffer* buffer, IAudioDevice* target, real32 gain)
+void set_min_volume(SoundBuffer* buffer, IOAudioEngine* target, real32 gain)
 {
-  if( gain >= nom::MIN_VOLUME && gain <= nom::MAX_VOLUME ) {
-
-    // normalize the current gain level to a number between 0..1
-    if( buffer != nullptr && target != nullptr && target->valid() ) {
-      AL_CLEAR_ERR();
-      alSourcef(buffer->sound_id, AL_MIN_GAIN, gain * 0.01f);
-      AL_CHECK_ERR_VOID();
-    }
+  if(buffer != nullptr && target != nullptr && target->valid() == true) {
+    target->set_min_volume(buffer, gain);
   }
 }
 
-void set_max_volume(SoundBuffer* buffer, IAudioDevice* target, real32 gain)
+void set_max_volume(SoundBuffer* buffer, IOAudioEngine* target, real32 gain)
 {
-  if( gain >= nom::MIN_VOLUME && gain <= nom::MAX_VOLUME ) {
-
-    // normalize the gain
-    if( buffer != nullptr && target != nullptr && target->valid() ) {
-      AL_CLEAR_ERR();
-      alSourcef(buffer->sound_id, AL_MAX_GAIN, gain * 0.01f);
-      AL_CHECK_ERR_VOID();
-    }
+  if(buffer != nullptr && target != nullptr && target->valid() == true) {
+    target->set_min_volume(buffer, gain);
   }
 }
 
-void set_audio_pitch(SoundBuffer* buffer, IAudioDevice* target, real32 pitch)
+void set_pitch(SoundBuffer* buffer, IOAudioEngine* target, real32 pitch)
 {
-  if( buffer != nullptr && target != nullptr && target->valid() ) {
-    target->caps()->set_pitch(buffer, pitch);
+  if( buffer != nullptr && target != nullptr && target->valid() == true) {
+    target->set_pitch(buffer, pitch);
   }
 }
 
 void
-set_audio_position(SoundBuffer* buffer, IAudioDevice* target, const Point3f& pos)
+set_velocity(SoundBuffer* buffer, IOAudioEngine* target, const Point3f& v)
 {
-  if( buffer != nullptr && target != nullptr && target->valid() ) {
-    AL_CLEAR_ERR();
-    alSource3f(buffer->sound_id, AL_POSITION, pos.x, pos.y, pos.z);
-    AL_CHECK_ERR_VOID();
+  if( buffer != nullptr && target != nullptr && target->valid() == true) {
+    target->set_velocity(buffer, v);
   }
 }
 
 void
-set_audio_velocity(SoundBuffer* buffer, IAudioDevice* target, const Point3f& v)
+set_position(SoundBuffer* buffer, IOAudioEngine* target, const Point3f& pos)
 {
-  if( buffer != nullptr && target != nullptr && target->valid() ) {
-    target->caps()->set_velocity(buffer, v);
+  if(buffer != nullptr && target != nullptr && target->valid() == true) {
+    target->set_position(buffer, pos);
   }
 }
 
 void
-set_audio_playback_position(SoundBuffer* buffer, IAudioDevice* target,
+set_playback_position(SoundBuffer* buffer, IOAudioEngine* target,
                             real32 offset_seconds)
 {
-  if( buffer != nullptr && target != nullptr && target->valid() ) {
-    target->caps()->set_playback_position(buffer, offset_seconds);
+  if( buffer != nullptr && target != nullptr && target->valid() == true) {
+    target->set_playback_position(buffer, offset_seconds);
   }
 }
 
+void suspend(IOAudioEngine* target)
+{
+  if(target != nullptr && target->valid() == true) {
+    target->suspend();
+  }
+}
+
+void resume(IOAudioEngine* target)
+{
+  if(target != nullptr) {
+    target->resume();
+  }
+}
+
+} // namespace audio
 } // namespace nom

@@ -20,6 +20,10 @@ Both the 64-bit and 32-bit official development binaries versions of:
 * [JsonCpp v0.6.0-rc2](https://sf.net/p/jsoncpp) built with its distributed amalgamate.py script.
 * [TCLAP headers on branch master, commit 12cee3](https://sourceforge.net/p/tclap/code/ci/master/tree/)
 
+* [OpenAL-Soft v1.17.0]()
+  * ALSOFT_LOGLEVEL=0
+  * ALSOFT_LOGLEVEL=3
+
   * Packaged only under Mac OS X
       * [SDL2.framework v2.0.3] with a self-signed certificate for running app bundles built with this framework within Instruments. Using a self-signed certificate also resolves a XCode v6 crash for me that results when trying to run a process from the IDE, complaining about an invalid code signature for SDL2.framework.
       * [libsndfile v1.0.24](http://www.mega-nerd.com/libsndfile/)
@@ -31,7 +35,7 @@ Both the 64-bit and 32-bit official development binaries versions of:
         * [libjpeg 8d](https://github.com/Homebrew/homebrew/commits/master/Library/Formula/jpeg.rb) from Homebrew's repository with the --universal build flag.
 
       * [SDL_ttf.framework v2.0.12](http://libsdl.org/projects/SDL_ttf) built with two patches: [TTF_GetFontKerningSize fix](https://bugzilla.libsdl.org/show_bug.cgi?id=2572) and related [TTF_GetFontKerningSize err code fix](https://bugzilla.libsdl.org/show_bug.cgi?id=2779).
-    
+
       * [libRocket v1.3.0](http://librocket.com) compiled with the FreeType v2.3.5 libraries from [homebrew](http://brew.sh). Refer to my [libRocket fork: dev branch](https://github.com/i8degrees/libRocket/tree/dev) to see any changes from the upstream [libRocket: master branch](https://github.com/libRocket/libRocket/tree/master) library.
       ```
       # dynamic libs
@@ -50,7 +54,7 @@ Both the 64-bit and 32-bit official development binaries versions of:
     msbuild /t:build gtest.vcxproj
     msbuild /t:build gtest_main.vcxproj
     ```
-    
+
     ```console
     # Release library
     mkdir build-release && cd build-release

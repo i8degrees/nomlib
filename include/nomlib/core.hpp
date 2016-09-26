@@ -31,7 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Public header file
 
-#include "nomlib/core/helpers.hpp"
+#include "nomlib/core/unique_ptr.hpp"
+#include "nomlib/core/strings.hpp"
 #include "nomlib/core/clock.hpp"
 #include "nomlib/core/ObjectTypeInfo.hpp"
 #include "nomlib/core/IObject.hpp"

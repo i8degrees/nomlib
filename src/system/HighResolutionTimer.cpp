@@ -141,6 +141,15 @@ real64 HighResolutionTimer::to_milliseconds(uint64 hires_ticks)
   return result;
 }
 
+real64 HighResolutionTimer::to_seconds() const
+{
+  auto elapsed_ticks = this->ticks();
+
+  real64 result = this->to_seconds(elapsed_ticks);
+
+  return result;
+}
+
 real64 HighResolutionTimer::to_seconds(uint64 hires_ticks)
 {
   real64 result =

@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system/File.hpp"
 
 // Private headers (SystemColors)
-#include "nomlib/core/helpers.hpp"
+#include "nomlib/core/unique_ptr.hpp"
 
 // Forward declarations (SystemColors)
 #include "nomlib/system/ColorDatabase.hpp"

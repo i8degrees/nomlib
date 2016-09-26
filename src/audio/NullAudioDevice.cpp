@@ -28,57 +28,100 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/audio/NullAudioDevice.hpp"
 
-// FIXME:
-#include "AL/ALAudioDeviceCaps.hpp"
+#include "nomlib/audio/NullAudioDeviceCaps.hpp"
 
 namespace nom {
+namespace audio {
 
 NullAudioDevice::NullAudioDevice()
 {
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
-
-  this->impl_ = new NullAudioEngine();
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_AUDIO, NOM_LOG_PRIORITY_DEBUG);
 }
 
 NullAudioDevice::~NullAudioDevice()
 {
-  NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
-  this->free_device();
-}
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_AUDIO, NOM_LOG_PRIORITY_DEBUG);
 
-void NullAudioDevice::free_device()
-{
-  NOM_DELETE_PTR(this->impl_);
+  this->close();
 }
 
 bool NullAudioDevice::valid() const
 {
-  return false;
+  return this->initialized_;
 }
 
-bool NullAudioDevice::initialize(const AudioSpec* spec)
-{
-  return true;
-}
+// void* NullAudioDevice::device() const
+// {
+//   return nullptr;
+// }
 
-IOAudioEngine* NullAudioDevice::caps()
-{
-  return this->impl_;
-}
-
-void NullAudioDevice::set_caps(IOAudioEngine* caps)
-{
-  this->impl_ = caps;
-}
+// void* NullAudioDevice::context() const
+// {
+//   return nullptr;
+// }
 
 std::string NullAudioDevice::device_name() const
 {
-  return "NullAudioDevice";
+  return this->device_name_;
 }
 
-// bool NullAudioDevice::isExtensionSupported( const std::string& extension ) const
+// IOAudioEngine* NullAudioDevice::caps() const
 // {
-//   return false;
+//   return this->impl_;
 // }
 
+IOAudioEngine* NullAudioDevice::open(const audio::AudioSpec* spec)
+{
+  IOAudioEngine* engine = nullptr;
+
+  if(spec != nullptr) {
+  }
+
+  this->device_name_ = "NullAudioDevice";
+
+  // this->impl_ = new NullAudioEngineCaps();
+  // if(this->impl_ != nullptr) {
+  //   this->initialized_ = true;
+  // }
+
+  // return(this->valid() == true);
+
+  engine = new NullAudioEngineCaps();
+  if(engine != nullptr) {
+    this->initialized_ = true;
+  }
+
+  return engine;
+}
+
+void NullAudioDevice::suspend()
+{
+
+}
+
+void NullAudioDevice::resume()
+{
+
+}
+
+void NullAudioDevice::close()
+{
+  // NOM_DELETE_PTR(this->impl_);
+}
+
+IOAudioEngine* create_null_audio_device(const audio::AudioSpec* spec)
+{
+  NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_AUDIO, NOM_LOG_PRIORITY_VERBOSE);
+
+  IOAudioEngine* engine = nullptr;
+  NullAudioDevice* dev = new NullAudioDevice();
+
+  if(dev != nullptr) {
+    engine = dev->open(spec);
+  }
+
+  return engine;
+}
+
+} // namespace audio
 } // namespace nom

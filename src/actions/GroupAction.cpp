@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/actions/GroupAction.hpp"
 
 #include "nomlib/core/clock.hpp"
-#include "nomlib/core/helpers.hpp"
+#include "nomlib/core/unique_ptr.hpp"
 
 namespace nom {
 

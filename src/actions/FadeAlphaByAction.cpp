@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/actions/FadeAlphaByAction.hpp"
 
 // Private headers
-#include "nomlib/core/helpers.hpp"
+#include "nomlib/core/unique_ptr.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/math_helpers.hpp"
 
@@ -98,7 +98,7 @@ FadeAlphaByAction::update(real32 t, real32 b, real32 c, real32 d)
 
     // Convert the floating-point value to an unsigned 8-bit RGBA value
     displacement_as_rgba =
-      nom::absolute_float<real32>( (displacement / 255) * 255);
+      nom::absolute_real32( (displacement / 255) * 255);
 
     this->drawable_->set_alpha(displacement_as_rgba);
     this->alpha_ = displacement_as_rgba;

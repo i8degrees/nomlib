@@ -34,6 +34,7 @@ namespace nom {
 static err err_buffer;
 
 err::err()
+  : message("\0")
 {
   // :-(
 }
@@ -44,23 +45,39 @@ err::~err()
   // MSVCPP 2013
 }
 
-err::err(const err& rhs) :
-  message( rhs.message.str() )
+err::err(const err& rhs)
+  : message(rhs.message.str())
+  // message(rhs.message)
 {
   // NOTE: An explicitly-declared copy constructor is necessary for building
   // with MSVCPP 2013
 }
 
+#if 0
 std::stringstream& operator <<(std::stringstream& os, const err& error)
 {
   os << error.message.rdbuf();
 
   return os;
 }
+#endif
+
+bool error_state()
+{
+  auto string_length = err_buffer.message.str().length();
+  bool error_state = false;
+
+  if(string_length > 0) {
+    error_state = true;
+  }
+
+  return error_state;
+}
 
 std::string error()
 {
   return err_buffer.message.str();
+  // return err_buffer.message;
 }
 
 err make_error(const char* message)
@@ -69,6 +86,7 @@ err make_error(const char* message)
 
   if( message != nullptr ) {
     error.message << message;
+    // error.message = message;
   }
 
   return error;
@@ -79,13 +97,24 @@ void set_error(const err& error)
   nom::clear_error();
 
   err_buffer.message << error.message.str();
+  // err_buffer.message = error.message;
 }
 
 void set_error(const char* message)
 {
   nom::clear_error();
 
-  if( message != nullptr ) {
+  if(message != nullptr) {
+    err_buffer.message << message;
+    // err_buffer.message = message;
+  }
+}
+
+void set_error(const std::string& message)
+{
+  nom::clear_error();
+
+  if(message.length() > 0) {
     err_buffer.message << message;
   }
 }
@@ -93,6 +122,7 @@ void set_error(const char* message)
 void clear_error()
 {
   err_buffer.message.str("");
+  // err_buffer.message = "\0";
 }
 
 } // namespace nom

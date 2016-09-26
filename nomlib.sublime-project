@@ -1,28 +1,34 @@
 {
-  "folders":
-  [
-    {
-      "path": ".",
-
-      // Prevent sublime project files from being included in find
-      // (and replace) results
-      "file_exclude_patterns":  [
-                                  "*.sublime-*", "version.hpp", "config.hpp",
-                                  "revision.cpp" ],
-
-      "folder_exclude_patterns":  [ "build", "build-release", "tmp",
-                                    "third-party" ]
-    }
-  ],
-
-  "settings":
-  {
-    "tab_size": 2,
-    "translate_tabs_to_spaces": true
-  },
-
-  "build_systems":
-  [
-    {}
-  ]
+	"folders":
+	[
+		{
+			"file_exclude_patterns":
+			[
+				".sublime-*",
+				"version.hpp",
+				"config.hpp",
+				"revision.cpp"
+			],
+			"folder_exclude_patterns":
+			[
+				"build",
+				"build-release",
+				"tmp",
+				"third-party"
+			],
+			"name": "nomlib.git",
+			"path": "."
+		},
+		{
+			"path": "/Volumes/Media/Dropbox/Notes/Quiver.qvlibrary/00774B96-279B-4760-840D-8D19C696D344.qvnotebook/714CAACA-5B1F-4DFE-8084-425D8C82F74F.qvnote"
+		},
+		{
+			"path": "/Users/jeff/Desktop/policyserver.txt"
+		}
+	],
+	"settings":
+	{
+		"tab_size": 2,
+		"translate_tabs_to_spaces": true
+	}
 }

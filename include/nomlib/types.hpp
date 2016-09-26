@@ -233,7 +233,10 @@ enum Anchor: uint32
   BottomRight = Y_BOTTOM | X_RIGHT      // Hex: 0x44, Dec: 68
 };
 
-const nom::size_type NOM_BYTE = 1024;
+static_assert(sizeof(nom::uint8) == 1, "nom::uint8");
+static_assert(sizeof(nom::int8) == 1, "nom::int8");
+
+const nom::size_type NOM_BYTE = sizeof(uint8); // 1024;
 
 inline
 nom::size_type kilobyte(nom::size_type bytes)
@@ -270,9 +273,6 @@ nom::size_type terabyte(nom::size_type bytes)
 } // namespace nom
 
 /// Ensure our data types have the right sizes using C++11 compile-time asserts.
-static_assert ( sizeof ( nom::uint8 ) == 1, "nom::uint8" );
-static_assert ( sizeof ( nom::int8 ) == 1, "nom::int8" );
-
 static_assert ( sizeof ( nom::uint16 ) == 2, "nom::uint16" );
 static_assert ( sizeof ( nom::int16 ) == 2, "nom::int16" );
 

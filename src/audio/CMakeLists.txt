@@ -9,87 +9,89 @@ set( NOM_AUDIO_LIBRARY "nomlib-audio" )
 # Default implementation sources (always built)
 set(  NOM_AUDIO_SOURCE
       ${INC_DIR}/audio.hpp
+      ${INC_DIR}/audio/audio_defs.hpp
+
+      ${INC_DIR}/audio/SoundBuffer.hpp
+      ${INC_DIR}/audio/ISoundFileReader.hpp
+      ${INC_DIR}/audio/ISoundFileWriter.hpp
+      ${INC_DIR}/audio/SoundFile.hpp
+
+      ${INC_DIR}/audio/IAudioDevice.hpp
+      ${INC_DIR}/audio/IOAudioEngine.hpp
+
       # ${SRC_DIR}/audio/AudioDeviceLocator.cpp
       # ${INC_DIR}/audio/AudioDeviceLocator.hpp
 
-      ${INC_DIR}/audio/IAudioDevice.hpp
-      ${INC_DIR}/audio/IListener.hpp
-      # ${INC_DIR}/audio/ISoundBuffer.hpp
-      # ${INC_DIR}/audio/ISoundSource.hpp
-
       # ${SRC_DIR}/audio/NullAudioDevice.cpp
       # ${INC_DIR}/audio/NullAudioDevice.hpp
-
-      # ${SRC_DIR}/audio/NullListener.cpp
-      # ${INC_DIR}/audio/NullListener.hpp
-
-      # ${SRC_DIR}/audio/NullMusic.cpp
-      # ${INC_DIR}/audio/NullMusic.hpp
-
-      # ${SRC_DIR}/audio/NullSound.cpp
-      # ${INC_DIR}/audio/NullSound.hpp
-
-      # ${SRC_DIR}/audio/NullSoundBuffer.cpp
-      # ${INC_DIR}/audio/NullSoundBuffer.hpp
-
-      # ${SRC_DIR}/audio/NullSoundSource.cpp
-      # ${INC_DIR}/audio/NullSoundSource.hpp
+      # ${SRC_DIR}/audio/NullAudioDeviceCaps.cpp
+      # ${INC_DIR}/audio/NullAudioDeviceCaps.hpp
 )
 
 # Common dependencies on all platforms
-set(NOM_AUDIO_DEPS nomlib-core nomlib-math)
+# TODO(jeff): Try and rid ourselves of dependence on nomlib-system here for the
+# audio subsystem!
+set(NOM_AUDIO_DEPS nomlib-core nomlib-math nomlib-system)
 
-# OpenAL implementation
-if( NOM_BUILD_AUDIO_UNIT )
+if(NOM_BUILD_AUDIO_UNIT)
 
-  set(  NOM_AUDIO_AL_SOURCE
-        ${SRC_DIR}/audio/AL/AudioDevice.cpp
-        ${INC_DIR}/audio/AL/AudioDevice.hpp
+  # Common implementation sources (OpenAL)
+  set(NOM_AUDIO_AL_SOURCE
+      ${SRC_DIR}/audio/AL/ALAudioDevice.cpp
+      ${INC_DIR}/audio/AL/ALAudioDevice.hpp
+      ${SRC_DIR}/audio/AL/ALAudioDeviceCaps.cpp
+      ${INC_DIR}/audio/AL/ALAudioDeviceCaps.hpp
 
-        ${SRC_DIR}/audio/AL/ALAudioDeviceCaps.cpp
+      ${SRC_DIR}/audio/AL/OpenAL.cpp
+      ${INC_DIR}/audio/AL/OpenAL.hpp
 
-        ${SRC_DIR}/audio/AL/Listener.cpp
-        ${INC_DIR}/audio/AL/Listener.hpp
+      # TODO(jeff): Divide libsndfile directory into its own source segment
+      ${SRC_DIR}/audio/libsndfile/SoundFileReader.cpp
+      ${INC_DIR}/audio/libsndfile/SoundFileReader.hpp
+      # ${SRC_DIR}/audio/libsndfile/SoundFileWriter.cpp
+      # ${INC_DIR}/audio/libsndfile/SoundFileWriter.hpp
 
-        # ${SRC_DIR}/audio/AL/Music.cpp
-        # ${INC_DIR}/audio/AL/Music.hpp
+      ${SRC_DIR}/audio/AL/SoundSource.cpp
+      ${INC_DIR}/audio/AL/SoundSource.hpp)
 
-        ${SRC_DIR}/audio/AL/OpenAL.cpp
-        ${INC_DIR}/audio/AL/OpenAL.hpp
+  list(APPEND NOM_AUDIO_SOURCE ${NOM_AUDIO_AL_SOURCE})
 
-        # ${SRC_DIR}/audio/AL/Sound.cpp
-        # ${INC_DIR}/audio/AL/Sound.hpp
+  # ...Mac OS X specific OpenAL implementation details...
+  # FIXME(jeff): ...
+  if(PLATFORM_OSX AND NOM_USE_APPLE_OPENAL)
+    set(NOM_AUDIO_AL_OSX_SOURCE
+        ${SRC_DIR}/audio/AL/osx/apple_extensions.cpp
+        ${INC_DIR}/audio/AL/osx/apple_extensions.hpp)
+    list(APPEND NOM_AUDIO_SOURCE ${NOM_AUDIO_AL_OSX_SOURCE})
+  endif(PLATFORM_OSX AND NOM_USE_APPLE_OPENAL)
 
-        ${SRC_DIR}/audio/AL/SoundBuffer.cpp
-        # ${INC_DIR}/audio/AL/SoundBuffer.hpp
+  # OpenAL Library dependencies
+  if(NOM_USE_OPENAL OR NOM_USE_APPLE_OPENAL)
+    find_package(OpenAL REQUIRED)
+  elseif(NOM_USE_OPENAL_SOFT)
+    # TODO(jeff): Implement custom packaging of the OpenAL library and header
+    # file paths; nomlib-config.cmake & friends.
+    set(OPENAL_INCLUDE_DIR "/usr/local/opt/openal-soft/include/")
+    set(OPENAL_LIBRARY "/usr/local/opt/openal-soft/lib/libopenal.dylib")
+    set(OPENAL_FOUND true)
+  endif(NOM_USE_OPENAL OR NOM_USE_APPLE_OPENAL)
 
-        ${SRC_DIR}/audio/AL/SoundFile.cpp
-        # ${INC_DIR}/audio/AL/SoundFile.hpp
-        # ${SRC_DIR}/audio/AL/SoundFile.hpp
-
-        ${SRC_DIR}/audio/AL/SoundSource.cpp
-        ${INC_DIR}/audio/AL/SoundSource.hpp
-  )
-
-  list( APPEND NOM_AUDIO_SOURCE ${NOM_AUDIO_AL_SOURCE} )
-
-  # Platform-specific dependencies
-
-  find_package( OpenAL REQUIRED )
-  if( OPENAL_FOUND )
+  if(OPENAL_FOUND)
     # Add development header files; al.h, alc.h
-    include_directories( ${OPENAL_INCLUDE_DIR} )
-    list( APPEND NOM_AUDIO_DEPS ${OPENAL_LIBRARY} )
-  endif( OPENAL_FOUND )
+    NOM_LOG_INFO("OPENAL_INCLUDE_DIR: ${OPENAL_INCLUDE_DIR}")
+    include_directories(${OPENAL_INCLUDE_DIR})
+    list(APPEND NOM_AUDIO_DEPS ${OPENAL_LIBRARY})
+  endif(OPENAL_FOUND)
 
-  find_package( libsndfile REQUIRED )
-  if( LIBSNDFILE_FOUND )
+  find_package(libsndfile REQUIRED)
+  if(LIBSNDFILE_FOUND)
     # Add development header files; sndfile.h
-    include_directories( ${LIBSNDFILE_INCLUDE_DIR} )
-    list( APPEND NOM_AUDIO_DEPS ${LIBSNDFILE_LIBRARY} )
-  endif( LIBSNDFILE_FOUND )
+    include_directories(${LIBSNDFILE_INCLUDE_DIR})
+  endif(LIBSNDFILE_FOUND)
 
-endif( NOM_BUILD_AUDIO_UNIT )
+  list(APPEND NOM_AUDIO_DEPS ${LIBSNDFILE_LIBRARY})
+
+endif(NOM_BUILD_AUDIO_UNIT)
 
 # Add and link the library
 nom_add_library(  ${NOM_AUDIO_LIBRARY} ${LIBRARY_OUTPUT_TYPE}

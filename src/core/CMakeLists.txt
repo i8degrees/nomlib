@@ -26,8 +26,10 @@ set(  NOM_CORE_SOURCE
       ${SRC_DIR}/revision.cpp.in
       ${INC_DIR}/revision.hpp
 
-      ${SRC_DIR}/core/helpers.cpp
-      ${INC_DIR}/core/helpers.hpp
+      ${INC_DIR}/core/unique_ptr.hpp
+
+      ${SRC_DIR}/core/strings.cpp
+      ${INC_DIR}/core/strings.hpp
 
       ${SRC_DIR}/core/clock.cpp
       ${INC_DIR}/core/clock.hpp

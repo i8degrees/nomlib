@@ -77,12 +77,21 @@ if( SDL2_FOUND )
 endif( SDL2_FOUND )
 
 # nomlib-audio external deps
-if( PLATFORM_WINDOWS )
-  find_package( OpenAL REQUIRED )
-  if( OPENAL_FOUND )
-    include_directories( ${OPENAL_INCLUDE_DIR} )
-  endif( OPENAL_FOUND )
-endif( PLATFORM_WINDOWS )
+
+# FIXME(jeff): The variables in src/CMakeLists.txt are not propagating to this
+# sub directory
+set(NOM_USE_OPENAL FALSE)
+set(NOM_USE_OPENAL_SOFT TRUE)
+
+if(NOM_USE_OPENAL)
+  find_package(OpenAL REQUIRED)
+  if(OPENAL_FOUND)
+    include_directories(${OPENAL_INCLUDE_DIR})
+  endif(OPENAL_FOUND)
+elseif(NOM_USE_OPENAL_SOFT)
+  set(OPENAL_INCLUDE_DIR "/usr/local/opt/openal-soft/include/")
+  include_directories(${OPENAL_INCLUDE_DIR})
+endif(NOM_USE_OPENAL)
 
 # nomlib-gui external deps
 find_package( libRocket REQUIRED )
@@ -139,40 +148,40 @@ if( NOM_BUILD_APP_EXAMPLE )
           )
 endif( NOM_BUILD_APP_EXAMPLE )
 
-if( NOM_BUILD_AUDIO_EXAMPLE )
-  add_executable ( audio "${EXECUTABLE_FLAGS}" "audio/audio.cpp" )
+if(NOM_BUILD_AUDIO_EXAMPLE)
+  set(EX_SRC "audio/audio.cpp")
+  add_executable(audio "${EXECUTABLE_FLAGS}" ${EX_SRC})
 
-  set( AUDIO_DEPS nomlib-math nomlib-system nomlib-audio )
+  set(AUDIO_DEPS nomlib-math nomlib-system nomlib-audio nomlib-actions
+      nomlib-serializers)
 
-  if( PLATFORM_WINDOWS )
+  if(PLATFORM_WINDOWS)
     # We need to link to SDL2main library on Windows
-    list( APPEND AUDIO_DEPS ${SDL2MAIN_LIBRARY} )
-  endif( PLATFORM_WINDOWS )
+    list(APPEND AUDIO_DEPS ${SDL2MAIN_LIBRARY})
+  endif(PLATFORM_WINDOWS)
 
-  target_link_libraries( audio ${AUDIO_DEPS} )
+  target_link_libraries(audio ${AUDIO_DEPS})
 
-  install ( DIRECTORY
-            "${EXAMPLES_SRC_DIR}/audio/Resources"
-            DESTINATION
-            "${EXAMPLES_INSTALL_DIR}"
-            PATTERN ".*" EXCLUDE
-          )
-  endif( NOM_BUILD_AUDIO_EXAMPLE )
+  # Copy resource files for the example
+  nom_install_resources("${NOM_EXAMPLES_RESOURCES_DIR}/audio.json"
+                        "${EXAMPLES_INSTALL_DIR}")
 
-if( NOM_BUILD_EVENTS_EXAMPLE )
+  endif(NOM_BUILD_AUDIO_EXAMPLE)
 
-  set( APP_NAME events )
-  add_executable ( ${APP_NAME} "${EXECUTABLE_FLAGS}" "${APP_NAME}.cpp" )
+if(NOM_BUILD_EVENTS_EXAMPLE)
+  set(APP_NAME events)
+  set(EX_SRC "${APP_NAME}.cpp")
+  add_executable(${APP_NAME} "${EXECUTABLE_FLAGS}" ${EX_SRC})
 
-  set( APP_DEPS nomlib-system nomlib-graphics )
+  set(APP_DEPS nomlib-system nomlib-graphics)
 
-  if( PLATFORM_WINDOWS )
+  if(PLATFORM_WINDOWS)
     # We need to link to SDL2main library on Windows
-    list( APPEND APP_DEPS ${SDL2MAIN_LIBRARY} )
-  endif( PLATFORM_WINDOWS )
+    list(APPEND APP_DEPS ${SDL2MAIN_LIBRARY})
+  endif(PLATFORM_WINDOWS)
 
-  target_link_libraries( ${APP_NAME} ${APP_DEPS} )
-endif( NOM_BUILD_EVENTS_EXAMPLE )
+  target_link_libraries(${APP_NAME} ${APP_DEPS})
+endif(NOM_BUILD_EVENTS_EXAMPLE)
 
 if( NOM_BUILD_JOYSTICK_EXAMPLE )
 

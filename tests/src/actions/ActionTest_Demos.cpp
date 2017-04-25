@@ -744,4 +744,434 @@ TEST_F(ActionTest, ScrollingTextDemo)
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
 }
 
+TEST_F(ActionTest, ShowerBoobies)
+{
+  // Testing parameters
+  texture_frames anim_frames;
+  const std::vector<const char*> texture_filenames = {{
+    "shower_1.png", "shower_2.png", "shower_3.png", "shower_4.png",
+    "shower_5.png", "shower_6.png", "shower_7.png", "shower_8.png",
+    "shower_9.png", "shower_10.png", "shower_11.png", "shower_12.png",
+    "shower_13.png", "shower_14.png", "shower_15.png", "shower_16.png",
+    "shower_17.png", "shower_18.png", "shower_19.png", "shower_20.png",
+    "shower_21.png", "shower_22.png", "shower_23.png", "shower_24.png",
+    "shower_25.png", "shower_26.png", "shower_27.png", "shower_28.png",
+    "shower_29.png", "shower_30.png", "shower_31.png", "shower_32.png",
+    "shower_33.png", "shower_34.png", "shower_35.png", "shower_36.png",
+    "shower_37.png", "shower_38.png", "shower_39.png", "shower_40.png",
+    "shower_41.png", "shower_42.png", "shower_43.png", "shower_44.png",
+    "shower_45.png", "shower_46.png", "shower_47.png", "shower_48.png",
+    "shower_49.png", "shower_50.png", "shower_51.png", "shower_52.png",
+    "shower_53.png", "shower_54.png", "shower_55.png", "shower_56.png",
+    "shower_57.png", "shower_58.png", "shower_59.png", "shower_60.png",
+    "shower_61.png", "shower_62.png", "shower_63.png", "shower_64.png",
+    "shower_65.png", "shower_66.png", "shower_67.png", "shower_68.png",
+    "shower_69.png", "shower_70.png", "shower_71.png", "shower_72.png"
+  }};
+
+  // 10 fps
+  const real32 FRAME_DURATION = 0.100f;
+
+  // total test duration
+  const real32 DURATION = FRAME_DURATION * texture_filenames.size();
+
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+
+  for(  auto itr = texture_filenames.begin();
+        itr != texture_filenames.end();
+        ++itr )
+  {
+    ASSERT_TRUE(*itr != nullptr);
+
+    auto tex = std::make_shared<Texture>();
+    ASSERT_TRUE(tex != nullptr);
+
+    bool ret = tex->load(this->resources[0].path() + "/shower.frames/" + *itr );
+    if( ret == false ) {
+      FAIL()  << "Could not load texture" << *itr << "from file path: "
+              << this->resources[0].path() << "\n";
+    }
+
+    tex->set_size(Size2i(tex->width()*2, tex->height()*2));
+
+    nom::set_alignment( tex.get(), Point2i::zero, this->WINDOW_DIMS,
+                        Anchor::MiddleCenter );
+
+    anim_frames.emplace_back(tex);
+  } // end for tex filenames loop
+
+  EXPECT_EQ( anim_frames.size(), texture_filenames.size() );
+
+  auto sprite0 =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite0 != nullptr);
+
+  auto tex_bg =
+    nom::create_action<AnimateTexturesAction>(  sprite0, anim_frames,
+                                                FRAME_DURATION );
+  ASSERT_TRUE(tex_bg != nullptr);
+
+  auto action0 =
+    nom::create_action<RepeatForeverAction>(tex_bg);
+  ASSERT_TRUE(action0 != nullptr);
+  action0->set_timing_curve(TIMING_MODE);
+  action0->set_speed(SPEED_MOD);
+  action0->set_name("shower_boobies");
+
+  // auto remove_action0 =
+  //   nom::create_action<RemoveAction>(action0);
+  // ASSERT_TRUE(remove_action0 != nullptr);
+  // remove_action0->set_name("remove_action0");
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(action0, [=]() {
+
+    EXPECT_EQ(1, this->player.num_actions() );
+    this->expected_animate_textures_params( tex_bg.get(), anim_frames.size(),
+                                            DURATION, SPEED_MOD,
+                                            "animate_textures_params" );
+    // this->expected_action_params(action0.get(), 1);
+
+    // this->player.run_action(remove_action0, [=]() {
+    //   ASSERT_TRUE(sprite0 != nullptr);
+    //   EXPECT_FALSE( sprite0->valid() );
+    // });
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue action0";
+  EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](real32) {
+    this->render_window().fill(Color4i::Black);
+    // if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      // this->quit();
+    // }
+  });
+
+  this->append_render_queue( sprite0.get() );
+  this->append_frame_interval(FPS);
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+TEST_F(ActionTest, OmfgBoobies)
+{
+  // Testing parameters
+  texture_frames anim_frames;
+
+  const std::vector<const char*> texture_filenames = {{
+    "omfg_1.png", "omfg_2.png", "omfg_3.png", "omfg_4.png",
+    "omfg_5.png", "omfg_6.png", "omfg_7.png", "omfg_8.png",
+    "omfg_9.png", "omfg_10.png", "omfg_11.png", "omfg_12.png",
+    "omfg_13.png", "omfg_14.png", "omfg_15.png", "omfg_16.png",
+    "omfg_17.png", "omfg_18.png", "omfg_19.png", "omfg_20.png",
+    "omfg_21.png", "omfg_22.png", "omfg_23.png", "omfg_24.png",
+    "omfg_25.png", "omfg_26.png", "omfg_27.png", "omfg_28.png",
+    "omfg_29.png", "omfg_30.png", "omfg_31.png", "omfg_32.png",
+    "omfg_33.png", "omfg_34.png", "omfg_35.png", "omfg_36.png",
+    "omfg_37.png", "omfg_38.png", "omfg_39.png", "omfg_40.png",
+    "omfg_41.png", "omfg_42.png", "omfg_43.png", "omfg_44.png",
+    "omfg_45.png", "omfg_46.png", "omfg_47.png", "omfg_48.png",
+    "omfg_49.png", "omfg_50.png", "omfg_51.png", "omfg_52.png",
+    "omfg_53.png", "omfg_54.png", "omfg_55.png", "omfg_56.png",
+    "omfg_57.png", "omfg_58.png", "omfg_59.png", "omfg_60.png"
+  }};
+
+  // 10 fps
+  const real32 FRAME_DURATION = 0.100f;
+
+  // total test duration
+  const real32 DURATION = FRAME_DURATION * texture_filenames.size();
+
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+
+  for(  auto itr = texture_filenames.begin();
+        itr != texture_filenames.end();
+        ++itr )
+  {
+    ASSERT_TRUE(*itr != nullptr);
+
+    auto tex = std::make_shared<Texture>();
+    ASSERT_TRUE(tex != nullptr);
+
+    bool ret = tex->load(this->resources[0].path() + "/omfg.frames/" + *itr );
+    if( ret == false ) {
+      FAIL()  << "Could not load texture" << *itr << "from file path: "
+              << this->resources[0].path() << "\n";
+    }
+
+    tex->set_size(Size2i(tex->width()*2, tex->height()*2));
+
+    nom::set_alignment( tex.get(), Point2i::zero, this->WINDOW_DIMS,
+                        Anchor::MiddleCenter );
+
+    anim_frames.emplace_back(tex);
+  } // end for tex filenames loop
+
+  EXPECT_EQ( anim_frames.size(), texture_filenames.size() );
+
+  auto sprite0 =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite0 != nullptr);
+
+  auto tex_bg =
+    nom::create_action<AnimateTexturesAction>(  sprite0, anim_frames,
+                                                FRAME_DURATION );
+  ASSERT_TRUE(tex_bg != nullptr);
+
+  auto action0 =
+    nom::create_action<RepeatForeverAction>(tex_bg);
+  ASSERT_TRUE(action0 != nullptr);
+  action0->set_timing_curve(TIMING_MODE);
+  action0->set_speed(SPEED_MOD);
+  action0->set_name("shower_boobies");
+
+  // auto remove_action0 =
+  //   nom::create_action<RemoveAction>(action0);
+  // ASSERT_TRUE(remove_action0 != nullptr);
+  // remove_action0->set_name("remove_action0");
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(action0, [=]() {
+
+    EXPECT_EQ(1, this->player.num_actions() );
+    this->expected_animate_textures_params( tex_bg.get(), anim_frames.size(),
+                                            DURATION, SPEED_MOD,
+                                            "animate_textures_params" );
+    // this->expected_action_params(action0.get(), 1);
+
+    // this->player.run_action(remove_action0, [=]() {
+    //   ASSERT_TRUE(sprite0 != nullptr);
+    //   EXPECT_FALSE( sprite0->valid() );
+    // });
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue action0";
+  EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](real32) {
+    this->render_window().fill(Color4i::Black);
+    // if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      // this->quit();
+    // }
+  });
+
+  this->append_render_queue( sprite0.get() );
+  this->append_frame_interval(FPS);
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+//
+// OmfgBoobies && ShowerBoobies side by side
+//
+
+TEST_F(ActionTest, Boobies)
+{
+  // Testing parameters
+  texture_frames omfg_frames;
+  const std::vector<const char*> omfg_filenames = {{
+    "omfg_1.tif", "omfg_2.tif", "omfg_3.tif", "omfg_4.tif",
+    "omfg_5.tif", "omfg_6.tif", "omfg_7.tif", "omfg_8.tif",
+    "omfg_9.tif", "omfg_10.tif", "omfg_11.tif", "omfg_12.tif",
+    "omfg_13.tif", "omfg_14.tif", "omfg_15.tif", "omfg_16.tif",
+    "omfg_17.tif", "omfg_18.tif", "omfg_19.tif", "omfg_20.tif",
+    "omfg_21.tif", "omfg_22.tif", "omfg_23.tif", "omfg_24.tif",
+    "omfg_25.tif", "omfg_26.tif", "omfg_27.tif", "omfg_28.tif",
+    "omfg_29.tif", "omfg_30.tif", "omfg_31.tif", "omfg_32.tif",
+    "omfg_33.tif", "omfg_34.tif", "omfg_35.tif", "omfg_36.tif",
+    "omfg_37.tif", "omfg_38.tif", "omfg_39.tif", "omfg_40.tif",
+    "omfg_41.tif", "omfg_42.tif", "omfg_43.tif", "omfg_44.tif",
+    "omfg_45.tif", "omfg_46.tif", "omfg_47.tif", "omfg_48.tif",
+    "omfg_49.tif", "omfg_50.tif", "omfg_51.tif", "omfg_52.tif",
+    "omfg_53.tif", "omfg_54.tif", "omfg_55.tif", "omfg_56.tif",
+    "omfg_57.tif", "omfg_58.tif", "omfg_59.tif", "omfg_60.tif"
+  }};
+
+  texture_frames shower_frames;
+  const std::vector<const char*> shower_filenames = {{
+    "shower_1.png", "shower_2.png", "shower_3.png", "shower_4.png",
+    "shower_5.png", "shower_6.png", "shower_7.png", "shower_8.png",
+    "shower_9.png", "shower_10.png", "shower_11.png", "shower_12.png",
+    "shower_13.png", "shower_14.png", "shower_15.png", "shower_16.png",
+    "shower_17.png", "shower_18.png", "shower_19.png", "shower_20.png",
+    "shower_21.png", "shower_22.png", "shower_23.png", "shower_24.png",
+    "shower_25.png", "shower_26.png", "shower_27.png", "shower_28.png",
+    "shower_29.png", "shower_30.png", "shower_31.png", "shower_32.png",
+    "shower_33.png", "shower_34.png", "shower_35.png", "shower_36.png",
+    "shower_37.png", "shower_38.png", "shower_39.png", "shower_40.png",
+    "shower_41.png", "shower_42.png", "shower_43.png", "shower_44.png",
+    "shower_45.png", "shower_46.png", "shower_47.png", "shower_48.png",
+    "shower_49.png", "shower_50.png", "shower_51.png", "shower_52.png",
+    "shower_53.png", "shower_54.png", "shower_55.png", "shower_56.png",
+    "shower_57.png", "shower_58.png", "shower_59.png", "shower_60.png",
+    "shower_61.png", "shower_62.png", "shower_63.png", "shower_64.png",
+    "shower_65.png", "shower_66.png", "shower_67.png", "shower_68.png",
+    "shower_69.png", "shower_70.png", "shower_71.png", "shower_72.png"
+  }};
+
+  // 10 fps
+  const real32 FRAME_DURATION = 0.100f;
+
+  // total test duration
+  const real32 SHOWER_DURATION = FRAME_DURATION * shower_filenames.size();
+  const real32 OMFG_DURATION = FRAME_DURATION * omfg_filenames.size();
+
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+
+  for(  auto itr = omfg_filenames.begin();
+        itr != omfg_filenames.end();
+        ++itr )
+  {
+    ASSERT_TRUE(*itr != nullptr);
+
+    auto tex = std::make_shared<Texture>();
+    ASSERT_TRUE(tex != nullptr);
+
+    bool ret = tex->load(this->resources[0].path() + "/omfg.frames/" + *itr );
+    if( ret == false ) {
+      FAIL()  << "Could not load texture" << *itr << "from file path: "
+              << this->resources[0].path() << "\n";
+    }
+
+    tex->set_size(Size2i(tex->width()*2, tex->height()*1.75));
+
+    nom::set_alignment( tex.get(), Point2i::zero, this->WINDOW_DIMS,
+                        Anchor::MiddleLeft );
+
+    omfg_frames.emplace_back(tex);
+  } // end for omfg filenames loop
+
+  for(  auto itr = shower_filenames.begin();
+        itr != shower_filenames.end();
+        ++itr )
+  {
+    ASSERT_TRUE(*itr != nullptr);
+
+    auto tex = std::make_shared<Texture>();
+    ASSERT_TRUE(tex != nullptr);
+
+    bool ret = tex->load(this->resources[0].path() + "/shower.frames/" + *itr );
+    if( ret == false ) {
+      FAIL()  << "Could not load texture" << *itr << "from file path: "
+              << this->resources[0].path() << "\n";
+    }
+
+    // tex->set_size(Size2i(tex->width()*2, tex->height()*2));
+
+    nom::set_alignment( tex.get(), Point2i::zero, this->WINDOW_DIMS,
+                        Anchor::MiddleRight );
+
+    shower_frames.emplace_back(tex);
+  } // end for tex filenames loop
+
+  EXPECT_EQ( omfg_frames.size(), omfg_filenames.size() );
+  EXPECT_EQ( shower_frames.size(), shower_filenames.size() );
+
+  // omfg boobies
+  auto sprite0 =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite0 != nullptr);
+
+  auto tex_bg0 =
+    nom::create_action<AnimateTexturesAction>(  sprite0, omfg_frames,
+                                                FRAME_DURATION );
+  ASSERT_TRUE(tex_bg0 != nullptr);
+  sprite0->set_position(Point2i(0,0));
+
+  auto action0 =
+    nom::create_action<RepeatForeverAction>(tex_bg0);
+  ASSERT_TRUE(action0 != nullptr);
+  action0->set_timing_curve(TIMING_MODE);
+  action0->set_speed(SPEED_MOD);
+  action0->set_name("omfg_boobies");
+
+  // shower boobies
+
+  auto sprite1 =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite1 != nullptr);
+
+  auto tex_bg1 =
+    nom::create_action<AnimateTexturesAction>(  sprite1, shower_frames,
+                                                FRAME_DURATION );
+  ASSERT_TRUE(tex_bg1 != nullptr);
+  sprite1->set_position(Point2i(500,0));
+
+  auto action1 =
+    nom::create_action<RepeatForeverAction>(tex_bg1);
+  ASSERT_TRUE(action1 != nullptr);
+  action1->set_timing_curve(TIMING_MODE);
+  action1->set_speed(SPEED_MOD);
+  action1->set_name("shower_boobies");
+
+
+  // auto remove_action0 =
+  //   nom::create_action<RemoveAction>(action0);
+  // ASSERT_TRUE(remove_action0 != nullptr);
+  // remove_action0->set_name("remove_action0");
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(action0, [=]() {
+
+    EXPECT_EQ(1, this->player.num_actions() );
+    this->expected_animate_textures_params( tex_bg0.get(), omfg_frames.size(),
+                                            OMFG_DURATION, SPEED_MOD,
+                                            "animate_textures_params" );
+    // this->expected_action_params(action0.get(), 1);
+
+    // this->player.run_action(remove_action0, [=]() {
+    //   ASSERT_TRUE(sprite0 != nullptr);
+    //   EXPECT_FALSE( sprite0->valid() );
+    // });
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue action0";
+
+  EXPECT_EQ(1, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(action1, [=]() {
+
+    EXPECT_EQ(1, this->player.num_actions() );
+    this->expected_animate_textures_params( tex_bg1.get(), shower_frames.size(),
+                                            SHOWER_DURATION, SPEED_MOD,
+                                            "animate_textures_params" );
+    // this->expected_action_params(action0.get(), 1);
+
+    // this->player.run_action(remove_action0, [=]() {
+    //   ASSERT_TRUE(sprite0 != nullptr);
+    //   EXPECT_FALSE( sprite0->valid() );
+    // });
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue action1";
+  EXPECT_EQ(2, this->player.num_actions() );
+
+  this->append_update_callback( [=](real32) {
+    this->render_window().fill(Color4i::Black);
+    // if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      // this->quit();
+    // }
+  });
+
+  this->append_render_queue( sprite0.get() );
+  this->append_render_queue( sprite1.get() );
+  this->append_frame_interval(FPS);
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+
 } // namespace nom

@@ -240,6 +240,8 @@ class ActionTest: public nom::VisualUnitTest
     bool run_action_ret = false;
 
     Timer test_timer;
+    uint32 dt_ = 0;
+    bool fseek_ = false;
 };
 
 bool init_cmd_line_args(int argc, char** argv);

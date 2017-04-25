@@ -92,11 +92,13 @@ bool ActionTest::init_rendering()
   uint32 window_flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
 
   // Initialize rendering window (and its GL context)
-  if( this->window_.create( this->test_set(),
-      this->resolution(), window_flags ) == false )
+  if( this->window_.create( this->test_set(), Point2i(0,0),
+      2, window_flags, "opengl", 0 ) == false )
   {
     return false;
   }
+
+
 
   // Allow for automatic rescaling of the output window based on aspect
   // ratio (i.e.: handle full-screen resizing); this will use letter-boxing

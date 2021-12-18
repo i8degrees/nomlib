@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # Third-Party dependency packer
 #
@@ -20,10 +20,10 @@
 #           https://sf.net/p/ttcards
 #
 
-TAR_BIN=$(which tar)
+TAR_BIN="$(command -v tar)"
 TAR_ARGS="-czvf"
 
-ZIP_BIN=$(which zip)
+ZIP_BIN="$(command -v zip)"
 ZIP_ARGS="-r"
 
 # Exclusion masks for zip & tar
@@ -33,14 +33,14 @@ PROJECT_NAME="nomlib"
 DEPS_DIR="third-party"
 
 # Date binary for prefixing the created timestamp onto resulting archive
-DATE_BIN=$(which date)
+DATE_BIN="$(command -v date)"
 
 TIMESTAMP="$($DATE_BIN +%Y-%m-%d)" # BSD date(1)
 
 # Optional git rev number
-GIT_BIN=$(which git)
+GIT_BIN="$(command -v git)"
 # GIT_VER=$( ${GIT_BIN} rev-parse HEAD) # Full SHA
-GIT_VER=$( ${GIT_BIN} rev-parse --short HEAD)
+GIT_VER="$( ${GIT_BIN} rev-parse --short HEAD)"
 
 function usage_info()
 {
@@ -59,7 +59,7 @@ function osx_deps()
 
   INCLUSION_MASKS="osx/ common/ README.md"
 
-  ${TAR_BIN} ${TAR_ARGS} ${DEPS_FILENAME} --exclude=${EXCLUSION_MASKS} ${INCLUSION_MASKS}
+  "${TAR_BIN} ${TAR_ARGS} ${DEPS_FILENAME} --exclude=${EXCLUSION_MASKS} ${INCLUSION_MASKS}"
 }
 
 function ios_deps()
@@ -74,7 +74,7 @@ function ios_deps()
 
   INCLUSION_MASKS="ios/ common/ README.md"
 
-  ${TAR_BIN} ${TAR_ARGS} ${DEPS_FILENAME} --exclude=${EXCLUSION_MASKS} ${INCLUSION_MASKS}
+  "${TAR_BIN} ${TAR_ARGS} ${DEPS_FILENAME} --exclude=${EXCLUSION_MASKS} ${INCLUSION_MASKS}"
 }
 
 function windows_deps()
@@ -89,12 +89,22 @@ function windows_deps()
 
   INCLUSION_MASKS="windows/ common/ README.md"
 
-  ${ZIP_BIN} ${ZIP_ARGS} ${DEPS_FILENAME} ${INCLUSION_MASKS} -x ${EXCLUSION_MASKS}
+  "${ZIP_BIN} ${ZIP_ARGS} ${DEPS_FILENAME} ${INCLUSION_MASKS} -x ${EXCLUSION_MASKS}"
 }
 
 function linux_deps()
 {
-  echo "STUB: Not implemented."
+  INCLUSION_MASKS="common linux README.md"
+  ARCHIVE_FILENAME="${TIMESTAMP}_${PROJECT_NAME}_linux-dependencies.tar.gz"
+
+  # Write the archive file at the root of the project (nomlib.git) with the
+  # latest git commit hash as the version of the distributed dependencies.
+  if [[ ${GIT_BIN} ]]; then
+    ARCHIVE_FILENAME="${TIMESTAMP}_${PROJECT_NAME}-${GIT_VER}_linux-dependencies.tar.gz"
+  fi
+
+  "${TAR_BIN} ${TAR_ARGS} ${ARCHIVE_FILENAME} ${INCLUSION_MASKS}"
+  # "${TAR_BIN} ${TAR_ARGS} --exclude=${EXCLUSION_MASKS} ${ARCHIVE_FILENAME} ${INCLUSION_MASKS}"
 }
 
 function all_deps()
@@ -105,7 +115,8 @@ function all_deps()
   windows_deps
 }
 
-cd ${DEPS_DIR}
+echo "DEPS_DIR: $DEPS_DIR"
+pushd "${DEPS_DIR}" || exit 255
 
 if [[ "$1" == "osx" ]]; then
   osx_deps
@@ -119,9 +130,10 @@ elif [[ $1 == "ios" ]]; then
   ios_deps
 elif [[ $1 == "all" ]]; then
   all_deps
-elif [[ $1 == "?" ]]; then
-  usage_info
 else
   usage_info
+  exit 0
 fi
 
+popd
+exit 0

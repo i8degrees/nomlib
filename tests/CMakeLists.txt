@@ -123,9 +123,13 @@ if( PLATFORM_OSX )
 elseif( PLATFORM_WINDOWS )
   set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/windows/gtest" )
 elseif( PLATFORM_LINUX )
+<<<<<<< HEAD
   # FIXME(JEFF): Use 
   set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/linux/gtest")
   set( GTEST_INCLUDE_DIRS APPEND "${NOMLIB_DEPS_DIR}/linux/gtest/include")
+=======
+  set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/linux/gtest" )
+>>>>>>> 5cc4b237 (Add Google Test headers for Linux)
 endif( PLATFORM_OSX )
 
 find_package( GTest REQUIRED )

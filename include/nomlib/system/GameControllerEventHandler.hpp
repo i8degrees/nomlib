@@ -57,7 +57,7 @@ class GameControllerEventHandler
     ///
     /// \returns Boolean TRUE when the joystick exists, and boolean FALSE when
     /// the joystick does **not** exist.
-    bool joystick_exists(JoystickID dev_id);
+    bool joystick_exists(JoystickID dev_id) const;
 
     /// \brief Append a game controller to the active devices pool.
     ///
@@ -70,6 +70,11 @@ class GameControllerEventHandler
     /// \returns Boolean TRUE when the joystick exists, and boolean FALSE when
     /// the joystick does **not** exist.
     bool remove_joystick(JoystickID dev_id);
+
+    /// \brief Remove all joystick connection IDs from the joystick event pool.
+    ///
+    /// \returns void
+    void remove_joysticks();
 
   private:
     typedef std::map<JoystickID, std::unique_ptr<GameController>> joysticks;

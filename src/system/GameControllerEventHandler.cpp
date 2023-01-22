@@ -48,32 +48,41 @@ GameControllerEventHandler::~GameControllerEventHandler()
 nom::size_type GameControllerEventHandler::num_joysticks() const
 {
   auto result = this->joysticks_.size();
-
   return result;
 }
 
 GameController* GameControllerEventHandler::joystick(JoystickID dev_id) const
 {
+  GameController* result = nullptr;
+
   auto res = this->joysticks_.find(dev_id);
+  if(res == this->joysticks_.end()) {
+    return result;
+  }
+
   if( res != this->joysticks_.end() ) {
     // Success -- device found
-    return res->second.get();
-  } else {
-    // Err -- device **not** found
-    return nullptr;
+    result = res->second.get();
   }
+
+  return result;
 }
 
-bool GameControllerEventHandler::joystick_exists(JoystickID dev_id)
-{
+// TODO(jeff): Use GameControllerEventHandler::joystick method within this
+// function!
+bool GameControllerEventHandler::joystick_exists(JoystickID dev_id) const {
+  bool result = false;
   auto res = this->joysticks_.find(dev_id);
+  if(res == this->joysticks_.end()) {
+    return result;
+  }
+
   if( res != this->joysticks_.end() ) {
     // Success -- device exists
-    return true;
-  } else {
-    // Err -- device does **not** exist
-    return false;
+    result = true;
   }
+
+  return result;
 }
 
 GameController*
@@ -102,17 +111,35 @@ GameControllerEventHandler::add_joystick(JoystickIndex device_index)
 
 bool GameControllerEventHandler::remove_joystick(JoystickID dev_id)
 {
+  bool result = false;
+
   auto res = this->joysticks_.find(dev_id);
+  if(res == this->joysticks_.end()) {
+    return result;
+  }
+
   if( res != this->joysticks_.end() ) {
 
-    // Success -- found device; freeing and removing
+    // Success -- found device; say buh-bye!
     res->second->close();
     this->joysticks_.erase(res);
+    result = true;
+  }
 
-    return true;
-  } else {
-    // Err -- device does **not** exist
-    return false;
+  return result;
+}
+
+void GameControllerEventHandler::remove_joysticks() {
+  auto res = this->joysticks_.begin();
+  if(res == this->joysticks_.end()) {
+    return;
+  }
+
+  if(res != this->joysticks_.end()) {
+    // Success -- found device; say buh-bye!
+    res->second->close();
+    // FIXME(jeff): How do we properly erase
+    this->joysticks_.clear();
   }
 }
 

@@ -161,7 +161,7 @@ const RendererInfo Renderer::caps ( SDL_Renderer* target )
   renderer_info.name_ = info.name;
   renderer_info.flags_ = info.flags;
 
-  NOM_ASSERT ( info.num_texture_formats > 1 );
+  NOM_ASSERT (info.num_texture_formats >= 1);
 
   for ( uint32 idx = 0; idx < info.num_texture_formats; ++idx )
   {

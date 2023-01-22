@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics.hpp>
 
 using namespace nom;
-
+/*
 /// \brief The file used for resource path lookups for this example.
 const std::string RES_FILE = "InputDevices.json";
 
@@ -47,6 +47,9 @@ class App: public nom::SDLApp
       // ...Initialize the input mapper callbacks...
 
       this->quit_app = nom::event_callback( [=](const nom::Event& evt) {
+        int32 numJoysticks = joystick_evt->num_joysticks();
+        NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, numJoysticks,
+                      "remaining in pool");
         this->on_app_quit(evt);
       });
 
@@ -179,6 +182,9 @@ class App: public nom::SDLApp
 
     bool on_init()
     {
+      InputActionMapper key;
+      nom::InputAction action;
+
       nom::uint32 window_flags = SDL_WINDOW_RESIZABLE;
 
       if( this->res.load_file(RES_FILE, "resources") == false ) {
@@ -226,6 +232,15 @@ class App: public nom::SDLApp
           }
         }
       }
+
+      // FIXME(jeff): Why are these actions not being executed?
+      action =
+        nom::KeyboardAction(Event::KEY_PRESS, SDLK_ESCAPE);
+      key.insert("quit_app", action, this->quit_app);
+
+      action =
+        nom::KeyboardAction(Event::KEY_PRESS, SDLK_r);
+      key.insert("reload_controller_mappings", action, this->init_db_bindings);
 
       // ...Test remapping a couple game controller buttons...
 #if 0
@@ -351,6 +366,11 @@ class App: public nom::SDLApp
 
             case Event::GAME_CONTROLLER_REMOVED:
             {
+              // NOTE: Use the most recently added joystick for mapping input
+              // bindings to
+              auto device_index = evt.cdevice.id;
+              this->on_game_controller_remove(device_index);
+
               // NOTE: Upon removal, if we can, remap joystick input bindings
               // to whatever device that is still available, so we can still
               // control this application example with a joystick
@@ -415,6 +435,8 @@ class App: public nom::SDLApp
     const Size2i AXIS_RECT_DIMS = Size2i(16, 16);
     const Size2i BUTTON_RECT_DIMS = Size2i(16, 16);
 
+    GameControllerEventHandler joystick_evt;
+
     /// \brief Test the simulation of input events.
     void test_simulated_events()
     {
@@ -458,9 +480,23 @@ class App: public nom::SDLApp
       }
     }
 
-    /// \brief Initialize joystick input bindings
-    void on_game_controller_add(JoystickIndex dev_index)
-    {
+    /// \brief Event Handler for device removal
+    void on_game_controller_remove(JoystickIndex dev_index) {
+      // NOTE: This device index is platform-dependent and cannot be relied on,
+      // as the order of joysticks change.
+      auto dev_name = Joystick::name(dev_index);
+
+      // NOTE: The device's id is unique and is what the input mapper relies on
+      // for identifying joystick events by!
+      auto dev_id = GameController::device_id(dev_index);
+
+      NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
+                    "Removed game controller", dev_name,
+                    "(ID:", dev_id, ")" );
+    }
+
+    /// \brief Event Handler for device additions
+    void on_game_controller_add(JoystickIndex dev_index) {
       // NOTE: This device index is platform-dependent and cannot be relied on,
       // as the order of joysticks change.
       auto dev_name = Joystick::name(dev_index);
@@ -486,7 +522,7 @@ class App: public nom::SDLApp
       bool result0 = false;
       bool result1 = false;
       bool result2 = false;
-      InputActionMapper key, cbutton, caxis;
+      InputActionMapper cbutton, caxis, key;
       nom::InputAction action;
 
       NOM_ASSERT(dev_id >= 0);
@@ -494,14 +530,6 @@ class App: public nom::SDLApp
         // Err -- invalid instance ID
         return false;
       }
-
-      action =
-        nom::KeyboardAction(Event::KEY_PRESS, SDLK_ESCAPE);
-      key.insert("quit_app", action, this->quit_app);
-
-      action =
-        nom::KeyboardAction(Event::KEY_PRESS, SDLK_r);
-      key.insert("reload_controller_mappings", action, this->init_db_bindings);
 
       // ...buttons...
 
@@ -582,7 +610,7 @@ class App: public nom::SDLApp
       return( result0 == true && result1 == true && result2 == true);
     }
 }; // end class App
-
+*/
 int main(nom::int32 argc, char* argv[])
 {
   // Fatal error; if we are not able to complete this step, it means that
@@ -600,7 +628,7 @@ int main(nom::int32 argc, char* argv[])
 
   // Enable event handler queue debugging statistics
   nom::set_hint(NOM_EVENT_QUEUE_STATISTICS, "1");
-
+/*
   App app;
 
   if( app.on_init() == false ) {
@@ -612,4 +640,5 @@ int main(nom::int32 argc, char* argv[])
   return app.Run();
 
   // ...Goodbye cruel world!
+*/
 }

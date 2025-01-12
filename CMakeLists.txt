@@ -238,7 +238,37 @@ elseif ( PLATFORM_OSX )
         "${NOMLIB_DEPS_DIR}/osx/librocket/bin/libfreetype.6.dylib" )
 
 elseif ( PLATFORM_LINUX )
-  # TODO
+  if(NOT DEFINED ENV{SDL2DIR})
+    set(ENV{SDL2DIR} "${NOMLIB_DEPS_DIR}/linux/sdl2")
+  endif(NOT DEFINED ENV{SDL2DIR})
+
+  if(NOT DEFINED ENV{SDL2IMAGEDIR})
+    set(ENV{SDL2IMAGEDIR} "${NOMLIB_DEPS_DIR}/linux/sdl2_image")
+  endif(NOT DEFINED ENV{SDL2IMAGEDIR})
+
+  if(NOT DEFINED ENV{SDL2TTFDIR})
+    set(ENV{SDL2TTFDIR} "${NOMLIB_DEPS_DIR}/linux/sdl2_ttf")
+  endif(NOT DEFINED ENV{SDL2TTFDIR})
+
+  #if(NOT DEFINED ENV{OPENALDIR})
+    # Use platform-distributed headers for OpenAL; should automatically use the
+    # proper platform SDK version as configured by CMAKE_OSX_SYSROOT
+    #set(ENV{OPENALDIR} "/System/Library/Frameworks/OpenAL.framework")
+  #endif(NOT DEFINED ENV{OPENALDIR})
+
+  if(NOT DEFINED ENV{LIBSNDFILEDIR})
+    set(ENV{LIBSNDFILEDIR} "${NOMLIB_DEPS_DIR}/linux/libsndfile")
+  endif(NOT DEFINED ENV{LIBSNDFILEDIR})
+
+  if(NOT DEFINED ENV{LIBROCKETDIR})
+    set(ENV{LIBROCKETDIR} "${NOMLIB_DEPS_DIR}/osx/librocket")
+  endif(NOT DEFINED ENV{LIBROCKETDIR})
+
+  # FIXME: This file needs its RPATH modified for redistribution; it is **not**
+  # being used as the run-time library for executables yet. We are using brew's
+  # version installed under /usr/local
+  set(  LIBROCKET_EXT_REDIST_FILES
+        "${NOMLIB_DEPS_DIR}/linux/librocket/bin/libfreetype.6.dylib" )
 endif ( PLATFORM_WINDOWS )
 
 # List of our source code to be compiled

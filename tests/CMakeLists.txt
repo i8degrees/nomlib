@@ -122,8 +122,8 @@ if( PLATFORM_OSX )
   set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/osx/gtest" )
 else( PLATFORM_WINDOWS )
   set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/windows/gtest" )
-else( PLATFORM_LINUX )
-  # TODO
+#else( PLATFORM_LINUX )
+  #set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/linux/gtest")
 endif( PLATFORM_OSX )
 
 find_package( GTest REQUIRED )

@@ -15,3 +15,5 @@ install_options
 
 # nomlib's github wiki
 wiki
+
+*local_env.cmake*

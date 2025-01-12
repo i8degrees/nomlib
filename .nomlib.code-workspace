@@ -8,7 +8,10 @@
 		},
 		{
 			"path": "~/tmp/nomlib/sdl2/sdl2.git"
-		}
+		},
+    {
+      "path": "../ttcards.git"
+    }
 	],
 	"settings": {
     "files.association": {

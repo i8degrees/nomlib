@@ -16,3 +16,5 @@ local_env.cmake
 
 # nomlib's github wiki
 wiki
+
+*local_env.cmake*

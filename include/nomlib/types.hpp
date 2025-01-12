@@ -50,6 +50,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #include <sys/types.h>
 #endif
 
+// IMPORTANT(JEFF): These declarations, too, will integrate into our (CMake) 
+// platform detection routines some day.
+#if defined(__GNUC__)
+  #include <cstdint>
+#elif defined(__llvm__)
+  #include <sys/types.h>
+#endif
+
 // FIXME: The following declaration is necessary in order to avoid a very
 // nasty compiling conflict that can happen under Windows anytime the
 // windef.h header file is included (commonly from windows.h), due to min and

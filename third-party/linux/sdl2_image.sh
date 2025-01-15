@@ -10,12 +10,11 @@ if [ -n "$INIT_BUILD" ]; then
 fi
 
 
-SDL_LIBS="/mnt/fs1/Projects/nomlib.git.fixed/third-party/linux/sdl2/lib/libSDL2.a"
-CPPFLAGS="/mnt/fs1/Projects/nomlib.git.fixed/third-party/linux/sdl2/include/SDL2"
+SDL_LIBS="/mnt/fs1/Projects/nomlib.git.bck/third-party/linux/sdl2/lib/libSDL2.a"
+CPPFLAGS="/mnt/fs1/Projects/nomlib.git.bck/third-party/linux/sdl2/include/SDL2"
 
-SDL2_IMAGE_DEST=/mnt/fs1/Projects/nomlib.git.fixed/third-party/linux/sdl2_image
+SDL2_IMAGE_DEST=/mnt/fs1/Projects/nomlib.git.bck/third-party/linux/sdl2_image
 export SDL2_IMAGE_DEST
-SDL_PREFIX=/mnt/fs1/Projects/nomlib.git.fixed/third-party/linux/sdl2
 
 if [ -n "$DEBUG" ]; then
   export SDL_LIBS
@@ -28,6 +27,6 @@ fi
 cd /home/jeff/tmp/nomlib/sdl2_image.git
 make clean
 ./autogen.sh
-./configure --prefix=$SDL2_IMAGE_DEST --with-sdl-prefix="$SDL_PREFIX"
+./configure --prefix=$SDL2_IMAGE_DEST
 make install
 

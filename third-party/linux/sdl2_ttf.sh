@@ -4,8 +4,6 @@
 
 [ -n "$DEBUG_TRACE" ] && set -o xtrace
 
-SDL_LIBS="/mnt/fs1/Projects/nomlib.git.fixed/third-party/linux/sdl2/lib/libSDL2.a"
-CPPFLAGS="/mnt/fs1/Projects/nomlib.git.fixed/third-party/linux/sdl2/include/SDL2"
 SDL2_TTF_DEST=/mnt/fs1/Projects/nomlib.git.fixed/third-party/linux/sdl2_ttf
 export SDL2_TTF_DEST
 # freetype2/bin/freetype-config

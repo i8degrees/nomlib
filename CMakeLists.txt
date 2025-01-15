@@ -39,16 +39,16 @@ option ( EXAMPLES "Build nomlib usage examples" off )
 option( NOM_BUILD_TESTS "Build unit tests" off )
 set( NOM_INSTALL_GENERATED_DOCS off )
 
-option( NOM_BUILD_CORE_UNIT "Engine core" ON )
-option( NOM_BUILD_MATH_UNIT "Math utilities" ON )
-option( NOM_BUILD_FILE_UNIT "Filesystem access" ON )
-option( NOM_BUILD_AUDIO_UNIT "Audio subsystem" ON )
-option( NOM_BUILD_GRAPHICS_UNIT "Graphics core" ON )
-option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Build with scale2x & hqx algorithms" ON )
-option( NOM_BUILD_SYSTEM_UNIT "System unit" ON )
-option( NOM_BUILD_PTREE_UNIT "Generic container for serialization" ON )
-option( NOM_BUILD_SERIALIZERS_UNIT "Serialization for JSON, XML, HTML" ON )
-option( NOM_BUILD_GUI_UNIT "GUI subsystem" ON )
+option( NOM_BUILD_CORE_UNIT "Engine core" ON)
+option( NOM_BUILD_MATH_UNIT "Math utilities" ON)
+option( NOM_BUILD_FILE_UNIT "Filesystem access" ON)
+option( NOM_BUILD_AUDIO_UNIT "Audio subsystem" OFF)
+option( NOM_BUILD_GRAPHICS_UNIT "Graphics core" ON)
+option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Build with scale2x & hqx algorithms" ON)
+option( NOM_BUILD_SYSTEM_UNIT "System unit" ON)
+option( NOM_BUILD_PTREE_UNIT "Generic container for serialization" ON)
+option( NOM_BUILD_SERIALIZERS_UNIT "Serialization for JSON, XML, HTML" ON)
+option( NOM_BUILD_GUI_UNIT "GUI subsystem" ON)
 
 project( nomlib ) # Sets PROJECT_NAME variable for us
 
@@ -238,6 +238,7 @@ elseif ( PLATFORM_OSX )
         "${NOMLIB_DEPS_DIR}/osx/librocket/bin/libfreetype.6.dylib" )
 
 elseif ( PLATFORM_LINUX )
+
   if(NOT DEFINED ENV{SDL2DIR})
     set(ENV{SDL2DIR} "${NOMLIB_DEPS_DIR}/linux/sdl2")
   endif(NOT DEFINED ENV{SDL2DIR})
@@ -261,14 +262,17 @@ elseif ( PLATFORM_LINUX )
   endif(NOT DEFINED ENV{LIBSNDFILEDIR})
 
   if(NOT DEFINED ENV{LIBROCKETDIR})
-    set(ENV{LIBROCKETDIR} "${NOMLIB_DEPS_DIR}/osx/librocket")
+    set(ENV{LIBROCKETDIR} "${NOMLIB_DEPS_DIR}/linux/libRocket")
   endif(NOT DEFINED ENV{LIBROCKETDIR})
 
-  # FIXME: This file needs its RPATH modified for redistribution; it is **not**
-  # being used as the run-time library for executables yet. We are using brew's
-  # version installed under /usr/local
-  set(  LIBROCKET_EXT_REDIST_FILES
-        "${NOMLIB_DEPS_DIR}/linux/librocket/bin/libfreetype.6.dylib" )
+  # if(NOT DEFINED ENV{LIBROCKETDIR})
+  #     set(
+  #       ENV{LIBROCKETDIR} 
+  #       "${NOMLIB_DEPS_DIR}/linux/libRocket/lib/libRocket.a"
+  #       "${NOMLIB_DEPS_DIR}/linux/libRocket/lib/libRocketCore.a"
+  #       "${NOMLIB_DEPS_DIR}/linux/libRocket/lib/libRocketDebugger.a"
+  #     )
+  # endif(NOT DEFINED ENV{LIBROCKETDIR})
 endif ( PLATFORM_WINDOWS )
 
 # List of our source code to be compiled

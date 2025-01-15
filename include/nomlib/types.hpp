@@ -43,13 +43,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         known as stdint.h. MSVCPP2013 & llvm-clang are fine with it).
 */
 
-#ifndef NOM_PLATFORM_LINUX  // To be replace with NOM_COMPILER_FEATURE_NULLPTR
-                            // (see above TODO note).
-  #include <cstdint>
-#else
-  #include <sys/types.h>
-#endif
-
 // IMPORTANT(JEFF): These declarations, too, will integrate into our (CMake) 
 // platform detection routines some day.
 #if defined(__GNUC__)

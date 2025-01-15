@@ -118,10 +118,12 @@ include_directories("${NOM_THIRD_PARTY_COMMON_DIR}")
 # NOTE: We prefer linking to GTest statically.
 if( PLATFORM_OSX )
   set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/osx/gtest" )
-else( PLATFORM_WINDOWS )
+elseif( PLATFORM_WINDOWS )
   set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/windows/gtest" )
-#else( PLATFORM_LINUX )
-  #set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/linux/gtest")
+elseif( PLATFORM_LINUX )
+  # FIXME(JEFF): Use 
+  set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/linux/gtest")
+  set( GTEST_INCLUDE_DIRS APPEND "${NOMLIB_DEPS_DIR}/linux/gtest/include")
 endif( PLATFORM_OSX )
 
 find_package( GTest REQUIRED )

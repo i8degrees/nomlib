@@ -43,9 +43,26 @@ elseif ( CMAKE_SYSTEM_NAME STREQUAL "Linux" ) # Tested on Ubuntu v12.04-LTS
   set( PLATFORM_LINUX true )
   set( NOM_PLATFORM_POSIX true )
 
+  # TODO(JEFF): Create build time option to override compilation tooling
+  # between clang and probably even GNU GCC, once we find the right C++
+  # variant for it...
+  #
+  # Default to clang based tooling when found...
+  if(CMAKE_CXX_COMPILER STREQUAL "clang")
+    message(STATUS "Using clang++ from CMAKE_CXX_COMPILER")
+    # libc++ requires OSX v10.7+
+    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11" )
+  endif(CMAKE_CXX_COMPILER STREQUAL "clang")
+  #set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++" )
+
   # Clang is not supported on Linux due to libc++ not being distributed by
   # default yet
-  set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
+  if(CMAKE_C_COMPILER STREQUAL "gcc")
+    #set ( CMAKE_C_COMPILER gcc )
+    # set ( CMAKE_CPP_COMPILER g++ )
+    # NOTE(JEFF): This should only be set when GNU GCC is enabled?
+    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
+  endif()
 
   # ARCH_32 and ARCH_64 are not presently used here, but are reserved for future
   # consistency with the other supported platforms.
@@ -97,3 +114,4 @@ elseif ( PLATFORM_WINDOWS AND ARCH_64 )
 endif ( PLATFORM_WINDOWS AND ARCH_32 )
 
 message ( STATUS "Platform Architecture: ${PLATFORM_ARCH}" )
+message ( STATUS "CXX=${CMAKE_CXX_FLAGS}" )

@@ -40,6 +40,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #include <CoreFoundation/CoreFoundation.h>
 #endif
 
+#if defined (NOM_PLATFORM_LINUX )
+  //#include <cstudio>
+#endif
+
 // Private headers
 #include "nomlib/system/Path.hpp"
 

@@ -263,6 +263,7 @@ elseif ( PLATFORM_OSX )
         "${NOMLIB_DEPS_DIR}/osx/librocket/bin/libfreetype.6.dylib" )
 
 elseif ( PLATFORM_LINUX )
+
   if(NOT DEFINED ENV{SDL2DIR})
     set(ENV{SDL2DIR} "${NOMLIB_DEPS_DIR}/linux/sdl2")
   endif(NOT DEFINED ENV{SDL2DIR})

@@ -1,0 +1,31 @@
+{
+  "version": 8,
+  "configurePresets": [
+    {
+      "name": "clang_configure",
+      "displayName": "clang_configure",
+      "description": "cmake build files for nomlib using clang",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "cacheVariables": {
+        "OPENGL_GL_PREFERENCE": "GLVND",
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "DEBUG": "ON",
+        "DEBUG_ASSERT": "ON",
+        "EXAMPLES": "ON",
+        "NOM_BUILD_TESTS": "ON",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "clang_build",
+      "description": "build target",
+      "displayName": "clang_build",
+      "configurePreset": "clang_configure"
+    }
+  ]
+}

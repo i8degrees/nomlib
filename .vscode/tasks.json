@@ -1,0 +1,19 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cmake",
+			"label": "CMake: build",
+			"command": "make",
+			"problemMatcher": [],
+			"detail": "build project using clang"
+		},
+		{
+			"type": "cmake",
+			"label": "CMake: configure",
+			"command": "cmake -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DOpenGL_GL_PREFERENCE=LEGACY -DDEBUG=on -DDEBUG_ASSERT=on -DEXAMPLES=off -DNOM_BUILD_TESTS=off build",
+			"problemMatcher": [],
+			"detail": "cmake setup build"
+		}
+	]
+}

@@ -18,3 +18,7 @@ local_env.cmake
 wiki
 
 *local_env.cmake*
+
+# TODO(JEFF): Should we even be ignoring user presets???
+#.vscode/CMakeUserPresets.json
+

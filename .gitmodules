@@ -1,0 +1,4 @@
+[submodule "vendor/SDL2_ttf.git"]
+	path = vendor/SDL2_ttf.git
+	url = https://github.com/libsdl-org/SDL_ttf.git
+	branch = release/2.20.x

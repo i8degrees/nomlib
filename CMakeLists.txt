@@ -1,4 +1,5 @@
-cmake_minimum_required( VERSION 2.8.12 )
+#cmake_minimum_required( VERSION 2.8.12 )
+cmake_minimum_required( VERSION 3.15 )
 
 # Enable the use of MACOSX_RPATH by default; this effectively allows plug 'n'
 # play functionality, so to speak -- the resulting shared library files can
@@ -23,6 +24,10 @@ endif(POLICY CMP0042)
 #if( POLICY CMP0048 )
 #cmake_policy( SET CMP0048 OLD )
 #endif( POLICY CMP0048 )
+
+if(POLICY CMP0072)
+  cmake_policy(SET CMP0072 NEW)
+endif(POLICY CMP0072)
 
 # set ( CMAKE_VERBOSE_MAKEFILE OFF CACHE PATH "Verbose Makefile" )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules" )

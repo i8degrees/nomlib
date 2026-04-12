@@ -38,4 +38,4 @@ fi
 
 # TODO(JEFF): Append cxx_base_flags from here via cmake build cmd above
 # /mnt/fs1/Projects/nomlib.git.bck/third-party/linux/gtest/googletest/cmake/internal_utils.cmake:105
-
+set(cxx_base_flags "-Wall -Wshadow")

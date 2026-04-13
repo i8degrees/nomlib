@@ -22,3 +22,4 @@ wiki
 # TODO(JEFF): Should we even be ignoring user presets???
 #.vscode/CMakeUserPresets.json
 
+node_modules

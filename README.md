@@ -41,12 +41,12 @@ Upon a successful build, you should have the library modules built as OS X frame
 
 ### Linux
 
-A Linux build is presently under way and can be tracked via the `feature/LinuxPort` git branch. Back in 2014, `clang` was not quite a viable build platform for Linux, but now in 2025, the situation has improved dramatically; I have approximately `75%` of the porting work completed.
+A Linux build is presently under way and can be tracked via the `feature/LinuxPort` git branch. Back in development years of nomlib, circa 2014, `clang` was not a viable build platform (yet!) for Linux. But, now in 2025, the switch over to has aided my porting work. I now have approximately `90%` of the porting work completed.
 
 
 ```shell
 # My current platform build options for the feature/LinuxPort branch
-cmake -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DOpenGL_GL_PREFERENCE=LEGACY -DDEBUG=on -DDEBUG_ASSERT=on -DEXAMPLES=off -DNOM_BUILD_TESTS=off ..
+cmake -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DDEBUG=on -DDEBUG_ASSERT=on -DEXAMPLES=off -DNOM_BUILD_TESTS=on -DCMAKE_POLICY_VERSION_MINIMUM=3.5 ..
 make
 #make test
 #make install

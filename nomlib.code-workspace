@@ -1,0 +1,18 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "~/tmp/nomlib"
+		},
+		{
+			"path": "~/tmp/nomlib/sdl2/sdl2.git"
+		}
+	],
+	"settings": {
+    "files.association": {
+      "limits": "cpp"
+    }
+  }
+}

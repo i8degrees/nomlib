@@ -2,6 +2,5 @@
 windows/*
 osx/*
 ios/*
-linux/*
-!linux/*.sh
 common/*
+linux/*

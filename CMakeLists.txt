@@ -1,5 +1,5 @@
 #cmake_minimum_required( VERSION 2.8.12 )
-cmake_minimum_required( VERSION 3.15 )
+cmake_minimum_required( VERSION 3.14 )
 
 # Enable the use of MACOSX_RPATH by default; this effectively allows plug 'n'
 # play functionality, so to speak -- the resulting shared library files can
@@ -17,6 +17,17 @@ if(POLICY CMP0042)
 endif(POLICY CMP0042)
 
 # CMake Environment
+
+# `find_package()` uses upper-case `PACKAGENAME_ROOT` variables.
+# cmake --help-policy CMP0144
+# Minimum required CMake v3.27
+if(POLICY CMP0144)
+  cmake_policy(SET CMP0144 NEW)
+endif(POLICY CMP0144)
+
+# PythonInterp modules; acknowledgement
+# cmake --help-policy CMP0148
+#cmake_policy(SET CMP0148 NEW)
 
 # Opt out of using CMake v3.0 PROJECT_VERSION variables management for the
 # project.
@@ -40,6 +51,9 @@ set( PROJECT_VERSION_PATCH 0 )
 # Project Options
 option ( DEBUG "Build with all debugging features" off )
 option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
+# ?? Replace DEBUG_ASSERT option with the following; this should result in assertions
+# ?? being left on unless explicitly being disabled when DEBUG builds are present.
+#option ( DISABLE_DEBUG_ASSERTIONS "" off )
 option ( EXAMPLES "Build nomlib usage examples" off )
 option( NOM_BUILD_TESTS "Build unit tests" off )
 set( NOM_INSTALL_GENERATED_DOCS off )
@@ -74,6 +88,10 @@ endif ( PLATFORM_WINDOWS )
 if ( DEBUG )
   # set ( CMAKE_VERBOSE_MAKEFILE ON )
   set ( CMAKE_BUILD_TYPE "Debug" )
+  # >> Explicit `DEBUG_ASSERT` option will be deprecated in a future version...
+  if ( NOT DISABLE_DEBUG_ASSERTIONS )
+    set ( DEBUG_ASSERT on )
+  endif ( NOT DISABLE_DEBUG_ASSERTIONS )
 
   if ( NOT PLATFORM_WINDOWS )
     # TODO: Enable -Wsign-conversion, -Wextra
@@ -94,7 +112,7 @@ if ( DEBUG )
 
   message ( STATUS "Building ${PROJECT_NAME} with debugging." )
   message ( STATUS "CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}" )
-else () # Build with optimizations for maximum speed and minimal size
+else ( NOT DEBUG ) # Build with optimizations for maximum speed and minimal size
   set ( CMAKE_BUILD_TYPE "Release" )
   message ( STATUS "Building ${PROJECT_NAME} with high speed, low drag!" )
   message ( STATUS "CMAKE_CXX_FLAGS_RELEASE: ${CMAKE_CXX_FLAGS_RELEASE}" )

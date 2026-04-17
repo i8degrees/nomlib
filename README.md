@@ -47,8 +47,10 @@ A Linux build is presently under way and can be tracked via the `feature/LinuxPo
 ```shell
 # 2016
 cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DDEBUG=on -DDEBUG_ASSERT=on -DEXAMPLES=off -DNOM_BUILD_TESTS=on
-# My current platform build options for the feature/LinuxPort branch
-cmake -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DDEBUG=on -DDEBUG_ASSERT=on -DEXAMPLES=off -DNOM_BUILD_TESTS=on -DCMAKE_POLICY_VERSION_MINIMUM=3.5 ..
+make
+#make test
+#make install
+```
 
 - `2026` Latest platform default build set
 

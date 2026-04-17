@@ -124,4 +124,4 @@ elseif ( PLATFORM_WINDOWS AND ARCH_64 )
 endif ( PLATFORM_WINDOWS AND ARCH_32 )
 
 message ( STATUS "Platform Architecture: ${PLATFORM_ARCH}" )
-message ( STATUS "CXX=${CMAKE_CXX_FLAGS}" )
+#message ( STATUS "CXX=${CMAKE_CXX_FLAGS}" )

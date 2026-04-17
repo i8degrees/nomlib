@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/sprite/SpriteSheet.hpp"
 
 // Private headers
+#include "nomlib/core/helpers.hpp"
 #include "nomlib/serializers/JsonCppSerializer.hpp"
 #include "nomlib/serializers/JsonCppDeserializer.hpp"
 
@@ -51,6 +52,11 @@ SpriteSheet::SpriteSheet() :
 SpriteSheet::~SpriteSheet()
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_RENDER, nom::NOM_LOG_PRIORITY_VERBOSE );
+}
+
+SpriteSheet* SpriteSheet::clone() const
+{
+  return( new SpriteSheet(*this) );
 }
 
 const IntRect& SpriteSheet::dimensions(int index) const
@@ -107,19 +113,20 @@ int SpriteSheet::total_frames() const
   return this->total_frames_;
 }
 
-SpriteSheet::SharedPtr SpriteSheet::clone() const
-{
-  return SpriteSheet::SharedPtr ( new SpriteSheet ( *this ) );
-}
-
 bool SpriteSheet::load_file(const std::string& filename)
 {
-  IValueDeserializer* serializer = new JsonCppDeserializer();
-  Value output; // Value buffer of resulting de-serialized input.
+  Value output;
 
-  if( serializer->load( filename, output ) == false )
-  {
-    NOM_LOG_ERR( NOM, "Unable to parse JSON file:", filename );
+  auto deserializer = nom::make_unique_json_deserializer();
+  if( deserializer == nullptr ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not load input file: failure to allocate memory!" );
+    return false;
+  }
+
+  if( deserializer->load(filename, output) == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Unable to parse JSON file:", filename );
     return false;
   }
 
@@ -238,6 +245,52 @@ bool SpriteSheet::load_sheet_object(const Value& object)
   this->sheet_ = buffer;
 
   return true;
+}
+
+bool SpriteSheet::
+insert_frame(nom::size_type frame_num, const IntRect& frame_bounds)
+{
+  this->sheet_[frame_num] = frame_bounds;
+
+  return true;
+}
+
+bool SpriteSheet::append_frame(const IntRect& frame_bounds)
+{
+  nom::size_type num_frames = this->frames();
+
+  auto pair =
+    std::make_pair(num_frames, frame_bounds);
+
+  auto res = this->sheet_.insert(pair);
+  if( res.second == true ) {
+    // Success!
+    return true;
+  } else {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not append frame: key already exists at", num_frames );
+    return false;
+  }
+}
+
+bool SpriteSheet::remove_frame(nom::size_type frame)
+{
+  auto res = this->sheet_.find(frame);
+
+  if( res == this->sheet_.end() ) {
+    // Not found
+    return false;
+  } else {
+
+    // Found
+    this->sheet_.erase(res);
+    return true;
+  }
+}
+
+void SpriteSheet::remove_frames()
+{
+  this->sheet_.clear();
 }
 
 void SpriteSheet::dump ( void ) const

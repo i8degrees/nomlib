@@ -46,28 +46,23 @@ class Sound: public SoundSource
     /// \brief SoundBuffer needs access to Sound::reset.
     friend class SoundBuffer;
 
-    Sound ( void );
-    Sound ( const ISoundBuffer& copy );
-    virtual ~Sound( void );
+    Sound();
+    Sound(const ISoundBuffer& copy);
+    virtual ~Sound();
 
-    void setBuffer ( const ISoundBuffer& copy );
+    void setBuffer(const ISoundBuffer& copy);
 
-    void Play ( void );
-    void Stop ( void );
-    void Pause ( void );
+    void Play();
+    void Stop();
+    void Pause();
 
-    /// Obtain the current playback position of source in seconds
-    //float getPlayPosition ( void ) const;
-
-    /// Set playback position of source in seconds
-    //void setPlayPosition ( float seconds );
   private:
     /// Internally used by SoundBuffer class for properly freeing a sound from
     /// its attached buffer
-    void reset( void );
+    void reset();
 
     /// Buffer that this sound is attached to
-    const ISoundBuffer* buffer;
+    const ISoundBuffer* buffer = nullptr;
 };
 
 } // namespace nom

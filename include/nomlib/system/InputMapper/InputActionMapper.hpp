@@ -33,9 +33,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/InputMapper/InputAction.hpp"
+#include "nomlib/system/Event.hpp"
 
 namespace nom {
+
+// Forward declarations
+class InputAction;
 
 /// \brief High-level API for associating names with input actions.
 ///
@@ -56,15 +59,14 @@ class InputActionMapper
     ~InputActionMapper( void );
 
     /// \brief Insert an action mapping.
-    bool insert( const std::string& key, const InputAction& action, const EventCallback& callback );
+    ///
+    /// \see nom::InputAction
+    bool
+    insert( const std::string& key, const InputAction& action,
+            const event_callback& callback );
 
     /// \brief Remove an action mapping.
     bool erase( const std::string& key );
-
-    /// \brief Diagnostic output.
-    ///
-    /// remarks Dumps only the active states.
-    void dump( void ) const;
 
   private:
     /// \brief Obtain the input map's contents.
@@ -79,8 +81,8 @@ class InputActionMapper
     ActionMap input_map_;
 };
 
-#define NOM_CONNECT_INPUT_MAPPING( obj, key, action, func, ... ) \
-  ( obj.insert( key, action, nom::EventCallback( [&] ( const nom::Event& evt ) { func( __VA_ARGS__ ); } ) ) )
+#define NOM_CONNECT_INPUT_MAPPING(obj, key, action, func, ...) \
+  ( obj.insert( key, action, nom::event_callback( [&](const nom::Event& evt) { func( __VA_ARGS__ ); } ) ) )
 
 } // namespace nom
 

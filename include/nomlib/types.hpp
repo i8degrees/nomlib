@@ -29,14 +29,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_STDINT_TYPES_HPP
 #define NOMLIB_STDINT_TYPES_HPP
 
-#include <string> // std::size_t
-#include <vector>
-#include <limits> // min && max types
+#include <cstddef>  // std::size_t
+#include <limits>   // min && max types
 
 #include "nomlib/platforms.hpp"
-
-// RTTI for library objects.
-#include "nomlib/core/ObjectTypeInfo.hpp"
 
 /*
   TODO: This should be replaced by an actual CMake script -- think:
@@ -97,6 +93,12 @@ typedef int32_t int32;
 /// \brief Unsigned 16-bit integer.
 typedef uint32_t uint32;
 
+/// \brief 32-bit IEEE floating-point value.
+typedef float real32;
+
+/// \brief 64-bit IEEE floating-point value.
+typedef double real64;
+
 /// \brief 64-bit integer types
 /// \note As per **/usr/include/MacTypes.h**:
 ///
@@ -137,22 +139,48 @@ typedef void* void_ptr;
 
 typedef unsigned long ulong;
 
-// Definitions for minimum && maximum integral types
+// Numerical min, max values for commonly used data types
 //
 // http://en.cppreference.com/w/cpp/types/numeric_limits
-const int int_min = std::numeric_limits<int>::lowest();
-const int int_max = std::numeric_limits<int>::max();
-const uint uint_min = std::numeric_limits<uint>::lowest();
-const uint uint_max = std::numeric_limits<uint>::max();
 
-const int char_min = std::numeric_limits<char>::lowest();
-const int char_max = std::numeric_limits<char>::max();
-const uint uchar_min = std::numeric_limits<uchar>::lowest();
-const uint uchar_max = std::numeric_limits<uchar>::max();
+const char NOM_CHAR_MIN = std::numeric_limits<char>::lowest();
+const char NOM_CHAR_MAX = std::numeric_limits<char>::max();
+const uchar NOM_UCHAR_MIN = std::numeric_limits<uchar>::lowest();
+const uchar NOM_UCHAR_MAX = std::numeric_limits<uchar>::max();
 
-// Always an unsigned type
-const size_type size_type_min = std::numeric_limits<size_type>::lowest();
-const size_type size_type_max = std::numeric_limits<size_type>::max();
+const int8 NOM_INT8_MIN = std::numeric_limits<int8>::lowest();
+const int8 NOM_INT8_MAX = std::numeric_limits<int8>::max();
+const uint8 NOM_UINT8_MIN = std::numeric_limits<uint8>::lowest();
+const uint8 NOM_UINT8_MAX = std::numeric_limits<uint8>::max();
+
+const int16 NOM_INT16_MIN = std::numeric_limits<int16>::lowest();
+const int16 NOM_INT16_MAX = std::numeric_limits<int16>::max();
+const uint16 NOM_UINT16_MIN = std::numeric_limits<uint16>::lowest();
+const uint16 NOM_UINT16_MAX = std::numeric_limits<uint16>::max();
+
+const int NOM_INT_MIN = std::numeric_limits<int>::lowest();
+const int NOM_INT_MAX = std::numeric_limits<int>::max();
+const uint NOM_UINT_MIN = std::numeric_limits<uint>::lowest();
+const uint NOM_UINT_MAX = std::numeric_limits<uint>::max();
+
+const int32 NOM_INT32_MIN = std::numeric_limits<int32>::lowest();
+const int32 NOM_INT32_MAX = std::numeric_limits<int32>::max();
+const uint32 NOM_UINT32_MIN = std::numeric_limits<uint32>::lowest();
+const uint32 NOM_UINT32_MAX = std::numeric_limits<uint32>::max();
+
+const int64 NOM_INT64_MIN = std::numeric_limits<int64>::lowest();
+const int64 NOM_INT64_MAX = std::numeric_limits<int64>::max();
+const uint64 NOM_UINT64_MIN = std::numeric_limits<uint64>::lowest();
+const uint64 NOM_UINT64_MAX = std::numeric_limits<uint64>::max();
+
+const size_type NOM_SIZE_TYPE_MIN = std::numeric_limits<size_type>::lowest();
+const size_type NOM_SIZE_TYPE_MAX = std::numeric_limits<size_type>::max();
+
+const real32 NOM_REAL32_MIN = std::numeric_limits<real32>::lowest();
+const real32 NOM_REAL32_MAX = std::numeric_limits<real32>::max();
+
+const real64 NOM_REAL64_MIN = std::numeric_limits<real64>::lowest();
+const real64 NOM_REAL64_MAX = std::numeric_limits<real64>::max();
 
 /// \brief An integer indicating that there is no match, an error or NULL.
 static const int npos = -1;
@@ -206,7 +234,39 @@ enum Anchor: uint32
   BottomRight = Y_BOTTOM | X_RIGHT      // Hex: 0x44, Dec: 68
 };
 
-typedef std::vector<std::string> StringList;
+const nom::size_type NOM_BYTE = 1024;
+
+inline
+nom::size_type kilobyte(nom::size_type bytes)
+{
+  nom::size_type result = (bytes * NOM_BYTE);
+
+  return result;
+}
+
+inline
+nom::size_type megabyte(nom::size_type bytes)
+{
+  nom::size_type result = ( kilobyte(bytes) * NOM_BYTE);
+
+  return result;
+}
+
+inline
+nom::size_type gigabyte(nom::size_type bytes)
+{
+  nom::size_type result = ( megabyte(bytes) * NOM_BYTE );
+
+  return result;
+}
+
+inline
+nom::size_type terabyte(nom::size_type bytes)
+{
+  nom::size_type result = ( gigabyte(bytes) * NOM_BYTE );
+
+  return result;
+}
 
 } // namespace nom
 
@@ -223,10 +283,14 @@ static_assert ( sizeof ( nom::int32 ) == 4, "nom::int32" );
 static_assert ( sizeof ( nom::uint64 ) == 8, "nom::uint64" );
 static_assert ( sizeof ( nom::int64 ) == 8, "nom::int64" );
 
+static_assert ( sizeof ( nom::real32 ) == 4, "nom::real32" );
+static_assert ( sizeof ( nom::real64 ) == 8, "nom::real64" );
+
 static_assert ( sizeof ( nom::uchar ) == 1, "nom::uchar" );
 
 // Blindly assumes we are on either a 64-bit or 32-bit platform.
-#if defined( NOM_PLATFORM_ARCH_X86_64 )
+// TODO: Relocate this def to run-time (cmake gen)
+#if defined(NOM_PLATFORM_ARCH_X86_64)
   static_assert( sizeof ( nom::ulong ) == 8, "nom::ulong" );
   static_assert( sizeof ( nom::size_type ) == 8, "nom::size_type" );
 #else // #elif defined( NOM_PLATFORM_ARCH_X86_86 )
@@ -235,7 +299,7 @@ static_assert ( sizeof ( nom::uchar ) == 1, "nom::uchar" );
 #endif
 
 // Blindly assumes we are on either a 64-bit or 32-bit platform.
-#if defined( NOM_PLATFORM_ARCH_X86_64 )
+#if defined(NOM_PLATFORM_ARCH_X86_64)
   static_assert( sizeof(nom::int_ptr) == 8, "nom::int_ptr" );
   static_assert( sizeof(nom::uint_ptr) == 8, "nom::uint_ptr" );
   static_assert( sizeof ( nom::int32_ptr ) == ( sizeof(long) ), "nom::int32_ptr" );
@@ -255,5 +319,14 @@ const nom::sint NOM_EXIT_SUCCESS = 0; // EXIT_SUCCESS from cstdlib headers
 //#if defined(HAVE_SDL2)
 const nom::sint SDL_SUCCESS = 0; // Non-error return value for SDL2 API
 //#endif
+
+#define NOM_KILOBYTES(bytes) kilobyte(bytes)
+#define NOM_MEGABYTES(bytes) megabyte(bytes)
+#define NOM_GIGABYTES(bytes) gigabyte(bytes)
+#define NOM_TERABYTES(bytes) terabytes(bytes)
+
+// Configuration variables for the engine
+
+#define NOM_EVENT_QUEUE_STATISTICS "NOM_EVENT_QUEUE_STATISTICS"
 
 #endif // include guard defined

@@ -27,70 +27,59 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 #include "nomlib/audio/AL/OpenAL.hpp"
+#include "nomlib/core/err.hpp"
 
 // OpenAL Error Handling
 
 namespace nom {
-  namespace priv {
+namespace priv {
 
-void al_err ( const std::string& file, uint32 line )
+void al_err(const std::string& func, const std::string& file, uint32 line)
 {
   ALenum error_code = alGetError();
 
-  if ( error_code != AL_NO_ERROR )
-  {
-    std::string error, description;
+  if ( error_code != AL_NO_ERROR ) {
+    std::string error;
 
-    switch ( error_code )
+    switch(error_code)
     {
       default:
       {
-        error = "Unknown";
-        description = "An unknown error has occurred.";
-      }
-      break;
+        error = "Unknown err";
+      } break;
 
       case AL_INVALID_NAME:
       {
-        error = "AL_INVALID_NAME";
-        description = "Invalid name (identifier).";
-      }
-      break;
+        error = "AL_INVALID_NAME; Invalid name (identifier).";
+      } break;
 
       case AL_INVALID_ENUM:
       {
-        error = "AL_INVALID_ENUM";
-        description = "Invalid enumeration (attribute).";
-      }
-      break;
+        error = "AL_INVALID_ENUM; Invalid enumeration (attribute)";
+      } break;
 
       case AL_INVALID_VALUE:
       {
-        error = "AL_INVALID_VALUE";
-        description = "Invalid value.";
-      }
-      break;
+        error = "AL_INVALID_VALUE; Invalid value.";
+      } break;
 
       case AL_INVALID_OPERATION:
       {
-        error = "AL_INVALID_OPERATION";
-        description = "Requested operation is not valid.";
-      }
-      break;
+        error =
+          "AL_INVALID_OPERATION; Requested operation is not valid.";
+      } break;
 
       case AL_OUT_OF_MEMORY:
       {
-        error = "AL_OUT_OF_MEMORY";
-        description = "Requested operation resulted in OpenAL running out of memory";
-      }
-      break;
+        error =
+          "AL_OUT_OF_MEMORY; Out of memory.";
+      } break;
     } // end switch
 
-  std::cout << "NOM_LOG_ERR at " << nom::timestamp() << "In file " << file << ":" << line << std::endl << "Error: " << error << ", " << description << std::endl << std::endl;
-
+    NOM_LOG_ERR(NOM_LOG_CATEGORY_AUDIO, error, "from", func);
+    nom::set_error( error.c_str() );
   } // end if AL_NO_ERROR
 }
 
-
-  } // namespace priv
+} // namespace priv
 } // namespace nom

@@ -27,7 +27,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
 #include "nomlib/graphics/RenderWindow.hpp"
-//#include "nomlib/graphics/Renderer.hpp"
 
 // Private headers
 #include <cstdlib>
@@ -39,8 +38,14 @@ void PixelsDeleter::operator()(void* ptr)
   std::free(ptr);
 }
 
-// static initialization
+// Static Initializations
 SDL_Renderer* RenderWindow::context_ = nullptr;
+
+const Point2i RenderWindow::DEFAULT_WINDOW_POS =
+  Point2i(SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED);
+
+const Point2i RenderWindow::WINDOW_POS_CENTERED =
+  Point2i(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
 RenderWindow::RenderWindow( void ) : window_
     { SDL_WINDOW::UniquePtr ( nullptr, priv::FreeWindow ) },
@@ -57,73 +62,73 @@ RenderWindow::~RenderWindow( void )
   priv::FreeRenderTarget( context_ );
 }
 
-bool RenderWindow::create (
-                            const std::string& window_title,
-                            int32 width,
-                            int32 height,
-                            uint32 window_flags,
-                            int32 rendering_driver,
-                            uint32 context_flags
-                          )
+bool
+RenderWindow::create( const std::string& window_title, const Size2i& res,
+                      uint32 window_flags, int rendering_driver,
+                      uint32 renderer_flags )
 {
-  this->window_.reset ( SDL_CreateWindow  (
-                                            window_title.c_str(),
-                                            SDL_WINDOWPOS_UNDEFINED,
-                                            SDL_WINDOWPOS_UNDEFINED,
-                                            width,
-                                            height,
-                                            window_flags
-                                          )
-                      );
+  return this->create(  window_title, DEFAULT_WINDOW_POS, 0, res, window_flags,
+                        rendering_driver, renderer_flags );
+}
 
-  if ( this->window_valid() == false )
-  {
-    NOM_LOG_ERR( NOM, SDL_GetError() );
+bool
+RenderWindow::create( const std::string& window_title, const Point2i& pos,
+                      int display_index, const Size2i& res, uint32 window_flags,
+                      int rendering_driver, uint32 renderer_flags )
+{
+  int window_pos_x = 0;
+  int window_pos_y = 0;
+
+  if( SDL_WINDOWPOS_ISCENTERED(pos.x) || SDL_WINDOWPOS_ISCENTERED(pos.y) ) {
+    window_pos_x = SDL_WINDOWPOS_CENTERED_DISPLAY(display_index);
+    window_pos_y = SDL_WINDOWPOS_CENTERED_DISPLAY(display_index);
+  }
+
+  if( SDL_WINDOWPOS_ISUNDEFINED(pos.x) || SDL_WINDOWPOS_ISUNDEFINED(pos.y) ) {
+    window_pos_x = SDL_WINDOWPOS_UNDEFINED_DISPLAY(display_index);
+    window_pos_y = SDL_WINDOWPOS_UNDEFINED_DISPLAY(display_index);
+  }
+
+  auto render_window = SDL_CreateWindow(  window_title.c_str(), window_pos_x,
+                                          window_pos_y, res.w, res.h,
+                                          window_flags );
+  this->window_.reset(render_window);
+
+  if( this->window_valid() == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Failed to create rendering window:", SDL_GetError() );
     return false;
   }
 
-  Renderer::create ( this->window(), rendering_driver, context_flags );
+  Renderer::create(this->window(), rendering_driver, renderer_flags);
 
-  if( this->renderer_valid() == false )
-  {
-    NOM_LOG_ERR( NOM, SDL_GetError() );
+  if( this->renderer_valid() == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Failed to initialize rendering driver:", SDL_GetError() );
     return false;
   }
 
   // Track our unique identifiers for our brand spanking new window!
-  this->window_id_ = SDL_GetWindowID ( this->window() );
-  this->window_display_id_ = SDL_GetWindowDisplayIndex ( this->window() );
+  this->window_id_ = SDL_GetWindowID( this->window() );
+  this->window_display_id_ = SDL_GetWindowDisplayIndex( this->window() );
   this->enabled_ = true;
 
-  // You must *always* have an active, valid rendering context. An invalid
-  // rendering context will break the vast majority of graphics operations!
+  // We must **always** have a valid rendering context. Without this, you can
+  // kiss pretty much everything but SDL1-era functionality goodbye!
   //
-  // By default, we use the rendering context that is created at the
-  // initialization of this window object (see above).
-  //
-  // Note that the same rendering context that was used during the creation of
-  // a resource *must* stay around for as long as the resource(s) are using
-  // said rendering context.
+  // NOTE:Resource data, i.e.: nom::Texture && friends, are dependent upon the
+  // rendering context that is active during the creation of said resource.
+  // Therefore, the context **must** remain valid for the lifetime of the
+  // resource.
   this->make_current();
 
-  // Try to ensure that we have no leftover artifacts by clearing and filling
-  // window with a solid black paint bucket fill.
-  this->fill ( Color4i::Black );
+  // Clearing the window to a known value Helps keep rendering artifacts
+  // (garbage) away.
+  this->fill(Color4i::Transparent);
 
   nom::set_render_interface(*this);
 
   return true;
-}
-
-bool RenderWindow::create (
-                            const std::string& window_title,
-                            const Size2i& res,
-                            uint32 window_flags,
-                            int32 rendering_driver,
-                            uint32 context_flags
-                          )
-{
-  return this->create( window_title, res.w, res.h, window_flags, rendering_driver, context_flags );
 }
 
 RenderWindow::RawPtr RenderWindow::get ( void )
@@ -161,11 +166,10 @@ bool RenderWindow::window_valid( void ) const
   return false;
 }
 
-Point2i RenderWindow::position ( void ) const
+Point2i RenderWindow::position() const
 {
   Point2i pos;
-
-  SDL_GetWindowPosition ( this->window(), &pos.x, &pos.y );
+  SDL_GetWindowPosition(this->window(), &pos.x, &pos.y);
 
   return pos;
 }
@@ -213,36 +217,58 @@ const IntRect RenderWindow::display_bounds ( void ) const
   return bounds;
 }
 
-VideoModeList RenderWindow::getVideoModes ( void ) const
+bool RenderWindow::display_modes(DisplayModeList& modes) const
 {
-/*
-  VideoModeList modes;
-  SDL_Rect** mode;
+  int display_mode_count = 0;
+  int display_id = this->window_display_id();
+  SDL_DisplayMode mode = {};
 
-  mode = SDL_ListModes ( nullptr, SDL_FULLSCREEN );
+  // Get the number of display modes available for this window
+  display_mode_count = SDL_GetNumDisplayModes(display_id);
+  if( display_mode_count < 1 ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not enumerate window's display modes:",
+                  SDL_GetError() );
+    return false;
+  }
 
-  if ( mode == nullptr )
-  {
-NOM_LOG_INFO ( NOM, "Any video mode is supported." ); // FIXME?
-    return modes;
-  }
-  else if ( mode == ( SDL_Rect**) - 1 )
-  {
-NOM_LOG_INFO ( NOM, "No video modes are supported." );
-    return modes;
-  }
-  else
-  {
-    for ( int32 idx = 0; mode[idx]; idx++ )
-    {
-      modes.push_back ( VideoMode ( mode[idx]->w, mode[idx]->h, this->getDisplayColorBits() ) );
+  // Enumerate through the list of video modes for this window
+  for( auto idx = 0; idx != display_mode_count; ++idx ) {
+
+    if( SDL_GetDisplayMode(this->window_display_id(), idx, &mode) != 0 ) {
+      NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                    "Could not enumerate window's display modes:",
+                    SDL_GetError() );
+      return false;
     }
 
-    std::sort ( modes.begin(), modes.end(), std::greater<VideoMode>()  );
+    // Construct a nom::DisplayMode object from the data in the
+    // SDL_DisplayMode struct
+    DisplayMode video_mode;
+    video_mode.format = mode.format;
+    video_mode.bounds.w = mode.w;
+    video_mode.bounds.h = mode.h;
+    video_mode.refresh_rate = mode.refresh_rate;
+
+    modes.push_back(video_mode);
   }
-  return modes;
-*/
-    return VideoModeList();
+
+  return true;
+}
+
+int RenderWindow::refresh_rate() const
+{
+  int window_display_id = this->window_display_id();
+  SDL_DisplayMode current_mode = {};
+
+  if( SDL_GetCurrentDisplayMode(window_display_id, &current_mode) != 0 ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not get display video mode for the window:",
+                  SDL_GetError() );
+    return -1;
+  }
+
+  return current_mode.refresh_rate;
 }
 
 bool RenderWindow::flip ( void ) const
@@ -338,9 +364,9 @@ void RenderWindow::set_size ( int32 width, int32 height )
   SDL_SetWindowSize ( this->window(), width, height );
 }
 
-void RenderWindow::set_position ( int32 x, int32 y )
+void RenderWindow::set_position(const Point2i& window_pos)
 {
-  SDL_SetWindowPosition ( this->window(), x, y );
+  SDL_SetWindowPosition(this->window(), window_pos.x, window_pos.y);
 }
 
 uint32 RenderWindow::window_id( void ) const
@@ -358,9 +384,28 @@ SDL_Window* RenderWindow::mouse_focus( void ) const
   return SDL_GetMouseFocus();
 }
 
-int RenderWindow::window_display_id ( void ) const
+int RenderWindow::window_display_id() const
 {
   return this->window_display_id_;
+}
+
+// static
+std::string RenderWindow::display_name(int display_id)
+{
+  const char* result_str = nullptr;
+  std::string result = "\0";
+
+  result_str = SDL_GetDisplayName(display_id);
+  if( result_str != nullptr ) {
+    result = result_str;
+  }
+
+  return result;
+}
+
+std::string RenderWindow::display_name() const
+{
+  return this->display_name(this->window_display_id_);
 }
 
 void RenderWindow::disable_screensaver ( void )
@@ -403,9 +448,9 @@ void RenderWindow::hide_window ( void )
   SDL_HideWindow ( this->window() );
 }
 
-void RenderWindow::set_window_grab ( bool grab )
+void RenderWindow::set_window_grab(bool grab)
 {
-  SDL_SetWindowGrab ( this->window(), SDL_BOOL(grab) );
+  SDL_SetWindowGrab( this->window(), (SDL_bool)grab );
 }
 
 void RenderWindow::set_minimum_window_size ( int min_width, int min_height )
@@ -418,7 +463,7 @@ void RenderWindow::set_maximum_window_size ( int max_width, int max_height )
   SDL_SetWindowMaximumSize ( this->window(), max_width, max_height );
 }
 
-bool RenderWindow::save_png_file( const std::string& filename ) const
+bool RenderWindow::save_png_file(const std::string& filename) const
 {
   int bpp = 0; // bits per pixel
   uint32 red_mask = 0;
@@ -433,8 +478,10 @@ bool RenderWindow::save_png_file( const std::string& filename ) const
   // Width & height of target in pixels
   Size2i renderer_size = Renderer::output_size();
 
-  if ( SDL_BOOL( SDL_PixelFormatEnumToMasks ( caps.optimal_texture_format(), &bpp, &red_mask, &green_mask, &blue_mask, &alpha_mask ) ) != true )
-  {
+  SDL_bool result =
+    SDL_PixelFormatEnumToMasks( caps.optimal_texture_format(), &bpp, &red_mask,
+                                &green_mask, &blue_mask, &alpha_mask );
+  if( result != SDL_TRUE ) {
     NOM_LOG_ERR( NOM, SDL_GetError() );
     return false;
   }
@@ -458,7 +505,7 @@ bool RenderWindow::save_png_file( const std::string& filename ) const
   return true;
 }
 
-bool RenderWindow::save_screenshot( const std::string& filename ) const
+bool RenderWindow::save_screenshot(const std::string& filename) const
 {
   RendererInfo caps = this->caps();
   Image screenshot;
@@ -478,8 +525,10 @@ bool RenderWindow::save_screenshot( const std::string& filename ) const
   uint32 blue_mask = 0;
   uint32 alpha_mask = 0;
 
-  if ( SDL_BOOL( SDL_PixelFormatEnumToMasks ( caps.optimal_texture_format(), &bpp, &red_mask, &green_mask, &blue_mask, &alpha_mask ) ) != true )
-  {
+  SDL_bool result =
+    SDL_PixelFormatEnumToMasks( caps.optimal_texture_format(), &bpp, &red_mask,
+                                &green_mask, &blue_mask, &alpha_mask );
+  if( result != SDL_TRUE ) {
     NOM_LOG_ERR( NOM, SDL_GetError() );
     return false;
   }
@@ -525,6 +574,11 @@ SDL_Renderer* RenderWindow::context( void )
 void RenderWindow::set_context ( RenderWindow::RawPtr window )
 {
   context_ = window->renderer();
+}
+
+int RenderWindow::num_video_displays()
+{
+  return SDL_GetNumVideoDisplays();
 }
 
 namespace priv {

@@ -69,10 +69,12 @@ class AudioDevice: public IAudioDevice
     // std::shared_ptr<ALCdevice> getAudioDevice ( void ) const;
 
     /// Obtain the initialized audio device name
-    const std::string getDeviceName ( void ) const;
+    std::string getDeviceName() const override;
 
     /// Obtain support info regarding a particular extension
     bool isExtensionSupported ( const std::string& extension ) const;
+
+    static bool extension_available(const std::string& ext);
 
     // frequency
     // Suspend context
@@ -89,8 +91,9 @@ class AudioDevice: public IAudioDevice
     std::shared_ptr<ALCdevice_struct> audio_device;
     /// Audio device context
     std::shared_ptr<ALCcontext_struct> audio_context;
+
     /// device name
-    const ALCchar *device_name;
+    std::string device_name_;
 };
 
 } // namespace nom

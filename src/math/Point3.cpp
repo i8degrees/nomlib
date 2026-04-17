@@ -31,12 +31,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// Null value for a nom::Point3 using signed integers
-template <> const Point3i Point3i::null ( -1, -1, -1 );
+template <> const Point3i Point3i::null(-1, -1, -1);
 
 /// Null value for a nom::Point3 using floating point numbers
-template <> const Point3f Point3f::null ( -1.0f, -1.0f, -1.0f );
+template <> const Point3f Point3f::null(-1.0f, -1.0f, -1.0f);
 
 /// Null value for a nom::Point3 using double precision floating point numbers
-template <> const Point3d Point3d::null ( -1.0f, -1.0f, -1.0f );
+template <> const Point3d Point3d::null(-1.0f, -1.0f, -1.0f);
+
+/// \brief Zero value for a nom::Point3 using signed integers
+template <> const Point3i Point3i::zero(0, 0, 0);
+
+/// \brief Zero value for a nom::Point3 using 32-bit floating-point numbers.
+template <> const Point3f Point3f::zero(0.0f, 0.0f, 0.0f);
+
+/// \brief Zero value for a nom::Point3 using double precision (64-bit)
+/// floating-point numbers.
+template <> const Point3d Point3d::zero(0.0f, 0.0f, 0.0f);
 
 } // namespace nom

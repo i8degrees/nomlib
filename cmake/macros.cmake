@@ -103,33 +103,10 @@ macro(nom_add_library target lib_type source headers external_deps)
   endif( PLATFORM_OSX AND FRAMEWORK )
 
   # Copy target's library file to $CMAKE_INSTALL_PREFIX/lib
-  if( NOT PLATFORM_WINDOWS )
-    install(  TARGETS ${target}
-              LIBRARY DESTINATION lib
-              ARCHIVE DESTINATION lib
-              LIBRARY FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX} )
-
-  # FIXME: This is the only way I've been able to get the generated MSVC project
-  # files to cooperate with CMake -- both the output directory and target name
-  # (set properly from the MSVC generator) differ from what CMake thinks they
-  # ought to be.
-  else( PLATFORM_WINDOWS )
-
-    if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
-      set(  LIBRARY_PATH
-            "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${target}-d.lib"
-      )
-    else( NOT CMAKE_BUILD_TYPE STREQUAL "Debug" )
-      set(  LIBRARY_PATH
-            "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${target}.lib"
-      )
-    endif( CMAKE_BUILD_TYPE STREQUAL "Debug" )
-
-    install(  FILES
-              ${LIBRARY_PATH}
-              DESTINATION lib
-    )
-  endif( NOT PLATFORM_WINDOWS )
+  install(  TARGETS ${target}
+            LIBRARY DESTINATION lib
+            ARCHIVE DESTINATION lib
+            LIBRARY FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX} )
 
 endmacro(nom_add_library)
 
@@ -167,6 +144,37 @@ endmacro(nom_add_library)
 #     endforeach( dep ${external_deps} )
 
 # endmacro(nom_install_dep target external_deps dest)
+
+# Helper function for adding tests through CTest
+#
+# IMPORTANT: We cannot use the GTEST_ADD_TESTS macro here for adding tests that
+# rely on the nom::VisualUnitTest framework because of the way that the macro
+# breaks up the test run -- it ends up executing each individual test in a
+# separate process, i.e.: 'SpriteTest.SpriteInterfaceWithTextureReference' and
+# 'SpriteTest.SpriteInterfaceWithTextureRawPointer' are treated as two
+# separated executable binaries.
+#  This is bad for us because our screen-dumping creates new timestamped
+# directories on every new instance of the framework, which normally is OK
+# because this yields one directory, but in the case of multiple executable
+# runs ... spawns an awful lot more than I'd prefer.
+#   I hope to one day figure out a proper solution for this work flow issue,
+# but in the mean time ... this is the best I can come up with.
+macro( nom_add_visual_test test_name executable )
+  add_test( ${test_name} ${executable}
+            --gtest_filter=${test_name}.* ${ARGN} )
+endmacro()
+
+# Helper function for adding an engine unit test
+#
+# IMPORTANT: Avoid using the newer add_test syntax, i.e.:
+# add_test(NAME <name> COMMAND <command>), because these tests are not
+# added to the default test configuration! Using the newer add_test
+# syntax leads me to this err message when running ctest from the project's
+# build directory (CMake generated XCode project files):
+#     "Test not available without configuration. (Missing "-C <config>"?)"
+macro( nom_add_test test_name test_executable )
+  add_test( ${test_name} ${test_executable} ${ARGN} )
+endmacro()
 
 macro(NOM_LOG_INFO msg)
   message( STATUS "INFO: ${msg}" )

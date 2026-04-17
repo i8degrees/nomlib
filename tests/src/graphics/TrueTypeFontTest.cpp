@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/config.hpp>
 #include <nomlib/math.hpp>
 #include <nomlib/system.hpp>
+#include <nomlib/serializers.hpp>
 #include <nomlib/graphics.hpp>
 
 namespace nom {
@@ -78,7 +79,7 @@ class TrueTypeFontTest: public nom::VisualUnitTest
 
       // Text rendering defaults
       this->text =
-        "!\"#$%&'()*+,-.\n//0123456789\n:;<=>?@\nABCDEFGHIJKLMNOPQRSTUVWXYZ\n[\\]^_`\nabcdefghijklmnopqrstuvwxyz\n{|}~";
+        "!\"#$%&'()*+,-.\n/0123456789\n:;<=>?@\nABCDEFGHIJKLMNOPQRSTUVWXYZ\n[\\]^_`\nabcdefghijklmnopqrstuvwxyz\n{|}~";
 
       this->pt_size = nom::DEFAULT_FONT_SIZE;
       this->pos = Point2i(0,0);
@@ -116,11 +117,13 @@ class TrueTypeFontTest: public nom::VisualUnitTest
       this->rendered_text.set_style(this->style);
       this->rendered_text.set_text_size(this->pt_size);
       this->rendered_text.set_color(this->color);
-
-      // FIXME: Proper multi-line alignment logic is not implemented
       this->rendered_text.set_position(this->pos);
-      nom::set_alignment( &this->rendered_text,
-                          this->resolution(), this->align);
+
+      this->append_update_callback( [=](float) {
+        nom::set_alignment( &this->rendered_text, Point2i(0,0),
+                            Size2i( this->resolution() ),
+                            this->align );
+      });
 
       this->append_render_callback( [&] ( const RenderWindow& win ) {
         this->rendered_text.draw( this->render_window() );
@@ -143,7 +146,7 @@ class TrueTypeFontTest: public nom::VisualUnitTest
     int pt_size;
 
     /// \brief The text rendering position.
-    Point2i pos;
+    Point2i pos = Point2i::zero;
 
     /// \brief The text alignment.
     uint32 align = Anchor::None;
@@ -162,6 +165,10 @@ TEST_F(TrueTypeFontTest, OpenSansRegular)
   EXPECT_EQ(true, this->load_font(font) )
   << "Could not load font file: " << font;
 
+  EXPECT_EQ(Size2i(223, 119), rendered_text.size() )
+  << "The rendered text length should be the longest line: "
+  << "'ABCDEFGHIJKLMNOPQRSTUVWXYZ'";
+
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
 }
@@ -173,6 +180,10 @@ TEST_F(TrueTypeFontTest, OpenSansBold)
 
   EXPECT_EQ(true, this->load_font(font) )
   << "Could not load font file: " << font;
+
+  EXPECT_EQ(Size2i(236, 119), rendered_text.size() )
+  << "The rendered text length should be the longest line: "
+  << "'ABCDEFGHIJKLMNOPQRSTUVWXYZ'";
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
@@ -186,6 +197,10 @@ TEST_F(TrueTypeFontTest, LiberationSerif)
   EXPECT_EQ(true, this->load_font(font) )
   << "Could not load font file: " << font;
 
+  EXPECT_EQ(Size2i(238, 98), rendered_text.size() )
+  << "The rendered text length should be the longest line: "
+  << "'ABCDEFGHIJKLMNOPQRSTUVWXYZ'";
+
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
 }
@@ -197,6 +212,10 @@ TEST_F(TrueTypeFontTest, LiberationSerifBold)
 
   EXPECT_EQ(true, this->load_font(font) )
   << "Could not load font file: " << font;
+
+  EXPECT_EQ(Size2i(239, 98), rendered_text.size() )
+  << "The rendered text length should be the longest line: "
+  << "'ABCDEFGHIJKLMNOPQRSTUVWXYZ'";
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
@@ -211,6 +230,10 @@ TEST_F(TrueTypeFontTest, MagentaText)
 
   EXPECT_EQ(true, this->load_font(font) )
   << "Could not load font file: " << font;
+
+  EXPECT_EQ(Size2i(223, 119), rendered_text.size() )
+  << "The rendered text length should be the longest line: "
+  << "'ABCDEFGHIJKLMNOPQRSTUVWXYZ'";
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
@@ -233,6 +256,8 @@ TEST_F(TrueTypeFontTest, Kerning)
   << "Are you not using a build of SDL2_ttf with the kerning pairs patch "
   << "applied? See third-party/README.md for details.";
 
+  EXPECT_EQ( Size2i(202, 131), rendered_text.size() );
+
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
 }
@@ -249,10 +274,13 @@ TEST_F(TrueTypeFontTest, NoKerning)
   EXPECT_EQ(true, this->load_font(font) )
   << "Could not load font file: " << font;
 
-  this->font->set_font_kerning(false);
+  this->rendered_text.set_text_kerning(false);
 
   kerning_offset = this->font->kerning(87, 65, this->pt_size);
   EXPECT_EQ(0, kerning_offset);
+
+  EXPECT_EQ( Size2i(210, 131), rendered_text.size() )
+  << "Text length without kerning should be larger than the previous test!";
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );
@@ -474,6 +502,7 @@ TEST_F(TrueTypeFontTest, UseAllTextStyles)
   EXPECT_TRUE( this->compare() );
 }
 
+/// \remarks This test is only ran when the interactive flag (-i) is passed.
 TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
 {
   // No point in running this test when the end-user is not present; this
@@ -521,57 +550,35 @@ TEST_F(TrueTypeFontTest, InteractiveGlyphCache)
   // Register additional input bindings
   InputActionMapper wheel;
 
-  EventCallback zoom_in( [&] (const Event& evt) {
+  auto zoom_in = ( [&](const Event& evt) {
     int current_size = this->rendered_text.text_size();
 
     if( current_size < MAX_POINT_SIZE ) {
       this->rendered_text.set_text_size(current_size += 1);
-
-      // Reset alignment calcs
-      nom::set_alignment( &this->rendered_text,
-                          Size2i( this->resolution() ),
-                          Anchor::None );
-
-      nom::set_alignment( &this->rendered_text,
-                          Size2i( this->resolution() ),
-                          this->align );
     }
   });
 
-  EventCallback zoom_out( [&] (const Event& evt) {
+  auto zoom_out = ( [&](const Event& evt) {
     int current_size = this->rendered_text.text_size();
 
     if( current_size >= MIN_POINT_SIZE ) {
       this->rendered_text.set_text_size(current_size -= 1);
-
-      // Reset alignment calcs
-      nom::set_alignment( &this->rendered_text,
-                          Size2i( this->resolution() ),
-                          Anchor::None );
-
-      nom::set_alignment( &this->rendered_text,
-                          Size2i( this->resolution() ),
-                          this->align );
     }
   });
 
-  wheel.insert( "zoom_in",
-                 MouseWheelAction(  SDL_MOUSEWHEEL,
-                                    MouseWheelAction::AXIS_Y,
-                                    MouseWheelAction::UP ), zoom_in );
-
-  wheel.insert( "zoom_out",
-                 MouseWheelAction(  SDL_MOUSEWHEEL,
-                                    MouseWheelAction::AXIS_Y,
-                                    MouseWheelAction::DOWN ), zoom_out );
+  wheel.insert("zoom_in", MouseWheelAction(nom::MOUSE_WHEEL_UP), zoom_in);
+  wheel.insert("zoom_out", MouseWheelAction(nom::MOUSE_WHEEL_DOWN), zoom_out);
 
   this->input_mapper_.insert("zoom_in", wheel, true);
   this->input_mapper_.insert("zoom_out", wheel, true);
 
+<<<<<<< HEAD
   // Done loading ... reset title to default
   this->render_window().set_window_title( this->test_set() + "::" +
                                           this->test_name() );
 
+=======
+>>>>>>> a35377e7 (Bail out of InteractiveGlyphCache test when not running w/ -i)
   nom::DialogMessageBox(  this->test_case() + ":" + this->test_name(),
                           help_info.str() );
 

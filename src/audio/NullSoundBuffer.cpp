@@ -50,9 +50,9 @@ int64 NullSoundBuffer::getDuration( void ) const
   return 0;
 }
 
-bool NullSoundBuffer::load( const std::string& filename )
+bool NullSoundBuffer::load(const std::string& filename)
 {
-  return false;
+  return true;
 }
 
 void NullSoundBuffer::attach( Sound* sound ) const

@@ -37,7 +37,7 @@ set(  NOM_AUDIO_SOURCE
 )
 
 # Common dependencies on all platforms
-set( NOM_AUDIO_DEPS nomlib-core )
+set(NOM_AUDIO_DEPS nomlib-core nomlib-math)
 
 # OpenAL implementation
 if( NOM_BUILD_AUDIO_UNIT )

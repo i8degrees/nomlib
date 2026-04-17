@@ -5,19 +5,13 @@ add_executable( VisualUnitTestFrameworkTest "VisualUnitTestFrameworkTest.cpp" )
 target_link_libraries(  VisualUnitTestFrameworkTest
                         nomlib-visual-unit-test )
 
-add_test(   # test name
-            VisualUnitTestFrameworkTestGenRefImages,
-            # executable name
-            ${TESTS_INSTALL_DIR}/VisualUnitTestFrameworkTest
-            # args
-            "-r" )
+nom_add_visual_test(  VisualUnitTestFrameworkTestGenRefImages
+                      ${TESTS_INSTALL_DIR}/VisualUnitTestFrameworkTest
+                      "-r" )
 
-add_test( # test name
-          VisualUnitTestFrameworkTestCompareImages,
-          # executable name
-          ${TESTS_INSTALL_DIR}/VisualUnitTestFrameworkTest
-          # args
-          "" )
+nom_add_visual_test(  VisualUnitTestFrameworkTestCompareImages
+                      ${TESTS_INSTALL_DIR}/VisualUnitTestFrameworkTest
+                      "" )
 
 add_executable( VisualUnitTestFrameworkNonDefaultCtorTest
                 "VisualUnitTestFrameworkNonDefaultCtorTest.cpp" )
@@ -25,19 +19,13 @@ add_executable( VisualUnitTestFrameworkNonDefaultCtorTest
 target_link_libraries(  VisualUnitTestFrameworkNonDefaultCtorTest
                         nomlib-visual-unit-test )
 
-add_test( # test name
-          VisualUnitTestFrameworkNonDefaultCtorTestGenRefImages,
-          # executable name
-          ${TESTS_INSTALL_DIR}/VisualUnitTestFrameworkNonDefaultCtorTest
-          # args
-          "-r" )
+nom_add_visual_test(  VisualUnitTestFrameworkNonDefaultCtorTestGenRefImages
+                      ${TESTS_INSTALL_DIR}/VisualUnitTestFrameworkNonDefaultCtorTest
+                      "-r" )
 
-add_test( # test name
-          VisualUnitTestFrameworkNonDefaultCtorTestCompareImages,
-          # executable name
-          ${TESTS_INSTALL_DIR}/VisualUnitTestFrameworkNonDefaultCtorTest
-          # args
-          "" )
+nom_add_visual_test(  VisualUnitTestFrameworkNonDefaultCtorTestCompareImages
+                      ${TESTS_INSTALL_DIR}/VisualUnitTestFrameworkNonDefaultCtorTest
+                      "" )
 
 # FIXME
 # add_executable( ImageTestSetTest "ImageTestSetTest.cpp" )

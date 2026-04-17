@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Rect.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Point2.hpp"
-#include "nomlib/graphics/VideoMode.hpp"
+#include "nomlib/graphics/DisplayMode.hpp"
 #include "nomlib/graphics/Renderer.hpp"
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
@@ -53,13 +53,15 @@ struct PixelsDeleter
   void operator()(void* ptr);
 };
 
-//class Renderer;
-
 class RenderWindow: public Renderer
 {
   public:
     typedef RenderWindow SelfType;
     typedef SelfType* RawPtr;
+
+    static const Point2i DEFAULT_WINDOW_POS;
+    static const Point2i WINDOW_POS_CENTERED;
+    static const uint32 DEFAULT_WINDOW_FLAGS = 0;
 
     /// \brief Default constructor; initialize an object to sane, but invalid
     /// defaults
@@ -83,27 +85,28 @@ class RenderWindow: public Renderer
     /// \remarks This resource has been marked non-copyable.
     SelfType& operator =( const SelfType& other ) = delete;
 
-    /// Initialize a SDL window and renderer
-    bool create (
-                  const std::string& window_title,
-                  int32 width,
-                  int32 height,
+    /// \brief Initialize a native platform window and renderer.
+    bool create(  const std::string& window_title, const Size2i& res,
                   uint32 window_flags,
-                  int32 rendering_driver = -1,
-                  uint32 context_flags =
-                    SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE
-                );
+                  int rendering_driver = DEFAULT_RENDERING_DRIVER,
+                  uint32 renderer_flags = DEFAULT_RENDERER_FLAGS );
 
-    /// Initialize a SDL window and renderer.
+    /// \brief Initialize a native platform window and renderer.
     ///
-    /// \see nom::RenderWindow::create.
-    bool create (
-                  const std::string& window_title,
-                  const Size2i& res,
-                  uint32 window_flags,
-                  int32 rendering_driver = -1,
-                  uint32 context_flags = SDL_RENDERER_ACCELERATED
-                );
+    /// \param pos The position of the window, relative to the video display
+    /// bounds.
+    ///
+    /// \param display_index The video display to position the window on.
+    ///
+    /// \see nom::RenderWindow::DEFAULT_WINDOW_POS,
+    /// nom::RenderWindow::WINDOW_POS_CENTERED
+    ///
+    /// \see nom::RenderWindow::::display_bounds,
+    /// nom::RenderWindow::::display_modes
+    bool create(  const std::string& window_title, const Point2i& pos,
+                  int display_index, const Size2i& res, uint32 window_flags,
+                  int rendering_driver = DEFAULT_RENDERING_DRIVER,
+                  uint32 renderer_flags = DEFAULT_RENDERER_FLAGS );
 
     /// Obtain a pointer to this Window object.
     RenderWindow::RawPtr get ( void );
@@ -120,8 +123,8 @@ class RenderWindow: public Renderer
     /// Is this object initialized -- not nullptr?
     bool window_valid( void ) const;
 
-    /// Obtain this Window's position.
-    Point2i position ( void ) const;
+    /// \brief Get the window's current position.
+    Point2i position() const;
 
     /// \brief Get this window's size dimensions.
     ///
@@ -144,18 +147,30 @@ class RenderWindow: public Renderer
     /// \todo Test me
     const IntRect display_bounds ( void ) const;
 
-    /// Obtain a list of supported video modes
+    /// \brief Get the display mode capabilities of the window.
     ///
-    /// Returns a sorted vector of VideoMode objects, from greatest to least.
+    /// \param modes The object reference to fill with the list of display
+    /// video modes.
     ///
-    /// \todo Test out 8-bit, 16-bit, 24-bit video surfaces
+    /// \returns Boolean TRUE if the enumeration of display video models was
+    /// successful, and boolean FALSE if the enumeration was non-successful.
     ///
-    /// \todo SDL2 support
-    VideoModeList getVideoModes ( void ) const;
+    /// \remarks The display video modes will be sorted from greater to least.
+    ///
+    /// \see nom::DisplayMode, SDL_DisplayMode
+    bool display_modes(DisplayModeList& modes) const;
+
+    /// \brief Get a video mode's refresh rate for the display of the window.
+    ///
+    /// \returns The video mode vertical refresh rate, in hertz, or zero (0)
+    /// if unspecified on success, or negative one (-1) on failure, such as if
+    /// the enumeration of the current display video mode for the window failed.
+    int refresh_rate() const;
 
     void set_size ( int32 width, int32 height );
 
-    void set_position ( int32 x, int32 y );
+    /// \brief Set the window's position.
+    void set_position(const Point2i& window_pos);
 
     /// Update the surface of the screen inside the window
     ///
@@ -208,10 +223,29 @@ class RenderWindow: public Renderer
     /// \todo Rename to window_from_id?
     static SDL_WINDOW::RawPtr window_id( uint32 id );
 
-    /// Obtain this window's display index
+    /// \brief Get the display index associated with this window.
     ///
-    /// \return This window's display index
-    int window_display_id ( void ) const;
+    /// \returns The index of the display containing the center of the window
+    /// on success, and a negative error code on failure.
+    ///
+    /// \remarks The display identifier order is platform-dependent.
+    int window_display_id() const;
+
+    /// \brief Get the display name associated with a window.
+    ///
+    /// \returns The name of the display on success, and a NULL-terminated
+    /// string on failure.
+    ///
+    /// \remarks The display name is platform-dependent.
+    static std::string display_name(int display_id);
+
+    /// \brief Get the display name associated with this window.
+    ///
+    /// \returns The name of the display on success, and a NULL-terminated
+    /// string on failure.
+    ///
+    /// \remarks The display name is platform-dependent.
+    std::string display_name() const;
 
     /// \brief Get the window which currently has mouse focus.
     ///
@@ -272,7 +306,7 @@ class RenderWindow: public Renderer
     /// \param grab     TRUE to grab input; FALSE to release input
     ///
     /// \todo Test me
-    void set_window_grab ( bool grab );
+    void set_window_grab(bool grab);
 
     /// Set the minimum size of the window's client area.
     ///
@@ -297,7 +331,7 @@ class RenderWindow: public Renderer
     /// \todo Restructure code shared with ::save_screenshot.
     ///
     /// \see RenderWindow::save_screenshot, Image::save_png.
-    bool save_png_file( const std::string& filename ) const;
+    bool save_png_file(const std::string& filename) const;
 
     /// Save a screen shot of the window as a PNG file
     ///
@@ -312,7 +346,7 @@ class RenderWindow: public Renderer
     /// \todo    Pixels pitch calculation (see screenshot.initialize call)
     ///
     /// \see RenderWindow::save_png_file, Image::save_png.
-    bool save_screenshot( const std::string& filename ) const;
+    bool save_screenshot(const std::string& filename) const;
 
     /// Set the current Window as the active rendering context; this must be
     /// called before doing any drawing (this includes creation of textures)
@@ -328,6 +362,12 @@ class RenderWindow: public Renderer
     ///           active context -- set by nom::RenderWindow::make_current.
     static SDL_Renderer* context( void );
 
+    /// \brief Get the number of available video displays.
+    ///
+    /// \returns The number of video displays -- a number greater than or equal
+    /// to one (1) on success, or a negative number on failure.
+    static int num_video_displays();
+
   private:
     /// \brief  Set a new nom::RenderWindow as the active rendering context; we must
     ///         always have a context active at any given time for generating
@@ -338,10 +378,10 @@ class RenderWindow: public Renderer
 
     SDL_WINDOW::UniquePtr window_;
 
-    /// Cache the unique window identifier we get from SDL upon initialization
+    /// \brief The unique identifier as recognized internally by SDL.
     uint32 window_id_;
 
-    /// Cache the display identifier we get from SDL upon initialization
+    /// \brief The unique identifier given to the display.
     int window_display_id_;
 
     /// State of the window (visible or not)

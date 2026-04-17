@@ -3,6 +3,11 @@
 set( NOM_BUILD_FILE_TESTS ON )
 set( NOM_BUILD_FONT_CACHE_TESTS ON )
 set( NOM_BUILD_COLOR_DB_TESTS ON )
+set( NOM_BUILD_TIMER_TESTS ON )
+
+if( EXISTS "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+  include( "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+endif()
 
 if( NOM_BUILD_FONT_CACHE_TESTS )
 
@@ -61,3 +66,21 @@ if( NOM_BUILD_FILE_TESTS )
                     "FileInterfaceTest.cpp" )
 
 endif( NOM_BUILD_FILE_TESTS )
+
+if( NOM_BUILD_TIMER_TESTS )
+
+  add_executable( TimerTest "TimerTest.cpp" )
+
+  set( TIMER_DEPS ${GTEST_LIBRARY} nomlib-system )
+
+  if( PLATFORM_WINDOWS )
+    list( APPEND TIMER_DEPS ${SDL2MAIN_LIBRARY} )
+  endif( PLATFORM_WINDOWS )
+
+  target_link_libraries( TimerTest ${TIMER_DEPS} )
+
+  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/TimerTest
+                    "" # args
+                    "TimerTest.cpp" )
+
+endif( NOM_BUILD_TIMER_TESTS )

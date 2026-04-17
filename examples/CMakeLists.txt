@@ -24,23 +24,43 @@ set( NOM_BUILD_APP_EXAMPLE ON )
 set( NOM_BUILD_AUDIO_EXAMPLE ON )
 set( NOM_BUILD_DEVICE_INFO_EXAMPLE ON )
 set( NOM_BUILD_EVENTS_EXAMPLE ON )
+set( NOM_BUILD_JOYSTICK_EXAMPLE ON )
+set( NOM_BUILD_GAME_CONTROLLER_EXAMPLE ON )
 set( NOM_BUILD_FONTS_EXAMPLE ON )
-set( NOM_BUILD_GAMEOFLIFE_EXAMPLE ON )
 set( NOM_BUILD_MOUSE_CURSORS_EXAMPLE ON )
 set( NOM_BUILD_MACROS_EXAMPLE ON )
-set( NOM_BUILD_SPRITES_EXAMPLE ON )
 
-# Used only by the MSVCPP generator; this path will be expanded to include the
-# configuration build type, i.e.: Debug or Release, so the full path resolve
-# to '<cmake_build_dir>/examples/Debug' or '<cmake_build_dir>/examples/Release'.
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/examples" )
+if( EXISTS "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+  include( "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+endif()
 
-# Used by all other generators (Xcode, Unix Makefiles); this path will resolve
-# to '<cmake_build_dir>/examples/Debug' or '<cmake_build_dir>/examples/Release'.
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/examples/Debug" )
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/examples/Release" )
+# Use common build output directories for MSVCPP && Xcode project files.
+#
+# IMPORTANT: Debug and Release build targets **must** be kept in separate build
+# trees!
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/examples/Debug")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/examples/Release")
 
-set( EXAMPLES_INSTALL_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}" )
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/examples/Debug")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/examples/Release")
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/examples/Debug")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/examples/Release")
+
+if(DEBUG)
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG})
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG})
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG})
+else() # Release builds
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE})
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE})
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE})
+endif()
+
+# This path is used for the local installation of required dependencies for
+# running examples, such as dependent resource files. Additionally, when
+# building on Windows, this will be the path that dependent DLLs are copied to.
+set( EXAMPLES_INSTALL_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" )
 
 # Project headers files inclusions; our header files namespace, 'nomlib'
 include_directories( "${INC_ROOT_DIR}" )
@@ -82,6 +102,9 @@ if( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
   )
 else( EXISTS ${TCLAP_INCLUDE_DIR} )
   message( STATUS "TCLAP headers found: ${TCLAP_INCLUDE_DIR}" )
+
+  # Header file inclusion; third-party -- TCLAP
+  include_directories("${NOM_THIRD_PARTY_COMMON_DIR}")
 endif( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
 
 if( PLATFORM_WINDOWS )
@@ -116,31 +139,10 @@ if( NOM_BUILD_APP_EXAMPLE )
           )
 endif( NOM_BUILD_APP_EXAMPLE )
 
-if( NOM_BUILD_SPRITES_EXAMPLE )
-  add_executable ( sprites "${EXECUTABLE_FLAGS}" "sprites.cpp" )
-
-  set( SPRITES_DEPS nomlib-graphics )
-
-  if( PLATFORM_WINDOWS )
-    # We need to link to SDL2main library on Windows
-    list( APPEND SPRITES_DEPS ${SDL2MAIN_LIBRARY} )
-  endif( PLATFORM_WINDOWS )
-
-  target_link_libraries( sprites ${SPRITES_DEPS} )
-
-  # Search paths file to use in finding the resources path
-  install (
-            FILES
-            "${NOM_EXAMPLES_RESOURCES_DIR}/sprites.json"
-            DESTINATION
-            "${EXAMPLES_INSTALL_DIR}"
-          )
-endif( NOM_BUILD_SPRITES_EXAMPLE )
-
 if( NOM_BUILD_AUDIO_EXAMPLE )
   add_executable ( audio "${EXECUTABLE_FLAGS}" "audio/audio.cpp" )
 
-  set( AUDIO_DEPS nomlib-system nomlib-audio )
+  set( AUDIO_DEPS nomlib-math nomlib-system nomlib-audio )
 
   if( PLATFORM_WINDOWS )
     # We need to link to SDL2main library on Windows
@@ -158,24 +160,52 @@ if( NOM_BUILD_AUDIO_EXAMPLE )
   endif( NOM_BUILD_AUDIO_EXAMPLE )
 
 if( NOM_BUILD_EVENTS_EXAMPLE )
-  add_executable ( events "${EXECUTABLE_FLAGS}" "events.cpp" )
 
-  set( EVENTS_DEPS nomlib-graphics )
+  set( APP_NAME events )
+  add_executable ( ${APP_NAME} "${EXECUTABLE_FLAGS}" "${APP_NAME}.cpp" )
+
+  set( APP_DEPS nomlib-system nomlib-graphics )
 
   if( PLATFORM_WINDOWS )
     # We need to link to SDL2main library on Windows
-    list( APPEND EVENTS_DEPS ${SDL2MAIN_LIBRARY} )
+    list( APPEND APP_DEPS ${SDL2MAIN_LIBRARY} )
   endif( PLATFORM_WINDOWS )
 
-  target_link_libraries( events ${EVENTS_DEPS} )
-
-  install ( DIRECTORY
-            "${EXAMPLES_SRC_DIR}/events/Resources"
-            DESTINATION
-            "${EXAMPLES_INSTALL_DIR}"
-            PATTERN ".*" EXCLUDE
-          )
+  target_link_libraries( ${APP_NAME} ${APP_DEPS} )
 endif( NOM_BUILD_EVENTS_EXAMPLE )
+
+if( NOM_BUILD_JOYSTICK_EXAMPLE )
+
+  set( APP_NAME "joystick_events" )
+  add_executable( ${APP_NAME} "${EXECUTABLE_FLAGS}" "${APP_NAME}.cpp" )
+
+  set( APP_DEPS nomlib-system nomlib-graphics )
+
+  if( PLATFORM_WINDOWS )
+    # We need to link to SDL2main library on Windows
+    list( APPEND APP_DEPS ${SDL2MAIN_LIBRARY} )
+  endif( PLATFORM_WINDOWS )
+
+  target_link_libraries( ${APP_NAME} ${APP_DEPS} )
+endif( NOM_BUILD_JOYSTICK_EXAMPLE )
+
+if( NOM_BUILD_GAME_CONTROLLER_EXAMPLE )
+
+  set( APP_NAME "gamecontroller_events" )
+  add_executable( ${APP_NAME} "${EXECUTABLE_FLAGS}" "${APP_NAME}.cpp" )
+
+  set( APP_DEPS nomlib-system nomlib-graphics )
+
+  if( PLATFORM_WINDOWS )
+    # We need to link to SDL2main library on Windows
+    list( APPEND APP_DEPS ${SDL2MAIN_LIBRARY} )
+  endif( PLATFORM_WINDOWS )
+
+  target_link_libraries( ${APP_NAME} ${APP_DEPS} )
+
+  install(  FILES "${NOMLIB_SHARED_SUPPORT_DIR}/InputDevices.json"
+            DESTINATION "${EXAMPLES_INSTALL_DIR}" )
+endif( NOM_BUILD_GAME_CONTROLLER_EXAMPLE )
 
 if( NOM_BUILD_DEVICE_INFO_EXAMPLE )
 
@@ -231,32 +261,9 @@ if( NOM_BUILD_FONTS_EXAMPLE )
     list( APPEND FONTS_DEPS ${SDL2MAIN_LIBRARY} )
   endif( PLATFORM_WINDOWS )
 
-  # Header file inclusion; third-party -- TCLAP
-  include_directories("${NOM_THIRD_PARTY_COMMON_DIR}")
-
   target_link_libraries( renderfont ${FONTS_DEPS} )
 
 endif( NOM_BUILD_FONTS_EXAMPLE )
-
-if( NOM_BUILD_GAMEOFLIFE_EXAMPLE )
-  add_executable ( GameOfLife "${EXECUTABLE_FLAGS}" "GameOfLife/GameOfLife.cpp" )
-
-  set( GAMEOFLIFE_DEPS nomlib-graphics )
-
-  if( PLATFORM_WINDOWS )
-    # We need to link to SDL2main library on Windows
-    list( APPEND GAMEOFLIFE_DEPS ${SDL2MAIN_LIBRARY} )
-  endif( PLATFORM_WINDOWS )
-
-  target_link_libraries( GameOfLife ${GAMEOFLIFE_DEPS} )
-
-  install ( DIRECTORY
-            "${EXAMPLES_SRC_DIR}/GameOfLife/Resources"
-            DESTINATION
-            "${EXAMPLES_INSTALL_DIR}"
-            PATTERN ".*" EXCLUDE
-          )
-endif( NOM_BUILD_GAMEOFLIFE_EXAMPLE )
 
 if( NOM_BUILD_MOUSE_CURSORS_EXAMPLE )
   add_executable( cursors "${EXECUTABLE_FLAGS}" "cursors.cpp" )
@@ -269,6 +276,9 @@ if( NOM_BUILD_MOUSE_CURSORS_EXAMPLE )
   endif( PLATFORM_WINDOWS )
 
   target_link_libraries( cursors ${CURSORS_DEPS} )
+
+  install(  FILES "${NOMLIB_RESOURCES_DIR}/icon.png"
+            DESTINATION "${EXAMPLES_INSTALL_DIR}/Resources" )
 endif( NOM_BUILD_MOUSE_CURSORS_EXAMPLE )
 
 if( NOM_BUILD_MACROS_EXAMPLE )

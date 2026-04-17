@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/InputMapper/InputActionMapper.hpp"
 
+// Forward declarations
+#include "nomlib/system/InputMapper/InputAction.hpp"
+
 namespace nom {
 
 InputActionMapper::InputActionMapper( void )
@@ -45,7 +48,9 @@ const InputActionMapper::ActionMap& InputActionMapper::get( void ) const
   return this->input_map_;
 }
 
-bool InputActionMapper::insert( const std::string& key, const InputAction& action, const EventCallback& callback )
+bool InputActionMapper::
+insert( const std::string& key, const InputAction& action,
+        const event_callback& callback )
 {
   ActionPair p( key, std::make_shared<InputAction>( action ) );
   p.second->set_callback( callback );
@@ -79,21 +84,6 @@ bool InputActionMapper::erase( const std::string& key )
   }
 
   return false;
-}
-
-void InputActionMapper::dump( void ) const
-{
-  for( ActionMap::const_iterator itr = this->input_map_.begin(); itr != this->input_map_.end(); ++itr )
-  {
-    if( itr->second != nullptr )
-    {
-      itr->second->dump();
-    }
-    else
-    {
-      NOM_LOG_ERR( NOM, "Invalid input action." );
-    }
-  }
 }
 
 } // namespace nom

@@ -29,21 +29,85 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/core/helpers.hpp"
 
+#include <inttypes.h>
+
 namespace nom {
 
-namespace priv {
+int string_to_integer(const char* str)
+{
+  int base = 10;
+  int result = 0;
 
-char* duplicate_string( const char* val, uint length )
+  if( str != nullptr ) {
+    result = strtoimax(str, nullptr, base);
+  } else {
+    result = 0;
+  }
+
+  return result;
+}
+
+int string_to_integer(const std::string& str)
+{
+  int result = string_to_integer( str.c_str() );
+
+  return result;
+}
+
+nom::size_type string_length(const char* str)
+{
+  return strlen(str);
+}
+
+nom::size_type string_length(const std::string& str)
+{
+  return str.length();
+}
+
+int compare_cstr_insensitive(const char* str1, const char* str2)
+{
+  auto result = strncmp(str1, str2, MAX_STRING_LENGTH);
+
+  return result;
+}
+
+int compare_cstr_sensitive(const char* str1, const char* str2)
+{
+  auto result = strcmp(str1, str2);
+
+  return result;
+}
+
+int compare_string_insensitive(const std::string& str1, const std::string& str2)
+{
+  auto result =
+    nom::compare_cstr_insensitive( str1.c_str(), str2.c_str() );
+
+  return result;
+}
+
+int compare_string_sensitive(const std::string& str1, const std::string& str2)
+{
+  auto result = str1.compare(str2);
+
+  return result;
+}
+
+void copy_string(const char* source, char* dest)
+{
+  std::strcpy(dest, source);
+}
+
+const char* duplicate_string(const char* str, nom::size_type length)
 {
   // Buffer overflow protection
-  if( length >= priv::MAX_STRING_LENGTH )
-  {
-    length = priv::MAX_STRING_LENGTH - 1;
+  if( length >= MAX_STRING_LENGTH ) {
+    length = MAX_STRING_LENGTH - 1;
   }
 
   // Allocate memory for duplicating the C string
   char* duplicate_string = static_cast<char*> ( malloc( length + 1 ) );
-  std::memcpy( duplicate_string, val, length );
+  std::memcpy(duplicate_string, str, length);
 
   // Null-terminate
   duplicate_string[length] = 0;
@@ -51,6 +115,14 @@ char* duplicate_string( const char* val, uint length )
   return duplicate_string;
 }
 
-} // namespace priv
+const char* duplicate_string(const std::string& str, nom::size_type length)
+{
+  return nom::duplicate_string(str.c_str(), length);
+}
+
+void free_string(const char* ptr)
+{
+  std::free( NOM_CCAST(char*, ptr) );
+}
 
 } // namespace nom

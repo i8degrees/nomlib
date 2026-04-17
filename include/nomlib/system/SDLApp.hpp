@@ -33,13 +33,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/system/EventHandler.hpp"
 #include "nomlib/system/Timer.hpp"
 
 namespace nom {
 
 // Forward declarations
 struct Event;
+class EventHandler;
 class RenderWindow;
 class IState;
 class StateMachine;
@@ -48,7 +48,7 @@ class StateMachine;
 ///
 /// \note http://docs.wxwidgets.org/trunk/classwx_app.html
 /// \note http://doc.qt.digia.com/4.6/qapplication.html
-class SDLApp: public EventHandler
+class SDLApp
 {
   public:
     typedef SDLApp self_type;
@@ -85,12 +85,6 @@ class SDLApp: public EventHandler
     /// \todo Rename to exec..?
     virtual sint Run( void );
 
-    /// \brief The application-level handler for events.
-    ///
-    /// \remarks This method is called once every frame from within the main
-    /// loop.
-    virtual void on_event( const Event& ev );
-
     /// \brief The application-level handler for logic.
     ///
     /// \remarks This method is called once every frame from within the main
@@ -105,18 +99,6 @@ class SDLApp: public EventHandler
     /// \todo Consider removing RenderTarget argument; I *think* we can get
     /// away with this!
     virtual void on_draw( RenderWindow& );
-
-    /// \brief Implements the nom::EventHandler::on_window_close method.
-    ///
-    /// \remarks The default implementation is to let the SDLApp::on_app_quit
-    /// method handle things for us.
-    virtual void on_window_close( const Event& ev );
-
-    /// \brief Implements the nom::EventHandler::on_app_quit method.
-    ///
-    /// \remarks The default implementation is to let the SDLApp::quit method
-    /// handle things for us.
-    virtual void on_app_quit( const Event& ev );
 
     /// \brief Query status of the application state.
     ///
@@ -150,19 +132,119 @@ class SDLApp: public EventHandler
 
     void set_state_machine( StateMachine* mech );
 
-  protected:
+    /// \brief Install the event handler used by the interface.
+    ///
+    /// \remarks The application's events will not be processed until a call is
+    /// made to the event handler's ::poll_event method.
+    ///
+    /// \note The installed event handler must outlive the destruction of
+    /// this interface!
+    void set_event_handler(EventHandler& evt_handler);
 
-    //GameStates* state_factory;
+  protected:
+    /// \brief Default event handler for input events.
+    virtual void on_input_event(const Event& ev);
+
+    /// \brief The event handler for when a request for halting program
+    /// execution occurs.
+    ///
+    /// \remarks The default implementation calls nom::SDLApp::quit.
+    ///
+    /// \note This event handles the system's default quit handler, i.e.:
+    /// COMMAND + Q on Mac OS X and ALT + F4 on Windows.
+    virtual void on_app_quit(const Event& ev);
+
+    virtual void on_window_shown(const Event& ev);
+
+    virtual void on_window_hidden(const Event& ev);
+
+    virtual void on_window_exposed(const Event& ev);
+
+    virtual void on_window_moved(const Event& ev);
+
+    virtual void on_window_resized(const Event& ev);
+
+    virtual void on_window_size_changed(const Event& ev);
+
+    virtual void on_window_minimized(const Event& ev);
+
+    virtual void on_window_maximized(const Event& ev);
+
+    virtual void on_window_restored(const Event& ev);
+
+    virtual void on_window_mouse_focus(const Event& ev);
+
+    virtual void on_window_mouse_focus_lost(const Event& ev);
+
+    virtual void on_window_keyboard_focus(const Event& ev);
+
+    virtual void on_window_keyboard_focus_lost(const Event& ev);
+
+    /// \brief The event handler for when a request for closing a window
+    /// occurs.
+    ///
+    /// \remarks The default implementation calls nom::SDLApp::on_app_quit.
+    virtual void on_window_close(const Event& ev);
+
+    /// Drag 'N' Drop events
+    ///
+    /// \remarks To enable drag and drop events on Mac OS X, you must add the
+    /// appropriate keys in your application bundle's Info.plist, like so:
+    ///
+    /// <key>CFBundleDocumentTypes</key>
+    /// <array>
+    ///   <dict>
+    ///     <key>CFBundleTypeRole</key>
+    ///     <string>Editor</string>
+    ///     <key>CFBundleTypeName</key>
+    ///     <string>TTcards</string>
+    ///     <key>CFBundleTypeExtensions</key>
+    ///     <array>
+    ///         <string>json</string>
+    ///     </array>
+    ///     <key>CFBundleTypeIconFile</key>
+    ///     <string>TTcards</string>
+    ///   </dict>
+    /// </array>
+    virtual void on_drag_drop(const Event& ev);
+
+    /// \remarks This is applicable only to Direct3D renderers.
+    virtual void on_render_targets_reset(const Event& ev);
+
+    /// \remarks This is applicable only to Direct3D renderers.
+
+// NOTE: Not available until the release of SDL 2.0.4
+#if 0
+    virtual void on_render_device_reset(const Event& ev);
+#endif
+
+    // NOTE: Proposed naming scheme for iOS / Android event handlers
+    // virtual void on_app_destroy(const Event& ev);
+    // virtual void on_app_low_memory(const Event& ev);
+    // virtual void on_app_enter_background(const Event& ev);
+    // virtual void on_app_background(const Event& ev);
+    // virtual void on_app_enter_foreground(const Event& ev);
+    // virtual void on_app_foreground(const Event& ev);
+
+    /// \brief The default event handler for user-defined events.
+    virtual void on_user_event(const Event& ev);
 
   private:
+    bool initialize( uint32 flags );
+
+    void on_app_event(const Event& ev);
+
+    void process_event(const Event& ev);
+
+    // Non-owned pointer
+    EventHandler* event_handler_ = nullptr;
+
     /// \brief State machine manager.
     ///
     /// \remarks This object pointer must be initialized prior to use.
     ///
     /// \see SDLApp::set_state_machine
     std::unique_ptr<StateMachine> state_;
-
-    bool initialize( uint32 flags );
 
     /// \brief Global application state.
     bool app_state_;

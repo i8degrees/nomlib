@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/config.hpp>
 #include <nomlib/math.hpp>
 #include <nomlib/system.hpp>
+#include <nomlib/serializers.hpp>
 #include <nomlib/graphics.hpp>
 
 namespace nom {
@@ -78,7 +79,7 @@ class BitmapFontTest: public nom::VisualUnitTest
 
       // Text rendering defaults
       this->text =
-        "!\"#$%&'()*+,-.\n//0123456789\n:;<=>?@\nABCDEFGHIJKLMNOPQRSTUVWXYZ\n[\\]^_`\nabcdefghijklmnopqrstuvwxyz\n{|}~";
+        "!\"#$%&'()*+,-.\n/0123456789\n:;<=>?@\nABCDEFGHIJKLMNOPQRSTUVWXYZ\n[\\]^_`\nabcdefghijklmnopqrstuvwxyz\n{|}~";
 
       this->pt_size = nom::DEFAULT_FONT_SIZE;
       this->pos = Point2i(0,0);
@@ -119,11 +120,12 @@ class BitmapFontTest: public nom::VisualUnitTest
       // text size is **not** implemented for bitmap fonts.
       this->rendered_text.set_style(this->style);
       this->rendered_text.set_text_size(this->pt_size);
-
-      // FIXME: Proper multi-line alignment logic is not implemented
       this->rendered_text.set_position(this->pos);
-      nom::set_alignment( &this->rendered_text,
-                          this->resolution(), this->align);
+
+      this->append_update_callback( [=] (float) {
+        nom::set_alignment( &this->rendered_text, Point2i(0, 0),
+                            this->resolution(), this->align );
+      });
 
       this->append_render_callback( [&] ( const RenderWindow& win ) {
         this->rendered_text.draw( this->render_window() );
@@ -240,11 +242,11 @@ TEST_F(BitmapFontTest, NoKerning)
   EXPECT_EQ(true, this->load_font(font) )
   << "Could not load font file: " << font;
 
-  this->font->set_font_kerning(false);
+  this->rendered_text.set_text_kerning(false);
 
   kerning_offset = this->font->kerning(87, 65, this->pt_size);
   EXPECT_EQ(0, kerning_offset)
-  << "nom::BitmapFont does not implemented kerning pair offsets???";
+  << "nom::BitmapFont does not implement kerning pair offsets!";
 
   EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
   EXPECT_TRUE( this->compare() );

@@ -1,6 +1,8 @@
 # nomlib
 
-C++11 cross-platform 2D game engine (SDL2 powered).
+[![Build Status](https://travis-ci.org/i8degrees/nomlib.png?branch=master,dev)](https://travis-ci.org/i8degrees/nomlib)
+
+C++11 2D game framework using SDL2
 
 ## Projects Using nomlib
 
@@ -22,10 +24,6 @@ mkdir build && cd build
 ```
 
 ### Mac OS X
-
-master branch: [![Build Status](https://travis-ci.org/i8degrees/nomlib.png?branch=master)](https://travis-ci.org/i8degrees/nomlib)
-
-dev branch: [![Build Status](https://travis-ci.org/i8degrees/nomlib.png?branch=dev)](https://travis-ci.org/i8degrees/nomlib)
 
 After you have the dependencies taken care of, execute the following commands at your terminal prompt:
 
@@ -113,6 +111,8 @@ cmake -D CMAKE_INSTALL_PREFIX=~/Library/Frameworks ..
     * Defaults to **OFF**
 
 Removal is provided by executing **make uninstall** within your current build directory.
+
+**IMPORTANT:** If you are building multiple target types with the generated MSVCPP or Xcode project files, each of these targets **must** be kept in separate build directories!
 
 ## Mac OS X Dependencies
 

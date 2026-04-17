@@ -11,6 +11,7 @@
 
 #include <nomlib/config.hpp>
 #include <nomlib/system.hpp>
+#include <nomlib/serializers.hpp>
 #include <nomlib/graphics.hpp>
 #include <nomlib/gui.hpp>
 
@@ -302,27 +303,26 @@ class libRocketTest: public nom::VisualUnitTest
 
       // EXPERIMENTAL: Reload document, and its dependencies (i.e.: templates
       // and style sheets) during run-time.
-      EventCallback reload_docs( [&] ( const Event& evt )
-      {
-        this->reload_docs( evt );
-      } );
+      auto reload_docs = ( [&](const Event& evt) {
+        this->reload_docs(evt);
+      });
 
-      state.insert  ( "reload_docs",
-                       nom::KeyboardAction( SDL_KEYDOWN,
-                                            SDLK_r ),
-                       reload_docs );
+      state.insert("reload_docs", nom::KeyboardAction(SDLK_r), reload_docs);
 
       // Additional input bindings for VisualUnitTest's event loop.
-      this->input_mapper_.insert( "reload_docs", state, true );
+      this->input_mapper_.insert("reload_docs", state, true);
 
-      /// Put our event polling within the main event's loop
-      this->append_event_callback( [&] ( const Event ev ) { this->desktop.process_event( ev ); } );
+      this->desktop.set_event_handler(this->evt_);
 
       // Register GUI updates onto our main loop (::on_run).
-      this->append_update_callback( [&] ( float delta ) { this->desktop.update(); } );
+      this->append_update_callback( [&] (float delta) {
+        this->desktop.update();
+      });
 
       // Register GUI rendering onto our main loop (::on_run).
-      this->append_render_callback( [&] ( const RenderWindow& win ) { this->desktop.draw(); } );
+      this->append_render_callback( [&] (const RenderWindow& win) {
+        this->desktop.draw();
+      });
     }
 
     /// \remarks This method is called before destruction, at the end of each

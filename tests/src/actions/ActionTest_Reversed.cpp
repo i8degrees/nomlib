@@ -1,0 +1,615 @@
+/******************************************************************************
+
+  nomlib - C++11 cross-platform game engine
+
+Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+******************************************************************************/
+#include "nomlib/tests/actions/ActionTest.hpp"
+
+namespace nom {
+
+TEST_F(ActionTest, FadeInActionReversed)
+{
+  // Testing parameters
+  const real32 DURATION = 2.0f;
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+  const uint8 INITIAL_ALPHA = Color4i::ALPHA_OPAQUE;
+  const uint8 EXPECTED_ALPHA = Color4i::ALPHA_TRANSPARENT;
+
+  // Initial texture position and size
+  const Point2i TEX_POS(Point2i::zero);
+  const Size2i TEX_SIZE(256, 256);
+
+  auto sprite =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->init_with_color(Color4i::Blue, TEX_SIZE) );
+  sprite->set_position(TEX_POS);
+  sprite->set_alpha(INITIAL_ALPHA);
+  sprite->set_color_blend_mode(BLEND_MODE_BLEND);
+
+  auto fade_in =
+    nom::create_action<FadeInAction>(sprite, DURATION);
+  ASSERT_TRUE(fade_in != nullptr);
+
+  auto fade_in_reversed =
+    nom::create_action<ReversedAction>(fade_in);
+  ASSERT_TRUE(fade_in_reversed != nullptr);
+
+  auto action0 =
+    nom::create_action<GroupAction>( {fade_in_reversed} );
+  ASSERT_TRUE(action0 != nullptr);
+  action0->set_timing_curve(TIMING_MODE);
+  action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(action0, [=]() {
+
+    this->expected_alpha_in_params( fade_in.get(), EXPECTED_ALPHA,
+                                    sprite.get() );
+    EXPECT_EQ(1, this->player.num_actions() );
+
+    this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue the action!";
+  EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](real32) mutable {
+    nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
+                        Anchor::MiddleCenter );
+  });
+
+  this->append_update_callback( [=](real32) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
+  });
+
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+TEST_F(ActionTest, FadeOutActionReversed)
+{
+  // Testing parameters
+  const real32 DURATION = 2.0f;
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+  const uint8 INITIAL_ALPHA = Color4i::ALPHA_TRANSPARENT;
+  const uint8 EXPECTED_ALPHA = Color4i::ALPHA_OPAQUE;
+
+  // Initial texture position and size
+  const Point2i TEX_POS(Point2i::zero);
+  const Size2i TEX_SIZE(256, 256);
+
+  auto sprite =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->init_with_color(Color4i::Blue, TEX_SIZE) );
+  sprite->set_position(TEX_POS);
+  sprite->set_alpha(INITIAL_ALPHA);
+  sprite->set_color_blend_mode(BLEND_MODE_BLEND);
+
+  auto fade_out =
+    nom::create_action<FadeOutAction>(sprite, DURATION);
+  ASSERT_TRUE(fade_out != nullptr);
+
+  auto fade_out_reversed =
+    nom::create_action<ReversedAction>(fade_out);
+  ASSERT_TRUE(fade_out_reversed != nullptr);
+
+  auto action0 =
+    nom::create_action<GroupAction>( {fade_out_reversed} );
+  ASSERT_TRUE(action0 != nullptr);
+  action0->set_timing_curve(TIMING_MODE);
+  action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(action0, [=]() {
+
+    EXPECT_EQ(1, this->player.num_actions() );
+    this->expected_alpha_out_params(  fade_out.get(), EXPECTED_ALPHA,
+                                      sprite.get() );
+    this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue action0";
+  EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](real32) mutable {
+    nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
+                        Anchor::MiddleCenter );
+  });
+
+  this->append_update_callback( [=](real32) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
+  });
+
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+TEST_F(ActionTest, FadeAlphaByActionReversed)
+{
+  // Testing parameters
+  const real32 DURATION = 2.0f;
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+  const uint8 FADE_BY = 129;
+  const uint8 INITIAL_ALPHA = Color4i::ALPHA_OPAQUE;
+  const uint8 EXPECTED_ALPHA = (INITIAL_ALPHA - abs(FADE_BY) );
+
+  // Initial texture position and size
+  const Point2i TEX_POS(Point2i::zero);
+  const Size2i TEX_SIZE(256, 256);
+
+  auto sprite =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->init_with_color(Color4i::Blue, TEX_SIZE) );
+  sprite->set_position(TEX_POS);
+  sprite->set_alpha(INITIAL_ALPHA);
+  sprite->set_color_blend_mode(BLEND_MODE_BLEND);
+
+  auto fade_by =
+    nom::create_action<FadeAlphaByAction>(sprite, FADE_BY, DURATION);
+  ASSERT_TRUE(fade_by != nullptr);
+
+  auto fade_by_reversed =
+    nom::create_action<ReversedAction>(fade_by);
+  ASSERT_TRUE(fade_by_reversed != nullptr);
+
+  auto action0 =
+    nom::create_action<GroupAction>( {fade_by_reversed} );
+  ASSERT_TRUE(action0 != nullptr);
+  action0->set_timing_curve(TIMING_MODE);
+  action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(action0, [=]() {
+
+    EXPECT_EQ(1, this->player.num_actions() );
+    this->expected_alpha_by_params(fade_by.get(), EXPECTED_ALPHA);
+    EXPECT_EQ( EXPECTED_ALPHA, sprite->alpha() );
+    this->expected_action_params(action0.get(), 1, nom::UnitTest::test_name() );
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue action0";
+  EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](real32) mutable {
+    nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
+                        Anchor::MiddleCenter );
+  });
+
+  this->append_update_callback( [=](real32) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
+  });
+
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+TEST_F(ActionTest, MoveByActionReversed)
+{
+  // Testing parameters
+  const float DURATION = 2.5f;
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const Point2i TRANSLATE_POS( Point2i(200,0) );
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+
+  // Initial texture position and size
+  const Point2i RECT_POS(TRANSLATE_POS);
+  const Size2i RECT_SIZE(WINDOW_DIMS.w/4, WINDOW_DIMS.h);
+  const Point2i EXPECTED_TEX_POS(0, 0);
+
+  auto rect =
+    std::make_shared<Rectangle>(IntRect(RECT_POS, RECT_SIZE), Color4i::Green);
+  ASSERT_TRUE(rect != nullptr);
+
+  auto sprite = nom::make_shared_sprite( rect->texture() );
+  ASSERT_TRUE(sprite != nullptr);
+
+  auto translate =
+    nom::create_action<MoveByAction>(sprite, TRANSLATE_POS, DURATION);
+  ASSERT_TRUE(translate != nullptr);
+
+  auto translate_rev =
+    nom::create_action<ReversedAction>(translate);
+  ASSERT_TRUE(translate_rev != nullptr);
+
+  auto action0 =
+    nom::create_action<GroupAction>( {translate_rev} );
+  ASSERT_TRUE(action0 != nullptr);
+  action0->set_timing_curve(TIMING_MODE);
+  action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(action0, [=]() {
+
+    EXPECT_EQ( EXPECTED_TEX_POS, sprite->position() );
+    EXPECT_EQ(1, this->player.num_actions() );
+
+    this->expected_action_params(action0.get(), 1);
+    this->expected_common_params(translate.get(), DURATION, SPEED_MOD);
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue action0";
+  EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
+  });
+
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+TEST_F(ActionTest, ScaleByActionReversed)
+{
+  // Testing parameters
+  const float DURATION = 1.5f;  // 90 frames @ 60 FPS
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const Size2f SCALE_FACTOR(2.0f, 2.0f);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+
+  // Initial texture position and size
+  const Point2i TEX_POS(Point2i::zero);
+  const Size2i TEX_SIZE(128, 128);
+
+  // Resulting animation frame effect to test for
+  const Size2i EXPECTED_TEX_SIZE( Size2i( TEX_SIZE.w / SCALE_FACTOR.w,
+                                          TEX_SIZE.h / SCALE_FACTOR.h )
+  );
+
+  auto rect = std::make_shared<Rectangle>(
+    IntRect(TEX_POS, TEX_SIZE), Color4i::Blue);
+  ASSERT_TRUE(rect != nullptr);
+
+  auto tex =
+    std::shared_ptr<Texture>( rect->texture() );
+  ASSERT_TRUE(tex != nullptr);
+
+  auto sprite =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite != nullptr);
+  EXPECT_EQ(true, sprite->set_texture(tex) );
+
+  auto scale_by =
+    nom::create_action<nom::ScaleByAction>(sprite, SCALE_FACTOR, DURATION);
+  ASSERT_TRUE(scale_by != nullptr);
+
+  auto scale_by_reversed =
+    nom::create_action<nom::ReversedAction>(scale_by);
+  ASSERT_TRUE(scale_by_reversed != nullptr);
+
+  auto action0 =
+    nom::create_action<GroupAction>( {scale_by_reversed} );
+  ASSERT_TRUE(action0 != nullptr);
+  action0->set_timing_curve(TIMING_MODE);
+  action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(action0, [=]() {
+
+    EXPECT_EQ( EXPECTED_TEX_SIZE, sprite->size() );
+    EXPECT_EQ(1, this->player.num_actions() );
+    this->expected_action_params(action0.get(), 1);
+    this->expected_common_params(scale_by.get(), DURATION, SPEED_MOD);
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue action0";
+  EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](float) mutable {
+    nom::set_alignment( sprite.get(), Point2i::zero, WINDOW_DIMS,
+                        Anchor::MiddleCenter );
+  });
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
+  });
+
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+TEST_F(ActionTest, MoveByActionRepeatForReversed)
+{
+  // Testing parameters
+  const float DURATION = 0.5f;
+  const float SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const uint NUM_REPEATS = 4;
+  const Point2i TRANSLATE_POS( Point2i(WINDOW_DIMS.w,0) );
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+
+  // Initial texture position and size
+  const Point2i RECT_POS(TRANSLATE_POS);
+  const Size2i RECT_SIZE(WINDOW_DIMS.w/4, WINDOW_DIMS.h);
+  const Point2i EXPECTED_TEX_POS(TRANSLATE_POS-TRANSLATE_POS);
+
+  auto rect =
+    std::make_shared<Rectangle>(IntRect(RECT_POS, RECT_SIZE), Color4i::Red);
+  ASSERT_TRUE(rect != nullptr);
+
+  auto sprite = nom::make_shared_sprite( rect->texture() );
+  ASSERT_TRUE(sprite != nullptr);
+
+  auto translate =
+    nom::create_action<MoveByAction>(sprite, TRANSLATE_POS, DURATION);
+  ASSERT_TRUE(translate != nullptr);
+
+  auto repeat =
+    nom::create_action<RepeatForAction>(translate, NUM_REPEATS);
+  ASSERT_TRUE(repeat != nullptr);
+
+  auto repeat_reversed =
+    nom::create_action<ReversedAction>(repeat);
+  ASSERT_TRUE(repeat_reversed != nullptr);
+
+  auto action0 =
+    nom::create_action<GroupAction>( {repeat_reversed} );
+  ASSERT_TRUE(action0 != nullptr);
+  action0->set_timing_curve(TIMING_MODE);
+  action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(action0, [=]() {
+
+    EXPECT_EQ(EXPECTED_TEX_POS, sprite->position() );
+    EXPECT_EQ(1, this->player.num_actions() );
+
+    this->expected_action_params(action0.get(), 1);
+    this->expected_common_params(translate.get(), DURATION, SPEED_MOD);
+    this->expected_repeat_params(repeat.get(), NUM_REPEATS);
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue action0";
+
+  EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](float) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
+  });
+
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+/// \remarks This test does not honor custom speed modifiers passed via command
+/// line.
+TEST_F(ActionTest, RepeatForeverActionReversed)
+{
+  // Testing parameters
+  const real32 TEST_DURATION = 2.5f;  // when to stop testing "forever"
+  const nom::size_type NUM_REPEATS = 4;
+  const real32 DURATION = 0.5f;
+
+  // IMPORTANT: This value must remain constant for reproducing consistent test
+  // results!
+  const real32 SPEED_MOD = 1.0f;
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+
+  const Point2i TRANSLATE_POS( Point2i(WINDOW_DIMS.w,0) );
+  // Initial texture position and size
+  const Point2i RECT_POS(TRANSLATE_POS);
+  const Size2i RECT_SIZE(WINDOW_DIMS.w/4, WINDOW_DIMS.h);
+
+  auto rect =
+    std::make_shared<Rectangle>(IntRect(RECT_POS, RECT_SIZE), Color4i::Red);
+  ASSERT_TRUE(rect != nullptr);
+
+  auto sprite = nom::make_shared_sprite( rect->texture() );
+  ASSERT_TRUE(sprite != nullptr);
+
+  auto translate =
+    nom::create_action<MoveByAction>(sprite, TRANSLATE_POS, DURATION);
+  ASSERT_TRUE(translate != nullptr);
+
+  auto repeat_forever =
+    nom::create_action<RepeatForeverAction>(translate);
+  ASSERT_TRUE(repeat_forever != nullptr);
+
+  auto repeat_forever_rev =
+    nom::create_action<ReversedAction>(repeat_forever);
+  ASSERT_TRUE(repeat_forever_rev != nullptr);
+
+  auto action0 =
+    nom::create_action<GroupAction>( {repeat_forever_rev} );
+  ASSERT_TRUE(action0 != nullptr);
+  action0->set_timing_curve(TIMING_MODE);
+  action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
+
+  auto kill_timer =
+    nom::create_action<WaitForDurationAction>(TEST_DURATION);
+  ASSERT_TRUE(kill_timer != nullptr);
+  kill_timer->set_speed(SPEED_MOD);
+  kill_timer->set_name("kill_timer");
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(action0, [=]() {
+    FAIL() << "action0 should never complete!";
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue action0";
+  EXPECT_EQ(1, this->player.num_actions() );
+
+  this->run_action_ret =
+  this->player.run_action(kill_timer, [=]() {
+
+    EXPECT_EQ(2, this->player.num_actions() );
+    this->expected_repeat_params( repeat_forever.get(), NUM_REPEATS,
+                                  "repeat_params" );
+
+    this->expected_common_params( kill_timer.get(), TEST_DURATION, SPEED_MOD,
+                                  "common_params" );
+    this->expected_common_params( translate.get(), DURATION, SPEED_MOD,
+                                  "common_params" );
+
+    this->expected_action_params(action0.get(), 1, "action_params" );
+
+    this->quit();
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue kill_timer!";
+  EXPECT_EQ(2, this->player.num_actions() );
+
+  this->append_render_queue( sprite.get() );
+  this->append_frame_interval(FPS);
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+/// \remarks Thanks goes to Tim Jones of [sdltutorials.com](http://www.sdltutorials.com/sdl-animation)
+/// for the sprite frames of Yoshi chosen for this test!
+TEST_F(ActionTest, AnimateTexturesActionReversed)
+{
+  // Testing parameters
+  texture_frames anim_frames;
+  const std::vector<const char*> texture_filenames = {{
+    "yoshi_000.png", "yoshi_001.png", "yoshi_002.png", "yoshi_003.png",
+    "yoshi_004.png", "yoshi_005.png", "yoshi_006.png", "yoshi_007.png"
+  }};
+
+  // fps per shown texture
+  const real32 FRAME_DURATION = 0.5f;
+
+  // total test duration
+  const real32 DURATION = FRAME_DURATION * texture_filenames.size();
+
+  const real32 SPEED_MOD = NOM_ACTION_TEST_FLAG(speed);
+  const IActionObject::timing_curve_func TIMING_MODE =
+    NOM_ACTION_TEST_FLAG(timing_curve);
+  const uint32 FPS = NOM_ACTION_TEST_FLAG(fps);
+
+  this->init_animate_textures_test(texture_filenames, anim_frames);
+
+  EXPECT_EQ( anim_frames.size(), texture_filenames.size() );
+
+  auto sprite0 =
+    std::make_shared<Sprite>();
+  ASSERT_TRUE(sprite0 != nullptr);
+
+  auto tex_bg =
+    nom::create_action<AnimateTexturesAction>(  sprite0, anim_frames,
+                                                FRAME_DURATION );
+  ASSERT_TRUE(tex_bg != nullptr);
+
+  auto action0 =
+    nom::create_action<ReversedAction>(tex_bg);
+  ASSERT_TRUE(action0 != nullptr);
+  action0->set_timing_curve(TIMING_MODE);
+  action0->set_speed(SPEED_MOD);
+  action0->set_name("action0");
+
+  auto remove_action0 =
+    nom::create_action<RemoveAction>(action0);
+  ASSERT_TRUE(remove_action0 != nullptr);
+  remove_action0->set_name("remove_action0");
+
+  EXPECT_EQ(0, this->player.num_actions() );
+  this->run_action_ret =
+  this->player.run_action(action0, [=]() {
+
+    EXPECT_EQ(1, this->player.num_actions() );
+    this->expected_animate_textures_params( tex_bg.get(), anim_frames.size(),
+                                            DURATION, SPEED_MOD,
+                                            "animate_textures_params" );
+    this->expected_common_params(tex_bg.get(), DURATION, SPEED_MOD);
+
+    this->player.run_action(remove_action0, [=]() {
+      ASSERT_TRUE(sprite0 != nullptr);
+      EXPECT_FALSE( sprite0->valid() );
+    });
+  });
+  EXPECT_EQ(true, this->run_action_ret)
+  << "Failed to queue action0";
+  EXPECT_EQ(1, this->player.num_actions() );
+
+  this->append_update_callback( [=](real32) {
+    if( this->expected_min_duration(DURATION, SPEED_MOD) == true ) {
+      this->quit();
+    }
+  });
+
+  this->append_render_queue( sprite0.get() );
+  this->append_frame_interval(FPS);
+
+  EXPECT_EQ( NOM_EXIT_SUCCESS, this->on_run() );
+}
+
+} // namespace nom

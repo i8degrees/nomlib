@@ -58,9 +58,32 @@ struct _TTF_Font {};
 
 namespace nom {
 
+enum BlendMode
+{
+  /// no blending
+  /// dstRGBA = srcRGBA
+  BLEND_MODE_NONE = SDL_BLENDMODE_NONE,
+
+  /// alpha blending
+  /// dstRGB = (srcRGB * srcA) + (dstRGB * (1-srcA))
+  /// dstA = srcA + (dstA * (1-srcA))
+  BLEND_MODE_BLEND = SDL_BLENDMODE_BLEND,
+
+  /// additive blending
+  /// dstRGB = (srcRGB * srcA) + dstRGB
+  /// dstA = dstA
+  BLEND_MODE_ADD = SDL_BLENDMODE_ADD,
+
+  /// color modulate
+  /// dstRGB = srcRGB * dstRGB
+  /// dstA = dstA
+  BLEND_MODE_MOD = SDL_BLENDMODE_MOD
+};
+
 /// \brief Convenience definitions for pointer types
 ///
-/// \todo Remove.
+/// \todo Remove or perhaps better yet, refer to as a light-weight handle,
+/// i.e.: nom::WindowHandle?
 namespace SDL_WINDOW
 {
   typedef std::unique_ptr<SDL_Window, void (*)(SDL_Window*)> UniquePtr;
@@ -69,7 +92,7 @@ namespace SDL_WINDOW
 
 /// \brief Convenience definitions for pointer types
 ///
-/// \todo Remove.
+/// \todo Remove or perhaps better yet, refer to as a light-weight handle..?
 namespace SDL_PIXELFORMAT
 {
   typedef SDL_PixelFormat* RawPtr;
@@ -77,7 +100,8 @@ namespace SDL_PIXELFORMAT
 
 /// \brief Convenience definitions for pointer types
 ///
-/// \todo Remove.
+/// \todo Remove or perhaps better yet, refer to as a light-weight handle,
+/// i.e.: nom::SurfaceHandle?
 namespace SDL_SURFACE
 {
   typedef std::unique_ptr<SDL_Surface, void(*) (SDL_Surface*)> UniquePtr;
@@ -87,17 +111,21 @@ namespace SDL_SURFACE
 
 /// \brief Convenience definitions for pointer types
 ///
-/// \todo Remove.
+/// \todo Remove or perhaps better yet, refer to as a light-weight handle,
+/// i.e.: nom::TextureHandle?
 namespace SDL_TEXTURE
 {
   typedef std::shared_ptr<SDL_Texture> SharedPtr;
   typedef SDL_Texture* RawPtr;
 }
 
-/// SDL2 data structure wrappers for nomlib
-///
-/// \return A SDL_bool from a boolean value
-SDL_bool SDL_BOOL ( bool value );
+/// \brief Convert a SDL_BlendMode enumeration value to a nom::BlendMode
+/// enumeration value.
+BlendMode blend_mode(SDL_BlendMode mode);
+
+/// \brief Convert a nom::BlendMode enumeration value to a SDL_BlendMode
+/// enumeration value.
+SDL_BlendMode SDL_blend_mode(BlendMode mode);
 
 /// SDL data structure wrappers for nomlib
 ///
@@ -173,7 +201,7 @@ uint32 RGBA ( const Color4i& color, uint32 fmt );
 /// \param name   Hint to query
 ///
 /// \return Value of the queried name, or a null-terminated string if not set
-std::string hint( const std::string& name );
+std::string hint(const std::string& name);
 
 /// SDL2 helper function
 ///
@@ -186,7 +214,7 @@ std::string hint( const std::string& name );
 /// been made, as certain hints, i.e.: SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES
 /// must be called before video initialization, whereas others depend on a valid
 /// renderer, etc.
-bool set_hint( const std::string& name, const std::string& value );
+bool set_hint(const std::string& name, const std::string& value);
 
 const std::string PIXEL_FORMAT_NAME ( uint32 format );
 

@@ -37,6 +37,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/core/IObject.hpp"
 #include "nomlib/core/SDL2Logger.hpp"
 #include "nomlib/core/ConsoleOutput.hpp"
-
+#include <nomlib/core/err.hpp>
 
 #endif // include guard defined

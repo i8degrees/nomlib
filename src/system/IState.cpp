@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Forward declarations
 #include "nomlib/graphics/RenderWindow.hpp"
+#include "nomlib/system/Event.hpp"
 
 namespace nom {
 
@@ -85,7 +86,7 @@ IState::Type IState::type( void ) const
   return this->type_;
 }
 
-bool IState::on_event( const Event& ev )
+bool IState::on_event(const Event& ev)
 {
   // User-defined virtual
 

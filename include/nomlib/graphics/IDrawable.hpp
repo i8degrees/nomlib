@@ -55,6 +55,7 @@ class IDrawable: public IObject
     /// object.
     typedef std::shared_ptr<self_type> shared_ptr;
 
+    /// \todo Remove or relocate this definition to resolve coupling issue?
     typedef const RenderWindow RenderTarget;
 
     /// Do nothing at all default constructor
@@ -95,7 +96,6 @@ class IDrawable: public IObject
       return NOM_OBJECT_TYPE_INFO( self_type );
     }
 };
-
 
 } // namespace nom
 

@@ -37,6 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
 
+using namespace nom;
+
 /// Name of our application.
 const std::string APP_NAME = "renderfont";
 
@@ -45,6 +47,8 @@ const nom::int32 WINDOW_WIDTH = 640;
 
 /// Height, in pixels, of our effective rendering surface.
 const nom::int32 WINDOW_HEIGHT = 480;
+
+const auto WINDOW_RESOLUTION = Size2i(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 /// Relative filename path to saved screenshot example
 ///
@@ -79,6 +83,8 @@ struct AppFlags
   /// last argument 2/2; optional
   int pt_size = nom::DEFAULT_FONT_SIZE;
 };
+
+typedef std::vector<std::string> StringList;
 
 /// \brief Text rendering with nom::Font
 class FontRenderingApp: public nom::SDLApp
@@ -120,7 +126,7 @@ class FontRenderingApp: public nom::SDLApp
         NOM_LOG_INFO ( NOM, "Could not set scale quality." );
       }
 */
-      if ( this->window.create ( APP_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, window_flags ) == false )
+      if ( this->window.create (APP_NAME, WINDOW_RESOLUTION, window_flags) == false )
       {
         return false;
       }
@@ -134,6 +140,8 @@ class FontRenderingApp: public nom::SDLApp
       //   nom::DialogMessageBox ( APP_NAME, "Could not load window icon: " + RESOURCE_ICON );
       //   return false;
       // }
+
+      SDLApp::set_event_handler(this->evt_handler);
 
       nom::File fp;
       nom::Path p;
@@ -157,11 +165,14 @@ class FontRenderingApp: public nom::SDLApp
       // 3. Render
 
       nom::Event ev;
-      while ( this->running() == true )
-      {
-        while( this->poll_event( ev ) )
-        {
-          this->on_event( ev );
+      while( this->running() == true ) {
+
+        nom::Event evt;
+        while( this->evt_handler.poll_event(evt) == true ) {
+          // NOTE: Pending events will be handled by the event listeners that
+          // were given an EventHandler object via ::set_event_handler.
+          //
+          // Additional event processing done in here is still OK, too.
         }
 
         this->window.update();
@@ -197,12 +208,14 @@ class FontRenderingApp: public nom::SDLApp
   private:
     AppFlags opts;
 
-    /// \brief Event handler for key down actions.
-    ///
-    /// Implements the nom::Input::on_key_down method.
-    void on_key_down( const nom::Event& ev ) override
+    /// \brief The default event handler for input events.
+    void on_input_event(const nom::Event& ev) override
     {
-      switch ( ev.key.sym )
+      if( ev.type != Event::KEY_PRESS ) {
+        return;
+      }
+
+      switch(ev.key.sym)
       {
         default: break;
 
@@ -245,6 +258,8 @@ class FontRenderingApp: public nom::SDLApp
     /// Window handle
     nom::RenderWindow window;
 
+    nom::EventHandler evt_handler;
+
     /// Interval at which we refresh the frames per second counter
     nom::Timer update;
 
@@ -264,8 +279,6 @@ class FontRenderingApp: public nom::SDLApp
         return false;
       }
 
-      this->font->set_font_kerning(this->opts.use_kerning);
-
       // TODO: support additional hinting types; see TrueTypeFont.hpp
       // FIXME: Not working; methinks the problem might be in TrueTypeFont
       // class, although it would not hurt to verify SDL2_ttf functionality
@@ -279,13 +292,13 @@ class FontRenderingApp: public nom::SDLApp
       this->rendered_text.set_text(this->opts.text);
       this->rendered_text.set_text_size(this->opts.pt_size);
       this->rendered_text.set_style(this->opts.style);
+      this->rendered_text.set_text_kerning(this->opts.use_kerning);
 
       // TODO:
       //this->rendered_text.set_color( nom::Color4i(195,209,228) );
 
-      nom::set_alignment( &this->rendered_text,
-                          this->window.size(),
-                          nom::Anchor::MiddleCenter );
+      nom::set_alignment( &this->rendered_text, this->rendered_text.position(),
+                          this->window.size(), nom::Anchor::MiddleCenter );
 
       return true;
     }
@@ -294,6 +307,7 @@ class FontRenderingApp: public nom::SDLApp
 // ./renderfont --text 'Hello, World!' ~/Projects/nomlib.git/Resources/tests/graphics/BitmapFontTest/VIII.png 72
 // ./renderfont --text 'Hello, World!' ~/Projects/nomlib.git/Resources/tests/graphics/TrueTypeFontTest/OpenSans-Regular.ttf 72
 // ./renderfont --text 'Hello, World!' ~/Projects/nomlib.git/Resources/tests/graphics/BMFontTest/gameover.fnt 72
+// ./renderfont --text 'WAV' --no-kerning ~/Library/Fonts/OpenSans-Regular.ttf 72
 nom::int32 main ( nom::int32 argc, char* argv[] )
 {
   using namespace TCLAP;
@@ -378,7 +392,7 @@ nom::int32 main ( nom::int32 argc, char* argv[] )
       opts.text = text_arg.getValue();
     }
 
-    nom::StringList args = font_args.getValue();
+    StringList args = font_args.getValue();
 
     int pt_size_arg = 0;
     nom::size_type next_to_last = args.size() - 1;

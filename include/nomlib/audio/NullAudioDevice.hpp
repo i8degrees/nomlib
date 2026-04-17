@@ -44,7 +44,7 @@ class NullAudioDevice: public IAudioDevice
     virtual ~NullAudioDevice( void );
 
     // std::shared_ptr<ALCdevice> getAudioDevice( void ) const;
-    const std::string getDeviceName( void ) const;
+    std::string getDeviceName() const override;
     bool isExtensionSupported( const std::string& extension ) const;
 };
 

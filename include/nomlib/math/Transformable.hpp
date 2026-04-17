@@ -35,9 +35,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// TODO: Consider upgrading containers to Point3f ..?
+
 class Transformable: public virtual IDrawable
 {
   public:
+    typedef Transformable self_type;
+
     Transformable( void );
     virtual ~Transformable( void );
 

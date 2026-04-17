@@ -7,26 +7,45 @@
 # NOTE: You may need to issue a 'make rebuild_cache' after changing test
 # fixture names, in order to get 'make test' to recognize the modified test
 # code.
-#
-# NOTE: To display a unit test's full debugging output (NOM_LOG_ERR, NOM_DUMP
-# and friends), run the test's executable directly. This debugging output will
-# not be shown when using the 'test' target -- i.e.: make target.
-#
-# NOTE: Compiling nomlib under Windows without iterator asserts --
-# /D_ITERATOR_DBUG_LEVEL=0 -- will cause GTest to throw SEH exception errors
-# before it is able to display actual & expected results when a unit test fails.
-#
-# NOTE: The custom command line processing used by nom::UnitTest for interactive
-# interactive test runs breaks under Windows when building with the target
-# library ${GTEST_BOTH_LIBRARIES}, due to GTest's main library overwriting our
-# unit test's main functions. In summary, only the library target
-# ${GTEST_LIBRARY} should be used, to ensure cross-platform support.
 
 # Source file inclusion root (directory); must be an absolute path.
 set( TESTS_SRC_DIR "${PROJECT_SOURCE_DIR}/tests/src" )
 
 # Header file inclusion root (directory); must be an absolute path.
 set( TESTS_INC_DIR "${PROJECT_SOURCE_DIR}/tests/include" )
+
+# Use common build output directories for MSVCPP && Xcode project files.
+#
+# IMPORTANT: Debug and Release build targets **must** be kept in separate build
+# trees!
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/tests/Debug")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/tests/Release")
+
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/tests/Debug")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/tests/Release")
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/tests/Debug")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/tests/Release")
+
+if(DEBUG)
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG})
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG})
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG})
+else() # Release builds
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE})
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE})
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE})
+endif()
+
+# This path is used for the local installation of required dependencies for
+# running unit tests, such as dependent resource files. Additionally, when
+# building on Windows, this will be the path that dependent DLLs are copied to.
+#
+# IMPORTANT: This path serves a vital role in the *consistent* usage of CTest
+# and GTest across the supported CMake project generators -- Unix Makefiles,
+# Xcode and MSVCPP. The path **must** be prepended on every unit test
+# executable created using the add_test and GTEST_ADD_TESTS commands.
+set( TESTS_INSTALL_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" )
 
 # TODO: Relocate me?
 set( NOM_BUILD_UNIT_TEST_UNIT ON )
@@ -40,31 +59,16 @@ set( NOM_BUILD_SERIALIZERS_TESTS ON )
 set( NOM_BUILD_SYSTEM_TESTS ON )
 set( NOM_BUILD_AUDIO_TESTS ON )
 set( NOM_BUILD_GRAPHICS_TESTS ON )
+set( NOM_BUILD_ACTIONS_TESTS ON )
 set( NOM_BUILD_GUI_TESTS ON )
 
 # Tests for the testing framework
 set( NOM_BUILD_UNIT_TEST_TESTS ON )
 set( NOM_BUILD_VTEST_TESTS ON )
 
-# Used only by the MSVCPP generator; this path will be expanded to include the
-# configuration build type, i.e.: Debug or Release, so the full path resolve
-# to '<cmake_build_dir>/tests/Debug' or '<cmake_build_dir>/tests/Release'.
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/tests" )
-
-# Used by all other generators (Xcode, Unix Makefiles); this path will resolve
-# to '<cmake_build_dir>/tests/Debug' or '<cmake_build_dir>/tests/Release'.
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/tests/Debug" )
-set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/tests/Release" )
-
-# This path is used for the local installation of required dependencies for
-# running a unit test executable, such as DLLs when running on Windows.
-#
-# This path also serves a vital role in the *consistent* usage of CTest and
-# GTest integration across CMake project generators -- Unix Makefiles, Xcode
-# and MSVCPP all function under the hood very differently! In effect, this path
-# **must** be prepended on every unit test executable name created using the
-# add_test or GTEST_ADD_TESTS commands (used for integration with CTest runner).
-set( TESTS_INSTALL_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}" )
+if( EXISTS "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+  include( "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
+endif()
 
 # Project headers files inclusions; our header files namespace, 'nomlib'
 include_directories( "${INC_ROOT_DIR}" )
@@ -123,16 +127,13 @@ if ( NOM_BUILD_AUDIO_TESTS )
 endif ( NOM_BUILD_AUDIO_TESTS )
 
 # Unit test dependencies (common / global)
-#
-# NOTE: We prefer linking to GTest statically.
 if( PLATFORM_OSX )
   set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/osx/gtest" )
 elseif( PLATFORM_WINDOWS )
   set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/windows/gtest" )
-elseif( PLATFORM_LINUX ) # PLATFORM_POSIX (?)
-    set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/linux/gtest")
-    set( GTEST_INCLUDE_DIR "${NOMLIB_DEPS_DIR}/linux/gtest/include" )
-endif ( PLATFORM_OSX )
+elseif( PLATFORM_LINUX )
+  set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/linux/gtest" )
+endif( PLATFORM_OSX )
 
 find_package ( GTest REQUIRED )
 if ( GTEST_FOUND )
@@ -217,6 +218,10 @@ if( NOM_BUILD_GRAPHICS_TESTS )
   add_subdirectory("src/graphics")
 endif( NOM_BUILD_GRAPHICS_TESTS )
 
+if( NOM_BUILD_ACTIONS_TESTS )
+  add_subdirectory("src/actions")
+endif( NOM_BUILD_ACTIONS_TESTS )
+
 if( NOM_BUILD_GUI_TESTS )
   add_subdirectory("src/gui")
 endif( NOM_BUILD_GUI_TESTS )
@@ -240,6 +245,17 @@ endif( NOM_BUILD_SERIALIZERS_TESTS )
 # Install library dependencies into tests output directory so we can always
 # execute the binaries with the proper dependency versions.
 if ( PLATFORM_WINDOWS )
+
+  if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
+    set( GTEST_LIBRARY_REDIST_DLL "${GTEST_ROOT}/lib/gtestd.dll" )
+  else()
+    set( GTEST_LIBRARY_REDIST_DLL "${GTEST_ROOT}/lib/gtest.dll" )
+  endif()
+
+  install(  FILES ${GTEST_LIBRARY_REDIST_DLL}
+            DESTINATION ${TESTS_INSTALL_DIR}
+            RENAME "gtest.dll" )
+
   install ( DIRECTORY
             ${SDL2_REDIST_DIR}
             ${SDL2_IMAGE_REDIST_DIR}
@@ -247,7 +263,6 @@ if ( PLATFORM_WINDOWS )
             ${OPENAL_REDIST_DIR}
             ${LIBSNDFILE_REDIST_DIR}
             ${MSVCPP_REDIST_DIR}
-            "${GTEST_ROOT}/lib/"        # GTest re-dist libs
             DESTINATION
             ${TESTS_INSTALL_DIR}
             FILES_MATCHING PATTERN "*.dll"

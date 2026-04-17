@@ -29,29 +29,43 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_CORE_HELPERS_HPP
 #define NOMLIB_CORE_HELPERS_HPP
 
-#include <cstring>
-
 #include "nomlib/config.hpp"
 
-namespace nom {
+#include <cstring>
+#include <memory>
+#include <string>
 
-namespace priv {
+namespace nom {
 
 /// \brief Maximum size a nom::Value string type may be
 ///
 /// \remarks Buffer overflow protection.
-const uint MAX_STRING_LENGTH = 256;
+const nom::size_type MAX_STRING_LENGTH = 256;
 
-/// \brief Clone a C style string value.
+int string_to_integer(const char* str);
+int string_to_integer(const std::string& str);
+
+nom::size_type string_length(const char* str);
+nom::size_type string_length(const std::string& str);
+
+int compare_cstr_insensitive(const char* str1, const char* str2);
+int compare_cstr_sensitive(const char* str1, const char* str2);
+
+int compare_string_insensitive(const std::string& str1, const std::string& str2);
+int compare_string_sensitive(const std::string& str1, const std::string& str2);
+
+void copy_string(const char* source, char* dest);
+
+/// \brief Create a deep-copy instance a C style string.
 ///
 /// \param length Size of the string to copy.
 ///
 /// \returns Null-terminated string up to MAX_STRING_LENGTH.
-///
-/// \todo Find a better home for this function?
-char* duplicate_string( const char* val, uint length );
+const char* duplicate_string(const char* str, nom::size_type length);
 
-} // namespace priv
+const char* duplicate_string(const std::string& str, nom::size_type length);
+
+void free_string(const char* ptr);
 
 /// Convenience helper for providing a version of std::make_unique for
 /// std::unique_ptr -- C++11 forgot to provide one like they did for
@@ -67,6 +81,13 @@ template<typename T, typename... Args>
 std::unique_ptr<T> make_unique(Args&&... args)
 {
   return std::unique_ptr<T>( new T( std::forward<Args>( args ) ... ) );
+}
+
+template<typename T>
+inline std::string make_str(const T& str)
+{
+  std::string result = std::to_string(str);
+  return result;
 }
 
 } // namespace nom

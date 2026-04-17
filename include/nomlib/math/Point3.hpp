@@ -41,25 +41,25 @@ template <typename T>
 struct Point3
 {
   /// Default constructor; initialize values to Point3<T>::null
-  Point3 ( void ) :
-    x ( -1 ),
-    y ( -1 ),
-    z ( -1 )
+  Point3() :
+    x(-1),
+    y(-1),
+    z(-1)
   {
     //NOM_LOG_TRACE(NOM);
   }
 
   /// Destructor
-  ~Point3 ( void )
+  ~Point3()
   {
     //NOM_LOG_TRACE(NOM);
   }
 
   /// Constructor variant for initializing x, y, z at construction
-  Point3 ( T x, T y, T z )  :
-    x ( x ),
-    y ( y ),
-    z ( z )
+  Point3(T x, T y, T z)  :
+    x(x),
+    y(y),
+    z(z)
   {
     //NOM_LOG_TRACE(NOM);
   }
@@ -70,16 +70,16 @@ struct Point3
   /// in any instance that it finds incompatible casting occurring, such as if
   /// you try to down-cast a Point3<int> to a Point3<float>.
   template <typename U>
-  explicit Point3<T> ( const Point3<U>& copy )  :
-    x { static_cast<T> ( copy.x ) },
-    y { static_cast<T> ( copy.y ) },
-    z { static_cast<T> ( copy.z ) }
+  explicit Point3<T>(const Point3<U>& copy)  :
+    x( NOM_SCAST(T, copy.x) ),
+    y( NOM_SCAST(T, copy.y) ),
+    z( NOM_SCAST(T, copy.z) )
   {
     //NOM_LOG_TRACE(NOM);
   }
 
   /// \brief Obtain a reference of the object.
-  inline const Point3<T>& get ( void ) const
+  inline const Point3<T>& get() const
   {
     return *this;
   }
@@ -88,6 +88,9 @@ struct Point3
   ///
   /// \remarks  Null value implementation depends on signed (negative) numbers.
   static const Point3 null;
+
+  /// \brief Zero value constant.
+  static const Point3 zero;
 
   T x;
   T y;
@@ -130,10 +133,10 @@ inline bool operator != ( const Point3<T>& lhs, const Point3<T>& rhs )
 typedef Point3<int> Point3i;
 
 /// Point3 object defined using floating-point numbers
-typedef Point3<float> Point3f;
+typedef Point3<real32> Point3f;
 
 /// Point3 object defined using double precision floating-point numbers
-typedef Point3<double> Point3d;
+typedef Point3<real64> Point3d;
 
 } // namespace nom
 

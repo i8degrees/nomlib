@@ -44,9 +44,9 @@ endif(POLICY CMP0072)
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules" )
 set ( CMAKE_TEMPLATE_PATH ${CMAKE_TEMPLATE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates" )
 
-set ( PROJECT_VERSION_MAJOR 0 )
-set ( PROJECT_VERSION_MINOR 11 )
-set ( PROJECT_VERSION_PATCH 0 )
+set( PROJECT_VERSION_MAJOR 0 )
+set( PROJECT_VERSION_MINOR 12 )
+set( PROJECT_VERSION_PATCH 0 )
 
 # Project Options
 option ( DEBUG "Build with all debugging features" off )
@@ -83,6 +83,8 @@ else ( NOT PLATFORM_WINDOWS )
   set ( BUILD_SHARED_LIBS on )
 endif ( PLATFORM_WINDOWS )
 
+# TODO: We should be setting CMAKE_BUILD_TYPE directly from the command line
+# instead of DEBUG
 if ( DEBUG )
   # set ( CMAKE_VERBOSE_MAKEFILE ON )
   set ( CMAKE_BUILD_TYPE "Debug" )
@@ -92,8 +94,13 @@ if ( DEBUG )
   endif ( NOT DISABLE_DEBUG_ASSERTIONS )
 
   if ( NOT PLATFORM_WINDOWS )
-    # TODO: Enable -Wextra
-    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused -O0" ) #-D_GLIBCXX_DEBUG
+    # TODO: Enable -Wsign-conversion, -Wextra
+    # TODO: Consider enabling some of these run-time checks that clang offers,
+    # i.e.:: -fsanitize=address, -fsanitize=integer, -fsanitize=undefined,
+    # -fsanitize=unsigned-integer-overflow, etc.
+    # See also: http://clang.llvm.org/docs/UsersManual.html#controlling-code-generation
+    # See also: Malloc Debugging under OSX: https://developer.apple.com/library/mac/documentation/Performance/Conceptual/ManagingMemory/Articles/MallocDebug.html#//apple_ref/doc/uid/20001884-CJBJFIDD
+    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused -O0" )
 
     # Measure the time it takes per source file to build, so we can try
     # speeding up slow builds!
@@ -131,6 +138,8 @@ include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )
 # TODO: Rename to NOMLIB_SRC_DIR..?
 set( SRC_DIR "${PROJECT_SOURCE_DIR}/src" )
 set( NOMLIB_RESOURCES_DIR "${PROJECT_SOURCE_DIR}/Resources" )
+
+set( NOMLIB_SHARED_SUPPORT_DIR "${NOMLIB_RESOURCES_DIR}/SharedSupport" )
 
 # TODO: Rename to NOMLIB_INCLUDE_ROOT_DIR..?
 set( INC_ROOT_DIR "${PROJECT_SOURCE_DIR}/include" )
@@ -369,6 +378,12 @@ if( PLATFORM_OSX AND FRAMEWORK )
   #   )
   # endif( NOM_INSTALL_GENERATED_DOCS )
 
+  # Install hardware definitions for input devices (game controllers)
+  install(  DIRECTORY "${NOMLIB_SHARED_SUPPORT_DIR}/InputDevices"
+            DESTINATION "${PROJECT_NAME}.framework/Resources/SharedSupport"
+            OPTIONAL
+            PATTERN ".*" EXCLUDE )
+
 # POSIX install layout scheme is the default installation scheme. This is
 # applicable to OS X when FRAMEWORK=off.
 elseif( NOM_PLATFORM_POSIX OR PLATFORM_WINDOWS )
@@ -399,6 +414,13 @@ elseif( NOM_PLATFORM_POSIX OR PLATFORM_WINDOWS )
               "CMake"
               PATTERN ".*" EXCLUDE
             )
+
+    # Install hardware definitions for input devices (game controllers)
+    install(  DIRECTORY "${NOMLIB_SHARED_SUPPORT_DIR}/InputDevices"
+              DESTINATION "SharedSupport"
+              OPTIONAL
+              PATTERN ".*" EXCLUDE )
+
   else( NOT PLATFORM_WINDOWS )
     # i.e.: /usr/local/share/nomlib/CMake
     install(  DIRECTORY

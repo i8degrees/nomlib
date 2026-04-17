@@ -88,33 +88,43 @@ bool AudioDevice::initialize ( const ALCchar* device_name )
 {
   NOM_LOG_TRACE( NOM_LOG_CATEGORY_TRACE_AUDIO );
 
-  audio_device.reset();
-  audio_context.reset();
+  AL_CLEAR_ERR();
 
   // audio device handle
   this->audio_device = std::shared_ptr<ALCdevice> ( alcOpenDevice ( device_name ), nom::priv::AL_FreeAudioDevice );
+  AL_CHECK_ERR_VOID();
 
   // attach a context (think: listener) to device
-  if ( this->audio_device )
-  {
+  if( this->audio_device != nullptr ) {
+
     // Store the audio device name now that it is confirmed valid
-    this->device_name = alcGetString ( this->audio_device.get(), ALC_DEFAULT_DEVICE_SPECIFIER );
-
-    this->audio_context = std::shared_ptr<ALCcontext> ( alcCreateContext ( this->audio_device.get(), nullptr ), nom::priv::AL_FreeAudioContext );
-
-    if ( this->audio_context )
-    {
-      alcMakeContextCurrent ( this->audio_context.get() );
+    if( device_name != nullptr ) {
+      this->device_name_ = device_name;
+    } else {
+      AL_CLEAR_ERR();
+      this->device_name_ =
+        alcGetString(this->audio_device.get(), ALC_DEFAULT_DEVICE_SPECIFIER);
+      AL_CHECK_ERR_VOID();
     }
-    else
-    {
-NOM_LOG_ERR ( NOM, "Failed to create the audio context." );
+
+    AL_CLEAR_ERR();
+    this->audio_context = std::shared_ptr<ALCcontext> ( alcCreateContext ( this->audio_device.get(), nullptr ), nom::priv::AL_FreeAudioContext );
+    AL_CHECK_ERR_VOID();
+
+    if( this->audio_context != nullptr ) {
+      AL_CLEAR_ERR();
+      alcMakeContextCurrent( this->audio_context.get() );
+      AL_CHECK_ERR_VOID();
+    } else {
+      // Err; memory allocation failure!
+      NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                    "Failed to create the audio context." );
       return false;
     }
-  }
-  else
-  {
-NOM_LOG_ERR ( NOM, "Failed to open the audio device." );
+  } else if( this->audio_device == nullptr ) {
+    // Err; memory allocation failure!
+    NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION,
+                  "Failed to open the audio device." );
     return false;
   }
 
@@ -136,22 +146,43 @@ bool AudioDevice::initialized ( void ) const
 //   return this->audio_device;
 // }
 
-const std::string AudioDevice::getDeviceName ( void ) const
+std::string AudioDevice::getDeviceName() const
 {
-  return this->device_name;
+  return this->device_name_;
 }
 
 bool AudioDevice::isExtensionSupported ( const std::string& extension ) const
 {
-  if ( ( extension.length() > 2 ) && ( extension.substr ( 0, 3 ) == "ALC" ) )
-  {
-    if ( alcIsExtensionPresent ( this->audio_device.get(), extension.c_str() ) != AL_FALSE )
+  AL_CLEAR_ERR();
+
+  if( ( extension.length() > 2 ) && ( extension.substr ( 0, 3 ) == "ALC" ) ) {
+
+    if( alcIsExtensionPresent ( this->audio_device.get(), extension.c_str() ) != AL_FALSE )
+    {
       return true;
+    }
   }
   else
   {
     if ( alIsExtensionPresent ( extension.c_str() ) != AL_FALSE )
       return true;
+  }
+
+  return false;
+}
+
+bool AudioDevice::extension_available(const std::string& ext)
+{
+  AL_CLEAR_ERR();
+
+  if( ext.length() > 2 && ext.substr(0, 3) == "ALC" ) {
+    if( alcIsExtensionPresent( NULL, ext.c_str() ) != AL_FALSE ) {
+      return true;
+    }
+  } else {
+    if( alIsExtensionPresent( ext.c_str() ) != AL_FALSE ) {
+      return true;
+    }
   }
 
   return false;

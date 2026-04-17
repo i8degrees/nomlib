@@ -32,7 +32,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include "nomlib/config.hpp"
-#include "nomlib/core/clock.hpp"  // nom::timestamp
 
 // Note that the following are just the general-purpose (engine-wide) macros.
 // Other major sources of macro definitions: nomlib/config.hpp, nomlib/types.hpp,
@@ -50,9 +49,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOM_ENDL(reserved) ( std::cout << std::endl )
 #define NOM_DASHED_ENDL(reserved) ( std::cout << "---" << std::endl )
 
-#define NOM_TIMESTAMP(reserved) \
-  ( std::cout << nom::timestamp() << std::endl )
-
 #define NOM_DELETE_PTR(var) \
   if( var != nullptr ) delete var; var = nullptr;
 
@@ -61,5 +57,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define NOM_DELETE_VOID_PTR(var) \
   if( var != nullptr ) free(var); var = nullptr;
+
+// A macro declaration from gtest_prod.h for allowing internal access into
+// private parts of a class. (I prefer not to include the framework's header
+// files path into our main project namespace).
+#define NOM_GTEST_FRIEND(test_case_name, test_name)\
+friend class test_case_name##_##test_name##_Test
 
 #endif // include guard defined

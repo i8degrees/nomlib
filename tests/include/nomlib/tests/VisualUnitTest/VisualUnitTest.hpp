@@ -49,6 +49,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+// IMPORTANT: When adding new tests that use this framework, you should always
+// use the nom_add_visual_test macro. See cmake/macros.cmake for usage and
+// rationale behind why.
+
 /// \brief Base class interface for visual unit testing within Google Test
 class VisualUnitTest: public UnitTest
 {
@@ -59,6 +63,10 @@ class VisualUnitTest: public UnitTest
 
     typedef std::function<void( Event )> event_callback_type;
     typedef std::function<void( float )> update_callback_type;
+
+    /// \todo Consider removing the callback argument; it is confusing as it is
+    /// invalid to use a RenderWindow object that differs from the one defined
+    /// in this class.
     typedef std::function<void( const RenderWindow& )> render_callback_type;
 
     /// \brief Initialize the environment for the unit test.
@@ -92,8 +100,10 @@ class VisualUnitTest: public UnitTest
     /// \brief Destructor.
     ///
     /// \remarks Destruction of the object flushes the configuration file for
-    /// the visual test set when it has images in its list.
-    virtual ~VisualUnitTest( void );
+    /// the visual test set when it has images in its list. Also, output
+    /// directories that are empty -- no screen-shots taken during the test --
+    /// will automatically be deleted.
+    virtual ~VisualUnitTest();
 
     /// \brief Initialize the rendering subsystem.
     ///
@@ -198,9 +208,6 @@ class VisualUnitTest: public UnitTest
     /// loop -- meaning the test has captured its target frames -- boolean FALSE
     /// when the unit test is not ready to terminate its main loop (has not
     /// captured all of its target frames).
-    ///
-    /// \fixme Screen-shot dumps of more than the first frame in the list are
-    /// broken.
     virtual bool on_frame_end( uint elapsed_frames );
 
     // void save_screenshot( const std::string& file_path );
@@ -209,14 +216,65 @@ class VisualUnitTest: public UnitTest
     VisualUnitTest::update_callback_type default_update_callback();
     VisualUnitTest::render_callback_type default_render_callback();
 
+    /// \brief Insert an event callback at an ordered position for execution
+    /// in the main loop.
+    ///
+    /// \param pos  The insertion position from the beginning of the container.
+    /// \param func The event callback function.
+    ///
     /// \returns The number of registered event callbacks (after insertion).
-    int append_event_callback( const std::function<void( Event )>& func );
+    ///
+    /// \see nom::VisualUnitTest::append_event_callback
+    int insert_event_callback(  nom::size_type pos,
+                                const event_callback_type& func );
 
+    /// \brief Insert an event callback to the end of the list of callbacks
+    /// to be executed in the main loop.
+    ///
+    /// \param func The event callback function.
+    ///
     /// \returns The number of registered event callbacks (after insertion).
-    int append_update_callback( const std::function<void( float )>& func );
+    int append_event_callback(const event_callback_type& func);
 
-    /// \returns The number of registered event callbacks (after insertion).
-    int append_render_callback( const std::function<void( const RenderWindow& )>& func );
+    /// \brief Insert an update callback at an ordered position for execution
+    /// in the main loop.
+    ///
+    /// \param pos  The insertion position from the beginning of the container.
+    /// \param func The update callback function.
+    ///
+    /// \returns The number of registered update callbacks (after insertion).
+    ///
+    /// \see nom::VisualUnitTest::append_update_callback
+    int insert_update_callback( nom::size_type pos,
+                                const update_callback_type& func );
+
+    /// \brief Insert an update callback to the end of the list of callbacks
+    /// to be executed in the main loop.
+    ///
+    /// \param func The update callback function.
+    ///
+    /// \returns The number of registered update callbacks (after insertion).
+    int append_update_callback(const update_callback_type& func);
+
+    /// \brief Insert a rendering callback at an ordered position for execution
+    /// in the main loop.
+    ///
+    /// \param pos  The insertion position from the beginning of the container.
+    /// \param func The render callback function.
+    ///
+    /// \returns The number of registered render callbacks (after insertion).
+    ///
+    /// \see nom::VisualUnitTest::append_render_callback
+    int insert_render_callback( nom::size_type pos,
+                                const render_callback_type& func );
+
+    /// \brief Insert a rendering callback to the end of the list of callbacks
+    /// to be executed in the main loop.
+    ///
+    /// \param func The render callback function.
+    ///
+    /// \returns The number of registered render callbacks (after insertion).
+    int append_render_callback(const render_callback_type& func);
 
     /// \brief Destroy all of the registered event callbacks in storage.
     ///
@@ -279,9 +337,8 @@ class VisualUnitTest: public UnitTest
     ///
     /// \see ::set_output_directory.
     ///
-    /// \todo Clean up the logic in this method.
-    void initialize_directories( void );
-    // void initialize_directories( const std::string& dir_name );
+    /// \todo Finish err handling for file I/O.
+    void initialize_directories();
 
     /// \brief Get the timestamp string recorded for the visual unit test.
     static const std::string& timestamp( void );

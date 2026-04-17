@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system.hpp>
 #include <nomlib/graphics.hpp>
 
-// using namespace nom;
+using namespace nom;
 
 const nom::Path p;
 
@@ -46,6 +46,8 @@ const nom::int32 WINDOW_WIDTH = 640;
 
 /// \brief Height, in pixels, of our effective rendering surface.
 const nom::int32 WINDOW_HEIGHT = 480;
+
+auto WINDOW_RESOLUTION = Size2i(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 const std::string RESOURCE_ICON = APP_RESOURCES_DIR + "icon.png";
 
@@ -92,7 +94,7 @@ class App: public nom::SDLApp
         NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
       }
 
-      if( this->window.create( APP_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, window_flags ) == false )
+      if( this->window.create(APP_NAME, WINDOW_RESOLUTION, window_flags) == false )
       {
         return false;
       }
@@ -105,6 +107,8 @@ class App: public nom::SDLApp
 
       // Scale window contents up by the new width & height
       this->window.set_logical_size( this->window.size() );
+
+      SDLApp::set_event_handler(this->evt_handler);
 
       return true;
     }
@@ -122,11 +126,14 @@ class App: public nom::SDLApp
       // 1. Events
       // 2. Logic
       // 3. Render
-      while ( this->running() == true )
-      {
-        while( this->poll_event( this->event ) )
-        {
-          this->on_event( this->event );
+      while( this->running() == true ) {
+
+        nom::Event evt;
+        while( this->evt_handler.poll_event(evt) == true ) {
+          // NOTE: Pending events will be handled by the event listeners that
+          // were given an EventHandler object via ::set_event_handler.
+          //
+          // Additional event processing done in here is still OK, too.
         }
 
         this->window.update();
@@ -172,17 +179,19 @@ class App: public nom::SDLApp
     }
 
   private:
-    /// \brief Event handler for key down actions.
-    ///
-    /// Implements the nom::Input::on_key_down method.
-    void on_key_down( const nom::Event& ev )
+    /// \brief The default event handler for input events.
+    void on_input_event(const nom::Event& ev) override
     {
-      switch ( ev.key.sym )
+      if( ev.type != Event::KEY_PRESS ) {
+        return;
+      }
+
+      switch(ev.key.sym)
       {
         default: break;
 
-        // Use inherited SDLApp::on_app_quit() method -- you may also provide
-        // your own event handler for this.
+        // Use inherited SDLApp::on_app_quit method -- you may also provide your
+        // own event handler for this.
         case SDLK_ESCAPE:
         case SDLK_q: this->on_app_quit( ev ); break;
 
@@ -230,10 +239,10 @@ class App: public nom::SDLApp
     } // on_key_down
 
   private:
-    nom::Event event;
-
     /// Window handles
     nom::RenderWindow window;
+
+    nom::EventHandler evt_handler;
 
     /// Interval at which we refresh the frames per second counter
     nom::Timer update;

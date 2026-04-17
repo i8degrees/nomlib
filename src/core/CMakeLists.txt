@@ -9,7 +9,10 @@ set( NOM_CORE_LIBRARY "nomlib-core" )
 set(  NOM_CORE_SOURCE
       ${INC_DIR}/core.hpp
       ${INC_DIR}/macros.hpp
+
+      ${SRC_DIR}/platforms.cpp
       ${INC_DIR}/platforms.hpp
+
       ${INC_DIR}/types.hpp
 
       ${INC_DIR}/config.hpp # auto-generated
@@ -43,6 +46,9 @@ set(  NOM_CORE_SOURCE
 
       ${SRC_DIR}/core/SDL_assertion_helpers.cpp
       ${INC_DIR}/core/SDL_assertion_helpers.hpp
+
+      ${SRC_DIR}/core/err.cpp
+      ${INC_DIR}/core/err.hpp
 )
 
 # Platform-specific implementations & dependencies

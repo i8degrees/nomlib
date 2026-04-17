@@ -100,11 +100,13 @@ void sleep( uint32 milliseconds );
 ///
 /// \note This is a function wrapper for SDL_GetPerformanceCounter.
 /// \see https://wiki.libsdl.org/SDL_GetPerformanceCounter?highlight=%28%5CbCategoryTimer%5Cb%29%7C%28CategoryEnum%29%7C%28CategoryStruc%29
-uint64 hires_counter();
+uint64 hires_ticks();
 
 /// \brief Get the count per second of the high resolution counter.
 ///
-/// \returns A platform-specific count per second.
+/// \returns A platform-specific count per second, such as one
+/// billionth of a second (nanosecond), microsecond (one millionth of a second)
+/// or one thousandth of a second (millisecond).
 ///
 /// \note This is a function wrapper for SDL_GetPerformanceFrequency.
 /// \see https://wiki.libsdl.org/SDL_GetPerformanceFrequency

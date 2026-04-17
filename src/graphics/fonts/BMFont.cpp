@@ -116,7 +116,7 @@ int BMFont::kerning(uint32 first_char, uint32 second_char, uint32 character_size
   // Possible FIXME: BMFontTest::KerningParserSanity fails here if we do
   // validity check
   // if( this->valid() == false ) {
-  //   return nom::int_min;
+  //   return nom::NOM_INT_MIN;
   // }
 
   if( this->use_kerning() == false ) {
@@ -245,11 +245,11 @@ bool BMFont::build(uint32 character_size)
     return false;
   }
 
-  Point2i size( this->pages_[0].texture->size() );
+  Size2i size( this->pages_[0].texture->size() );
 
   // Sanity checks
-  NOM_ASSERT( size.x == this->page_size_.w );
-  NOM_ASSERT( size.y == this->page_size_.h );
+  NOM_ASSERT( size.w == this->page_size_.w );
+  NOM_ASSERT( size.h == this->page_size_.h );
 
   return true;
 }
@@ -261,6 +261,12 @@ bool BMFont::parse_ascii_file(std::istream& fp)
   std::string buffer; // textual representation of the input
   std::string key;    // left-hand constituent of the buffer
   std::string value;  // right-hand constituent of the buffer
+
+  if( fp.good() == false ) {
+    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not parse BMFont file stream." );
+    return false;
+  }
 
   while( !fp.eof() )
   {

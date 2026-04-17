@@ -1,0 +1,4 @@
+# Normalize line endings to LF (Unix) on check-in and prevents
+# conversion to CRLF (Windows) when the file is checked out.
+text eol=lf
+

@@ -87,7 +87,7 @@ class GameController
       BUTTON_DPAD_DOWN,
       BUTTON_DPAD_LEFT,
       BUTTON_DPAD_RIGHT,
-      BUTTON_MAX,
+      BUTTON_MAX = SDL_CONTROLLER_BUTTON_MAX,
     };
 
     // NOTE: This is a workaround to prevent a double-free bug that

@@ -117,20 +117,33 @@ endif( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
 # Header file inclusion; third-party -- TCLAP
 include_directories("${NOM_THIRD_PARTY_COMMON_DIR}")
 
+if ( NOM_BUILD_AUDIO_TESTS )
+  find_package( libsndfile OPTIONAL )
+  if ( NOT LIBSNDFILE_FOUND )
+    message ( STATUS "libsndfile library not found" )
+  else ( LIBSNDFILE_FOUND )
+    message ( STATUS "libsndfile library found: ${LIBSNDFILE_LIBRARY}" )
+  endif ()
+endif ( NOM_BUILD_AUDIO_TESTS )
+
 # Unit test dependencies (common / global)
 if( PLATFORM_OSX )
   set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/osx/gtest" )
 elseif( PLATFORM_WINDOWS )
   set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/windows/gtest" )
-elseif( PLATFORM_LINUX )
-  # FIXME(JEFF): Use 
-  set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/linux/gtest")
-  set( GTEST_INCLUDE_DIRS APPEND "${NOMLIB_DEPS_DIR}/linux/gtest/include")
-endif( PLATFORM_OSX )
+elseif( PLATFORM_LINUX ) # PLATFORM_POSIX (?)
+    set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/linux/gtest")
+    set( GTEST_INCLUDE_DIR "${NOMLIB_DEPS_DIR}/linux/gtest/include" )
+endif ( PLATFORM_OSX )
 
-find_package( GTest REQUIRED )
+find_package ( GTest REQUIRED )
+if ( GTEST_FOUND )
+  message( STATUS "Found GoogleTest ${GTEST_ROOT}." )
+else ( NOT GTEST_FOUND )
+  message( FATAL_ERROR "Missing GoogleTest library at ${GTEST_ROOT}." )
+endif ( GTEST_FOUND )
 
-include_directories( ${GTEST_INCLUDE_DIRS} )
+include_directories("${GTEST_INCLUDE_DIR}")
 
 set(  NOM_TESTS_UNIT_TEST_SOURCE
       ${TESTS_SRC_DIR}/UnitTest/UnitTest.cpp
@@ -161,33 +174,29 @@ set(  NOM_TESTS_VTEST_SOURCE
 )
 
 if( NOM_BUILD_UNIT_TEST_UNIT )
-
-  set( NOM_UNIT_TEST_LIBRARY_DEPS ${GTEST_LIBRARY} nomlib-core nomlib-file )
-
+  set( NOM_UNIT_TEST_LIBRARY_DEPS nomlib-core nomlib-file )
+  
   if( PLATFORM_WINDOWS )
     list( APPEND NOM_UNIT_TEST_LIBRARY_DEPS ${SDL2MAIN_LIBRARY} )
   endif( PLATFORM_WINDOWS )
-
+  
+  # >> this will include GoogleTest script and calls test discovery function 
+  # >>  defined in it, so you donot have to create main function for tests, 
+  #  >> they will be auto discovered
   add_library(  nomlib-unit-test ${LIBRARY_OUTPUT_TYPE}
                 ${NOM_TESTS_UNIT_TEST_SOURCE} )
-
-  # Link nomlib-unit-test
-  target_link_libraries( nomlib-unit-test ${NOM_UNIT_TEST_LIBRARY_DEPS} )
-
+  # >> Link nomlib-unit-test to GTest
+  target_link_libraries(nomlib-unit-test ${GTEST_LIBRARY} ${NOM_UNIT_TEST_LIBRARY_DEPS} )
 endif( NOM_BUILD_UNIT_TEST_UNIT )
 
 if( NOM_BUILD_VISUAL_UNIT_TEST_UNIT )
-
   set( NOM_VISUAL_UNIT_TEST_LIBRARY_DEPS nomlib-unit-test nomlib-graphics )
-
   add_library(  nomlib-visual-unit-test
                 ${LIBRARY_OUTPUT_TYPE} ${NOM_TESTS_VTEST_SOURCE} )
-
-  # Link nomlib-visual-unit-test
-  target_link_libraries( nomlib-visual-unit-test ${NOM_VISUAL_UNIT_TEST_LIBRARY_DEPS} )
-
+  target_link_libraries(nomlib-visual-unit-test ${GTEST_LIBRARY} ${NOM_VISUAL_UNIT_TEST_LIBRARY_DEPS} )
 endif( NOM_BUILD_VISUAL_UNIT_TEST_UNIT )
 
+# >> tests dev headers
 include_directories("${TESTS_INC_DIR}")
 
 if( NOM_BUILD_UNIT_TEST_TESTS )

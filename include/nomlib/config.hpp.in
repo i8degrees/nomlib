@@ -307,6 +307,7 @@ inline volatile uint64 rdtsc()
 #cmakedefine NOM_USE_LIBROCKET @NOM_USE_LIBROCKET@
 #cmakedefine NOM_USE_LIBROCKET_LUA @NOM_USE_LIBROCKET_LUA@
 
+// ?? This should not be merged back into the source tree
 #define PROJECT_VERSION_MAJOR 0
 #define PROJECT_VERSION_MINOR 11
 #define PROJECT_VERSION_PATCH 0

@@ -39,6 +39,7 @@ if ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
 
   message ( STATUS "Platform: Darwin (Mac OS X)" )
 elseif ( CMAKE_SYSTEM_NAME STREQUAL "Linux" ) # Tested on Ubuntu v12.04-LTS
+
   # TODO: Rename to NOM_PLATFORM_LINUX
   set( PLATFORM_LINUX true )
   set( NOM_PLATFORM_POSIX true )
@@ -48,21 +49,29 @@ elseif ( CMAKE_SYSTEM_NAME STREQUAL "Linux" ) # Tested on Ubuntu v12.04-LTS
   # variant for it...
   #
   # Default to clang based tooling when found...
-  if(CMAKE_CXX_COMPILER STREQUAL "clang")
-    message(STATUS "Using clang++ from CMAKE_CXX_COMPILER")
+  if ( CMAKE_CXX_COMPILER MATCHES "clang" )
+    message ( STATUS "Using clang based platform to build..." )
+    #set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14" )
+    # nomlib began its life under c++14 on Intel Darwin Mac OSX
+    set ( CMAKE_CXX_STANDARD 14 )
+    # >> Modern GTest build requires a c++17 minimum
+    set ( CMAKE_CXX_STANDARD 17 )
+    set ( CMAKE_CXX_STANDARD_REQUIRED ON )
+    set ( CMAKE_CXX_EXTENSIONS OFF)
+  
     # libc++ requires OSX v10.7+
-    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11" )
-  endif(CMAKE_CXX_COMPILER STREQUAL "clang")
-  #set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++" )
+    #set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++" )
+  elseif ( CMAKE_C_COMPILER MATCHES "gcc" )
+    message ( STATUS "Using gcc based platform to build..." )
+    message ( FATAL_ERROR "nomlib only supports building with clang." )
 
-  # Clang is not supported on Linux due to libc++ not being distributed by
-  # default yet
-  if(CMAKE_C_COMPILER STREQUAL "gcc")
-    #set ( CMAKE_C_COMPILER gcc )
-    # set ( CMAKE_CPP_COMPILER g++ )
+    # !! GoogleTest unit testing framework v1.10.x requires a minimum C++ level 11
+    set( CMAKE_CXX_STANDARD 11 )
+    # !! Our engine is based on a c++ level of 14
+    set( CMAKE_CXX_STANDARD 14 )
     # NOTE(JEFF): This should only be set when GNU GCC is enabled?
     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
-  endif()
+  endif( CMAKE_CXX_COMPILER MATCHES "clang" )
 
   # ARCH_32 and ARCH_64 are not presently used here, but are reserved for future
   # consistency with the other supported platforms.
@@ -70,6 +79,9 @@ elseif ( CMAKE_SYSTEM_NAME STREQUAL "Linux" ) # Tested on Ubuntu v12.04-LTS
   option ( ARCH_64 "Compile ${PROJECT_NAME} as a 64-bit library" on )
 
   message ( STATUS "Platform: Linux" )
+  message ( STATUS "Build platform: ${CMAKE_CXX_COMPILER}" )
+  message ( STATUS "Compiler C++ level: ${CMAKE_CXX_STANDARD}" )
+  message ( STATUS "Compiler flags: ${CMAKE_CXX_FLAGS}" )
 elseif ( CMAKE_SYSTEM_NAME STREQUAL "Windows" )
   # TODO: Rename to NOM_PLATFORM_WINDOWS
   set( PLATFORM_WINDOWS true )
@@ -114,4 +126,4 @@ elseif ( PLATFORM_WINDOWS AND ARCH_64 )
 endif ( PLATFORM_WINDOWS AND ARCH_32 )
 
 message ( STATUS "Platform Architecture: ${PLATFORM_ARCH}" )
-message ( STATUS "CXX=${CMAKE_CXX_FLAGS}" )
+#message ( STATUS "CXX=${CMAKE_CXX_FLAGS}" )

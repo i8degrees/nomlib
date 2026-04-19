@@ -83,23 +83,32 @@ find_package( SDL2 REQUIRED )
 if( SDL2_FOUND )
   # Add development header files; SDL.h & friends
   include_directories( ${SDL2_INCLUDE_DIR} )
-endif( SDL2_FOUND )
+    message ( STATUS "Found SDL2 headers: ${SDL2_INCLUDE_DIR}." )
+elseif ( NOT SDL2_FOUND )
+  message ( FATAL_ERROR "Missing SDL2 headers at ${SDL2_INCLUDE_DIR}." )
+endif ( SDL2_FOUND )
 
-# nomlib-audio external deps
-if( PLATFORM_WINDOWS )
+if ( PLATFORM_WINDOWS OR PLATFORM_POSIX )
+  # nomlib-audio external deps
   find_package( OpenAL REQUIRED )
   if( OPENAL_FOUND )
     # Add development header files; al.h, alc.h
     include_directories( ${OPENAL_INCLUDE_DIR} )
-  endif( OPENAL_FOUND )
-endif( PLATFORM_WINDOWS )
+    message ( STATUS "Found OpenAL headers: ${OPENAL_INCLUDE_DIR}." )
+  else ( NOT OPENAL_FOUND )
+    message ( FATAL_ERROR "Missing OpenAL headers at ${OPENAL_INCLUDE_DIR}." )
+  endif ( OPENAL_FOUND )
+endif ( PLATFORM_WINDOWS OR PLATFORM_POSIX )
 
 # nomlib-gui external deps
 find_package( LibRocket REQUIRED )
 if( LIBROCKET_FOUND )
   # Add development header files
   include_directories( ${LIBROCKET_INCLUDE_DIRS} )
-endif( LIBROCKET_FOUND )
+  message ( STATUS "Found libRocket headers: ${LIBROCKET_INCLUDE_DIRS}." )
+else ( NOT LIBROCKET_FOUND )
+  message ( FATAL_ERROR "Missing libRocket headers at ${LIBROCKET_INCLUDE_DIRS}." )
+endif ( LIBROCKET_FOUND )
 
 # third-party, headers-only dependency TCLAP
 set( TCLAP_INCLUDE_DIR "${NOM_THIRD_PARTY_COMMON_DIR}/tclap" )
@@ -111,17 +120,19 @@ if( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
             "required dependency."
   )
 else( EXISTS ${TCLAP_INCLUDE_DIR} )
+  # Header file inclusion; third-party -- TCLAP
+  include_directories("${NOM_THIRD_PARTY_COMMON_DIR}")
   message( STATUS "TCLAP headers found: ${TCLAP_INCLUDE_DIR}" )
 endif( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
 
-# Header file inclusion; third-party -- TCLAP
-include_directories("${NOM_THIRD_PARTY_COMMON_DIR}")
-
 if ( NOM_BUILD_AUDIO_TESTS )
-  find_package( libsndfile OPTIONAL )
+  find_package( libsndfile REQUIRED )
   if ( NOT LIBSNDFILE_FOUND )
-    message ( STATUS "libsndfile library not found" )
+    message ( FATAL_ERROR "libsndfile library not found." )
+    # TODO(JEFF): Improve the fatal error message by offering suggestions on how to
+    # resolve or bypass the issue.
   else ( LIBSNDFILE_FOUND )
+    # FIXME(JEFF): Verify where and when we include the header files for libsndfile
     message ( STATUS "libsndfile library found: ${LIBSNDFILE_LIBRARY}" )
   endif ()
 endif ( NOM_BUILD_AUDIO_TESTS )
@@ -138,11 +149,17 @@ endif( PLATFORM_OSX )
 find_package ( GTest REQUIRED )
 if ( GTEST_FOUND )
   message( STATUS "Found GoogleTest ${GTEST_ROOT}." )
+  set ( GTEST_INCLUDE_DIRS ${GTEST_ROOT}/include )
+  set ( GTEST_LIBRARY ${GTEST_ROOT}/lib/libgtest.a )
+  message( STATUS "Using GoogleTest headers: ${GTEST_INCLUDE_DIRS}." )
+  message( STATUS "Using GoogleTest library: ${GTEST_LIBRARY}." )
+  include_directories("${GTEST_INCLUDE_DIRS}")
 else ( NOT GTEST_FOUND )
-  message( FATAL_ERROR "Missing GoogleTest library at ${GTEST_ROOT}." )
+  message( STATUS "Missing GoogleTest: ${GTEST_ROOT}." )
+  message( STATUS "Missing GoogleTest headers: ${GTEST_INCLUDE_DIRS}." )
+  message( STATUS "Missing GoogleTest library: ${GTEST_LIBRARY}." )
+  message ( FATAL_ERROR "Failed to setup engine unit tests." )
 endif ( GTEST_FOUND )
-
-include_directories("${GTEST_INCLUDE_DIR}")
 
 set(  NOM_TESTS_UNIT_TEST_SOURCE
       ${TESTS_SRC_DIR}/UnitTest/UnitTest.cpp

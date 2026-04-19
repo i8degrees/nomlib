@@ -276,12 +276,6 @@ elseif ( PLATFORM_LINUX )
     set(ENV{SDL2TTFDIR} "${NOMLIB_DEPS_DIR}/linux/sdl2_ttf")
   endif(NOT DEFINED ENV{SDL2TTFDIR})
 
-  #if(NOT DEFINED ENV{OPENALDIR})
-    # Use platform-distributed headers for OpenAL; should automatically use the
-    # proper platform SDK version as configured by CMAKE_OSX_SYSROOT
-    #set(ENV{OPENALDIR} "/System/Library/Frameworks/OpenAL.framework")
-  #endif(NOT DEFINED ENV{OPENALDIR})
-
   if(NOT DEFINED ENV{LIBSNDFILEDIR})
     set(ENV{LIBSNDFILEDIR} "${NOMLIB_DEPS_DIR}/linux/libsndfile")
   endif(NOT DEFINED ENV{LIBSNDFILEDIR})

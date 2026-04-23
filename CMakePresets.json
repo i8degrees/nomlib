@@ -3,12 +3,11 @@
   "$schema": "https://cmake.org/cmake/help/latest/_downloads/3e2d73bff478d88a7de0de736ba5e361/schema.json",
   "configurePresets": [
     {
-      "name": "common",
-      "hidden": true,
-      "displayName": "Common settings for configure phase",
-      "description": "cmake configure phase configuration for building nomlib",
+      "name": "nomlib-d_configure",
+      "displayName": "Configure engine defaults for Linux",
+      "description": "Build nomlib library with DEBUG enabled on Linux",
       "generator": "Unix Makefiles",
-      "binaryDir": "/tmp/nomlib-debug",
+      "binaryDir": "${sourceDir}/dist/${presetName}",
       "cacheVariables": {
         "OPENGL_GL_PREFERENCE": "GLVND",
         "DEBUG": "ON",
@@ -16,82 +15,20 @@
         "EXAMPLES": "ON",
         "NOM_BUILD_TESTS": "ON",
         "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_INSTALL_PREFIX": "/tmp/nomlib-debug",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/dist/${presetName}",
         "NOMLIB_DEPS_DIR": "${sourceDir}/third-party",
-        "GTEST_INCLUDE_DIR": "${sourceDir}/third-party/linux/gtest/include",
+        "GTEST_INCLUDE_DIR": "${sourceDir/third-party/linux/gtest/include",
+        "NOM_USE_CREATIVE_OPENAL": "1",
         "NOM_USE_OPENAL": "1"
-      },
-      "condition": {
-        "type": "equals",
-        "lhs": "$hostSystemName",
-        "rhs": "Linux"
-      }
-    },
-    {
-      "name": "release-clang-linux",
-      "inherits": "release-clang",
-      "cacheVariables": {
-        "OPENGL_GL_PREFERENCE": "GLVND",
-        "DEBUG": "OFF",
-        "DEBUG_ASSERT": "OFF",
-        "EXAMPLES": "ON",
-        "NOM_BUILD_TESTS": "ON",
-        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/${presetName}",
-        "NOMLIB_DEPS_DIR": "${sourceDir}/third-party",
-        "GTEST_INCLUDE_DIR": "${sourceDir}/third-party/linux/gtest/include",
-        "NOM_USE_OPENAL": "1"
-      },
-      "condition": {
-        "type": "equals",
-        "lhs": "$hostSystemName",
-        "rhs": "Linux"
       }
     }
   ],
   "buildPresets": [
     {
-      "name": "build-debug-clang-linux",
-      "description": "Build debug target using clang toolchain",
-      "displayName": "build-debug-clang-linux",
-      "configurePreset": "debug-clang-linux",
-      "condition": {
-        "type": "equals",
-        "lhs": "$hostSystemName",
-        "rhs": "Linux"
-      }
-    },
-    {
-      "name": "build-release-clang-linux",
-      "description": "Build release target using clang toolchain",
-      "displayName": "build-release-clang-linux",
-      "configurePreset": "release-clang-linux",
-      "condition": {
-        "type": "equals",
-        "lhs": "$hostSystemName",
-        "rhs": "Linux"
-      }
-    },
-    {
-      "name": "build-debug-clang-cl-windows",
-      "description": "Build debug target using clang-cl toolchain",
-      "displayName": "build-debug-clang-cl-windows",
-      "configurePreset": "debug-clang-cl",
-      "condition": {
-        "type": "equals",
-        "lhs": "$hostSystemName",
-        "rhs": "Windows"
-      }
-    },
-    {
-      "name": "build-release-clang-cl-windows",
-      "description": "Build release target using clang-cl toolchain",
-      "displayName": "build-release-clang-cl-windows",
-      "configurePreset": "release-clang-cl",
-      "condition": {
-        "type": "equals",
-        "lhs": "$hostSystemName",
-        "rhs": "Windows"
-      }
+      "name": "nomlib-d_build",
+      "description": "Build engine library for Linux (DEBUG)",
+      "displayName": "nomlib-d_build",
+      "configurePreset": "nomlib-d_configure"
     }
   ]
 }

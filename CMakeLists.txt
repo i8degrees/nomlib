@@ -227,8 +227,9 @@ if ( PLATFORM_WINDOWS )
   set( LIBROCKET_REDIST_DIR "${NOMLIB_DEPS_DIR}/windows/libRocket/lib/${PLATFORM_ARCH}/" )
 
   set( MSVCPP_REDIST_DIR "${NOMLIB_DEPS_DIR}/windows/msvcpp2013/${PLATFORM_ARCH}/" )
+endif ( PLATFORM_WINDOWS )
 
-elseif ( PLATFORM_OSX )
+if ( PLATFORM_OSX )
 
   if(NOT DEFINED ENV{SDL2DIR})
     set(ENV{SDL2DIR} "${NOMLIB_DEPS_DIR}/osx")
@@ -261,8 +262,9 @@ elseif ( PLATFORM_OSX )
   # version installed under /usr/local
   set(  LIBROCKET_EXT_REDIST_FILES
         "${NOMLIB_DEPS_DIR}/osx/librocket/bin/libfreetype.6.dylib" )
+endif ( PLATFORM_OSX )
 
-elseif ( PLATFORM_LINUX )
+if ( PLATFORM_LINUX OR PLATFORM_POSIX )
 
   if(NOT DEFINED ENV{SDL2DIR})
     set(ENV{SDL2DIR} "${NOMLIB_DEPS_DIR}/linux/sdl2")
@@ -284,15 +286,11 @@ elseif ( PLATFORM_LINUX )
     set(ENV{LIBROCKETDIR} "${NOMLIB_DEPS_DIR}/linux/libRocket")
   endif(NOT DEFINED ENV{LIBROCKETDIR})
 
-  # if(NOT DEFINED ENV{LIBROCKETDIR})
-  #     set(
-  #       ENV{LIBROCKETDIR} 
-  #       "${NOMLIB_DEPS_DIR}/linux/libRocket/lib/libRocket.a"
-  #       "${NOMLIB_DEPS_DIR}/linux/libRocket/lib/libRocketCore.a"
-  #       "${NOMLIB_DEPS_DIR}/linux/libRocket/lib/libRocketDebugger.a"
-  #     )
-  # endif(NOT DEFINED ENV{LIBROCKETDIR})
-endif ( PLATFORM_WINDOWS )
+  if(NOT DEFINED ENV{OPENALDIR})
+    set(ENV{OPENALDIR} "${NOMLIB_DEPS_DIR}/linux/openal")
+  endif(NOT DEFINED ENV{OPENALDIR})
+
+endif ( PLATFORM_LINUX OR PLATFORM_POSIX )
 
 # List of our source code to be compiled
 add_subdirectory( ${SRC_DIR} )
@@ -440,7 +438,7 @@ elseif( NOM_PLATFORM_POSIX OR PLATFORM_WINDOWS )
     )
   endif( NOM_INSTALL_GENERATED_DOCS )
 
-endif()
+endif( NOM_PLATFORM_POSIX OR PLATFORM_WINDOWS )
 
 if ( PLATFORM_LINUX )
   install(CODE "MESSAGE(\"Post-install: sudo ldconfig.\")") # FIXME (prettify)

@@ -24,3 +24,6 @@ CMakeUserPresets.json
 
 node_modules
 
+# Visual Code search index extension
+index.js
+

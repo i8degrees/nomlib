@@ -1,31 +1,141 @@
 {
   "version": 8,
+  "$schema": "https://cmake.org/cmake/help/latest/_downloads/3e2d73bff478d88a7de0de736ba5e361/schema.json",
   "configurePresets": [
     {
-      "name": "clang_configure",
-      "displayName": "clang_configure",
-      "description": "cmake build files for nomlib using clang",
+      "name": "common",
+      "hidden": true,
+      "displayName": "Common settings for configure phase",
+      "description": "cmake configure phase configuration for building nomlib",
       "generator": "Unix Makefiles",
-      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "binaryDir": "${sourceDir}/build/${presetName}"
+    },
+    {
+      "name": "debug-clang",
+      "displayName": "Debug configuration for clang toolchain",
+      "inherits": "common",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_C_COMPILER": "/usr/bin/clang",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
+      }
+    },
+    {
+      "name": "release-clang",
+      "displayName": "Release configuration for clang toolchain",
+      "inherits": "common",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_C_COMPILER": "/usr/bin/clang",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
+      }
+    },
+    {
+      "name": "debug-clang-cl",
+      "displayName": "Debug configuration for clang-cl toolchain",
+      "inherits": "common",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_C_COMPILER": "/usr/bin/clang-cl",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang-cl"
+      }
+    },
+    {
+      "name": "release-clang-cl",
+      "displayName": "Release configuration for clang-cl toolchain",
+      "inherits": "common",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RELEASE",
+        "CMAKE_C_COMPILER": "/usr/bin/clang-cl",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang-cl"
+      }
+    },
+    {
+      "name": "debug-clang-linux",
+      "displayName": "debug-clang-linux",
+      "inherits": "debug-clang",
       "cacheVariables": {
         "OPENGL_GL_PREFERENCE": "GLVND",
-        "CMAKE_C_COMPILER": "clang",
-        "CMAKE_CXX_COMPILER": "clang++",
         "DEBUG": "ON",
         "DEBUG_ASSERT": "ON",
         "EXAMPLES": "ON",
         "NOM_BUILD_TESTS": "ON",
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}"
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/${presetName}",
+        "NOMLIB_DEPS_DIR": "${sourceDir}/third-party",
+        "GTEST_INCLUDE_DIR": "${sourceDir}/third-party/linux/gtest/include",
+        "NOM_USE_OPENAL": "1"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "$hostSystemName",
+        "rhs": "Linux"
+      }
+    },
+    {
+      "name": "release-clang-linux",
+      "inherits": "release-clang",
+      "cacheVariables": {
+        "OPENGL_GL_PREFERENCE": "GLVND",
+        "DEBUG": "OFF",
+        "DEBUG_ASSERT": "OFF",
+        "EXAMPLES": "ON",
+        "NOM_BUILD_TESTS": "ON",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/${presetName}",
+        "NOMLIB_DEPS_DIR": "${sourceDir}/third-party",
+        "GTEST_INCLUDE_DIR": "${sourceDir}/third-party/linux/gtest/include",
+        "NOM_USE_OPENAL": "1"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "$hostSystemName",
+        "rhs": "Linux"
       }
     }
   ],
   "buildPresets": [
     {
-      "name": "clang_build",
-      "description": "build target",
-      "displayName": "clang_build",
-      "configurePreset": "clang_configure"
+      "name": "build-debug-clang-linux",
+      "description": "Build debug target using clang toolchain",
+      "displayName": "build-debug-clang-linux",
+      "configurePreset": "debug-clang-linux",
+      "condition": {
+        "type": "equals",
+        "lhs": "$hostSystemName",
+        "rhs": "Linux"
+      }
+    },
+    {
+      "name": "build-release-clang-linux",
+      "description": "Build release target using clang toolchain",
+      "displayName": "build-release-clang-linux",
+      "configurePreset": "release-clang-linux",
+      "condition": {
+        "type": "equals",
+        "lhs": "$hostSystemName",
+        "rhs": "Linux"
+      }
+    },
+    {
+      "name": "build-debug-clang-cl-windows",
+      "description": "Build debug target using clang-cl toolchain",
+      "displayName": "build-debug-clang-cl-windows",
+      "configurePreset": "debug-clang-cl",
+      "condition": {
+        "type": "equals",
+        "lhs": "$hostSystemName",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "build-release-clang-cl-windows",
+      "description": "Build release target using clang-cl toolchain",
+      "displayName": "build-release-clang-cl-windows",
+      "configurePreset": "release-clang-cl",
+      "condition": {
+        "type": "equals",
+        "lhs": "$hostSystemName",
+        "rhs": "Windows"
+      }
     }
   ]
 }

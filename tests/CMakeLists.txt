@@ -88,17 +88,16 @@ elseif ( NOT SDL2_FOUND )
   message ( FATAL_ERROR "Missing SDL2 headers at ${SDL2_INCLUDE_DIR}." )
 endif ( SDL2_FOUND )
 
-if ( PLATFORM_WINDOWS OR PLATFORM_POSIX )
-  # nomlib-audio external deps
+if ( NOM_BUILD_AUDIO_TESTS )
+  # nomlib-audio external deps; OpenAL-Soft or Apple's OpenAL
   find_package( OpenAL REQUIRED )
   if( OPENAL_FOUND )
-    # Add development header files; al.h, alc.h
     include_directories( ${OPENAL_INCLUDE_DIR} )
     message ( STATUS "Found OpenAL headers: ${OPENAL_INCLUDE_DIR}." )
   else ( NOT OPENAL_FOUND )
     message ( FATAL_ERROR "Missing OpenAL headers at ${OPENAL_INCLUDE_DIR}." )
   endif ( OPENAL_FOUND )
-endif ( PLATFORM_WINDOWS OR PLATFORM_POSIX )
+endif ( NOM_BUILD_AUDIO_TESTS )
 
 # nomlib-gui external deps
 find_package( LibRocket REQUIRED )
@@ -127,14 +126,21 @@ endif( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
 
 if ( NOM_BUILD_AUDIO_TESTS )
   find_package( libsndfile REQUIRED )
-  if ( NOT LIBSNDFILE_FOUND )
+elseif ( NOT NOM_BUILD_AUDIO_TESTS )
+  find_package( libsndfile OPTIONAL )
+endif ( NOM_BUILD_AUDIO_TESTS )
+
+  if ( NOT LIBSNDFILE_FOUND AND NOM_BUILD_AUDIO_TESTS )
     message ( FATAL_ERROR "libsndfile library not found." )
     # TODO(JEFF): Improve the fatal error message by offering suggestions on how to
     # resolve or bypass the issue.
-  else ( LIBSNDFILE_FOUND )
+  else ( LIBSNDFILE_FOUND AND NOT NOM_BUILD_AUDIO_TESTS )
     # FIXME(JEFF): Verify where and when we include the header files for libsndfile
     message ( STATUS "libsndfile library found: ${LIBSNDFILE_LIBRARY}" )
   endif ()
+
+if ( NOM_BUILD_AUDIO_TESTS )
+  find_package( libsndfile REQUIRED )
 endif ( NOM_BUILD_AUDIO_TESTS )
 
 if ( NOM_BUILD_AUDIO_TESTS )

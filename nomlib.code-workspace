@@ -7,6 +7,17 @@
 	"settings": {
     "files.association": {
       "limits": "cpp"
-    }
+		},
+		"files.exclude": {
+			"**/.git": true,
+			"**/.svn": true,
+			"**/.hg": true,
+			"**/.DS_Store": true,
+			"**/Thumbs.db": true,
+			"**/CVS": true,
+			"**/.ruby-lsp": true,
+			"node_modules": true,
+			"**/node_modules": true
+		}
   }
 }

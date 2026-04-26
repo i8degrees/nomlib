@@ -40,9 +40,12 @@ if ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
   message ( STATUS "Platform: Darwin (Mac OS X)" )
 elseif ( CMAKE_SYSTEM_NAME STREQUAL "Linux" ) # Tested on Ubuntu v12.04-LTS
 
-  # TODO: Rename to NOM_PLATFORM_LINUX
   set( PLATFORM_LINUX true )
+  # DEPRECATED(JEFF): Use `PLATFORM_POSIX` instead as `NOM_PLATFORM_POSIX`
+  # does not fit with the other platform variables we define. We must update
+  # our codebase to not use the following before we can remove it!
   set( NOM_PLATFORM_POSIX true )
+  set( PLATFORM_POSIX true )
 
   # TODO(JEFF): Create build time option to override compilation tooling
   # between clang and probably even GNU GCC, once we find the right C++
@@ -58,7 +61,7 @@ elseif ( CMAKE_SYSTEM_NAME STREQUAL "Linux" ) # Tested on Ubuntu v12.04-LTS
     set ( CMAKE_CXX_STANDARD 17 )
     set ( CMAKE_CXX_STANDARD_REQUIRED ON )
     set ( CMAKE_CXX_EXTENSIONS OFF)
-  
+
     # libc++ requires OSX v10.7+
     #set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++" )
   elseif ( CMAKE_C_COMPILER MATCHES "gcc" )

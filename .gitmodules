@@ -24,3 +24,9 @@
   url = https://github.com/libsndfile/libsndfile.git
   branch = v1.0.30
   ignore = dirty
+[submodule "vendor/openal-soft.git"]
+	path = vendor/openal-soft.git
+	url = https://github.com/kcat/openal-soft
+  branch = 9b6a226
+  ignore = dirty
+

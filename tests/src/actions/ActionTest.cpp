@@ -92,11 +92,13 @@ bool ActionTest::init_rendering()
   uint32 window_flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
 
   // Initialize rendering window (and its GL context)
-  if( this->window_.create( this->test_set(),
-      this->resolution(), window_flags ) == false )
+  if( this->window_.create( this->test_set(), Point2i(0,0), 0, Size2i(1024,768),
+      window_flags ) == false )
   {
     return false;
   }
+
+
 
   // Allow for automatic rescaling of the output window based on aspect
   // ratio (i.e.: handle full-screen resizing); this will use letter-boxing
@@ -156,7 +158,7 @@ void ActionTest::SetUp()
         switch(ev.key.sym) {
           default: break;
 
-          case SDLK_1:
+          case SDLK_p:
           {
             if( pstate != ActionPlayer::State::PAUSED ) {
               this->player.pause();
@@ -165,7 +167,7 @@ void ActionTest::SetUp()
             }
           } break;
 
-          case SDLK_2:
+          case SDLK_SPACE:
           {
             if( pstate != ActionPlayer::State::STOPPED ) {
               this->player.stop();
@@ -174,10 +176,10 @@ void ActionTest::SetUp()
             }
           } break;
 
-          case SDLK_3:
+          case SDLK_c:
           {
             this->player.cancel_actions();
-            this->clear_render_callbacks();
+            //this->clear_render_callbacks();
           } break;
 
         } break; // end switch ev.key.sym

@@ -171,36 +171,35 @@ void SDL2_ttf_version_info( void )
 
 void OpenAL_version_info( void )
 {
+  struct OpenALVersionInfo
+  {
+    std::string version = "N/A";
+    std::string renderer = "N/A";
+    std::string vendor = "N/A";
+    std::string extensions = "N/A";
+  };
+  OpenALVersionInfo info;
 #if defined(NOM_USE_CREATIVE_OPENAL) || defined(NOM_USE_APPLE_OPENAL) || defined(NOM_USE_OPENAL_SOFT)
-
-    struct OpenALVersionInfo
-    {
-      std::string version;
-      std::string renderer;
-      std::string vendor;
-      std::string extensions;
-    };
-
-    OpenALVersionInfo info;
-
-    AL_CHECK_ERR( info.version = alGetString( AL_VERSION ) );
-    AL_CHECK_ERR( info.renderer = alGetString( AL_RENDERER ) );
-    AL_CHECK_ERR( info.vendor = alGetString( AL_VENDOR ) );
-    AL_CHECK_ERR( info.extensions = alGetString( AL_EXTENSIONS ) );
-
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL version: ", info.version );
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL renderer: ", info.renderer );
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL vendor: ", info.vendor );
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL extensions: ", info.extensions );
+  AL_CHECK_ERR( info.version = alGetString( AL_VERSION ) );
+  AL_CHECK_ERR( info.renderer = alGetString( AL_RENDERER ) );
+  AL_CHECK_ERR( info.vendor = alGetString( AL_VENDOR ) );
+  AL_CHECK_ERR( info.extensions = alGetString( AL_EXTENSIONS ) );
 #endif // end if NOM_USE_OPENAL
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL version: ", info.version );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL renderer: ", info.renderer );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL vendor: ", info.vendor );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL extensions: ", info.extensions );
 }
 
 void libsndfile_version_info( void )
 {
-  #if defined(NOM_USE_OPENAL) && defined(NOM_USE_LIBSNDFILE)
+  #if defined(NOM_USE_LIBSNDFILE)
     NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
                   "libsndfile version:", nom::libsndfile_version() );
-  #endif
+  #else
+    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
+                  "libsndfile version:", "N/A");
+  #endif // defined(NOM_USE_LIBSNDFILE)
 }
 
 void libs_version_info( void )

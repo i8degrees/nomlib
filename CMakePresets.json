@@ -8,59 +8,15 @@
       "displayName": "Common settings for configure phase",
       "description": "cmake configure phase configuration for building nomlib",
       "generator": "Unix Makefiles",
-      "binaryDir": "${sourceDir}/build/${presetName}"
-    },
-    {
-      "name": "debug-clang",
-      "displayName": "Debug configuration for clang toolchain",
-      "inherits": "common",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_C_COMPILER": "/usr/bin/clang",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
-      }
-    },
-    {
-      "name": "release-clang",
-      "displayName": "Release configuration for clang toolchain",
-      "inherits": "common",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release",
-        "CMAKE_C_COMPILER": "/usr/bin/clang",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
-      }
-    },
-    {
-      "name": "debug-clang-cl",
-      "displayName": "Debug configuration for clang-cl toolchain",
-      "inherits": "common",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_C_COMPILER": "/usr/bin/clang-cl",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang-cl"
-      }
-    },
-    {
-      "name": "release-clang-cl",
-      "displayName": "Release configuration for clang-cl toolchain",
-      "inherits": "common",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RELEASE",
-        "CMAKE_C_COMPILER": "/usr/bin/clang-cl",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang-cl"
-      }
-    },
-    {
-      "name": "debug-clang-linux",
-      "displayName": "debug-clang-linux",
-      "inherits": "debug-clang",
+      "binaryDir": "/tmp/nomlib-debug",
       "cacheVariables": {
         "OPENGL_GL_PREFERENCE": "GLVND",
         "DEBUG": "ON",
         "DEBUG_ASSERT": "ON",
         "EXAMPLES": "ON",
         "NOM_BUILD_TESTS": "ON",
-        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/${presetName}",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_INSTALL_PREFIX": "/tmp/nomlib-debug",
         "NOMLIB_DEPS_DIR": "${sourceDir}/third-party",
         "GTEST_INCLUDE_DIR": "${sourceDir}/third-party/linux/gtest/include",
         "NOM_USE_OPENAL": "1"

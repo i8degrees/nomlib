@@ -41,7 +41,7 @@ Upon a successful build, you should have the library modules built as OS X frame
 
 A Linux build is presently under way and can be tracked via the `feature/LinuxPort` git branch. Back in development years of nomlib, circa 2014, `clang` was not a viable build platform (yet!) for Linux. But, now in 2025, the switch over to has aided my porting work. I now have approximately `90%` of the porting work completed.
 
-- 2016 
+- 2016
   - ~~My current platform build options for the feature/LinuxPort branch~~
 
 ```shell
@@ -57,9 +57,21 @@ make
 
 ```shell
 # 2026
-cmake -S /mnt/fs1/Projects/nomlib.git -B /tmp/nom-debug \
+cmake -S /home/jeff/Projects/nomlib.git -B /tmp/nom-debug \
 -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DDEBUG=on -DDEBUG_ASSERT=on -DEXAMPLES=on -DNOM_BUILD_TESTS=on
 #-DGTEST_ROOT= -DGTEST_INCLUDE_DIR= -DGTEST_LIBRARY=
+```
+
+```shell
+# debug
+cmake -S /home/jeff/Projects/nomlib.git -B /tmp/nomlib-debug \
+-DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DDEBUG=on -DDEBUG_ASSERT=on -DEXAMPLES=on -DNOM_BUILD_TESTS=on
+#-DGTEST_ROOT=/home/jeff/Projects/nomlib.git/third-party/linux/gtest -DGTEST_INCLUDE_DIR=/home/jeff/Projects/nomlib.git/third-party/linux/gtest/include -DGTEST_LIBRARY=/home/jeff/Projects/nomlib.git/third-party/linux/gtest/lib/libgtest.a
+
+# release
+cmake -S /home/jeff/Projects/nomlib.git -B /tmp/nomlib-release \
+-DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DDEBUG=off -DDEBUG_ASSERT=off -DEXAMPLES=on -DNOM_BUILD_TESTS=on
+-DGTEST_ROOT=/home/jeff/Projects/nomlib.git/third-party/linux/gtest -DGTEST_INCLUDE_DIR=/home/jeff/Projects/nomlib.git/third-party/linux/gtest/include -DGTEST_LIBRARY=/home/jeff/Projects/nomlib.git/third-party/linux/gtest/lib/libgtest.a
 ```
 
 ~~Until I get around to writing the proper instructions, you may take a look at my

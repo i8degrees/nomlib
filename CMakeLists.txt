@@ -300,16 +300,7 @@ if ( PLATFORM_LINUX OR PLATFORM_POSIX )
   if(NOT DEFINED ENV{LIBROCKETDIR})
     set(ENV{LIBROCKETDIR} "${NOMLIB_DEPS_DIR}/linux/libRocket")
   endif(NOT DEFINED ENV{LIBROCKETDIR})
-
-  # if(NOT DEFINED ENV{LIBROCKETDIR})
-  #     set(
-  #       ENV{LIBROCKETDIR}
-  #       "${NOMLIB_DEPS_DIR}/linux/libRocket/lib/libRocket.a"
-  #       "${NOMLIB_DEPS_DIR}/linux/libRocket/lib/libRocketCore.a"
-  #       "${NOMLIB_DEPS_DIR}/linux/libRocket/lib/libRocketDebugger.a"
-  #     )
-  # endif(NOT DEFINED ENV{LIBROCKETDIR})
-endif ( PLATFORM_WINDOWS )
+endif( PLATFORM_LINUX OR PLATFORM_POSIX )
 
 # List of our source code to be compiled
 add_subdirectory( ${SRC_DIR} )

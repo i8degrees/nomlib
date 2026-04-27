@@ -125,9 +125,7 @@ bool operator >=(const VersionInfo& lhs, const VersionInfo& rhs);
 /// \remarks This data is taken from from the project's root CMake build script.
 ///
 /// \see CMakeLists.txt
-const VersionInfo NOM_VERSION(  PROJECT_VERSION_MAJOR,
-                                PROJECT_VERSION_MINOR,
-                                PROJECT_VERSION_PATCH );
+const VersionInfo NOM_VERSION(@PROJECT_VERSION_MAJOR@, @PROJECT_VERSION_MINOR@, @PROJECT_VERSION_PATCH@);
 
 /// \brief Get the current revision number build of nomlib.
 ///

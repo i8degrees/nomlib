@@ -83,13 +83,13 @@ find_package( SDL2 REQUIRED )
 if( SDL2_FOUND )
   # Add development header files; SDL.h & friends
   include_directories( ${SDL2_INCLUDE_DIR} )
-    message ( STATUS "Found SDL2 headers: ${SDL2_INCLUDE_DIR}." )
+  message ( STATUS "Found SDL2 headers: ${SDL2_INCLUDE_DIR}." )
 elseif ( NOT SDL2_FOUND )
   message ( FATAL_ERROR "Missing SDL2 headers at ${SDL2_INCLUDE_DIR}." )
 endif ( SDL2_FOUND )
 
-if ( NOM_BUILD_AUDIO_TESTS )
-  # nomlib-audio external deps; OpenAL-Soft or Apple's OpenAL
+if(NOM_BUILD_AUDIO_UNIT)
+  # nomlib-audio external deps
   find_package( OpenAL REQUIRED )
   if( OPENAL_FOUND )
     include_directories( ${OPENAL_INCLUDE_DIR} )
@@ -97,7 +97,7 @@ if ( NOM_BUILD_AUDIO_TESTS )
   else ( NOT OPENAL_FOUND )
     message ( FATAL_ERROR "Missing OpenAL headers at ${OPENAL_INCLUDE_DIR}." )
   endif ( OPENAL_FOUND )
-endif ( NOM_BUILD_AUDIO_TESTS )
+endif(NOM_BUILD_AUDIO_UNIT)
 
 # nomlib-gui external deps
 find_package( LibRocket REQUIRED )
@@ -130,27 +130,14 @@ elseif ( NOT NOM_BUILD_AUDIO_TESTS )
   find_package( libsndfile OPTIONAL )
 endif ( NOM_BUILD_AUDIO_TESTS )
 
-  if ( NOT LIBSNDFILE_FOUND AND NOM_BUILD_AUDIO_TESTS )
-    message ( FATAL_ERROR "libsndfile library not found." )
-    # TODO(JEFF): Improve the fatal error message by offering suggestions on how to
-    # resolve or bypass the issue.
-  else ( LIBSNDFILE_FOUND AND NOT NOM_BUILD_AUDIO_TESTS )
-    # FIXME(JEFF): Verify where and when we include the header files for libsndfile
-    message ( STATUS "libsndfile library found: ${LIBSNDFILE_LIBRARY}" )
-  endif ()
-
-if ( NOM_BUILD_AUDIO_TESTS )
-  find_package( libsndfile REQUIRED )
-endif ( NOM_BUILD_AUDIO_TESTS )
-
-if ( NOM_BUILD_AUDIO_TESTS )
-  find_package( libsndfile OPTIONAL )
-  if ( NOT LIBSNDFILE_FOUND )
-    message ( STATUS "libsndfile library not found" )
-  else ( LIBSNDFILE_FOUND )
-    message ( STATUS "libsndfile library found: ${LIBSNDFILE_LIBRARY}" )
-  endif ()
-endif ( NOM_BUILD_AUDIO_TESTS )
+if ( NOT LIBSNDFILE_FOUND AND NOM_BUILD_AUDIO_TESTS )
+  message ( FATAL_ERROR "libsndfile library not found." )
+  # TODO(JEFF): Improve the fatal error message by offering suggestions on how to
+  # resolve or bypass the issue.
+else ( LIBSNDFILE_FOUND AND NOT NOM_BUILD_AUDIO_TESTS )
+  # FIXME(JEFF): Verify where and when we include the header files for libsndfile
+  message ( STATUS "libsndfile library found: ${LIBSNDFILE_LIBRARY}" )
+endif ()
 
 # Unit test dependencies (common / global)
 if( PLATFORM_OSX )
@@ -207,13 +194,13 @@ set(  NOM_TESTS_VTEST_SOURCE
 
 if( NOM_BUILD_UNIT_TEST_UNIT )
   set( NOM_UNIT_TEST_LIBRARY_DEPS nomlib-core nomlib-file )
-  
+
   if( PLATFORM_WINDOWS )
     list( APPEND NOM_UNIT_TEST_LIBRARY_DEPS ${SDL2MAIN_LIBRARY} )
   endif( PLATFORM_WINDOWS )
-  
-  # >> this will include GoogleTest script and calls test discovery function 
-  # >>  defined in it, so you donot have to create main function for tests, 
+
+  # >> this will include GoogleTest script and calls test discovery function
+  # >>  defined in it, so you donot have to create main function for tests,
   #  >> they will be auto discovered
   add_library(  nomlib-unit-test ${LIBRARY_OUTPUT_TYPE}
                 ${NOM_TESTS_UNIT_TEST_SOURCE} )
@@ -300,4 +287,9 @@ if ( PLATFORM_WINDOWS )
             ${TESTS_INSTALL_DIR}
             FILES_MATCHING PATTERN "*.dll"
           )
-endif ( PLATFORM_WINDOWS )
+endif( PLATFORM_WINDOWS )
+
+if( PLATFORM_LINUX )
+  install_resource_dir( "${NOM_TESTS_RESOURCES_DIR}"
+                        "${TESTS_INSTALL_DIR}/Resources")
+endif ( PLATFORM_LINUX )

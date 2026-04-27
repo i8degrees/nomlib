@@ -77,6 +77,7 @@ if( SDL2_FOUND )
 endif( SDL2_FOUND )
 
 # nomlib-audio external deps
+<<<<<<< HEAD
 if ( NOM_BUILD_AUDIO_UNIT )
   # nomlib-audio external deps; OpenAL-Soft or Apple's OpenAL
   find_package( OpenAL REQUIRED )
@@ -87,6 +88,28 @@ if ( NOM_BUILD_AUDIO_UNIT )
     message ( FATAL_ERROR "Missing OpenAL headers at ${OPENAL_INCLUDE_DIR}." )
   endif ( OPENAL_FOUND )
 endif ( NOM_BUILD_AUDIO_UNIT )
+=======
+
+# FIXME(jeff): The variables in src/CMakeLists.txt are not propagating to this
+# sub directory
+set(NOM_USE_OPENAL FALSE)
+set(NOM_USE_OPENAL_SOFT TRUE)
+
+if(NOM_USE_OPENAL_SOFT)
+  find_package(OpenAL REQUIRED)
+  if(OPENAL_FOUND)
+    include_directories(${OPENAL_INCLUDE_DIR})
+  endif(OPENAL_FOUND)
+endif(NOM_USE_OPENAL_SOFT)
+
+if(NOM_USE_OPENAL_SOFT)
+  # FIXME(JEFF): This needs to be modified to be built from `vendor/openal.git`
+  # and installed in `third-party/linux/openal`.
+  #set(OPENAL_INCLUDE_DIR "${NOMLIB_DEPS_PREFIX}/third-party/linux/openal/include")
+  #set(OPENAL_INCLUDE_DIR "/usr/include/AL")
+  include_directories(${OPENAL_INCLUDE_DIR})
+endif(NOM_USE_OPENAL_SOFT)
+>>>>>>> 321a38eb (Update build system)
 
 # nomlib-gui external deps
 find_package( LibRocket REQUIRED )
@@ -125,7 +148,7 @@ endif ( PLATFORM_WINDOWS )
 if( NOM_BUILD_APP_EXAMPLE )
   add_executable ( app "${EXECUTABLE_FLAGS}" "app/app.cpp" )
 
-  set( APP_DEPS nomlib-gui )
+  set( APP_DEPS nomlib-gui nomlib-graphics nomlib-actions )
 
   if( PLATFORM_WINDOWS )
     # We need to link to SDL2main library on Windows
@@ -158,7 +181,7 @@ if(NOM_BUILD_AUDIO_EXAMPLE)
   target_link_libraries(audio ${AUDIO_DEPS})
 
   # Copy resource files for the example
-  nom_install_resources("${NOM_EXAMPLES_RESOURCES_DIR}/audio.json"
+  install_resource_file("${NOM_EXAMPLES_RESOURCES_DIR}/audio.json"
                         "${EXAMPLES_INSTALL_DIR}")
 
   endif(NOM_BUILD_AUDIO_EXAMPLE)
@@ -214,8 +237,11 @@ endif( NOM_BUILD_GAME_CONTROLLER_EXAMPLE )
 if( NOM_BUILD_DEVICE_INFO_EXAMPLE )
 
   add_executable ( device_info "${EXECUTABLE_FLAGS}" "device_info.cpp" )
-
-  set( DEVICE_INFO_DEPS nomlib-graphics nomlib-audio )
+  if ( NOM_BUILD_AUDIO_UNIT )
+    set( DEVICE_INFO_DEPS nomlib-graphics nomlib-audio )
+  elseif ( NOT NOM_BUILD_AUDIO_UNIT )
+    set( DEVICE_INFO_DEPS nomlib-graphics )
+  endif ( NOM_BUILD_AUDIO_UNIT )
 
   # Additional third-party dependency requirements
   find_package( SDL2_image REQUIRED )
@@ -317,3 +343,11 @@ if( PLATFORM_WINDOWS )
   )
 
 endif ( PLATFORM_WINDOWS )
+
+if ( PLATFORM_LINUX )
+  install_resource_dir( "${NOM_EXAMPLES_RESOURCES_DIR}"
+                        "${EXAMPLES_INSTALL_DIR}/Resources")
+  # FIXME(JEFF): The app example requires the tests resources path
+  install_resource_dir( "${NOM_TESTS_RESOURCES_DIR}"
+                        "${EXAMPLES_INSTALL_DIR}/Resources")
+endif ( PLATFORM_LINUX )

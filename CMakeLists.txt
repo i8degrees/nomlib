@@ -1,6 +1,8 @@
 #cmake_minimum_required( VERSION 2.8.12 )
 cmake_minimum_required( VERSION 3.14 )
 
+include ( "${CMAKE_SOURCE_DIR}/version.cmake" )
+
 # Enable the use of MACOSX_RPATH by default; this effectively allows plug 'n'
 # play functionality, so to speak -- the resulting shared library files can
 # simply be copied over into the end-user's application bundle or framework
@@ -44,20 +46,17 @@ endif(POLICY CMP0072)
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules" )
 set ( CMAKE_TEMPLATE_PATH ${CMAKE_TEMPLATE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates" )
 
-set( PROJECT_VERSION_MAJOR 0 )
-set( PROJECT_VERSION_MINOR 12 )
-set( PROJECT_VERSION_PATCH 0 )
-
 # Project Options
 option ( DEBUG "Build with all debugging features" off )
 option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
 # ?? Replace DEBUG_ASSERT option with the following; this should result in assertions
 # ?? being left on unless explicitly being disabled when DEBUG builds are present.
-#option ( DISABLE_DEBUG_ASSERTIONS "" off )
-option ( EXAMPLES "Build nomlib usage examples" off )
+#option( DISABLE_DEBUG_ASSERTIONS "" off)
+option( EXAMPLES "Build nomlib usage examples" off )
 option( NOM_BUILD_TESTS "Build unit tests" off )
-set( NOM_INSTALL_GENERATED_DOCS off )
+option( NOM_INSTALL_GENERATED_DOCS "Build docs" off )
 
+option( NOM_BUILD_ACTIONS_UNIT "Animations subsystem" ON)
 option( NOM_BUILD_CORE_UNIT "Engine core" ON)
 option( NOM_BUILD_MATH_UNIT "Math utilities" ON)
 option( NOM_BUILD_FILE_UNIT "Filesystem access" ON)
@@ -69,10 +68,21 @@ option( NOM_BUILD_PTREE_UNIT "Generic container for serialization" ON)
 option( NOM_BUILD_SERIALIZERS_UNIT "Serialization for JSON, XML, HTML" ON)
 option( NOM_BUILD_GUI_UNIT "GUI subsystem" ON)
 
-project( nomlib ) # Sets PROJECT_NAME variable for us
+# IMPORTANT(JEFF): This initializes our engine versioning variables;
+# `PROJECT_VERSION_MAJOR` & friends at `include/nomlib/version.hpp.in`
+project( nomlib
+  VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"
+  DESCRIPTION "C++11 2D game framework using SDL2"
+  #HOMEPAGE_URL "https://github.com/i8degrees/nomlib"
+  #SPDX_LICENSE "BSD-2-Clause-FreeBSD"
+  #LANGUAGES "en"
+)
 
 # Platform detection
 include ( "${CMAKE_SOURCE_DIR}/cmake/platform.cmake" )
+# Utility macro helpers
+include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/functions.cmake" )
+include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )
 
 if ( PLATFORM_WINDOWS )
   # Building nomlib on Windows is only supported as a static library for the
@@ -131,9 +141,6 @@ if( BUILD_SHARED_LIBS )
 else( NOT BUILD_SHARED_LIBS )
   set( LIBRARY_OUTPUT_TYPE "STATIC" )
 endif( BUILD_SHARED_LIBS )
-
-# Utility macro helpers
-include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )
 
 # TODO: Rename to NOMLIB_SRC_DIR..?
 set( SRC_DIR "${PROJECT_SOURCE_DIR}/src" )
@@ -278,6 +285,14 @@ if ( PLATFORM_LINUX OR PLATFORM_POSIX )
     set(ENV{SDL2TTFDIR} "${NOMLIB_DEPS_DIR}/linux/sdl2_ttf")
   endif(NOT DEFINED ENV{SDL2TTFDIR})
 
+  if(NOT DEFINED ENV{OPENALDIR})
+    # Use platform-distributed headers for OpenAL
+    #set(ENV{OPENALDIR} "${NOMLIB_DEPS_DIR}/linux/openal")
+    # FIXME(JEFF): This is a temporary workaround until we have a proper distribution
+    # build of OpenAL-Soft, sourced from `vendor/openal-soft.git`
+    set(ENV{OPENALDIR} "/usr/include/AL")
+  endif(NOT DEFINED ENV{OPENALDIR})
+
   if(NOT DEFINED ENV{LIBSNDFILEDIR})
     set(ENV{LIBSNDFILEDIR} "${NOMLIB_DEPS_DIR}/linux/libsndfile")
   endif(NOT DEFINED ENV{LIBSNDFILEDIR})
@@ -286,11 +301,15 @@ if ( PLATFORM_LINUX OR PLATFORM_POSIX )
     set(ENV{LIBROCKETDIR} "${NOMLIB_DEPS_DIR}/linux/libRocket")
   endif(NOT DEFINED ENV{LIBROCKETDIR})
 
-  if(NOT DEFINED ENV{OPENALDIR})
-    set(ENV{OPENALDIR} "${NOMLIB_DEPS_DIR}/linux/openal")
-  endif(NOT DEFINED ENV{OPENALDIR})
-
-endif ( PLATFORM_LINUX OR PLATFORM_POSIX )
+  # if(NOT DEFINED ENV{LIBROCKETDIR})
+  #     set(
+  #       ENV{LIBROCKETDIR}
+  #       "${NOMLIB_DEPS_DIR}/linux/libRocket/lib/libRocket.a"
+  #       "${NOMLIB_DEPS_DIR}/linux/libRocket/lib/libRocketCore.a"
+  #       "${NOMLIB_DEPS_DIR}/linux/libRocket/lib/libRocketDebugger.a"
+  #     )
+  # endif(NOT DEFINED ENV{LIBROCKETDIR})
+endif ( PLATFORM_WINDOWS )
 
 # List of our source code to be compiled
 add_subdirectory( ${SRC_DIR} )
@@ -375,16 +394,18 @@ if( PLATFORM_OSX AND FRAMEWORK )
             DESTINATION "${PROJECT_NAME}.framework/Resources/SharedSupport"
             OPTIONAL
             PATTERN ".*" EXCLUDE )
+endif ( PLATFORM_OSX AND FRAMEWORK )
 
-# POSIX install layout scheme is the default installation scheme. This is
-# applicable to OS X when FRAMEWORK=off.
-elseif( NOM_PLATFORM_POSIX OR PLATFORM_WINDOWS )
+# POSIX install layout scheme is the default installation scheme.
+# Additionally, the following applies to Darwin platform when MacOS library
+# framework targets are disabled (FRAMEWORK=0)
+if( NOT FRAMEWORK )
 
   # Install nomlib's header files
+  # FIXME(JEFF): version.hpp.in and config.hpp.in should not be installed
   install(  DIRECTORY ${INC_DIR}
             DESTINATION "include" # i.e.: /usr/local/include/nomlib/
-            PATTERN ".*" EXCLUDE
-  )
+            PATTERN ".*" EXCLUDE )
 
   # Install nomlib's icon
   install(  FILES
@@ -437,12 +458,7 @@ elseif( NOM_PLATFORM_POSIX OR PLATFORM_WINDOWS )
               PATTERN ".*" EXCLUDE
     )
   endif( NOM_INSTALL_GENERATED_DOCS )
-
-endif( NOM_PLATFORM_POSIX OR PLATFORM_WINDOWS )
-
-if ( PLATFORM_LINUX )
-  install(CODE "MESSAGE(\"Post-install: sudo ldconfig.\")") # FIXME (prettify)
-endif ( PLATFORM_LINUX )
+endif ( NOT FRAMEWORK )
 
 # nomlib examples configuration
 if( EXAMPLES )
@@ -483,6 +499,9 @@ include(GetGitRevisionNumber)
 # git_rev_number(GIT_REVISION) # Full SHA
 git_rev_number(GIT_REVISION "--short")
 set(GIT_REVISION "${GIT_REVISION}")
+
+# TODO(JEFF): This needs to be tested!
+#configure_file( ${INCLUDE_DIR}/version.hpp.in ${INCLUDE_DIR}/version.hpp )
 
 configure_file( ${SRC_DIR}/revision.cpp.in ${SRC_DIR}/revision.cpp )
 

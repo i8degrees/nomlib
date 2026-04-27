@@ -19,7 +19,7 @@ if(NOM_BUILD_OPENAL_AUDIO_TESTS)
   GTEST_ADD_TESTS(${TESTS_INSTALL_DIR}/ALAudioTest "" ${TEST_SRC})
 
   # Copy resource files for the test
-  nom_install_resources("${NOM_TESTS_RESOURCES_DIR}/audio/ALAudioTest.json"
+  install_resource_file("${NOM_TESTS_RESOURCES_DIR}/audio/ALAudioTest.json"
                         "${TESTS_INSTALL_DIR}")
 
 endif(NOM_BUILD_OPENAL_AUDIO_TESTS)

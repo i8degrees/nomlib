@@ -77,7 +77,6 @@ if( SDL2_FOUND )
 endif( SDL2_FOUND )
 
 # nomlib-audio external deps
-<<<<<<< HEAD
 if ( NOM_BUILD_AUDIO_UNIT )
   # nomlib-audio external deps; OpenAL-Soft or Apple's OpenAL
   find_package( OpenAL REQUIRED )
@@ -88,28 +87,6 @@ if ( NOM_BUILD_AUDIO_UNIT )
     message ( FATAL_ERROR "Missing OpenAL headers at ${OPENAL_INCLUDE_DIR}." )
   endif ( OPENAL_FOUND )
 endif ( NOM_BUILD_AUDIO_UNIT )
-=======
-
-# FIXME(jeff): The variables in src/CMakeLists.txt are not propagating to this
-# sub directory
-set(NOM_USE_OPENAL FALSE)
-set(NOM_USE_OPENAL_SOFT TRUE)
-
-if(NOM_USE_OPENAL_SOFT)
-  find_package(OpenAL REQUIRED)
-  if(OPENAL_FOUND)
-    include_directories(${OPENAL_INCLUDE_DIR})
-  endif(OPENAL_FOUND)
-endif(NOM_USE_OPENAL_SOFT)
-
-if(NOM_USE_OPENAL_SOFT)
-  # FIXME(JEFF): This needs to be modified to be built from `vendor/openal.git`
-  # and installed in `third-party/linux/openal`.
-  #set(OPENAL_INCLUDE_DIR "${NOMLIB_DEPS_PREFIX}/third-party/linux/openal/include")
-  #set(OPENAL_INCLUDE_DIR "/usr/include/AL")
-  include_directories(${OPENAL_INCLUDE_DIR})
-endif(NOM_USE_OPENAL_SOFT)
->>>>>>> 321a38eb (Update build system)
 
 # nomlib-gui external deps
 find_package( LibRocket REQUIRED )

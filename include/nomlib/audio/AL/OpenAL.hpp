@@ -41,9 +41,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #include <OpenAL/al.h>
   #include <OpenAL/alc.h>
   #include <OpenAL/MacOSX_OALExtensions.h>
-#else
+#else // As per the header inclusion path that FindOpenAL.cmake gives us
   #include <al.h>
   #include <alc.h>
+  #include <alext.h>
 #endif
 
 #if defined(NOM_DEBUG)

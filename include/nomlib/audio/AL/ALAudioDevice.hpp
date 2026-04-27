@@ -36,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/audio/SoundFile.hpp"
 
 #include <vector>
-// #include <functional>
+#include <functional>
 
 // Forward declarations
 struct ALCdevice_struct;

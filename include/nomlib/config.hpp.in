@@ -294,9 +294,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #define NOM_USE_OPENAL
 #endif
 
-#ifndef NOM_USE_OPENAL
-  // One of the above variables must be set in src/CMakeLists.txt
-  NOM_PRAGMA_ERROR("Audio Unit: One of the OpenAL audio engines must be selected")
+#if defined NOM_BUILD_AUDIO_UNIT
+  #ifndef NOM_USE_OPENAL
+    // One of the above variables must be set in src/CMakeLists.txt
+    NOM_PRAGMA_ERROR("Audio Unit: One of the OpenAL audio engines must be selected")
+  #endif
 #endif
 
 #cmakedefine NOM_USE_LIBSNDFILE @NOM_USE_LIBSNDFILE@

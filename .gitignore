@@ -4,7 +4,7 @@ version.hpp
 revision.cpp
 
 # project
-build/
+build.*/
 .loc.yml
 install_options
 *.sublime-workspace

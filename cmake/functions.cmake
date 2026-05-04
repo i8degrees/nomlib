@@ -65,15 +65,15 @@ endfunction(nom_add_library)
 function(install_resource_file spath dpath)
   install(
     FILES "${spath}"
-    DESTINATION "${dpath}")
-    #PATTERN ".*" EXCLUDE )
+    DESTINATION "${dpath}"
+    PATTERN ".*" EXCLUDE )
 endfunction()
 
 function(install_resource_dir spath dpath)
   install(
     DIRECTORY "${spath}"
-    DESTINATION "${dpath}")
-    #PATTERN ".*" EXCLUDE )
+    DESTINATION "${dpath}"
+    PATTERN ".*" EXCLUDE )
 endfunction()
 
 #

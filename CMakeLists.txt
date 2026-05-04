@@ -392,11 +392,12 @@ endif ( PLATFORM_OSX AND FRAMEWORK )
 # framework targets are disabled (FRAMEWORK=0)
 if( NOT FRAMEWORK )
 
-  # Install nomlib's header files
-  # FIXME(JEFF): version.hpp.in and config.hpp.in should not be installed
-  install(  DIRECTORY ${INC_DIR}
-            DESTINATION "include" # i.e.: /usr/local/include/nomlib/
-            PATTERN ".*" EXCLUDE )
+  # Install nomlib's header files to system-wide path for other apps to use
+  install ( DIRECTORY ${INC_DIR}
+            DESTINATION "include"
+            PATTERN "." EXCLUDE     # dotfiles, i.e. .DS_Store, .gitignore
+            PATTERN "*.in" EXCLUDE  # cmake generated files, i.e.: config.hpp.in
+          )
 
   # Install nomlib's icon
   install(  FILES
@@ -432,6 +433,14 @@ if( NOT FRAMEWORK )
               "${NOMLIB_RESOURCES_DIR}/CMake"
               DESTINATION
               "share/${PROJECT_NAME}/CMake"
+              PATTERN ".*" EXCLUDE
+            )
+    # Install cmake find modules at system-wide install prefix for locating
+    # nomlib
+    install(  DIRECTORY
+              "${NOMLIB_RESOURCES_DIR}/CMake/"
+              DESTINATION
+              "lib/cmake/${PROJECT_NAME}"
               PATTERN ".*" EXCLUDE
             )
   endif( PLATFORM_WINDOWS )

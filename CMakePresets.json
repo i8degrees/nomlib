@@ -23,7 +23,8 @@
         "DEBUG": "on",
         "DEBUG_ASSERT": "on",
         "CMAKE_C_COMPILER": "/usr/bin/clang",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
+        "DEBUG_ASSERT": "on"
       }
     },
     {
@@ -65,6 +66,7 @@
       "cacheVariables": {
         "CMAKE_INSTALL_PREFIX": "/usr/local",
         "CMAKE_BUILD_TYPE": "DEBUG",
+        "CMAKE_INSTALL_PREFIX": "/usr/local",
         "OPENGL_GL_PREFERENCE": "GLVND",
         "EXAMPLES": "ON",
         "NOM_BUILD_TESTS": "ON",

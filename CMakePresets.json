@@ -8,7 +8,11 @@
       "displayName": "Common settings for configure phase",
       "description": "cmake configure phase configuration for building nomlib",
       "generator": "Unix Makefiles",
-      "binaryDir": "${sourceDir}/build/${presetName}"
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "/usr/bin/clang",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
+      }
     },
     {
       "name": "debug-clang",
@@ -16,8 +20,8 @@
       "inherits": "common",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_C_COMPILER": "/usr/bin/clang",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
+        "DEBUG": "on",
+        "DEBUG_ASSERT": "on"
       }
     },
     {
@@ -26,8 +30,8 @@
       "inherits": "common",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
-        "CMAKE_C_COMPILER": "/usr/bin/clang",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
+        "DEBUG": "off",
+        "DEBUG_ASSERT": "off"
       }
     },
     {
@@ -36,6 +40,8 @@
       "inherits": "common",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
+        "DEBUG": "on",
+        "DEBUG_ASSERT": "on",
         "CMAKE_C_COMPILER": "/usr/bin/clang-cl",
         "CMAKE_CXX_COMPILER": "/usr/bin/clang-cl"
       }
@@ -45,7 +51,7 @@
       "displayName": "Release configuration for clang-cl toolchain",
       "inherits": "common",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RELEASE",
+        "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_C_COMPILER": "/usr/bin/clang-cl",
         "CMAKE_CXX_COMPILER": "/usr/bin/clang-cl"
       }
@@ -55,12 +61,10 @@
       "displayName": "debug-clang-linux",
       "inherits": "debug-clang",
       "cacheVariables": {
+        "CMAKE_INSTALL_PREFIX": "/usr/local",
         "OPENGL_GL_PREFERENCE": "GLVND",
-        "DEBUG": "ON",
-        "DEBUG_ASSERT": "ON",
         "EXAMPLES": "ON",
         "NOM_BUILD_TESTS": "ON",
-        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/${presetName}",
         "NOMLIB_DEPS_DIR": "${sourceDir}/third-party",
         "GTEST_INCLUDE_DIR": "${sourceDir}/third-party/linux/gtest/include",
         "NOM_USE_OPENAL": "1"
@@ -76,11 +80,9 @@
       "inherits": "release-clang",
       "cacheVariables": {
         "OPENGL_GL_PREFERENCE": "GLVND",
-        "DEBUG": "OFF",
-        "DEBUG_ASSERT": "OFF",
         "EXAMPLES": "ON",
         "NOM_BUILD_TESTS": "ON",
-        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/${presetName}",
+        "CMAKE_INSTALL_PREFIX": "/usr/local",
         "NOMLIB_DEPS_DIR": "${sourceDir}/third-party",
         "GTEST_INCLUDE_DIR": "${sourceDir}/third-party/linux/gtest/include",
         "NOM_USE_OPENAL": "1"

@@ -16,6 +16,7 @@
       "inherits": "common",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
+        "DEBUG": "on",
         "CMAKE_C_COMPILER": "/usr/bin/clang",
         "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
       }
@@ -35,7 +36,7 @@
       "displayName": "Debug configuration for clang-cl toolchain",
       "inherits": "common",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_BUILD_TYPE": "DEBUG",
         "CMAKE_C_COMPILER": "/usr/bin/clang-cl",
         "CMAKE_CXX_COMPILER": "/usr/bin/clang-cl"
       }
@@ -55,6 +56,7 @@
       "displayName": "debug-clang-linux",
       "inherits": "debug-clang",
       "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "DEBUG",
         "OPENGL_GL_PREFERENCE": "GLVND",
         "DEBUG": "ON",
         "DEBUG_ASSERT": "ON",
@@ -75,6 +77,7 @@
       "name": "release-clang-linux",
       "inherits": "release-clang",
       "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RELEASE",
         "OPENGL_GL_PREFERENCE": "GLVND",
         "DEBUG": "OFF",
         "DEBUG_ASSERT": "OFF",

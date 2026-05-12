@@ -19,7 +19,8 @@ ZIP_BIN=$(which zip)
 ZIP_ARGS="-r"
 
 # Exclusion masks for zip & tar
-EXCLUSION_MASKS="*.DS_Store*"
+#EXCLUSION_MASKS="*.DS_Store*"
+EXCLUSION_MASKS="*.DS_Store* *.zip *windows/msvcpp/* *linux/*.sh"
 
 PROJECT_NAME="nomlib"
 DEPS_DIR="third-party"
@@ -35,7 +36,7 @@ GIT_VER=$( ${GIT_BIN} rev-parse --short HEAD)
 
 function usage_info()
 {
-  echo "Usage: ./$0 [osx|ios|linux|windows|all]"
+  echo "Usage: ./$0 [common|osx|ios|linux|windows|all]"
 }
 
 function osx_deps()
@@ -83,27 +84,46 @@ function windows_deps()
   ${ZIP_BIN} ${ZIP_ARGS} ${DEPS_FILENAME} ${INCLUSION_MASKS} -x ${EXCLUSION_MASKS}
 }
 
-function linux_deps()
+#build_deps(os_stamp)
+function build_deps()
 {
-  echo "STUB: Not implemented."
+  os_stamp="$1"
+  if [ -z $os_stamp ]; then
+    os_stamp="common"
+  fi
+
+  if [[ ${GIT_BIN} ]]; then
+    # Put the resulting output file at project's root dir
+    DEPS_FILENAME="../${TIMESTAMP}_${PROJECT_NAME}-${GIT_VER}_${os_stamp}-dependencies.tar.gz"
+  else
+    # Put the resulting output file at project's root dir
+    DEPS_FILENAME="../${TIMESTAMP}_${PROJECT_NAME}_${os_stamp}-dependencies.tar.gz"
+  fi
+
+  INCLUSION_MASKS="${os_stamp}/ README.md"
+
+  ${TAR_BIN} --exclude="${EXCLUSION_MASKS}" ${TAR_ARGS} ${DEPS_FILENAME} ${INCLUSION_MASKS}
 }
 
 function all_deps()
 {
+  build_deps common
   osx_deps
   ios_deps
-  linux_deps
+  build_deps linux
   windows_deps
 }
 
 cd ${DEPS_DIR}
 
-if [[ "$1" == "osx" ]]; then
+if [[ "$1" == "common" ]]; then
+  build_deps "common"
+elif [[ "$1" == "osx" ]]; then
   osx_deps
 elif [[ $1 == "ios" ]]; then
   ios_deps
 elif [[ $1 == "linux" ]]; then
-  linux_deps
+  build_deps "linux"
 elif [[ $1 == "windows" ]]; then
   windows_deps
 elif [[ $1 == "ios" ]]; then

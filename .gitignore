@@ -5,6 +5,7 @@ revision.cpp
 
 # project
 build.*/
+!build.*/.placeholder
 .loc.yml
 install_options
 *.sublime-workspace
@@ -26,3 +27,6 @@ node_modules
 # Visual Code search index extension
 index.js
 
+# auto-generated documentation
+docs/html/*
+!docs/.placeholder

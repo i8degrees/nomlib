@@ -4,7 +4,10 @@
 #
 # cd ~/Projects/nomlib.git
 # docker build templates/libsndfile -t libsndfile:0.13.1
-# docker run --rm -it -v $(pwd)/third-party:/nomlib/third-party -v $(pwd)/.build:/libsndfile/build libsndfile:0.13.1
+# docker run --rm -it \
+#   -v $(pwd)/third-party:/vendor \
+#   -v $(pwd)/.build:/libsndfile/build \
+# libsndfile:0.13.1
 #
 
 #FROM local:0.13.1
@@ -13,41 +16,63 @@ LABEL maintainer="Jeffrey Carpenter <1329364+i8degrees@users.noreply.github.com>
 # i8degrees/libsndfile:13
 
 USER root
-WORKDIR /libsndfile.git
+WORKDIR /libsndfile
 RUN apt-get update; \
     apt-get install -y --no-install-recommends \
-    autoconf autogen automake build-essential libasound2-dev libflac-dev libogg-dev libtool libvorbis-dev libopus-dev libmp3lame-dev libmpg123-dev pkg-config python \
+    autoconf \
+    autogen \
+    automake \
+    build-essential \
     bzip2 \
     cmake \
     curl \
     file \
     git \
     git-lfs \
+    libasound2-dev \
+    libpulse0 \
     libc6 \
+    libc6-dev \
+    libflac-dev \
+    libmp3lame-dev \
+    libmpg123-dev \
+    libogg-dev \
+    libopus-dev \
+    libpipewire-0.3-0 \
+    libpipewire-0.3-dev \
+    libspa-0.2-dev \
+    libtool \
+    libvorbis-dev \
     make \
     patch \
-    libc6-dev \
-    pandoc \
+    pkg-config \
+    python \
     xdg-utils \
     zip \
+    zlib1g-dev \
+    libpulse-dev \
     zstd
 RUN git clone \
   "https://github.com/libsndfile/libsndfile.git" \
-/libsndfile.git
+/libsndfile
 
-WORKDIR /libsndfile.git
+WORKDIR /libsndfile
 RUN git switch -c 1.0.25 && mkdir build
 
-WORKDIR /libsndfile.git/build
+WORKDIR /libsndfile/build
 RUN \
   clang++ --version >> clang.version; \
   cmake --version >> cmake.version;
 RUN cmake \
   -DBUILD_SHARED_LIBS=1 \
-  -DCMAKE_INSTALL_PREFIX=/.build/deps/linux/libsndfile \
+  -DCMAKE_INSTALL_PREFIX=/tmp/vendor/linux/libsndfile \
   -DCMAKE_BUILD_TYPE=DEBUG \
   -DBUILD_EXAMPLES=off \
-.. && make
+  -DBUILD_PROGRAMS=off \
+  -DBUILD_TESTING=off \
+..
+RUN make
+RUN make -j1 install
 
 #ENTRYPOINT [ "cmake --version" ]
 

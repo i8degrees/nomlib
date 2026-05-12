@@ -37,7 +37,17 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_C_COMPILER": "/usr/bin/clang-cl",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang-cl"
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang-cl",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/platforms/WinMSVC.cmake",
+        "LLVM_NATIVE_TOOLCHAIN": "/usr",
+        "HOST_ARCH": "x86",
+        "LLVM_WINSYSROOT": "${sourceDir}/third-party/windows/msvcpp",
+        "MSVC_VER": "14.50.35717",
+        "WINSDK_VER": "10.0.26100.0",
+        "DEBUG": "on",
+        "DEBUG_ASSERT": "on",
+        "EXAMPLES": "on",
+        "ARCH_32": "on"
       }
     },
     {

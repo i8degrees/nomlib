@@ -167,7 +167,7 @@ class WinFile: public IFile
     /// \brief Get the platform-defined system path.
     ///
     /// \returns An absolute directory path. (Possibly in the form of:
-    /// "<drive>:\Windows").
+    /// "<drive>:\Windows"). %WINDIR%
     ///
     /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/bb762181.aspx
     /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/bb762494.aspx

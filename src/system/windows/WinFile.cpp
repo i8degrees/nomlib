@@ -37,6 +37,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Private headers
 #include "nomlib/system/Path.hpp"
+#include <string>
+
+#include <stringapiset.h>
+/*++
+Routine Description:
+    This routine will return the length needed to represent the unicode
+    string as ANSI
+Arguments:
+    UnicodeString is the unicode string whose ansi length is returned
+    *AnsiSizeInBytes is number of bytes needed to represent unicode
+        string as ANSI
+Return Value:
+    ERROR_SUCCESS or error code
+--*/
+int WcharToUtf8(IN __in PWCHAR UnicodeString, OUT ULONG *AnsiSizeInBytes) {
+  auto dwFlags = 0; // code page 65001 (UTF-8)
+  // lpDefaultChar and lpUsedDefaultChar must be set to NULL
+  auto CodePage = CP_UTF8;
+  *AnsiSizeInBytes = WideCharToMultiByte(CodePage,
+                                          dwFlags,
+                                          UnicodeString, // lpWideCharStr
+                                          -1, // null-terminated string
+                                          NULL,
+                                          0, NULL, NULL);
+
+  return((*AnsiSizeInBytes == 0) ? GetLastError() : ERROR_SUCCESS);
+}
 
 namespace nom {
 
@@ -276,38 +303,62 @@ const std::string WinFile::resource_path( const std::string& identifier )
 
 const std::string WinFile::user_documents_path( void )
 {
-  CHAR path[PATH_MAX];
-
+  std::string result_path;
+  // CHAR path[PATH_MAX];
+/*
   HRESULT result =  SHGetFolderPath(  nullptr,
                                       CSIDL_PERSONAL,
                                       nullptr,
                                       SHGFP_TYPE_CURRENT,
                                       path );
+*/
+  CHAR path[PATH_MAX];
+  PWSTR* win_path;
+  auto hToken = nullptr;
+  auto dwFlags = 0;
+  HRESULT result =  SHGetKnownFolderPath( FOLDERID_Documents,
+                                          dwFlags,
+                                          hToken,
+                                          win_path
+                                        );
 
   if ( result != S_OK ) return "\0";
+  std::string res;
+  int str_result = WcharToUtf8(win_path, res.length());
+  if ( str_result != S_OK ) return "\0";
 
   return path;
 }
 
 const std::string WinFile::user_app_support_path( void )
 {
-  CHAR path[PATH_MAX];
-
+  //CHAR path[PATH_MAX];
+/*
   HRESULT result =  SHGetFolderPath(  nullptr,
                                       CSIDL_LOCAL_APPDATA,
                                       nullptr,
                                       SHGFP_TYPE_CURRENT,
                                       path );
-
-  if ( result != S_OK ) return "\0";
+*/
+  CHAR path[PATH_MAX];
+  PWSTR* win_path;
+  auto hToken = nullptr;
+  auto dwFlags = 0;
+  HRESULT result =  SHGetKnownFolderPath( FOLDERID_LocalAppData,
+                                          dwFlags,
+                                          nullptr,
+                                          win_path
+                                        );
+  int str_result = WcharToUtf8(win_path, path.data());
+  if ( str_result != S_OK ) return "\0";
 
   return path;
 }
 
 const std::string WinFile::user_home_path( void )
 {
-  CHAR path[PATH_MAX];
-
+  //CHAR path[PATH_MAX];
+/*
   HRESULT result =  SHGetFolderPath (
                                       nullptr,
                                       CSIDL_PROFILE,
@@ -315,12 +366,17 @@ const std::string WinFile::user_home_path( void )
                                       SHGFP_TYPE_CURRENT,
                                       path
                                     );
-
-  if( result != S_OK )
-  {
-    // Err
-    return "\0";
-  }
+*/
+  PWSTR win_path[PATH_MAX];
+  CHAR path[PATH_MAX];
+  HANDLE_PTR* hToken = nullptr;
+  auto dwFlags = 0;
+  HRESULT result =  SHGetKnownFolderPath( FOLDERID_Profile,
+                                          dwFlags,
+                                          nullptr,
+                                          win_path
+                                        );
+  if( result != S_OK ) { return "\0"; }
 
   // Success!
   return path;
@@ -328,8 +384,8 @@ const std::string WinFile::user_home_path( void )
 
 const std::string WinFile::system_path( void )
 {
-  CHAR path[PATH_MAX];
-
+  //CHAR path[PATH_MAX];
+/*
   HRESULT result =  SHGetFolderPath (
                                       nullptr,
                                       CSIDL_WINDOWS,
@@ -337,12 +393,17 @@ const std::string WinFile::system_path( void )
                                       SHGFP_TYPE_CURRENT,
                                       path
                                     );
-
-  if( result != S_OK )
-  {
-    // Err
-    return "\0";
-  }
+*/
+  CHAR path[PATH_MAX];
+  PWSTR win_path;
+  void* hToken = nullptr;
+  auto dwFlags = 0;
+  HRESULT result =  SHGetKnownFolderPath( FOLDERID_Windows,
+                                          dwFlags,
+                                          hToken,
+                                          win_path
+                                        );
+  if( result != S_OK ) { return "\0"; }
 
   // Success!
   return path;

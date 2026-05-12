@@ -43,12 +43,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         known as stdint.h. MSVCPP2013 & llvm-clang are fine with it).
 */
 
-// IMPORTANT(JEFF): These declarations, too, will integrate into our (CMake) 
+// IMPORTANT(JEFF): These declarations, too, will integrate into our (CMake)
 // platform detection routines some day.
 #if defined(__GNUC__)
   #include <cstdint>
 #elif defined(__llvm__)
   #include <sys/types.h>
+#endif
+
+// clang-cl
+#if defined( NOM_COMPILER_MSVCPP ) && defined( NOM_PLATFORM_ARCH_X86 )
+  #include <cstdint>
 #endif
 
 // FIXME: The following declaration is necessary in order to avoid a very
@@ -148,8 +153,13 @@ const char NOM_CHAR_MAX = std::numeric_limits<char>::max();
 const uchar NOM_UCHAR_MIN = std::numeric_limits<uchar>::lowest();
 const uchar NOM_UCHAR_MAX = std::numeric_limits<uchar>::max();
 
-const int8 NOM_INT8_MIN = std::numeric_limits<int8>::lowest();
-const int8 NOM_INT8_MAX = std::numeric_limits<int8>::max();
+#if defined( NOM_COMPILER_MSVCPP ) && defined( NOM_PLATFORM_ARCH_X86 )
+  const int8_t NOM_INT8_MIN = std::numeric_limits<int8_t>::lowest();
+  const int8_t NOM_INT8_MAX = std::numeric_limits<int8_t>::max();
+#else
+  const int8 NOM_INT8_MIN = std::numeric_limits<int8>::lowest();
+  const int8 NOM_INT8_MAX = std::numeric_limits<int8>::max();
+#endif
 const uint8 NOM_UINT8_MIN = std::numeric_limits<uint8>::lowest();
 const uint8 NOM_UINT8_MAX = std::numeric_limits<uint8>::max();
 

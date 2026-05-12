@@ -21,7 +21,9 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "DEBUG": "on",
-        "DEBUG_ASSERT": "on"
+        "DEBUG_ASSERT": "on",
+        "CMAKE_C_COMPILER": "/usr/bin/clang",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
       }
     },
     {
@@ -62,6 +64,7 @@
       "inherits": "debug-clang",
       "cacheVariables": {
         "CMAKE_INSTALL_PREFIX": "/usr/local",
+        "CMAKE_BUILD_TYPE": "DEBUG",
         "OPENGL_GL_PREFERENCE": "GLVND",
         "EXAMPLES": "ON",
         "NOM_BUILD_TESTS": "ON",
@@ -79,6 +82,7 @@
       "name": "release-clang-linux",
       "inherits": "release-clang",
       "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RELEASE",
         "OPENGL_GL_PREFERENCE": "GLVND",
         "EXAMPLES": "ON",
         "NOM_BUILD_TESTS": "ON",

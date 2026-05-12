@@ -22,7 +22,7 @@
 [submodule "vendor/libsndfile.git"]
 	path = vendor/libsndfile.git
   url = https://github.com/libsndfile/libsndfile.git
-  branch = v1.0.30
+  branch = 1.0.25
   ignore = dirty
 [submodule "vendor/openal-soft.git"]
 	path = vendor/openal-soft.git

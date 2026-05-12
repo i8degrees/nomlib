@@ -9,8 +9,8 @@
 # sdl2_ttf:0.13.1
 #
 
-FROM nomlib:latest
-#FROM sdl2:0.13.1
+#FROM nomlib:latest
+FROM sdl2:0.13.1
 LABEL maintainer="Jeffrey Carpenter <1329364+i8degrees@users.noreply.github.com>"
 # i8degrees/libsndfile:13
 
@@ -53,12 +53,13 @@ RUN \
   clang++ --version >> clang.version; \
   cmake --version >> cmake.version;
 
-RUN ./autogen.sh && autoupdate; \
+RUN make clean; ./autogen.sh && autoupdate; \
   ./configure \
-  --with-sdl-prefix=/vendor/linux/sdl2 \
+  --with-sdl-prefix=/tmp/vendor/linux/sdl2 \
   --prefix=/tmp/vendor/linux/sdl2_ttf \
   --with-freetype-prefix=/vendor/linux/freetype
 RUN make
+RUN make -j1 install
 
 #ENTRYPOINT [ "cmake --version" ]
 

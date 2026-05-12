@@ -5,6 +5,7 @@ revision.cpp
 
 # project
 build.*/
+build/*
 !build.*/.placeholder
 .loc.yml
 install_options

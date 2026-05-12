@@ -4,18 +4,25 @@
 #
 # cd ~/Projects/nomlib.git
 # docker build templates/sdl2_ttf -t sdl2_ttf:0.13.1
-# docker run --rm -it -v $(pwd)/.build:/sdl2_ttf/build sdl2_ttf:0.13.1
+# docker run --rm -it -v $(pwd)/.build:/sdl2_ttf/build \
+#   -v $(pwd)/third-party:/vendor \
+# sdl2_ttf:0.13.1
 #
 
-#FROM nomlib:latest
+FROM nomlib:latest
+#FROM sdl2:0.13.1
 LABEL maintainer="Jeffrey Carpenter <1329364+i8degrees@users.noreply.github.com>"
 # i8degrees/libsndfile:13
 
 USER root
-WORKDIR /gtest.git
+WORKDIR /
+RUN mkdir -p /sdl2_ttf
 RUN apt-get update; \
     apt-get install -y --no-install-recommends \
-    autoconf autogen automake build-essential libasound2-dev libflac-dev libogg-dev libtool libvorbis-dev libopus-dev libmp3lame-dev libmpg123-dev pkg-config python \
+    autoconf \
+    autogen \
+    automake \
+    build-essential \
     bzip2 \
     cmake \
     curl \
@@ -23,29 +30,35 @@ RUN apt-get update; \
     git \
     git-lfs \
     libc6 \
-    make \
-    patch \
     libc6-dev \
+    libfreetype6 \
+    libfreetype-dev \
+    libtool \
+    make \
     pandoc \
+    patch \
+    pkg-config \
+    python \
     xdg-utils \
     zip \
     zstd
 RUN git clone \
-  "https://github.com/google/gtest.git" \
-/sdl2_ttf.git
+  "https://github.com/libsdl-org/SDL_ttf.git" /sdl2_ttf
 
-WORKDIR /sdl2_ttf.git
-RUN git switch -c 1.8.x && mkdir build
+WORKDIR /sdl2_ttf
+RUN git checkout release-2.0.12
 
-WORKDIR /sdl2_ttf.git/build
+WORKDIR /sdl2_ttf
 RUN \
   clang++ --version >> clang.version; \
   cmake --version >> cmake.version;
-RUN cmake \
-  -DBUILD_SHARED_LIBS=1 \
-  -DCMAKE_INSTALL_PREFIX=/third-party/linux/sdl2_ttf \
-  -DCMAKE_BUILD_TYPE=RELEASE \
-.. && make
+
+RUN ./autogen.sh && autoupdate; \
+  ./configure \
+  --with-sdl-prefix=/vendor/linux/sdl2 \
+  --prefix=/tmp/vendor/linux/sdl2_ttf \
+  --with-freetype-prefix=/vendor/linux/freetype
+RUN make
 
 #ENTRYPOINT [ "cmake --version" ]
 

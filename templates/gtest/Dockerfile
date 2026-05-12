@@ -4,7 +4,10 @@
 #
 # cd ~/Projects/nomlib.git
 # docker build templates/gtest -t gtest:0.13.1
-# docker run --rm -it -v $(pwd)/.build:/gtest/build gtest:0.13.1
+# docker run --rm -it \
+#   -v $(pwd)/.build:/gtest/build \
+#   -v $(pwd)/vendor:/vendor \
+# gtest:0.13.1
 #
 
 FROM nomlib:latest
@@ -15,19 +18,25 @@ USER root
 WORKDIR /gtest.git
 RUN apt-get update; \
     apt-get install -y --no-install-recommends \
-    gcc g++ \
-    autoconf autogen automake build-essential libtool pkg-config python \
+    autoconf \
+    autogen \
+    automake \
+    build-essential \
     bzip2 \
     cmake \
     curl \
     file \
+    g++ \
+    gcc \
     git \
     git-lfs \
     libc6 \
+    libc6-dev \
+    libtool \
     make \
     patch \
-    libc6-dev \
-    pandoc \
+    pkg-config \
+    python \
     xdg-utils \
     zip \
     zstd
@@ -47,7 +56,7 @@ RUN cmake --version >> cmake.version; \
 #-DCMAKE_C_COMPILER=/usr/bin/gcc \
 #-DCMAKE_CXX_COMPILER=/usr/bin/gcc++ \
 RUN cmake \
-  -DCMAKE_INSTALL_PREFIX=/third-party/linux/gtest ..
+  -DCMAKE_INSTALL_PREFIX=/tmp/vendor/linux/gtest ..
 
 #ENTRYPOINT [ "cmake --version" ]
 

@@ -27,32 +27,10 @@ RUN apt-get update; \
     git \
     git-lfs \
     graphviz \
-    libasound2 \
-    libc6 \
-    libdrm2 \
-    libgbm1 \
-    libgl-dev \
-    libglu1-mesa-dev \
-    libegl-dev \
-    libgles-dev \
-    libpulse0 \
-    libwayland-client0 \
-    libwayland-cursor0 \
-    libwayland-egl1 \
-    libx11-6 \
-    libxcursor1 \
-    libxext6 \
-    libxi6 \
-    libxinerama1 \
-    libxkbcommon0 \
-    libxrandr2 \
-    libxss1 \
-    libxxf86vm1 \
     make \
     patch \
     libc6-dev \
     pandoc \
-    mesa-common-dev \
     xdg-utils \
     zip \
     zstd

@@ -80,6 +80,7 @@ RUN cmake \
   -DVIDEO_KMSDRM=off -DCMAKE_WAYLAND=on \
   -DWAYLAND_SHARED=off ..
 RUN make
+RUN make -j1 install
 
 #ENTRYPOINT [ "cmake --version" ]
 

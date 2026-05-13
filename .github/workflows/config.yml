@@ -1,1 +1,16 @@
+name: nomlib_ci
+on: [push] # Trigger on every push
 
+jobs:
+  build:
+    runs-on: i8degrees/local:0.13.1
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: checkout
+        run: git checkout dev
+      - name: version
+        run: cmake --version && clang++ --version
+      - name: build
+        run: echo ""
+    

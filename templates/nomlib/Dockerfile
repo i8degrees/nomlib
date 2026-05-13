@@ -12,6 +12,7 @@ FROM local:0.13.1
 #FROM silkeh/clang:20-bullseye
 #LABEL version="${VERSION}" \
 LABEL version="0.13.1" \
+      tag="i8degrees/nomlib:0.13.1" \
       description="" \
       maintainer="Jeffrey Carpenter <1329364+i8degrees@users.noreply.github.com>"
 # i8degrees/nomlib:latest

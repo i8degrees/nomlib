@@ -9,11 +9,14 @@
 #   -v $(pwd)/.build:/osxcross/build \
 # osxcross:0.13.1
 #
+# syntax=docker/dockerfile:1
+#
 
 ARG VERSION=0.13.1
 
 FROM joseluisq/docker-osxcross:1.0.0-beta.2
 LABEL version="${VERSION}" \
+      tag="i8degrees/osxcross:0.13.1" \
       description="Darwin toolchain to build nomlib for MacOS" \
       maintainer="Jeffrey Carpenter <1329364+i8degrees@users.noreply.github.com>"
 
@@ -45,5 +48,8 @@ RUN apt-get update; \
 
 #RUN mkdir -p /nomlib/build && cd /nomlib/build
 
-FROM nomlib:0.13.1 AS build-nom
+#FROM nomlib:0.13.1 AS build-nom
+#RUN cmake \
+#-DCMAKE_TOOLCHAIN=  \
+#..
 

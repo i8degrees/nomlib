@@ -9,9 +9,13 @@
 # librocket:0.13.1
 #
 
-#FROM nomlib:latest
+ARG VERSION=0.13.1
+
 FROM sdl2:0.13.1
-LABEL maintainer="Jeffrey Carpenter <1329364+i8degrees@users.noreply.github.com>"
+#LABEL version="${VERSION}" \
+LABEL version="0.13.1" \
+      description="" \
+      maintainer="Jeffrey Carpenter <1329364+i8degrees@users.noreply.github.com>"
 
 USER root
 WORKDIR /

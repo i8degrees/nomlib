@@ -9,7 +9,8 @@
 # sdl2:0.13.1
 #
 
-FROM nomlib:latest
+#FROM nomlib:latest
+FROM local:0.13.1
 LABEL maintainer="Jeffrey Carpenter <1329364+i8degrees@users.noreply.github.com>"
 # i8degrees/libsndfile:13
 
@@ -76,6 +77,8 @@ RUN \
   cmake --version >> cmake.version;
 
 RUN cmake \
+  -DCMAKE_C_COMPILER=/usr/bin/clang \
+  -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
   -DCMAKE_INSTALL_PREFIX=/tmp/vendor/linux/sdl2 \
   -DVIDEO_KMSDRM=off -DCMAKE_WAYLAND=on \
   -DWAYLAND_SHARED=off ..

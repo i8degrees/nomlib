@@ -16,9 +16,6 @@ install_options
 *.tags_sorted_by_file
 local_env.cmake
 
-# nomlib's github wiki
-wiki
-
 *local_env.cmake*
 
 #.vscode/CMakeUserPresets.json

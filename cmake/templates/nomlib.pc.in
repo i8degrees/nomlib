@@ -12,8 +12,8 @@ Name: @PROJECT_NAME@
 Description: @PROJECT_DESC@
 Version: @PROJECT_VERSION@
 Requires:
-Requires.private: @PROJECT_DEPS@
+Requires.private: @PROJECT_DEPS_PRIVATE@
 Libs.private: -lmp3lame
 
 Cflags: -I${includedir}
-Libs: -L${libdir} @LIBS@
+Libs: -L${libdir} @PROJECT_LIBS@

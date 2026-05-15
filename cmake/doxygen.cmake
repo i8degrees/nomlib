@@ -21,19 +21,22 @@ set ( BUILD_DOCS_DEV "YES" )
 # Valid values are "YES" or "NO" with a default value of "NO".
 set ( BUILD_DOCS_QUIET "NO" )
 
-find_package( Doxygen )
+find_package(Doxygen REQUIRED)
 
-# if( NOT DOXYGEN_FOUND )
-#   message ( FATAL_ERROR "Doxygen & graphviz is required to generate the documentation.")
-# endif ( NOT DOXYGEN_FOUND )
+if( NOT DOXYGEN_FOUND )
+  message ( FATAL_ERROR
+            "Doxygen & graphviz packages are required to make docs."
+          )
+endif ( NOT DOXYGEN_FOUND )
 
 # Setup Doxygen for documentation build only if we find the tools installed
 if( DOXYGEN_FOUND )
 
   set ( DOXYFILE_IN ${CMAKE_TEMPLATE_PATH}/Doxyfile.in )
   set ( DOXYFILE ${PROJECT_BINARY_DIR}/Doxyfile )
-  set ( DOXY_HTML_INDEX_FILE ${PROJECT_BINARY_DIR}/docs/html/index.html )
-
+  #set ( VER_STR version_str_full )
+  #set ( DOXY_HTML_INDEX_FILE "${PROJECT_BINARY_DIR}/docs/${VER_STR}/index.html" )
+  set ( DOXY_HTML_INDEX_FILE "${PROJECT_BINARY_DIR}/docs/html/index.html" )
   #set ( DOXY_EXTRA_FILES "" )
 
   # Template Doxyfile

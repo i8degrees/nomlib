@@ -2,6 +2,7 @@
 config.hpp
 version.hpp
 revision.cpp
+nomlib.pc
 
 # project
 build.*/

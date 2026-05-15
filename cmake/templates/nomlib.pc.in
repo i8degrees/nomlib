@@ -1,0 +1,18 @@
+# nomlib.pc.in:jeff
+#
+# pkg-config conf for nomlib
+#
+
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
+
+Name: @PROJECT_NAME@
+Description: @PROJECT_DESC@
+Version: @PROJECT_VERSION@
+Requires: @PROJECT_DEPS@
+Requires.private: @PROJECT_DEPS_PRIVATE@
+
+Cflags: -F/home/jeff/Projects/nomlib.git/third-party -I${includedir}
+Libs: -L${libdir} -l@PROJECT_NAME@-actions -l@PROJECT_NAME@-core -l@PROJECT_NAME@-file -l@PROJECT_NAME@-graphics -l@PROJECT_NAME@-gui -l@PROJECT_NAME@-math -l@PROJECT_NAME@-ptree -l@PROJECT_NAME@-serializers -l@PROJECT_NAME@-system

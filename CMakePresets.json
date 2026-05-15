@@ -21,9 +21,6 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "DEBUG": "on",
-        "DEBUG_ASSERT": "on",
-        "CMAKE_C_COMPILER": "/usr/bin/clang",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
         "DEBUG_ASSERT": "on"
       }
     },
@@ -64,7 +61,6 @@
       "displayName": "debug-clang-linux",
       "inherits": "debug-clang",
       "cacheVariables": {
-        "CMAKE_INSTALL_PREFIX": "/usr/local",
         "CMAKE_BUILD_TYPE": "DEBUG",
         "CMAKE_INSTALL_PREFIX": "/usr/local",
         "OPENGL_GL_PREFERENCE": "GLVND",
@@ -72,12 +68,9 @@
         "NOM_BUILD_TESTS": "ON",
         "NOMLIB_DEPS_DIR": "${sourceDir}/third-party",
         "GTEST_INCLUDE_DIR": "${sourceDir}/third-party/linux/gtest/include",
-        "NOM_USE_OPENAL": "1"
-      },
-      "condition": {
-        "type": "equals",
-        "lhs": "$hostSystemName",
-        "rhs": "Linux"
+        "NOM_USE_OPENAL": "1",
+        "NOM_USE_OPENAL_SOFT": "1",
+        "NOM_BUILD_AUDIO_UNIT": "off"
       }
     },
     {
@@ -91,7 +84,8 @@
         "CMAKE_INSTALL_PREFIX": "/usr/local",
         "NOMLIB_DEPS_DIR": "${sourceDir}/third-party",
         "GTEST_INCLUDE_DIR": "${sourceDir}/third-party/linux/gtest/include",
-        "NOM_USE_OPENAL": "1"
+        "NOM_USE_OPENAL": "1",
+        "NOM_BUILD_AUDIO_UNIT": "on"
       },
       "condition": {
         "type": "equals",

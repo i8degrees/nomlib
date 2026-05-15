@@ -108,9 +108,11 @@ function build_deps()
 function all_deps()
 {
   build_deps common
+  #checksum common
   osx_deps
   ios_deps
   build_deps linux
+  #checksum linux
   windows_deps
 }
 

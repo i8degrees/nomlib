@@ -39,7 +39,6 @@ if ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
 
   message ( STATUS "Platform: Darwin (Mac OS X)" )
 elseif ( CMAKE_SYSTEM_NAME STREQUAL "Linux" ) # Tested on Ubuntu v12.04-LTS
-
   set( PLATFORM_LINUX true )
   # DEPRECATED(JEFF): Use `PLATFORM_POSIX` instead as `NOM_PLATFORM_POSIX`
   # does not fit with the other platform variables we define. We must update
@@ -126,5 +125,8 @@ elseif ( PLATFORM_WINDOWS AND ARCH_64 )
   set ( PLATFORM_ARCH "x64" )
 endif ( PLATFORM_WINDOWS AND ARCH_32 )
 
+# nomlib.pc.in -> nomlib.pc
+include(PkgConfig)
+
 message ( STATUS "Platform Architecture: ${PLATFORM_ARCH}" )
-#message ( STATUS "CXX=${CMAKE_CXX_FLAGS}" )
+

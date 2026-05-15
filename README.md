@@ -77,10 +77,6 @@ cmake -S /home/jeff/Projects/nomlib.git -B /tmp/nomlib-release \
 ~~Until I get around to writing the proper instructions, you may take a look at my
 .travis.yml build script in the project root of nomlib for hints!~~
 
-#### Linux Build Status
-
-[![Build Status](https://travis-ci.org/i8degrees/nomlib.png?branch=master,dev)](https://travis-ci.org/i8degrees/nomlib)
-
 ### Windows
 
 **NOTE:** Alpha build quality. This has only been tested on MS Windows 7.

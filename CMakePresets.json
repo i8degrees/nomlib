@@ -230,8 +230,6 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_INSTALL_PREFIX": "/usr/local",
-        "CMAKE_BUILD_TYPE": "DEBUG",
-        "CMAKE_INSTALL_PREFIX": "/usr/local",
         "OPENGL_GL_PREFERENCE": "GLVND",
         "BUILD_EXAMPLES": "ON",
         "BUILD_TESTS": "ON"

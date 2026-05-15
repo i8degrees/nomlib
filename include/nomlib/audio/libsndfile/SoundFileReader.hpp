@@ -64,6 +64,9 @@ class SoundFileReader: public ISoundFileReader
 
     virtual void close() override;
 
+// TODO: Impl stream itrerators for efficient
+// memory footprint aka  i.e.: ogg compressed audio
+
   private:
     SoundInfo parse_header(SF_INFO& metadata);
     static const char* parse_tags(SNDFILE_tag* fp, uint32 sound_tag);

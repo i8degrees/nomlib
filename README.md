@@ -114,7 +114,7 @@ cmake -D CMAKE_INSTALL_PREFIX=~/Library/Frameworks ..
   - Installation path: -D CMAKE_INSTALL_PREFIX=**\<DIRECTORY_PREFIX\>**
     * Defaults to your current **build** directory
 
-  - Documentation: -D DOCS=**\<BOOLEAN\>**
+  - Documentation: -DNOM_BUILD_DOCS=**\<BOOLEAN\>**
     * Defaults to **OFF**
     * When built (**ON**), the resulting documentation will reside in a new directory named **docs**
 

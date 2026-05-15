@@ -54,13 +54,14 @@ option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
 #option( DISABLE_DEBUG_ASSERTIONS "" off)
 option( EXAMPLES "Build nomlib usage examples" off )
 option( NOM_BUILD_TESTS "Build unit tests" off )
-option( NOM_INSTALL_GENERATED_DOCS "Build docs" off )
+#option( NOM_INSTALL_GENERATED_DOCS "Build docs" off )
+option( NOM_BUILD_DOCS "Build engine documentation" on)
 
 option( NOM_BUILD_ACTIONS_UNIT "Animations subsystem" ON)
 option( NOM_BUILD_CORE_UNIT "Engine core" ON)
 option( NOM_BUILD_MATH_UNIT "Math utilities" ON)
 option( NOM_BUILD_FILE_UNIT "Filesystem access" ON)
-option( NOM_BUILD_AUDIO_UNIT "Audio subsystem" OFF)
+option( NOM_BUILD_AUDIO_UNIT "Audio subsystem" OFF) # TODO(JEFF): Default to ON in future release
 option( NOM_BUILD_GRAPHICS_UNIT "Graphics core" ON)
 option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Build with scale2x & hqx algorithms" ON)
 option( NOM_BUILD_SYSTEM_UNIT "System unit" ON)
@@ -179,8 +180,10 @@ message ( STATUS "Library Search Prefix: ${CMAKE_SYSTEM_PREFIX_PATH}" )
 # Installation prefix path set for our project
 message ( STATUS "Installation Prefix: ${CMAKE_INSTALL_PREFIX}" )
 
-# Doxygen configuration
-include ( "${PROJECT_SOURCE_DIR}/cmake/doxygen.cmake" )
+if( NOM_BUILD_DOCS )
+  # Doxygen configuration
+  include ( "${PROJECT_SOURCE_DIR}/cmake/doxygen.cmake" )
+endif( NOM_BUILD_DOCS )
 
 # Third-party dependencies
 
@@ -373,12 +376,12 @@ if( PLATFORM_OSX AND FRAMEWORK )
   )
 
   # Install the generated documentation files
-  # if( NOM_INSTALL_GENERATED_DOCS )
+  # if( NOM_BUILD_DOCS )
   #   install(  DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
   #             DESTINATION "${PROJECT_NAME}.framework/Resources/Documentation"
   #             PATTERN ".*" EXCLUDE
   #   )
-  # endif( NOM_INSTALL_GENERATED_DOCS )
+  # endif( NOM_BUILD_DOCS )
 
   # Install hardware definitions for input devices (game controllers)
   install(  DIRECTORY "${NOMLIB_SHARED_SUPPORT_DIR}/InputDevices"
@@ -453,12 +456,12 @@ if( NOT FRAMEWORK )
           )
 
   # Install the generated documentation files
-  if( NOM_INSTALL_GENERATED_DOCS )
+  if( NOM_BUILD_DOCS )
     install(  DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
               DESTINATION "share/doc/${PROJECT_NAME}"
               PATTERN ".*" EXCLUDE
     )
-  endif( NOM_INSTALL_GENERATED_DOCS )
+  endif( NOM_BUILD_DOCS )
 endif ( NOT FRAMEWORK )
 
 # nomlib examples configuration

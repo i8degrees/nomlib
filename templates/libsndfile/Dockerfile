@@ -10,13 +10,10 @@
 # libsndfile:0.13.1
 #
 
-ARG VERSION=0.13.1
-
 FROM local:0.13.1
-LABEL version="0.13.1" \
-      description="" \
-      maintainer="Jeffrey Carpenter <1329364+i8degrees@users.noreply.github.com>"
-# i8degrees/libsndfile:0.13.1
+#FROM nomlib:latest
+LABEL maintainer="Jeffrey Carpenter <1329364+i8degrees@users.noreply.github.com>"
+# i8degrees/libsndfile:13
 
 USER root
 WORKDIR /libsndfile

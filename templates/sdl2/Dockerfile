@@ -9,15 +9,11 @@
 # sdl2:0.13.1
 #
 
-#FROM nomlib:latest
-FROM local:0.13.1
+FROM nomlib:0.13.1
 LABEL maintainer="Jeffrey Carpenter <1329364+i8degrees@users.noreply.github.com>"
-# i8degrees/libsndfile:13
 
 USER root
-WORKDIR /
-RUN mkdir /sdl2
-WORKDIR /sdl2
+WORKDIR /tmp
 RUN apt-get update; \
     apt-get install -y --no-install-recommends \
     autoconf \
@@ -67,7 +63,7 @@ RUN apt-get update; \
     zip \
     zstd
 RUN git clone \
-  "https://github.com/libsdl-org/SDL.git" /sdl2
+  "https://github.com/libsdl-org/SDL.git" /sdl2.git
 RUN git checkout release-2.24.x
 RUN mkdir build
 
@@ -84,6 +80,3 @@ RUN cmake \
   -DWAYLAND_SHARED=off ..
 RUN make
 RUN make -j1 install
-
-#ENTRYPOINT [ "cmake --version" ]
-

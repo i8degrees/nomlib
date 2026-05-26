@@ -30,16 +30,39 @@ RUN apt-get update; \
     git-lfs \
     graphviz \
     less \
+    libasound2 \
+    libc6 \
     libc6-dev \
+    libdrm2 \
+    libegl-dev \
+    libgbm1 \
+    libgl-dev \
+    libgles-dev \
+    libglu1-mesa-dev \
+    libpulse0 \
+    libwayland-client0 \
+    libwayland-cursor0 \
+    libwayland-egl1 \
+    libx11-6 \
+    libxcursor1 \
+    libxext6 \
+    libxi6 \
+    libxinerama1 \
+    libxkbcommon0 \
+    libxrandr2 \
+    libxss1 \
+    libxxf86vm1 \
     make \
+    mesa-common-dev \
     pandoc \
     patch \
+    rsync \
     xdg-utils \
     zip \
     zstd
 
-WORKDIR /
 RUN \
   clang++ --version >> clang.version; \
   cmake --version >> cmake.version;
 
+#ENTRYPOINT [ "cmake --version" ]

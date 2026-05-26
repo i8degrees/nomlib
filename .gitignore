@@ -29,3 +29,6 @@ index.js
 # auto-generated documentation
 docs/html/*
 !docs/.placeholder
+
+vendor/
+

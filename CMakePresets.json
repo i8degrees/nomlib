@@ -43,7 +43,14 @@
         "DEBUG": "on",
         "DEBUG_ASSERT": "on",
         "CMAKE_C_COMPILER": "/usr/bin/clang-cl",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang-cl"
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang-cl",
+        "EXAMPLES": "ON",
+        "NOM_BUILD_TESTS": "OFF",
+        "NOMLIB_DEPS_DIR": "${sourceDir}/vendor",
+        "GTEST_INCLUDE_DIR": "${sourceDir}/vendor/windows/gtest/include",
+        "NOM_USE_OPENAL": "0",
+        "NOM_USE_OPENAL_SOFT": "0",
+        "NOM_BUILD_AUDIO_UNIT": "off"
       }
     },
     {
@@ -52,6 +59,7 @@
       "inherits": "common",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
+        "DEBUG": "off",
         "CMAKE_C_COMPILER": "/usr/bin/clang-cl",
         "CMAKE_CXX_COMPILER": "/usr/bin/clang-cl"
       }
@@ -61,15 +69,15 @@
       "displayName": "debug-clang-linux",
       "inherits": "debug-clang",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "DEBUG",
+        "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_INSTALL_PREFIX": "/usr/local",
         "OPENGL_GL_PREFERENCE": "GLVND",
         "EXAMPLES": "ON",
         "NOM_BUILD_TESTS": "ON",
-        "NOMLIB_DEPS_DIR": "${sourceDir}/third-party",
-        "GTEST_INCLUDE_DIR": "${sourceDir}/third-party/linux/gtest/include",
-        "NOM_USE_OPENAL": "1",
-        "NOM_USE_OPENAL_SOFT": "1",
+        "NOMLIB_DEPS_DIR": "${sourceDir}/vendor",
+        "GTEST_INCLUDE_DIR": "${sourceDir}/vendor/linux/gtest/include",
+        "NOM_USE_OPENAL": "0",
+        "NOM_USE_OPENAL_SOFT": "0",
         "NOM_BUILD_AUDIO_UNIT": "off"
       }
     },
@@ -77,20 +85,15 @@
       "name": "release-clang-linux",
       "inherits": "release-clang",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RELEASE",
+        "CMAKE_BUILD_TYPE": "Rel",
         "OPENGL_GL_PREFERENCE": "GLVND",
         "EXAMPLES": "ON",
-        "NOM_BUILD_TESTS": "ON",
+        "NOM_BUILD_TESTS": "OFF",
         "CMAKE_INSTALL_PREFIX": "/usr/local",
-        "NOMLIB_DEPS_DIR": "${sourceDir}/third-party",
-        "GTEST_INCLUDE_DIR": "${sourceDir}/third-party/linux/gtest/include",
-        "NOM_USE_OPENAL": "1",
-        "NOM_BUILD_AUDIO_UNIT": "on"
-      },
-      "condition": {
-        "type": "equals",
-        "lhs": "$hostSystemName",
-        "rhs": "Linux"
+        "NOMLIB_DEPS_DIR": "${sourceDir}/vendor",
+        "GTEST_INCLUDE_DIR": "${sourceDir}/vendor/linux/gtest/include",
+        "NOM_USE_OPENAL": "0",
+        "NOM_BUILD_AUDIO_UNIT": "off"
       }
     }
   ],
@@ -99,45 +102,25 @@
       "name": "build-debug-clang-linux",
       "description": "Build debug target using clang toolchain",
       "displayName": "build-debug-clang-linux",
-      "configurePreset": "debug-clang-linux",
-      "condition": {
-        "type": "equals",
-        "lhs": "$hostSystemName",
-        "rhs": "Linux"
-      }
+      "configurePreset": "debug-clang-linux"
     },
     {
       "name": "build-release-clang-linux",
       "description": "Build release target using clang toolchain",
       "displayName": "build-release-clang-linux",
-      "configurePreset": "release-clang-linux",
-      "condition": {
-        "type": "equals",
-        "lhs": "$hostSystemName",
-        "rhs": "Linux"
-      }
+      "configurePreset": "release-clang-linux"
     },
     {
       "name": "build-debug-clang-cl-windows",
       "description": "Build debug target using clang-cl toolchain",
       "displayName": "build-debug-clang-cl-windows",
-      "configurePreset": "debug-clang-cl",
-      "condition": {
-        "type": "equals",
-        "lhs": "$hostSystemName",
-        "rhs": "Windows"
-      }
+      "configurePreset": "debug-clang-cl"
     },
     {
       "name": "build-release-clang-cl-windows",
       "description": "Build release target using clang-cl toolchain",
       "displayName": "build-release-clang-cl-windows",
-      "configurePreset": "release-clang-cl",
-      "condition": {
-        "type": "equals",
-        "lhs": "$hostSystemName",
-        "rhs": "Windows"
-      }
+      "configurePreset": "release-clang-cl"
     }
   ]
 }

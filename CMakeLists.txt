@@ -155,7 +155,7 @@ set( INC_ROOT_DIR "${PROJECT_SOURCE_DIR}/include" )
 # TODO: Rename to NOMLIB_INCLUDE_DIR..?
 set( INC_DIR "${INC_ROOT_DIR}/nomlib" )
 
-set( NOMLIB_DEPS_DIR "${PROJECT_SOURCE_DIR}/third-party" )
+set( NOMLIB_DEPS_DIR "${PROJECT_SOURCE_DIR}/vendor" )
 
 # Relative path from project root to nomlib demonstration examples
 set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" )
@@ -305,6 +305,12 @@ if ( PLATFORM_LINUX OR PLATFORM_POSIX )
   endif(NOT DEFINED ENV{LIBROCKETDIR})
 endif( PLATFORM_LINUX OR PLATFORM_POSIX )
 
+# Platform-specific implementations & dependencies
+#
+# Absolute path to project's third-party 'common' directory
+#
+# See also: nomlib's third-party/README.md
+set( NOM_THIRD_PARTY_COMMON_DIR "${NOMLIB_DEPS_DIR}" )
 # List of our source code to be compiled
 add_subdirectory( ${SRC_DIR} )
 

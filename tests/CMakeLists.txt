@@ -110,7 +110,7 @@ else ( NOT LIBROCKET_FOUND )
 endif ( LIBROCKET_FOUND )
 
 # third-party, headers-only dependency TCLAP
-set( TCLAP_INCLUDE_DIR "${NOM_THIRD_PARTY_COMMON_DIR}/tclap" )
+set( TCLAP_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/vendor/tclap/include" )
 
 if( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
   message(  FATAL_ERROR
@@ -120,7 +120,7 @@ if( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
   )
 else( EXISTS ${TCLAP_INCLUDE_DIR} )
   # Header file inclusion; third-party -- TCLAP
-  include_directories("${NOM_THIRD_PARTY_COMMON_DIR}")
+  include_directories("${TCLAP_INCLUDE_DIR}")
   message( STATUS "TCLAP headers found: ${TCLAP_INCLUDE_DIR}" )
 endif( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
 

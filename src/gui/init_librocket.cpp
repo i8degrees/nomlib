@@ -57,4 +57,10 @@ void shutdown_librocket()
   Rocket::Core::Shutdown();
 }
 
+std::string version_librocket(uint32_t flags)
+{
+  auto result = Rocket::Core::GetVersion().CString();
+  return result;
+}
+
 } // namespace nom

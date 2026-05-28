@@ -51,7 +51,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #if defined( NOM_USE_LIBROCKET )
-  #include "Rocket/Core.h"
+  #include "nomlib/gui/init_librocket.hpp"
 #endif
 
 #include "nomlib/version.hpp"
@@ -168,27 +168,29 @@ void SDL2_ttf_version_info( void )
                   );
   #endif
 }
+struct OpenALVersionInfo {
+  std::string version = "N/A";
+  std::string renderer = "N/A";
+  std::string vendor = "N/A";
+  std::string extensions = "N/A";
+};
 
-void OpenAL_version_info( void )
-{
-  struct OpenALVersionInfo
-  {
-    std::string version = "N/A";
-    std::string renderer = "N/A";
-    std::string vendor = "N/A";
-    std::string extensions = "N/A";
-  };
-  OpenALVersionInfo info;
-#if defined(NOM_USE_CREATIVE_OPENAL) || defined(NOM_USE_APPLE_OPENAL) || defined(NOM_USE_OPENAL_SOFT)
-  AL_CHECK_ERR( info.version = alGetString( AL_VERSION ) );
-  AL_CHECK_ERR( info.renderer = alGetString( AL_RENDERER ) );
-  AL_CHECK_ERR( info.vendor = alGetString( AL_VENDOR ) );
-  AL_CHECK_ERR( info.extensions = alGetString( AL_EXTENSIONS ) );
+//OpenALVersionInfo info;
+
+OpenALVersionInfo OpenAL_version() {
+  OpenALVersionInfo res_al;
+#if defined(NOM_USE_CREATIVE_OPENAL) || defined(NOM_USE_APPLE_OPENAL) //|| defined(NOM_USE_OPENAL_SOFT)
+  AL_CHECK_ERR( res_al.version = alGetString( AL_VERSION ) );
+  AL_CHECK_ERR( res_al.renderer = alGetString( AL_RENDERER ) );
+  AL_CHECK_ERR( res_al.vendor = alGetString( AL_VENDOR ) );
+  AL_CHECK_ERR( res_al.extensions = alGetString( AL_EXTENSIONS ) );
 #endif // end if NOM_USE_OPENAL
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL version: ", info.version );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL renderer: ", info.renderer );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL vendor: ", info.vendor );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL extensions: ", info.extensions );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL version: ", res_al.version );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL renderer: ", res_al.renderer );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL vendor: ", res_al.vendor );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL extensions: ", res_al.extensions );
+
+  return res_al;
 }
 
 void libsndfile_version_info( void )
@@ -204,6 +206,9 @@ void libsndfile_version_info( void )
 
 void libs_version_info( void )
 {
+  auto res_al = OpenAL_version();
+  std::string librocket_ver = "N/A";
+
   std::cout << std::endl;
   nomlib_version_info();
   std::cout << std::endl;
@@ -213,16 +218,17 @@ void libs_version_info( void )
   std::cout << std::endl;
   SDL2_ttf_version_info();
   std::cout << std::endl;
-  OpenAL_version_info();
+
+  std::cout << "AL version " << res_al.version << " " << "M " << res_al.vendor << "EXT " << res_al.extensions << std::endl;
   std::cout << std::endl;
 
   libsndfile_version_info();
   std::cout << std::endl;
 
   #if defined( NOM_USE_LIBROCKET )
-    std::cout << "libRocket version: " << Rocket::Core::GetVersion().CString()
-    << std::endl;
+    librocket_ver = nom::version_librocket();
   #endif
+  std::cout << "libRocket version: " << librocket_ver << std::endl;
 }
 
 } // namespace nom

@@ -62,6 +62,13 @@ bool init_librocket(  Rocket::Core::FileInterface* fs,
 /// \brief Shutdown libRocket interface.
 void shutdown_librocket();
 
+/// \brief Return the compiled version libRocket in use with nomlib.
+///
+/// \params flags Reserved for future use.
+///
+/// \see examples/device_info.cpp
+std::string version_librocket(uint32_t flags = 0);
+
 } // namespace nom
 
 #endif // include guard defined

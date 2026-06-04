@@ -19,7 +19,7 @@ local_env.cmake
 
 *local_env.cmake*
 
-#.vscode/CMakeUserPresets.json
+*CMakeUserPresets.json*
 
 node_modules
 

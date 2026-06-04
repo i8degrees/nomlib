@@ -66,10 +66,6 @@ set( NOM_BUILD_GUI_TESTS ON )
 set( NOM_BUILD_UNIT_TEST_TESTS ON )
 set( NOM_BUILD_VTEST_TESTS ON )
 
-if( EXISTS "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
-  include( "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
-endif()
-
 # Project headers files inclusions; our header files namespace, 'nomlib'
 include_directories( "${INC_ROOT_DIR}" )
 

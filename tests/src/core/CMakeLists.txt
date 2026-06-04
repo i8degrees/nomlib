@@ -4,10 +4,6 @@ set(NOM_BUILD_VERSION_INFO_TEST ON)
 set(NOM_BUILD_SDL2_LOGGER_TESTS ON)
 set(NOM_BUILD_STRINGS_TEST ON)
 
-if( EXISTS "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
-  include( "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
-endif()
-
 if(NOM_BUILD_VERSION_INFO_TEST)
 
   # FIXME: We only need nomlib-system for init...

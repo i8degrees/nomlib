@@ -463,12 +463,12 @@ if( NOT FRAMEWORK )
           )
 
   # Install the generated documentation files
-  if( NOM_BUILD_DOCS )
+  if(NOM_BUILD_DOCS AND EXISTS "${CMAKE_BINARY_DIR}/docs/html")
     install(  DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
-              DESTINATION "share/doc/${PROJECT_NAME}"
+              DESTINATION "share/doc/${PROJECT_NAME}/${CMAKE_PROJECT_VERSION}"
               PATTERN ".*" EXCLUDE
     )
-  endif( NOM_BUILD_DOCS )
+  endif()
 endif ( NOT FRAMEWORK )
 
 # nomlib examples configuration

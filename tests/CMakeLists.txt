@@ -84,7 +84,7 @@ elseif ( NOT SDL2_FOUND )
   message ( FATAL_ERROR "Missing SDL2 headers at ${SDL2_INCLUDE_DIR}." )
 endif ( SDL2_FOUND )
 
-if(NOM_BUILD_AUDIO_UNIT)
+if(NOM_BUILD_AUDIO_UNIT AND NOM_BUILD_AUDIO_TESTS)
   # nomlib-audio external deps
   find_package( OpenAL REQUIRED )
   if( OPENAL_FOUND )
@@ -93,7 +93,7 @@ if(NOM_BUILD_AUDIO_UNIT)
   else ( NOT OPENAL_FOUND )
     message ( FATAL_ERROR "Missing OpenAL headers at ${OPENAL_INCLUDE_DIR}." )
   endif ( OPENAL_FOUND )
-endif(NOM_BUILD_AUDIO_UNIT)
+endif()
 
 # nomlib-gui external deps
 find_package( LibRocket REQUIRED )
@@ -120,20 +120,11 @@ else( EXISTS ${TCLAP_INCLUDE_DIR} )
   message( STATUS "TCLAP headers found: ${TCLAP_INCLUDE_DIR}" )
 endif( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
 
-if ( NOM_BUILD_AUDIO_TESTS )
-  find_package( libsndfile REQUIRED )
-elseif ( NOT NOM_BUILD_AUDIO_TESTS )
-  find_package( libsndfile OPTIONAL )
-endif ( NOM_BUILD_AUDIO_TESTS )
-
-if ( NOT LIBSNDFILE_FOUND AND NOM_BUILD_AUDIO_TESTS )
-  message ( FATAL_ERROR "libsndfile library not found." )
-  # TODO(JEFF): Improve the fatal error message by offering suggestions on how to
-  # resolve or bypass the issue.
-else ( LIBSNDFILE_FOUND AND NOT NOM_BUILD_AUDIO_TESTS )
-  # FIXME(JEFF): Verify where and when we include the header files for libsndfile
-  message ( STATUS "libsndfile library found: ${LIBSNDFILE_LIBRARY}" )
-endif ()
+if(NOM_BUILD_AUDIO_UNIT AND NOM_BUILD_AUDIO_TESTS)
+  find_package(libsndfile REQUIRED)
+else()
+  find_package(libsndfile) # optional dependency
+endif()
 
 # Unit test dependencies (common / global)
 if( PLATFORM_OSX )
@@ -226,9 +217,9 @@ if( NOM_BUILD_CORE_TESTS )
   add_subdirectory("src/core")
 endif( NOM_BUILD_CORE_TESTS )
 
-if( NOM_BUILD_AUDIO_TESTS )
+if(NOM_BUILD_AUDIO_UNIT AND NOM_BUILD_AUDIO_TESTS)
   add_subdirectory("src/audio")
-endif( NOM_BUILD_AUDIO_TESTS )
+endif()
 
 if( NOM_BUILD_GRAPHICS_TESTS )
   add_subdirectory("src/graphics")

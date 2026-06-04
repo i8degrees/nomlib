@@ -74,9 +74,9 @@ option( NOM_BUILD_GUI_UNIT "GUI subsystem" ON)
 project( nomlib
   VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"
   DESCRIPTION "C++11 2D game framework using SDL2"
-  #HOMEPAGE_URL "https://github.com/i8degrees/nomlib"
+  HOMEPAGE_URL "https://github.com/i8degrees/nomlib"
   #SPDX_LICENSE "BSD-2-Clause-FreeBSD"
-  #LANGUAGES "en"
+  LANGUAGES CXX
 )
 
 # Platform detection
@@ -311,6 +311,7 @@ endif( PLATFORM_LINUX OR PLATFORM_POSIX )
 #
 # See also: nomlib's third-party/README.md
 set( NOM_THIRD_PARTY_COMMON_DIR "${NOMLIB_DEPS_DIR}" )
+
 # List of our source code to be compiled
 add_subdirectory( ${SRC_DIR} )
 

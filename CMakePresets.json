@@ -34,6 +34,7 @@
         "DEBUG_ASSERT": "off"
       }
     },
+
     {
       "name": "debug-clang-cl",
       "displayName": "Debug configuration for clang-cl toolchain",
@@ -46,11 +47,29 @@
         "CMAKE_CXX_COMPILER": "/usr/bin/clang-cl",
         "EXAMPLES": "ON",
         "NOM_BUILD_TESTS": "OFF",
-        "NOMLIB_DEPS_DIR": "${sourceDir}/vendor",
+        "NOMLIB_DEPS_DIR": "${sourceDir}/vendor/windows",
         "GTEST_INCLUDE_DIR": "${sourceDir}/vendor/windows/gtest/include",
         "NOM_USE_OPENAL": "0",
         "NOM_USE_OPENAL_SOFT": "0",
-        "NOM_BUILD_AUDIO_UNIT": "off"
+        "NOM_BUILD_AUDIO_UNIT": "off",
+        "LLVM_NATIVE_TOOLCHAIN": "/usr",
+        "LLVM_WINSYSROOT": "${sourceDir}/vendor/windows/msvc",
+        "HOST_ARCH": "x86",
+        "ARCH_32": "on",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/WinMSVC.cmake",
+        "SDL2_INCLUDE_DIR": "${sourceDir}/third-party/windows/SDL2/include",
+        "SDL2_IMAGE_INCLUDE_DIR": "${sourceDir}/third-party/windows/SDL2_image/include",
+        "SDL2_TTF_INCLUDE_DIR": "${sourceDir}/third-party/windows/SDL2_ttf/include",
+        "SDL2_LIBRARY": "${sourceDir}/third-party/windows/SDL2/lib/x86/SDL2.lib",
+        "SDL2MAIN_LIBRARY": "${sourceDir}/third-party/windows/SDL2/lib/x86/SDL2main.lib",
+        "SDL2_IMAGE_LIBRARY": "${sourceDir}/third-party/windows/SDL2_image/lib/x86/SDL2_image.lib",
+        "SDL2_TTF_LIBRARY": "${sourceDir}/third-party/windows/SDL2_ttf/lib/x86/SDL2_ttf.lib",
+        "LIBROCKET_CORE_INCLUDE_DIR": "${sourceDir}/third-party/windows/libRocket/include",
+        "LIBROCKET_CONTROLS_INCLUDE_DIR": "${sourceDir}/third-party/windows/libRocket/include",
+        "LIBROCKET_DEBUGGER_INCLUDE_DIR": "${sourceDir}/third-party/windows/libRocket/include",
+        "LIBROCKET_CORE_LIBRARY": "${sourceDir}/third-party/windows/libRocket/lib/x86/RocketCore.lib",
+        "LIBROCKET_CONTROLS_LIBRARY": "${sourceDir}/third-party/windows/libRocket/lib/x86/RocketControls.lib",
+        "LIBROCKET_DEBUGGER_LIBRARY": "${sourceDir}/third-party/windows/libRocket/lib/x86/RocketDebugger.lib"
       }
     },
     {
@@ -94,6 +113,37 @@
         "GTEST_INCLUDE_DIR": "${sourceDir}/vendor/linux/gtest/include",
         "NOM_USE_OPENAL": "0",
         "NOM_BUILD_AUDIO_UNIT": "off"
+      }
+    },
+    {
+      "name": "debug-clang-macos",
+      "displayName": "debug-clang-macos",
+      "inherits": "debug-clang",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/osxcross.cmake",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_INSTALL_PREFIX": "/usr/local",
+        "EXAMPLES": "ON",
+        "FRAMEWORK": "OFF",
+        "NOM_BUILD_TESTS": "OFF",
+        "NOMLIB_DEPS_DIR": "${sourceDir}/third-party/macos",
+        "GTEST_INCLUDE_DIR": "${sourceDir}/third-party/osx/gtest/include",
+        "NOM_USE_OPENAL": "0",
+        "NOM_USE_OPENAL_SOFT": "0",
+        "NOM_BUILD_AUDIO_UNIT": "off",
+        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.9",
+        "SDL2_LIBRARY": "${sourceDir}/third-party/osx/SDL2.framework",
+        "SDL2_INCLUDE_DIR": "${sourceDir}/third-party/osx/SDL2.framework/Headers/",
+        "SDL2_IMAGE_LIBRARY": "${sourceDir}/third-party/macos/SDL2_image.framework",
+        "SDL2_IMAGE_INCLUDE_DIR": "${sourceDir}/third-party/macos/SDL2_image.framework/Headers",
+        "SDL2_TTF_LIBRARY": "/app/third-party/macos/SDL2_ttf.framework/",
+        "SDL2_TTF_INCLUDE_DIR": "/app/third-party/macos/SDL2_ttf.framework/Headers",
+        "LIBROCKET_CORE_LIBRARY": "${sourceDir}/third-party/osx/librocket/lib/libRocketCore.1.dylib",
+        "LIBROCKET_CONTROLS_LIBRARY": "${sourceDir}/third-party/osx/librocket/lib/libRocketControls.1.dylib",
+        "LIBROCKET_DEBUGGER_LIBRARY": "${sourceDir}/third-party/osx/librocket/lib/libRocketDebugger.1.dylib",
+        "LIBROCKET_CORE_INCLUDE_DIR": "${sourceDir}/third-party/osx/librocket/include",
+        "LIBROCKET_CONTROLS_INCLUDE_DIR": "${sourceDir}/third-party/osx/librocket/include",
+        "LIBROCKET_DEBUGGER_INCLUDE_DIR":" ${sourceDir}/third-party/osx/librocket/include"
       }
     }
   ],

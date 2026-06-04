@@ -1,0 +1,23 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/include/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-clang-x64",
+            "configurationProvider": "ms-vscode.makefile-tools",
+            "macFrameworkPath": [
+                "~/Library/Frameworks",
+                "/usr/local/Frameworks",
+                "${workspaceFolder}/vendor/**",
+                "${workspaceFolder}/third-party/**"
+            ]
+        }
+    ],
+    "version": 4
+}

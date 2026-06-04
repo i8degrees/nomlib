@@ -121,7 +121,7 @@ endif ( PLATFORM_WINDOWS )
 if( NOM_BUILD_APP_EXAMPLE )
   add_executable ( app "${EXECUTABLE_FLAGS}" "app/app.cpp" )
 
-  set( APP_DEPS nomlib-gui nomlib-graphics nomlib-actions )
+  set( APP_DEPS nomlib-gui nomlib-graphics nomlib-actions nomlib-serializers )
 
   if( PLATFORM_WINDOWS )
     # We need to link to SDL2main library on Windows
@@ -139,7 +139,7 @@ if( NOM_BUILD_APP_EXAMPLE )
           )
 endif( NOM_BUILD_APP_EXAMPLE )
 
-if(NOM_BUILD_AUDIO_EXAMPLE)
+if(NOM_BUILD_AUDIO_EXAMPLE AND NOM_BUILD_AUDIO_UNIT)
   set(EX_SRC "audio/audio.cpp")
   add_executable(audio "${EXECUTABLE_FLAGS}" ${EX_SRC})
 
@@ -157,7 +157,7 @@ if(NOM_BUILD_AUDIO_EXAMPLE)
   install_resource_file("${NOM_EXAMPLES_RESOURCES_DIR}/audio.json"
                         "${EXAMPLES_INSTALL_DIR}")
 
-  endif(NOM_BUILD_AUDIO_EXAMPLE)
+endif(NOM_BUILD_AUDIO_EXAMPLE AND NOM_BUILD_AUDIO_UNIT)
 
 if(NOM_BUILD_EVENTS_EXAMPLE)
   set(APP_NAME events)
@@ -210,11 +210,11 @@ endif( NOM_BUILD_GAME_CONTROLLER_EXAMPLE )
 if( NOM_BUILD_DEVICE_INFO_EXAMPLE )
 
   add_executable ( device_info "${EXECUTABLE_FLAGS}" "device_info.cpp" )
-  if ( NOM_BUILD_AUDIO_UNIT )
-    set( DEVICE_INFO_DEPS nomlib-graphics nomlib-audio )
-  elseif ( NOT NOM_BUILD_AUDIO_UNIT )
-    set( DEVICE_INFO_DEPS nomlib-graphics )
-  endif ( NOM_BUILD_AUDIO_UNIT )
+  set(DEVICE_INFO_DEPS nomlib-graphics nomlib-gui)
+
+  if(NOM_BUILD_AUDIO_UNIT)
+    list(APPEND DEVICE_INFO_DEPS nomlib-audio)
+  endif()
 
   # Additional third-party dependency requirements
   find_package( SDL2_image REQUIRED )

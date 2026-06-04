@@ -30,10 +30,6 @@ set( NOM_BUILD_FONTS_EXAMPLE ON )
 set( NOM_BUILD_MOUSE_CURSORS_EXAMPLE ON )
 set( NOM_BUILD_MACROS_EXAMPLE ON )
 
-if( EXISTS "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
-  include( "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
-endif()
-
 # Use common build output directories for MSVCPP && Xcode project files.
 #
 # IMPORTANT: Debug and Release build targets **must** be kept in separate build

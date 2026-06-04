@@ -7,10 +7,6 @@ set( NOM_BUILD_TRUETYPE_FONT_TEST ON )
 set( NOM_BUILD_BMFONT_TEST ON )
 set( NOM_BUILD_SPRITE_TESTS ON )
 
-if( EXISTS "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
-  include( "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
-endif()
-
 if( NOM_BUILD_RENDERWINDOW_TESTS )
 
   add_executable( RenderWindowTest "RenderWindowTest.cpp" )

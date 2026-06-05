@@ -27,11 +27,10 @@ VENDOR_PREFIX=/app/vendor
 WORKDIR=/app
 
 #-v $(pwd)/vendor:/app/vendor \
-# --user app \
 docker run --rm -it \
-		-v nomlib-libs:${VENDOR_PREFIX}:rw \
+    -v nomlib-libs:${VENDOR_PREFIX}:rw \
     -v "${workspace}":/app:rw \
-		-w "${WORKDIR}" \
-		"${REPOSITORY}:${VERSION}-${ARCH}" \
+    -w "${WORKDIR}" \
+    --entrypoint /entrypoint.sh \
+    "${REPOSITORY}:${VERSION}-${ARCH}" \
 /bin/bash
-

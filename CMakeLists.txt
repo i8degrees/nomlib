@@ -29,7 +29,9 @@ endif(POLICY CMP0144)
 
 # PythonInterp modules; acknowledgement
 # cmake --help-policy CMP0148
-#cmake_policy(SET CMP0148 NEW)
+if(POLICY CMP0148)
+  cmake_policy(SET CMP0148 NEW)
+endif(POLICY CMP0148)
 
 # Opt out of using CMake v3.0 PROJECT_VERSION variables management for the
 # project.
@@ -56,6 +58,8 @@ option( EXAMPLES "Build nomlib usage examples" off )
 option( NOM_BUILD_TESTS "Build unit tests" off )
 #option( NOM_INSTALL_GENERATED_DOCS "Build docs" off )
 option( NOM_BUILD_DOCS "Build engine documentation" on)
+option(NOM_INSTALL_CMAKE_PACKAGE on)
+option(NOM_INSTALL_PKGCONFIG_SUPPORT on)
 
 option( NOM_BUILD_ACTIONS_UNIT "Animations subsystem" ON)
 option( NOM_BUILD_CORE_UNIT "Engine core" ON)
@@ -375,6 +379,10 @@ if( PLATFORM_OSX AND FRAMEWORK )
             PATTERN ".*" EXCLUDE
   )
 
+  # Install nomlib's pkg-config module so third-party software can find us
+  install(  FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc"
+            DESTINATION "${PROJECT_NAME}.framework/Resources")
+
   # Install software license & general project information
   install(  FILES
             ${PROJECT_SOURCE_DIR}/README.md
@@ -422,13 +430,15 @@ if( NOT FRAMEWORK )
   # See also (installation prefixes for a package):
   # http://www.cmake.org/cmake/help/v3.0/command/find_package.html?highlight=find_package.
   if( PLATFORM_WINDOWS )
-    # i.e.: C:\Program Files (x86)\nomlib\CMake
-    install(  DIRECTORY
-              "${NOMLIB_RESOURCES_DIR}/CMake/"
-              DESTINATION
-              "CMake"
-              PATTERN ".*" EXCLUDE
-            )
+    if(NOM_INSTALL_CMAKE_PACKAGE)
+      # i.e.: C:\Program Files (x86)\nomlib\CMake
+      install(  DIRECTORY
+                "${NOMLIB_RESOURCES_DIR}/CMake/"
+                DESTINATION
+                "CMake"
+                PATTERN ".*" EXCLUDE
+              )
+    endif()
 
     # Install hardware definitions for input devices (game controllers)
     install(  DIRECTORY "${NOMLIB_SHARED_SUPPORT_DIR}/InputDevices"
@@ -438,6 +448,8 @@ if( NOT FRAMEWORK )
 
 
   else( NOT PLATFORM_WINDOWS )
+    # Install nomlib's official cmake find module as part of engine's shared
+    # files
     # i.e.: /usr/local/share/nomlib/CMake
     install(  DIRECTORY
               "${NOMLIB_RESOURCES_DIR}/CMake"
@@ -445,14 +457,21 @@ if( NOT FRAMEWORK )
               "share/${PROJECT_NAME}/CMake"
               PATTERN ".*" EXCLUDE
             )
-    # Install cmake find modules at system-wide install prefix for locating
-    # nomlib
-    install(  DIRECTORY
-              "${NOMLIB_RESOURCES_DIR}/CMake/"
-              DESTINATION
-              "lib/cmake/${PROJECT_NAME}"
-              PATTERN ".*" EXCLUDE
-            )
+    # Install nomlib's cmake find module in a system-wide location that can
+    # be referenced by others to find us
+    if(NOM_INSTALL_CMAKE_PACKAGE)
+      install(  DIRECTORY
+                "${NOMLIB_RESOURCES_DIR}/CMake/"
+                DESTINATION
+                "lib/cmake/${PROJECT_NAME}"
+                PATTERN ".*" EXCLUDE
+              )
+    endif()
+    if(NOM_INSTALL_PKGCONFIG_SUPPORT)
+      # Install nomlib's pkg-config module so others can find us
+      install(  FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc"
+                DESTINATION "lib/pkgconfig")
+    endif()
   endif( PLATFORM_WINDOWS )
 
   # Install software license & general project information

@@ -5,14 +5,35 @@
 # See also: include/nomlib/config.hpp.in
 set( NOM_USE_SDL2_ASSERT true )
 
+#
+## Platform architecture optimizations and targets
+#
+
+option(ARCH_32 "Build target for 32-bit CPU" OFF)
+option(ARCH_64 "Build target for 64-bit CPU" ON)
+option(AARCH_32 "Build target ARM CPU" OFF)
+option(AARCH_64 "Build target ARM64 CPU" OFF)
+
 if ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
   # TODO: Rename to NOM_PLATFORM_OSX
   set( PLATFORM_OSX true )
   set( NOM_PLATFORM_POSIX true )
 
+  # Platform-specific options; the following options are applicable when the
+  # platform is Darwin (PLATFORM_OSX).
   # TODO: Rename to BUILD_FRAMEWORK
-  option ( FRAMEWORK "Build OSX Framework instead of dylib" on )
-  option ( UNIVERSAL "Build as an OSX Universal Library" off )
+  option(FRAMEWORK "Build OSX Framework instead of dylib" ON)
+  option(UNIVERSAL "Build as an OSX Universal Library" OFF) # multi-arch
+
+  # FIXME(JEFF): Refactor platform architectures section; universal binaries
+  # are NOT a MacOSX specific feature!
+  if(UNIVERSAL)
+    set(CMAKE_OSX_ARCHITECTURES i386; x86_64)
+    set(PLATFORM_ARCH "x86; x64") # Reserved for future use
+  else()
+    set(CMAKE_OSX_ARCHITECTURES x86_64)
+    set(PLATFORM_ARCH "x64") # Reserved for future use
+  endif(UNIVERSAL)
 
   # This variable influences the system header files version we build against,
   # which in turn determines the **minimum** version of OS X this build will
@@ -75,21 +96,12 @@ elseif ( CMAKE_SYSTEM_NAME STREQUAL "Linux" ) # Tested on Ubuntu v12.04-LTS
     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
   endif( CMAKE_CXX_COMPILER MATCHES "clang" )
 
-  # ARCH_32 and ARCH_64 are not presently used here, but are reserved for future
-  # consistency with the other supported platforms.
-  option ( ARCH_32 "Compile ${PROJECT_NAME} as a 32-bit library" off )
-  option ( ARCH_64 "Compile ${PROJECT_NAME} as a 64-bit library" on )
-
   message ( STATUS "Platform: Linux" )
   message ( STATUS "Build platform: ${CMAKE_CXX_COMPILER}" )
   message ( STATUS "Compiler C++ level: ${CMAKE_CXX_STANDARD}" )
   message ( STATUS "Compiler flags: ${CMAKE_CXX_FLAGS}" )
 elseif ( CMAKE_SYSTEM_NAME STREQUAL "Windows" )
-  # TODO: Rename to NOM_PLATFORM_WINDOWS
   set( PLATFORM_WINDOWS true )
-
-  option ( ARCH_32 "Compile ${PROJECT_NAME} as a 32-bit library" off )
-  option ( ARCH_64 "Compile ${PROJECT_NAME} as a 64-bit library" on )
 
   message ( STATUS "Platform: Windows" )
 else () # Not Linux nor OSX
@@ -99,34 +111,13 @@ else () # Not Linux nor OSX
 
 endif ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
 
-message ( STATUS "Generating build files for: ${CMAKE_GENERATOR}" )
-
-# I was able to shave off close to 50% time compiling nomlib by leaving
-# the UNIVERSAL option off by default.
-#
-# PPC is not officially supported because I have no means whatsoever of
-# testing such a package.
-#
-# TODO; we might be able to put these platform checks shown below in the
-# CMAKE_SYSTEM_NAME checks above.
-if ( UNIVERSAL )
-  set ( CMAKE_OSX_ARCHITECTURES i386; x86_64 )
-  set ( PLATFORM_ARCH "x86; x64" ) # Reserved for future use
-
-else ( NOT UNIVERSAL )
-  set ( CMAKE_OSX_ARCHITECTURES x86_64 )
-  set ( PLATFORM_ARCH "x64" ) # Reserved for future use
-
-endif ( UNIVERSAL )
-
+# FIXME(JEFF): Refactor platform architectures
 if ( PLATFORM_WINDOWS AND ARCH_32 )
   set ( PLATFORM_ARCH "x86" )
 elseif ( PLATFORM_WINDOWS AND ARCH_64 )
   set ( PLATFORM_ARCH "x64" )
 endif ( PLATFORM_WINDOWS AND ARCH_32 )
 
-# nomlib.pc.in -> nomlib.pc
-include(PkgConfig)
-
-message ( STATUS "Platform Architecture: ${PLATFORM_ARCH}" )
+message(STATUS "Target architectures: ${PLATFORM_ARCH}")
+message(STATUS "Generating CMake project files with ${CMAKE_GENERATOR}")
 

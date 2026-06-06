@@ -3,6 +3,10 @@
 #
 # These variables should be set in the CMake list file of the project *BEFORE*
 # the CPack module is included.
+#
+# SEE ALSO
+# 1. https://docs.appimage.org/packaging-guide/index.html
+# 2. https://cmake.org/cmake/help/latest/cpack_gen/appimage.html
 
 set ( CPACK_PACKAGE_NAME "${PROJECT_NAME}" )
 set ( CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}" )
@@ -35,3 +39,6 @@ set ( CPACK_STRIP_FILES false )
 
 #set ( CPACK_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR} )
 #set ( CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} )
+
+include(CPack)
+

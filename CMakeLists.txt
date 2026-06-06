@@ -1,25 +1,36 @@
-#cmake_minimum_required( VERSION 2.8.12 )
+# CMakeLists.txt:jeff
+#
+# nomlib
+#
 cmake_minimum_required( VERSION 3.14 )
 
 include("${CMAKE_SOURCE_DIR}/cmake/policy.cmake")
-include ( "${CMAKE_SOURCE_DIR}/version.cmake" )
+include("version.cmake") # Project version
 
-# set ( CMAKE_VERBOSE_MAKEFILE OFF CACHE PATH "Verbose Makefile" )
+include("${CMAKE_SOURCE_DIR}/cmake/functions.cmake")
+include("${CMAKE_SOURCE_DIR}/cmake/macros.cmake")
+
+
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules" )
 set ( CMAKE_TEMPLATE_PATH ${CMAKE_TEMPLATE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates" )
 
+##
 # Project Options
+##
+
+# Debugging
 option ( DEBUG "Build with all debugging features" off )
 option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
 # ?? Replace DEBUG_ASSERT option with the following; this should result in assertions
 # ?? being left on unless explicitly being disabled when DEBUG builds are present.
 #option( DISABLE_DEBUG_ASSERTIONS "" off)
+
+# Engine build configuration
 option( EXAMPLES "Build nomlib usage examples" off )
 option( NOM_BUILD_TESTS "Build unit tests" off )
-#option( NOM_INSTALL_GENERATED_DOCS "Build docs" off )
-option( NOM_BUILD_DOCS "Build engine documentation" on)
-option(NOM_INSTALL_CMAKE_PACKAGE on)
-option(NOM_INSTALL_PKGCONFIG_SUPPORT on)
+option(NOM_BUILD_DOCS "Build engine documentation" ON)
+option(NOM_INSTALL_CMAKE_PACKAGE "Install CMake module for finding nomlib" ON)
+option(NOM_INSTALL_PKGCONFIG_SUPPORT "Install pkg-config script for finding nomlib" ON)
 
 option( NOM_BUILD_ACTIONS_UNIT "Animations subsystem" ON)
 option( NOM_BUILD_CORE_UNIT "Engine core" ON)
@@ -43,11 +54,12 @@ project( nomlib
   LANGUAGES CXX
 )
 
-# Platform detection
-include ( "${CMAKE_SOURCE_DIR}/cmake/platform.cmake" )
-# Utility macro helpers
-include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/functions.cmake" )
-include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )
+# !!! Platform detection; the PLATFORM_WINDOWS, PLATFORM_OSX, PLATFORM_LINUX
+# env are set here and thus the inclusion of this file must be carefully
+# managed, else risk breaking everything!
+#
+# !!! Additional build target options are found here
+include("${CMAKE_SOURCE_DIR}/cmake/platform.cmake")
 
 if ( PLATFORM_WINDOWS )
   # Building nomlib on Windows is only supported as a static library for the
@@ -144,10 +156,10 @@ message ( STATUS "Library Search Prefix: ${CMAKE_SYSTEM_PREFIX_PATH}" )
 # Installation prefix path set for our project
 message ( STATUS "Installation Prefix: ${CMAKE_INSTALL_PREFIX}" )
 
-if( NOM_BUILD_DOCS )
+if(NOM_BUILD_DOCS)
   # Doxygen configuration
-  include ( "${PROJECT_SOURCE_DIR}/cmake/doxygen.cmake" )
-endif( NOM_BUILD_DOCS )
+  include("${PROJECT_SOURCE_DIR}/cmake/doxygen.cmake")
+endif(NOM_BUILD_DOCS)
 
 # Third-party dependencies
 
@@ -495,32 +507,10 @@ set(GIT_REVISION "${GIT_REVISION}")
 
 configure_file( ${SRC_DIR}/revision.cpp.in ${SRC_DIR}/revision.cpp )
 
-# Uninstall target support; 'make uninstall'
-configure_file  (
-                  "${CMAKE_TEMPLATE_PATH}/uninstall.cmake.in"
-                  "${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake"
-                  IMMEDIATE @ONLY
-                )
+# Uninstall make target support, i.e.: `make uninstall`
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/uninstall.cmake")
+# Generic platform distribution setup
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/packaging.cmake")
+# nomlib.pc.in -> nomlib.pc
+include(PkgConfig)
 
-add_custom_target ( uninstall COMMAND ${CMAKE_COMMAND} -P
-                    ${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake
-                  )
-
-# TODO: Windows platform support
-if ( NOT PLATFORM_WINDOWS )
-  # CPack configuration
-  include ( "${PROJECT_SOURCE_DIR}/cmake/CPackConfig.cmake" )
-
-  include ( InstallRequiredSystemLibraries )
-
-  # Platform specific generator presets
-  if ( PLATFORM_OSX )
-    set ( CPACK_GENERATOR "DragNDrop" )
-  elseif ( PLATFORM_LINUX )
-    set ( CPACK_GENERATOR "DEB" )
-  elseif ( PLATFORM_UNKNOWN )
-    set ( CPACK_GENERATOR "ZIP" )
-  endif ( PLATFORM_OSX )
-
-  include ( CPack )
-endif ( NOT PLATFORM_WINDOWS )

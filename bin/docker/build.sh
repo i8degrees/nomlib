@@ -25,9 +25,11 @@ fi
 # inside container paths
 VENDOR_PREFIX=/app/vendor
 WORKDIR=/app
+STAMP=$(date +%S) # displays in seconds 0..59
 
 #-v $(pwd)/vendor:/app/vendor \
 docker run --rm -it \
+    --name nomlib-build-${STAMP} \
     -v nomlib-libs:${VENDOR_PREFIX}:rw \
     -v "${workspace}":/app:rw \
     -w "${WORKDIR}" \

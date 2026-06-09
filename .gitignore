@@ -30,5 +30,6 @@ index.js
 docs/html/*
 !docs/.placeholder
 
-vendor/
-
+vendor*/
+wiki*/
+third-party*/

@@ -53,8 +53,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #undef RGB
 #endif
 
-// Forward declarations
-struct _TTF_Font {};
+// SDL2_TTF forwards compatibility check
+//
+// This implementation code was written with the assumption of SDL2_ttf
+// v2.0.12 in mind -- since then, the public headers for the project has
+// altered their internal declaration of TTF_Font. Our original forward
+// declaration becomes invalid without the following version checks.
+//
+// SEE ALSO
+// 1. https://github.com/libsdl-org/SDL_ttf/issues/372
+#if defined(NOM_USE_SDL_TTF_MAJOR_VERSION) && defined(NOM_USE_SDL_TTF_MINOR_VERSION)
+  #if (NOM_USE_SDL_TTF_MAJOR_VERSION == 2) && (NOM_USE_SDL_TTF_MINOR_VERSION >= 23)
+    // Forward declarations for SDL2 TTF v2.23.0 and greater
+    typedef struct TTF_Font TTF_Font;
+  #else
+    // Forward declarations for SDL2_TTF v2.0.12
+    typedef struct _TTF_Font TTF_Font;
+  #endif
+#endif
 
 namespace nom {
 
@@ -273,7 +289,7 @@ void FreeTexture ( SDL_Texture* );
 void FreeSurface ( SDL_Surface* );
 
 /// Custom deleter for TTF_Font* structures
-void TTF_FreeFont ( _TTF_Font* );
+void TTF_FreeFont ( TTF_Font* );
 
 } // namespace priv
 } // namespace nom

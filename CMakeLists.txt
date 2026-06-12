@@ -54,6 +54,11 @@ project( nomlib
   LANGUAGES CXX
 )
 
+# Platform-specific implementations & dependencies
+#
+# See also: nomlib's third-party/README.md
+include("${CMAKE_SOURCE_DIR}/vendor/CMakeLists.txt")
+
 # !!! Platform detection; the PLATFORM_WINDOWS, PLATFORM_OSX, PLATFORM_LINUX
 # env are set here and thus the inclusion of this file must be carefully
 # managed, else risk breaking everything!
@@ -131,7 +136,7 @@ set( INC_ROOT_DIR "${PROJECT_SOURCE_DIR}/include" )
 # TODO: Rename to NOMLIB_INCLUDE_DIR..?
 set( INC_DIR "${INC_ROOT_DIR}/nomlib" )
 
-set( NOMLIB_DEPS_DIR "${PROJECT_SOURCE_DIR}/vendor" )
+#set(NOMLIB_DEPS_DIR "${PROJECT_SOURCE_DIR}/vendor/prebuilt")
 
 # Relative path from project root to nomlib demonstration examples
 set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" )
@@ -165,27 +170,27 @@ endif(NOM_BUILD_DOCS)
 
 if ( PLATFORM_WINDOWS )
   if(NOT DEFINED ENV{SDL2DIR})
-    set(ENV{SDL2DIR} "${NOMLIB_DEPS_DIR}/windows/SDL2")
+    #set(ENV{SDL2DIR} "${NOMLIB_DEPS_DIR}/windows/SDL2")
   endif(NOT DEFINED ENV{SDL2DIR})
 
   if(NOT DEFINED ENV{SDL2IMAGEDIR})
-    set(ENV{SDL2IMAGEDIR} "${NOMLIB_DEPS_DIR}/windows/SDL2_image")
+    #set(ENV{SDL2IMAGEDIR} "${NOMLIB_DEPS_DIR}/windows/SDL2_image")
   endif(NOT DEFINED ENV{SDL2IMAGEDIR})
 
   if(NOT DEFINED ENV{SDL2TTFDIR})
-    set(ENV{SDL2TTFDIR} "${NOMLIB_DEPS_DIR}/windows/SDL2_ttf")
+    #set(ENV{SDL2TTFDIR} "${NOMLIB_DEPS_DIR}/windows/SDL2_ttf")
   endif(NOT DEFINED ENV{SDL2TTFDIR})
 
   if(NOT DEFINED ENV{OPENALDIR})
-    set(ENV{OPENALDIR} "${NOMLIB_DEPS_DIR}/windows/OpenAL")
+    #set(ENV{OPENALDIR} "${NOMLIB_DEPS_DIR}/windows/OpenAL")
   endif(NOT DEFINED ENV{OPENALDIR})
 
   if(NOT DEFINED ENV{LIBSNDFILEDIR})
-    set(ENV{LIBSNDFILEDIR} "${NOMLIB_DEPS_DIR}/windows/libsndfile")
+    #set(ENV{LIBSNDFILEDIR} "${NOMLIB_DEPS_DIR}/windows/libsndfile")
   endif(NOT DEFINED ENV{LIBSNDFILEDIR})
 
   if(NOT DEFINED ENV{LIBROCKETDIR})
-    set(ENV{LIBROCKETDIR} "${NOMLIB_DEPS_DIR}/windows/libRocket")
+    #set(ENV{LIBROCKETDIR} "${NOMLIB_DEPS_DIR}/windows/libRocket")
   endif(NOT DEFINED ENV{LIBROCKETDIR})
 
   # Redistribution paths must be absolute, a directory and end with a trailing
@@ -218,29 +223,29 @@ endif ( PLATFORM_WINDOWS )
 if ( PLATFORM_OSX )
 
   if(NOT DEFINED ENV{SDL2DIR})
-    set(ENV{SDL2DIR} "${NOMLIB_DEPS_DIR}/osx")
+    #set(ENV{SDL2DIR} "${NOMLIB_DEPS_DIR}/osx")
   endif(NOT DEFINED ENV{SDL2DIR})
 
   if(NOT DEFINED ENV{SDL2IMAGEDIR})
-    set(ENV{SDL2IMAGEDIR} "${NOMLIB_DEPS_DIR}/osx")
+    #set(ENV{SDL2IMAGEDIR} "${NOMLIB_DEPS_DIR}/osx")
   endif(NOT DEFINED ENV{SDL2IMAGEDIR})
 
   if(NOT DEFINED ENV{SDL2TTFDIR})
-    set(ENV{SDL2TTFDIR} "${NOMLIB_DEPS_DIR}/osx")
+    #set(ENV{SDL2TTFDIR} "${NOMLIB_DEPS_DIR}/osx")
   endif(NOT DEFINED ENV{SDL2TTFDIR})
 
   if(NOT DEFINED ENV{OPENALDIR})
     # Use platform-distributed headers for OpenAL; should automatically use the
     # proper platform SDK version as configured by CMAKE_OSX_SYSROOT
-    set(ENV{OPENALDIR} "/System/Library/Frameworks/OpenAL.framework")
+    #set(ENV{OPENALDIR} "/System/Library/Frameworks/OpenAL.framework")
   endif(NOT DEFINED ENV{OPENALDIR})
 
   if(NOT DEFINED ENV{LIBSNDFILEDIR})
-    set(ENV{LIBSNDFILEDIR} "${NOMLIB_DEPS_DIR}/osx")
+    #set(ENV{LIBSNDFILEDIR} "${NOMLIB_DEPS_DIR}/osx")
   endif(NOT DEFINED ENV{LIBSNDFILEDIR})
 
   if(NOT DEFINED ENV{LIBROCKETDIR})
-    set(ENV{LIBROCKETDIR} "${NOMLIB_DEPS_DIR}/osx/librocket")
+    #set(ENV{LIBROCKETDIR} "${NOMLIB_DEPS_DIR}/osx/librocket")
   endif(NOT DEFINED ENV{LIBROCKETDIR})
 
   # FIXME: This file needs its RPATH modified for redistribution; it is **not**
@@ -252,16 +257,18 @@ endif ( PLATFORM_OSX )
 
 if ( PLATFORM_LINUX OR PLATFORM_POSIX )
 
+  # DEPRECATED: Use SDLDIR
   if(NOT DEFINED ENV{SDL2DIR})
-    set(ENV{SDL2DIR} "${NOMLIB_DEPS_DIR}/linux/sdl2")
+    #set(ENV{SDL2DIR} "${NOMLIB_DEPS_DIR}/linux/sdl2")
   endif(NOT DEFINED ENV{SDL2DIR})
 
+  # DEPRECATED: Use SDLDIR and SDLIMAGEDIR
   if(NOT DEFINED ENV{SDL2IMAGEDIR})
-    set(ENV{SDL2IMAGEDIR} "${NOMLIB_DEPS_DIR}/linux/sdl2_image")
+    #set(ENV{SDL2IMAGEDIR} "${NOMLIB_DEPS_DIR}/linux/sdl2_image")
   endif(NOT DEFINED ENV{SDL2IMAGEDIR})
-
+  # DEPRECATED: Use SDLDIR and SDLTTFDIR
   if(NOT DEFINED ENV{SDL2TTFDIR})
-    set(ENV{SDL2TTFDIR} "${NOMLIB_DEPS_DIR}/linux/sdl2_ttf")
+    #set(ENV{SDL2TTFDIR} "${NOMLIB_DEPS_DIR}/linux/sdl2_ttf")
   endif(NOT DEFINED ENV{SDL2TTFDIR})
 
   if(NOT DEFINED ENV{OPENALDIR})
@@ -269,22 +276,18 @@ if ( PLATFORM_LINUX OR PLATFORM_POSIX )
     #set(ENV{OPENALDIR} "${NOMLIB_DEPS_DIR}/linux/openal")
     # FIXME(JEFF): This is a temporary workaround until we have a proper distribution
     # build of OpenAL-Soft, sourced from `vendor/openal-soft.git`
-    set(ENV{OPENALDIR} "/usr/include/AL")
+    #set(ENV{OPENALDIR} "/usr/include/AL")
   endif(NOT DEFINED ENV{OPENALDIR})
 
   if(NOT DEFINED ENV{LIBSNDFILEDIR})
-    set(ENV{LIBSNDFILEDIR} "${NOMLIB_DEPS_DIR}/linux/libsndfile")
+    #set(ENV{LIBSNDFILEDIR} "${NOMLIB_DEPS_DIR}/linux/libsndfile")
   endif(NOT DEFINED ENV{LIBSNDFILEDIR})
 
+  # DEPRECATED: Use LIBROCKETDIR
   if(NOT DEFINED ENV{LIBROCKETDIR})
-    set(ENV{LIBROCKETDIR} "${NOMLIB_DEPS_DIR}/linux/libRocket")
+    #set(ENV{LIBROCKETDIR} "${NOMLIB_DEPS_DIR}/linux/libRocket")
   endif(NOT DEFINED ENV{LIBROCKETDIR})
 endif( PLATFORM_LINUX OR PLATFORM_POSIX )
-
-# Platform-specific implementations & dependencies
-#
-# See also: nomlib's third-party/README.md
-include("deps/FetchContent/CMakeLists.txt")
 
 # List of our source code to be compiled
 add_subdirectory( ${SRC_DIR} )
@@ -390,6 +393,7 @@ if( NOT FRAMEWORK )
   # Install nomlib's icon
   install(  FILES
             "${NOMLIB_RESOURCES_DIR}/nomlib.icns"
+            "${NOMLIB_RESOURCES_DIR}/icon.png"
             DESTINATION "share/${PROJECT_NAME}"
             OPTIONAL
   )
@@ -448,8 +452,15 @@ if( NOT FRAMEWORK )
   install(  FILES
             ${PROJECT_SOURCE_DIR}/README.md
             ${PROJECT_SOURCE_DIR}/LICENSE.md
-            DESTINATION "share/doc/${PROJECT_NAME}"
+            #${CMAKE_CURRENT_BINARY_DIR}/nomlib.desktop
+            DESTINATION "share/${PROJECT_NAME}"
           )
+
+  if( EXISTS("${CMAKE_CURRENT_BINARY_DIR}/nomlib.desktop"))
+    install(  FILES
+              "${CMAKE_CURRENT_BINARY_DIR}/nomlib.desktop"
+              DESTINATION "share/${PROJECT_NAME}")
+  endif()
 
   # Install the generated documentation files
   if(NOM_BUILD_DOCS AND EXISTS "${CMAKE_BINARY_DIR}/docs/html")
@@ -507,8 +518,6 @@ configure_file( ${SRC_DIR}/revision.cpp.in ${SRC_DIR}/revision.cpp )
 
 # Uninstall make target support, i.e.: `make uninstall`
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/uninstall.cmake")
-# Generic platform distribution setup
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/packaging.cmake")
 # nomlib.pc.in -> nomlib.pc
 include(PkgConfig)
 

@@ -82,11 +82,11 @@ if( SDL2_IMAGE_FOUND )
   include_directories( ${SDL2_IMAGE_INCLUDE_DIR} )
 endif( SDL2_IMAGE_FOUND )
 
-find_package( SDL2_ttf REQUIRED )
-if( SDL2_TTF_FOUND )
+find_package(SDL2_TTF REQUIRED)
+if(SDL2_TTF_FOUND)
   # Add development header files; SDL_ttf.h
-  include_directories( ${SDL2_TTF_INCLUDE_DIR} )
-endif( SDL2_TTF_FOUND )
+  include_directories(${SDL2_TTF_INCLUDE_DIR})
+endif(SDL2_TTF_FOUND)
 
 # Common on all platforms
 set(  NOM_SYSTEM_DEPS nomlib-core nomlib-file nomlib-math

@@ -46,22 +46,6 @@ set(  NOM_SERIALIZERS_SOURCE
 # See also: nomlib's third-party/README.md
 set(JSONCPP_ROOT_DIR "${JSONCPP_SOURCE_DIR}") # jsoncpp v0.7.0
 
-if( NOT EXISTS ${JSONCPP_ROOT_DIR} )
-  message(  STATUS
-            "Could not find source tree for JsonCpp at ${JSONCPP_ROOT_DIR}; "
-            "see nomlib's third-party/README.md for help obtaining this "
-            "required dependency."
-  )
-endif( NOT EXISTS ${JSONCPP_ROOT_DIR} )
-
-if( NOT EXISTS ${RAPIDXML_INCLUDE_DIR} )
-  message(  STATUS
-            "Could not find source tree for RapidXml at ${RAPIDXML_INCLUDE_DIR}; "
-            "see nomlib's third-party/README.md for help obtaining this "
-            "required dependency."
-  )
-endif( NOT EXISTS ${RAPIDXML_INCLUDE_DIR} )
-
 set( JSONCPP_SOURCE
       ${JSONCPP_ROOT_DIR}/jsoncpp.cpp
 )

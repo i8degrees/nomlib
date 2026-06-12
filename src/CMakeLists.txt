@@ -47,11 +47,34 @@ if( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT )
   set( NOM_USE_HQX TRUE )
 endif( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT )
 
-# Stub option (not implemented)
-set( NOM_USE_SDL2_IMAGE TRUE )
+find_package(SDL2_IMAGE)
+if(SDL2_IMAGE_FOUND)
+  # Stub option (not implemented)
+  set( NOM_USE_SDL2_IMAGE TRUE )
+endif()
 
-# Stub option (not implemented)
-set( NOM_USE_SDL2_TTF TRUE )
+# We must do this before cmake reaches `src/core/... to make it in time for
+# config.hpp population!`
+find_package( SDL2_TTF 2.0...2.22)
+if( SDL2_TTF_FOUND )
+  set(NOM_USE_SDL2_TTF TRUE)
+  set(NOM_USE_SDL_TTF_MAJOR_VERSION 2)
+  set(NOM_USE_SDL_TTF_MINOR_VERSION 0)
+  set(NOM_USE_SDL_TTF_PATCH_VERSION 12)
+endif( SDL2_TTF_FOUND )
+
+find_package( SDL2_TTF 2.23...<3)
+if(SDL2_TTF_FOUND)
+  set(NOM_USE_SDL2_TTF TRUE)
+  set(NOM_USE_SDL_TTF_MAJOR_VERSION 2)
+  set(NOM_USE_SDL_TTF_MINOR_VERSION 23)
+  set(NOM_USE_SDL_TTF_PATCH_VERSION 0)
+endif()
+
+if( SDL2_TTF_FOUND )
+  # Add development header files; SDL_ttf.h & friends
+  include_directories( ${SDL2_TTF_INCLUDE_DIR} )
+endif( SDL2_TTF_FOUND )
 
 # nomlib-core
 if( NOM_BUILD_CORE_UNIT )

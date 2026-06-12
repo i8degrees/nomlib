@@ -62,6 +62,7 @@ set( EXAMPLES_INSTALL_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" )
 include_directories( "${INC_ROOT_DIR}" )
 
 # Third-party dependencies
+include_directories("${TCLAP_INCLUDE_DIR}")
 
 # nomlib-core external deps
 find_package( SDL2 REQUIRED )
@@ -87,16 +88,6 @@ if( LIBROCKET_FOUND )
   # Add development header files
   include_directories( ${LIBROCKET_INCLUDE_DIRS} )
 endif( LIBROCKET_FOUND )
-
-include_directories("${TCLAP_INCLUDE_DIR}")
-
-if( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
-  message(  STATUS
-            "Could not find header file ${TCLAP_INCLUDE_DIR} for TCLAP; "
-            "see nomlib's third-party/README.md for help obtaining this "
-            "required dependency."
-  )
-endif()
 
 if( PLATFORM_WINDOWS )
   # Build as console app -- shows cmd.exe window for logging -- only when

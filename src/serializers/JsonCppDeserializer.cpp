@@ -32,8 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/core/strings.hpp"
 
 // Private headers (third-party)
-#include "jsoncpp/json.h"
-
+#include "json/json.h"
 namespace nom {
 
 JsonCppDeserializer::JsonCppDeserializer( void ) :

@@ -70,9 +70,8 @@ set( NOM_BUILD_VTEST_TESTS ON )
 include_directories( "${INC_ROOT_DIR}" )
 
 # Third-party dependencies
-
-# Absolute path to project's third-party 'common' directory
-set( NOM_THIRD_PARTY_COMMON_DIR "${PROJECT_SOURCE_DIR}/third-party/common" )
+# TCLAP v1.2.1-release-final headers only distribution
+include_directories("${TCLAP_INCLUDE_DIR}")
 
 # nomlib-core external deps
 find_package( SDL2 REQUIRED )
@@ -105,21 +104,6 @@ else ( NOT LIBROCKET_FOUND )
   message ( FATAL_ERROR "Missing libRocket headers at ${LIBROCKET_INCLUDE_DIRS}." )
 endif ( LIBROCKET_FOUND )
 
-# third-party, headers-only dependency TCLAP
-set( TCLAP_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/vendor/tclap/include" )
-
-if( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
-  message(  FATAL_ERROR
-            "Could not find header file ${TCLAP_INCLUDE_DIR} for TCLAP; "
-            "see nomlib's third-party/README.md for help obtaining this "
-            "required dependency."
-  )
-else( EXISTS ${TCLAP_INCLUDE_DIR} )
-  # Header file inclusion; third-party -- TCLAP
-  include_directories("${TCLAP_INCLUDE_DIR}")
-  message( STATUS "TCLAP headers found: ${TCLAP_INCLUDE_DIR}" )
-endif( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
-
 if(NOM_BUILD_AUDIO_UNIT AND NOM_BUILD_AUDIO_TESTS)
   find_package(libsndfile REQUIRED)
 else()
@@ -132,24 +116,27 @@ if( PLATFORM_OSX )
 elseif( PLATFORM_WINDOWS )
   set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/windows/gtest" )
 elseif( PLATFORM_LINUX ) # PLATFORM_POSIX (?)
-    set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/linux/gtest")
-    set( GTEST_INCLUDE_DIR "${NOMLIB_DEPS_DIR}/linux/gtest/include" )
+  #set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/linux/gtest")
+  #set( GTEST_INCLUDE_DIR "${NOMLIB_DEPS_DIR}/linux/gtest/include" )
 endif ( PLATFORM_OSX )
 
-find_package ( GTest REQUIRED )
-if ( GTEST_FOUND )
-  message( STATUS "Found GoogleTest ${GTEST_ROOT}." )
-  set ( GTEST_INCLUDE_DIRS ${GTEST_ROOT}/include )
-  set ( GTEST_LIBRARY ${GTEST_ROOT}/lib/libgtest.a )
-  message( STATUS "Using GoogleTest headers: ${GTEST_INCLUDE_DIRS}." )
-  message( STATUS "Using GoogleTest library: ${GTEST_LIBRARY}." )
-  include_directories("${GTEST_INCLUDE_DIRS}")
-else ( NOT GTEST_FOUND )
-  message( STATUS "Missing GoogleTest: ${GTEST_ROOT}." )
-  message( STATUS "Missing GoogleTest headers: ${GTEST_INCLUDE_DIRS}." )
-  message( STATUS "Missing GoogleTest library: ${GTEST_LIBRARY}." )
-  message ( FATAL_ERROR "Failed to setup engine unit tests." )
-endif ( GTEST_FOUND )
+# >> This determines which build variant of GoogleTest to choose, i.e.: `MD`
+# >> implies shared library variants whereas `MT` implies static library
+# >> variants of the framework.
+# >> Defaults to MD
+#set(GTEST_MSVC_SEARCH MT)
+#find_package(GTest REQUIRED)
+#find_package(GTest)
+#if(GTest_FOUND)
+  message(STATUS "GTEST_LIBRARY=${GTEST_LIBRARY}")
+  message(STATUS "GTEST_INCLUDE_DIR=${GTEST_INCLUDE_DIR}")
+  # set(GTEST_LIBRARY "GTest::gtest")
+  # set(GTEST_LIBRARY "${GTEST_LIBRARY}")
+  include_directories("${GTEST_INCLUDE_DIR}")
+#endif(GTest_FOUND)
+find_package(Threads REQUIRED)
+
+include(GoogleTest)
 
 set(  NOM_TESTS_UNIT_TEST_SOURCE
       ${TESTS_SRC_DIR}/UnitTest/UnitTest.cpp
@@ -192,14 +179,16 @@ if( NOM_BUILD_UNIT_TEST_UNIT )
   add_library(  nomlib-unit-test ${LIBRARY_OUTPUT_TYPE}
                 ${NOM_TESTS_UNIT_TEST_SOURCE} )
   # >> Link nomlib-unit-test to GTest
-  target_link_libraries(nomlib-unit-test ${GTEST_LIBRARY} ${NOM_UNIT_TEST_LIBRARY_DEPS} )
+  # target_compile_options(nomlib-unit-test PRIVATE "-fPIC")
+  target_link_libraries(nomlib-unit-test ${GTEST_LIBRARY} Threads::Threads ${NOM_UNIT_TEST_LIBRARY_DEPS} )
 endif( NOM_BUILD_UNIT_TEST_UNIT )
 
 if( NOM_BUILD_VISUAL_UNIT_TEST_UNIT )
   set( NOM_VISUAL_UNIT_TEST_LIBRARY_DEPS nomlib-unit-test nomlib-graphics )
   add_library(  nomlib-visual-unit-test
                 ${LIBRARY_OUTPUT_TYPE} ${NOM_TESTS_VTEST_SOURCE} )
-  target_link_libraries(nomlib-visual-unit-test ${GTEST_LIBRARY} ${NOM_VISUAL_UNIT_TEST_LIBRARY_DEPS} )
+  # target_compile_options(nomlib-visual-unit-test PRIVATE "-fPIC")
+  target_link_libraries(nomlib-visual-unit-test ${GTEST_LIBRARY} Threads::Threads ${NOM_VISUAL_UNIT_TEST_LIBRARY_DEPS} )
 endif( NOM_BUILD_VISUAL_UNIT_TEST_UNIT )
 
 # >> tests dev headers

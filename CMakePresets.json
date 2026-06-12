@@ -94,7 +94,8 @@
         "EXAMPLES": "ON",
         "NOM_BUILD_TESTS": "ON",
         "NOMLIB_DEPS_DIR": "${sourceDir}/vendor",
-        "GTEST_INCLUDE_DIR": "${sourceDir}/vendor/linux/gtest/include",
+        "_GTEST_INCLUDE_DIR": "${sourceDir}/vendor/linux/gtest/include",
+        "_GTEST_ROOT": "${sourceDir}/vendor/linux/gtest",
         "NOM_USE_OPENAL": "0",
         "NOM_USE_OPENAL_SOFT": "0",
         "NOM_BUILD_AUDIO_UNIT": "off"

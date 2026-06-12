@@ -1,0 +1,32 @@
+{
+  "$schema": "https://github.com/i8degrees/nomlib.git",
+  "name": "nomlib",
+  "version": "1.0.0",
+  "dependencies": [
+    "sdl2",
+    {
+      "name": "sdl2",
+      "features": ["x11", "wayland", "vulkan"]
+    },
+    "sdl2-image", {
+      "name": "sdl2-image",
+      "features": ["tiff"]
+    },
+    "sdl2-ttf", {
+      "name": "sdl2-ttf",
+      "platform": "windows, linux",
+      "features": ["harfbuzz"]
+    },
+    "openal-soft",  {
+      "name": "openal-soft",
+      "platform": "windows, linux",
+      "features": ["pipewire", "pulseaudio"]
+    },
+    "libsndfile", {
+      "name": "libsndfile",
+      "platform": "windows, linux",
+      "features": ["external-libs"]
+    }
+  ]
+}
+

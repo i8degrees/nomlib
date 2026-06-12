@@ -34,3 +34,6 @@ vendor/prebuilt/**
 vendor**/
 wiki*/
 third-party*/
+
+vcpkg_installed/*
+

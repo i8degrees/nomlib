@@ -283,10 +283,8 @@ endif( PLATFORM_LINUX OR PLATFORM_POSIX )
 
 # Platform-specific implementations & dependencies
 #
-# Absolute path to project's third-party 'common' directory
-#
 # See also: nomlib's third-party/README.md
-set( NOM_THIRD_PARTY_COMMON_DIR "${NOMLIB_DEPS_DIR}" )
+include("deps/FetchContent/CMakeLists.txt")
 
 # List of our source code to be compiled
 add_subdirectory( ${SRC_DIR} )

@@ -63,9 +63,6 @@ include_directories( "${INC_ROOT_DIR}" )
 
 # Third-party dependencies
 
-# Absolute path to project's third-party 'common' directory
-set( NOM_THIRD_PARTY_COMMON_DIR "${PROJECT_SOURCE_DIR}/third-party/common" )
-
 # nomlib-core external deps
 find_package( SDL2 REQUIRED )
 if( SDL2_FOUND )
@@ -91,21 +88,15 @@ if( LIBROCKET_FOUND )
   include_directories( ${LIBROCKET_INCLUDE_DIRS} )
 endif( LIBROCKET_FOUND )
 
-# third-party, headers-only dependency TCLAP
-set( TCLAP_INCLUDE_DIR "${NOM_THIRD_PARTY_COMMON_DIR}/tclap" )
+include_directories("${TCLAP_INCLUDE_DIR}")
 
 if( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
-  message(  FATAL_ERROR
+  message(  STATUS
             "Could not find header file ${TCLAP_INCLUDE_DIR} for TCLAP; "
             "see nomlib's third-party/README.md for help obtaining this "
             "required dependency."
   )
-else( EXISTS ${TCLAP_INCLUDE_DIR} )
-  message( STATUS "TCLAP headers found: ${TCLAP_INCLUDE_DIR}" )
-
-  # Header file inclusion; third-party -- TCLAP
-  include_directories("${NOM_THIRD_PARTY_COMMON_DIR}")
-endif( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
+endif()
 
 if( PLATFORM_WINDOWS )
   # Build as console app -- shows cmd.exe window for logging -- only when

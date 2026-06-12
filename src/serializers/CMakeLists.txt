@@ -44,37 +44,29 @@ set(  NOM_SERIALIZERS_SOURCE
 # Absolute path to project's third-party 'common' directory
 #
 # See also: nomlib's third-party/README.md
-set( NOM_THIRD_PARTY_COMMON_DIR "${PROJECT_SOURCE_DIR}/third-party/common" )
-
-set( JSONCPP_ROOT_DIR "${NOM_THIRD_PARTY_COMMON_DIR}/jsoncpp" )
-set( RAPIDXML_INCLUDE_DIR "${NOM_THIRD_PARTY_COMMON_DIR}/rapidxml" )
+set(JSONCPP_ROOT_DIR "${JSONCPP_SOURCE_DIR}") # jsoncpp v0.7.0
 
 if( NOT EXISTS ${JSONCPP_ROOT_DIR} )
-  message(  FATAL_ERROR
+  message(  STATUS
             "Could not find source tree for JsonCpp at ${JSONCPP_ROOT_DIR}; "
             "see nomlib's third-party/README.md for help obtaining this "
             "required dependency."
   )
-else( EXISTS ${JSONCPP_ROOT_DIR} )
-  message( STATUS "Found JsonCpp: ${JSONCPP_ROOT_DIR}" )
 endif( NOT EXISTS ${JSONCPP_ROOT_DIR} )
 
 if( NOT EXISTS ${RAPIDXML_INCLUDE_DIR} )
-  message(  FATAL_ERROR
+  message(  STATUS
             "Could not find source tree for RapidXml at ${RAPIDXML_INCLUDE_DIR}; "
             "see nomlib's third-party/README.md for help obtaining this "
             "required dependency."
   )
-else( EXISTS ${RAPIDXML_INCLUDE_DIR} )
-  message( STATUS "Found RapidXml: ${RAPIDXML_INCLUDE_DIR}" )
 endif( NOT EXISTS ${RAPIDXML_INCLUDE_DIR} )
 
 set( JSONCPP_SOURCE
       ${JSONCPP_ROOT_DIR}/jsoncpp.cpp
-      ${JSONCPP_ROOT_DIR}/json.h
 )
 
-# RapidXml is headers-only
+# RapidXml by discord - v1.x is headers-only
 set(  RAPIDXML_SOURCE
       ${RAPIDXML_INCLUDE_DIR}/rapidxml.hpp
       ${RAPIDXML_INCLUDE_DIR}/rapidxml_iterators.hpp
@@ -86,7 +78,8 @@ set(  RAPIDXML_SOURCE
 list( APPEND NOM_SERIALIZERS_SOURCE ${JSONCPP_SOURCE} ${RAPIDXML_SOURCE} )
 
 # third-party headers inclusion for JsonCpp and RapidXml
-include_directories("${NOM_THIRD_PARTY_COMMON_DIR}")
+include_directories("${JSONCPP_INCLUDE_DIR}")
+include_directories("${RAPIDXML_INCLUDE_DIR}")
 
 # Separate third-party sources for IDE project files
 source_group( "third-party\\JsonCpp" FILES ${JSONCPP_SOURCE} )

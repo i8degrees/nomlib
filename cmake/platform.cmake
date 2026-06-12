@@ -78,7 +78,7 @@ elseif ( CMAKE_SYSTEM_NAME STREQUAL "Linux" ) # Tested on Ubuntu v12.04-LTS
     # nomlib began its life under c++14 on Intel Darwin Mac OSX
     set ( CMAKE_CXX_STANDARD 14 )
     # >> Modern GTest build requires a c++17 minimum
-    set ( CMAKE_CXX_STANDARD 17 )
+    set ( CMAKE_CXX_STANDARD 14 )
     set ( CMAKE_CXX_STANDARD_REQUIRED ON )
     set ( CMAKE_CXX_EXTENSIONS OFF)
 

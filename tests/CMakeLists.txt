@@ -110,33 +110,11 @@ else()
   find_package(libsndfile) # optional dependency
 endif()
 
+# GoogleTest
 # Unit test dependencies (common / global)
-if( PLATFORM_OSX )
-  set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/osx/gtest" )
-elseif( PLATFORM_WINDOWS )
-  set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/windows/gtest" )
-elseif( PLATFORM_LINUX ) # PLATFORM_POSIX (?)
-  #set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/linux/gtest")
-  #set( GTEST_INCLUDE_DIR "${NOMLIB_DEPS_DIR}/linux/gtest/include" )
-endif ( PLATFORM_OSX )
-
-# >> This determines which build variant of GoogleTest to choose, i.e.: `MD`
-# >> implies shared library variants whereas `MT` implies static library
-# >> variants of the framework.
-# >> Defaults to MD
-#set(GTEST_MSVC_SEARCH MT)
-#find_package(GTest REQUIRED)
-#find_package(GTest)
-#if(GTest_FOUND)
-  message(STATUS "GTEST_LIBRARY=${GTEST_LIBRARY}")
-  message(STATUS "GTEST_INCLUDE_DIR=${GTEST_INCLUDE_DIR}")
-  # set(GTEST_LIBRARY "GTest::gtest")
-  # set(GTEST_LIBRARY "${GTEST_LIBRARY}")
-  include_directories("${GTEST_INCLUDE_DIR}")
-#endif(GTest_FOUND)
 find_package(Threads REQUIRED)
-
-include(GoogleTest)
+include_directories("${GTEST_INCLUDE_DIR}")
+include(GoogleTest) # add_test macros
 
 set(  NOM_TESTS_UNIT_TEST_SOURCE
       ${TESTS_SRC_DIR}/UnitTest/UnitTest.cpp
@@ -179,7 +157,6 @@ if( NOM_BUILD_UNIT_TEST_UNIT )
   add_library(  nomlib-unit-test ${LIBRARY_OUTPUT_TYPE}
                 ${NOM_TESTS_UNIT_TEST_SOURCE} )
   # >> Link nomlib-unit-test to GTest
-  # target_compile_options(nomlib-unit-test PRIVATE "-fPIC")
   target_link_libraries(nomlib-unit-test ${GTEST_LIBRARY} Threads::Threads ${NOM_UNIT_TEST_LIBRARY_DEPS} )
 endif( NOM_BUILD_UNIT_TEST_UNIT )
 
@@ -187,7 +164,6 @@ if( NOM_BUILD_VISUAL_UNIT_TEST_UNIT )
   set( NOM_VISUAL_UNIT_TEST_LIBRARY_DEPS nomlib-unit-test nomlib-graphics )
   add_library(  nomlib-visual-unit-test
                 ${LIBRARY_OUTPUT_TYPE} ${NOM_TESTS_VTEST_SOURCE} )
-  # target_compile_options(nomlib-visual-unit-test PRIVATE "-fPIC")
   target_link_libraries(nomlib-visual-unit-test ${GTEST_LIBRARY} Threads::Threads ${NOM_VISUAL_UNIT_TEST_LIBRARY_DEPS} )
 endif( NOM_BUILD_VISUAL_UNIT_TEST_UNIT )
 

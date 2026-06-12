@@ -15,7 +15,7 @@
       }
     },
     {
-      "name": "debug-clang",
+      "name": "debug",
       "displayName": "Debug configuration for clang toolchain",
       "inherits": "common",
       "cacheVariables": {
@@ -25,7 +25,7 @@
       }
     },
     {
-      "name": "release-clang",
+      "name": "release",
       "displayName": "Release configuration for clang toolchain",
       "inherits": "common",
       "cacheVariables": {
@@ -47,8 +47,7 @@
         "CMAKE_CXX_COMPILER": "/usr/bin/clang-cl",
         "EXAMPLES": "ON",
         "NOM_BUILD_TESTS": "OFF",
-        "NOMLIB_DEPS_DIR": "${sourceDir}/vendor/windows",
-        "GTEST_INCLUDE_DIR": "${sourceDir}/vendor/windows/gtest/include",
+        "NOMLIB_DEPS_DIR": "${sourceDir}/vendor/prebuild",
         "NOM_USE_OPENAL": "0",
         "NOM_USE_OPENAL_SOFT": "0",
         "NOM_BUILD_AUDIO_UNIT": "off",
@@ -84,60 +83,82 @@
       }
     },
     {
-      "name": "debug-clang-linux",
-      "displayName": "debug-clang-linux",
-      "inherits": "debug-clang",
+      "name": "docker-linux",
+      "displayName": "build nomlib with docker backend - bin/docker/build.sh",
+      "inherits": "debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_INSTALL_PREFIX": "/usr/local",
+        "OPENGL_GL_PREFERENCE": "GLVND",
+        "EXAMPLES": "ON",
+        "NOM_BUILD_TESTS": "ON"
+      },
+      "environment": {
+        "SDLDIR": "${sourceDir}/vendor/prebuild/linux/sdl2",
+        "LIBROCKETDIR": "${sourceDir}/vendor/prebuild/linux/libRocket",
+        "LIBSNDFILEDIR": "${sourceDir}/vendor/prebuild/linux/libsndfile",
+        "OPENALDIR": "${sourceDir}/vendor/prebuild/linux/openal"
+      }
+    },
+    {
+      "name": "host-linux",
+      "displayName": "Build nomlib on host",
+      "inherits": "debug",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_INSTALL_PREFIX": "/usr/local",
         "OPENGL_GL_PREFERENCE": "GLVND",
         "EXAMPLES": "ON",
         "NOM_BUILD_TESTS": "ON",
-        "NOMLIB_DEPS_DIR": "${sourceDir}/vendor",
-        "_GTEST_INCLUDE_DIR": "${sourceDir}/vendor/linux/gtest/include",
-        "_GTEST_ROOT": "${sourceDir}/vendor/linux/gtest",
-        "NOM_USE_OPENAL": "0",
-        "NOM_USE_OPENAL_SOFT": "0",
-        "NOM_BUILD_AUDIO_UNIT": "off"
+        "NOMLIB_DEPS_DIR": "${sourceDir}/third-party"
+      },
+      "environment": {
+        "SDL2DIR": "${sourceDir}/third-party/linux/sdl2",
+        "SDL2TTFDIR": "${sourceDir}/third-party/linux/sdl2_ttf",
+        "SDL2IMAGEDIR": "${sourceDir}/third-party/linux/sdl2_image",
+        "LIBROCKETDIR": "${sourceDir}/third-party/linux/libRocket"
       }
     },
     {
-      "name": "release-clang-linux",
-      "inherits": "release-clang",
+      "name": "release-docker-linux",
+      "inherits": "release",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Rel",
-        "OPENGL_GL_PREFERENCE": "GLVND",
-        "EXAMPLES": "ON",
         "NOM_BUILD_TESTS": "OFF",
+        "EXAMPLES": "ON",
         "CMAKE_INSTALL_PREFIX": "/usr/local",
-        "NOMLIB_DEPS_DIR": "${sourceDir}/vendor",
-        "GTEST_INCLUDE_DIR": "${sourceDir}/vendor/linux/gtest/include",
-        "NOM_USE_OPENAL": "0",
-        "NOM_BUILD_AUDIO_UNIT": "off"
+        "NOMLIB_DEPS_DIR": "${sourceDir}/vendor/prebuild"
+      },
+      "environment": {
+        "SDLDIR": "${sourceDir}/vendor/prebuild/linux/sdl2",
+        "LIBROCKETDIR": "${sourceDir}/vendor/prebuild/linux/libRocket",
+        "LIBSNDFILEDIR": "${sourceDir}/vendor/prebuild/linux/libsndfile",
+        "OPENALDIR": "${sourceDir}/vendor/prebuild/linux/openal"
       }
     },
     {
       "name": "debug-clang-macos",
       "displayName": "debug-clang-macos",
-      "inherits": "debug-clang",
+      "inherits": "debug",
       "cacheVariables": {
+        "CMAKE_C_COMPILER": "/usr/bin/o64-clang",
+        "CMAKE_CXX_COMPILER": "/usr/bin/o64-clang++",
         "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/osxcross.cmake",
         "CMAKE_BUILD_TYPE": "Debug",
+        "DEBUG": "ON",
+        "DEBUG_ASSERT": "ON",
         "CMAKE_INSTALL_PREFIX": "/usr/local",
         "EXAMPLES": "ON",
         "FRAMEWORK": "OFF",
         "NOM_BUILD_TESTS": "OFF",
         "NOMLIB_DEPS_DIR": "${sourceDir}/third-party/macos",
-        "GTEST_INCLUDE_DIR": "${sourceDir}/third-party/osx/gtest/include",
-        "NOM_USE_OPENAL": "0",
-        "NOM_USE_OPENAL_SOFT": "0",
-        "NOM_BUILD_AUDIO_UNIT": "off",
-        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.9",
-        "SDL2_LIBRARY": "${sourceDir}/third-party/osx/SDL2.framework",
+        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.9"
+      },
+      "environment": {
+        "SDL2_LIBRARY": "${sourceDir}/third-party/osx/SDL2.framework/Versions/A/SDL2",
         "SDL2_INCLUDE_DIR": "${sourceDir}/third-party/osx/SDL2.framework/Headers/",
-        "SDL2_IMAGE_LIBRARY": "${sourceDir}/third-party/macos/SDL2_image.framework",
+        "SDL2_IMAGE_LIBRARY": "${sourceDir}/third-party/macos/SDL2_image.framework/Versions/A/SDL2_image",
         "SDL2_IMAGE_INCLUDE_DIR": "${sourceDir}/third-party/macos/SDL2_image.framework/Headers",
-        "SDL2_TTF_LIBRARY": "/app/third-party/macos/SDL2_ttf.framework/",
+        "SDL2_TTF_LIBRARY": "/app/third-party/macos/SDL2_ttf.framework/Versions/A/SDL2_ttf",
         "SDL2_TTF_INCLUDE_DIR": "/app/third-party/macos/SDL2_ttf.framework/Headers",
         "LIBROCKET_CORE_LIBRARY": "${sourceDir}/third-party/osx/librocket/lib/libRocketCore.1.dylib",
         "LIBROCKET_CONTROLS_LIBRARY": "${sourceDir}/third-party/osx/librocket/lib/libRocketControls.1.dylib",
@@ -150,16 +171,10 @@
   ],
   "buildPresets": [
     {
-      "name": "build-debug-clang-linux",
+      "name": "Build defaults on Linux",
       "description": "Build debug target using clang toolchain",
-      "displayName": "build-debug-clang-linux",
-      "configurePreset": "debug-clang-linux"
-    },
-    {
-      "name": "build-release-clang-linux",
-      "description": "Build release target using clang toolchain",
-      "displayName": "build-release-clang-linux",
-      "configurePreset": "release-clang-linux"
+      "displayName": "Build nomlib with Docker on Linux",
+      "configurePreset": "docker-linux"
     },
     {
       "name": "build-debug-clang-cl-windows",

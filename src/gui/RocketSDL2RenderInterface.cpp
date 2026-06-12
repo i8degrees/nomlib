@@ -33,7 +33,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <SDL_opengl.h>
 
-#if !(SDL_VIDEO_RENDER_OGL)
+// NOTE(JEFF): SDL_VIDEO_RENDER_OGL is not available as per the SDL2-compat library
+// available on Manjaro KDE Linux, but SDL_VIDEO_OPENGL appears to be an
+// equvialent declaration?
+#if !(SDL_VIDEO_RENDER_OGL) || !(SDL_VIDEO_OPENGL)
   #error "Only the opengl sdl backend is supported. To add support for others, see http://mdqinc.com/blog/2013/01/integrating-librocket-with-sdl-2/"
 #endif
 

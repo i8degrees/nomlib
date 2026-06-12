@@ -23,7 +23,7 @@ if [ -z "$workspace" ]; then
 fi
 
 # inside container paths
-VENDOR_PREFIX=/app/vendor
+VENDOR_PREFIX=/app/vendor/prebuild
 WORKDIR=/app
 
 #-v $(pwd)/vendor:/app/vendor \

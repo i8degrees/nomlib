@@ -3,19 +3,37 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/include/**"
+                "${workspaceFolder}/include/**",
+                "${workspaceFolder}/third-party/linux/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
-            "cStandard": "c17",
-            "cppStandard": "c++17",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
             "intelliSenseMode": "linux-clang-x64",
             "configurationProvider": "ms-vscode.makefile-tools",
             "macFrameworkPath": [
-                "~/Library/Frameworks",
-                "/usr/local/Frameworks",
                 "${workspaceFolder}/vendor/**",
                 "${workspaceFolder}/third-party/**"
+            ]
+        },
+        {
+            "name": "MacOS",
+            "includePath": [
+                "${workspaceFolder}/include/**",
+                "${workspaceFolder}/third-party/osx/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "macos-clang-x64",
+            "configurationProvider": "ms-vscode.makefile-tools",
+            "macFrameworkPath": [
+                "${workspaceFolder}/vendor/**",
+                "${workspaceFolder}/third-party/**",
+                "~/Library/Frameworks",
+                "/usr/local/Frameworks"
             ]
         }
     ],

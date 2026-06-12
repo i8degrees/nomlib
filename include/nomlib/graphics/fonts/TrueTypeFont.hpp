@@ -33,6 +33,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <memory>
 
+// Third-party headers
+//#include <SDL_ttf.h>
+
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/fonts/IFont.hpp"
 #include "nomlib/graphics/fonts/FontMetrics.hpp"
@@ -45,8 +48,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Dump the individual glyph bitmaps as PNG files
 //#define NOM_DEBUG_SDL2_TRUE_TYPE_FONT_GLYPHS_PNG
 
-// Forward declarations (Third-party)
-typedef struct _TTF_Font TTF_Font;
+// SDL2_TTF forwards compatibility check
+//
+// This implementation code was written with the assumption of SDL2_ttf
+// v2.0.12 in mind -- since then, the public headers for the project has
+// altered their internal declaration of TTF_Font. Our original forward
+// declaration becomes invalid without the following version checks.
+//
+// SEE ALSO
+// 1. https://github.com/libsdl-org/SDL_ttf/issues/372
+// SDL2_TTF forwards compatibility check
+//
+// This implementation code was written with the assumption of SDL2_ttf
+// v2.0.12 in mind -- since then, the public headers for the project has
+// altered their internal declaration of TTF_Font. Our original forward
+// declaration becomes invalid without the following version checks.
+//
+// SEE ALSO
+// 1. https://github.com/libsdl-org/SDL_ttf/issues/372
+#if defined(NOM_USE_SDL_TTF_MAJOR_VERSION) && defined(NOM_USE_SDL_TTF_MINOR_VERSION)
+  #if ((NOM_USE_SDL_TTF_MAJOR_VERSION == 2) && (NOM_USE_SDL_TTF_MINOR_VERSION >= 23))
+    // Forward declarations for SDL2 TTF v2.23.0 and greater
+    typedef struct TTF_Font TTF_Font;
+  #else
+    // Forward declarations for SDL2_TTF v2.0.12
+    typedef struct _TTF_Font TTF_Font;
+  #endif
+#endif
 
 namespace nom {
 

@@ -17,7 +17,9 @@
 			"**/CVS": true,
 			"**/.ruby-lsp": true,
 			"node_modules": true,
-			"**/node_modules": true
+			"**/node_modules": true,
+      "vendor/**": true,
+      "tmp/**": true
 		}
   }
 }

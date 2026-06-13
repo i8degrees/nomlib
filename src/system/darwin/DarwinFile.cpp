@@ -26,35 +26,44 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/system/unix/UnixFile.hpp"
+#include "nomlib/system/darwin/DarwinFile.hpp"
 
-// Private headers (third-party libs)
-#include <unistd.h>
-//#include <libgen.h>
-#include <sys/stat.h>
-#include <dirent.h>
-#include <sys/types.h>
+// Private headers (system headers)
 
-#if defined (NOM_PLATFORM_LINUX )
-  //#include <cstudio>
-#endif
+// DEPRECATED(JEFF): The API calls we use in this file I/O implementation
+// were deprecated in MacOSX 10.8 "Mountain Lion" and have been removed as
+// of MacOSX 10.15 "Catalina". The MacOSX 10.14 SDK is the last API able to
+// use the code found herein.
+#include <CoreServices/CoreServices.h>
+#include <CoreFoundation/CoreFoundation.h>
 
 // Private headers
 #include "nomlib/system/Path.hpp"
 
+// MacOSX 10.x and below has its version encoded as four digits, i.e.:
+//    MacOSX 10.14 -> 101400
+// MacOS 11+ and above has its version encoded as major-minor combos, i.e.:
+//    MacOS 13 -> 130000
+#if defined(MAC_OS_X_VERSION_MAX_ALLOWED)
+  // MacOSX 10.15 -> 101500
+  #if (MAC_OS_X_VERSION_MAX_ALLOWED >= 101500)
+    //#error "DarwinFile - this file I/O implementation is gone!"
+  #endif
+#endif
+
 namespace nom {
 
-UnixFile::UnixFile( void )
+DarwinFile::DarwinFile( void )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-UnixFile::~UnixFile( void )
+DarwinFile::~DarwinFile( void )
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-const std::string UnixFile::extension ( const std::string& file )
+const std::string DarwinFile::extension ( const std::string& file )
 {
   std::string extension = "\0";
 
@@ -67,7 +76,7 @@ const std::string UnixFile::extension ( const std::string& file )
   return extension;
 }
 
-int32 UnixFile::size ( const std::string& file_path )
+int32 DarwinFile::size ( const std::string& file_path )
 {
   struct stat file;
 
@@ -79,7 +88,7 @@ int32 UnixFile::size ( const std::string& file_path )
   return -1;
 }
 
-bool UnixFile::is_dir( const std::string& file_path )
+bool DarwinFile::is_dir( const std::string& file_path )
 {
   struct stat fp;
 
@@ -94,7 +103,7 @@ bool UnixFile::is_dir( const std::string& file_path )
   return false;
 }
 
-bool UnixFile::is_file( const std::string& file_path )
+bool DarwinFile::is_file( const std::string& file_path )
 {
   struct stat fp;
 
@@ -106,12 +115,12 @@ bool UnixFile::is_file( const std::string& file_path )
   return false;
 }
 
-bool UnixFile::exists( const std::string& file_path )
+bool DarwinFile::exists( const std::string& file_path )
 {
   return( this->is_dir( file_path ) || this->is_file( file_path ) );
 }
 
-// const std::string UnixFile::path ( const std::string& dir_path )
+// const std::string DarwinFile::path ( const std::string& dir_path )
 // {
 //   // We must do this string conversion -- from a std::string to a char
 //   // pointer -- because the c_str method returns a const char pointer, which
@@ -125,7 +134,7 @@ bool UnixFile::exists( const std::string& file_path )
 //   return dirname ( path );
 // }
 
-const std::string UnixFile::path ( const std::string& dir_path )
+const std::string DarwinFile::path ( const std::string& dir_path )
 {
   Path p; // Just to be safe, we'll let nom::Path determine our path separator!
 
@@ -141,7 +150,7 @@ const std::string UnixFile::path ( const std::string& dir_path )
   return dir_path.substr( 0, pos );
 }
 
-std::string UnixFile::currentPath( void )
+std::string DarwinFile::currentPath( void )
 {
   char path[PATH_MAX];
 
@@ -156,7 +165,7 @@ std::string UnixFile::currentPath( void )
   return cwd;
 }
 
-bool UnixFile::set_path ( const std::string& path )
+bool DarwinFile::set_path ( const std::string& path )
 {
   if ( chdir ( path.c_str() ) != 0 )
   {
@@ -167,7 +176,7 @@ NOM_LOG_ERR ( NOM, "Unknown error on attempt to change working directory to: " +
   return true;
 }
 
-const std::string UnixFile::basename ( const std::string& filename )
+const std::string DarwinFile::basename ( const std::string& filename )
 {
   nom::size_type pos = 0;
   pos = filename.find_last_of ( ".", PATH_MAX );
@@ -180,7 +189,7 @@ const std::string UnixFile::basename ( const std::string& filename )
   return filename.substr ( 0, pos );
 }
 
-std::vector<std::string> UnixFile::read_dir( const std::string& dir_path )
+std::vector<std::string> DarwinFile::read_dir( const std::string& dir_path )
 {
   DIR *dp = nullptr;
   dirent *ep = nullptr;
@@ -228,42 +237,116 @@ std::vector<std::string> UnixFile::read_dir( const std::string& dir_path )
   return files;
 }
 
-const std::string UnixFile::resource_path( const std::string& identifier )
+const std::string DarwinFile::resource_path( const std::string& identifier )
 {
-  return "\0";
+  char resources_path[ PATH_MAX ]; // file-system path
+  CFBundleRef bundle; // bundle type reference
+
+  // Look for a bundle using its identifier if string passed is not null
+  // terminated
+  if ( identifier != "\0" )
+  {
+    CFStringRef identifier_ref; // Apple's string type
+
+    identifier_ref = CFStringCreateWithCString  ( nullptr, identifier.c_str(),
+                                                  strlen ( identifier.c_str() )
+                                                );
+
+    bundle = CFBundleGetBundleWithIdentifier ( identifier_ref );
+  }
+  else // Assume that we are looking for the top-level bundle's Resources path
+  {
+    bundle = CFBundleGetMainBundle();
+  }
+
+  CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL ( bundle );
+
+  if ( ! CFURLGetFileSystemRepresentation ( resourcesURL, true, ( uint8* ) resources_path, PATH_MAX ) )
+  {
+    NOM_LOG_ERR ( NOM, "Could not obtain the bundle's Resources path." );
+
+    CFRelease ( resourcesURL );
+
+    return "\0";
+  }
+
+  CFRelease ( resourcesURL );
+
+  return resources_path;
 }
 
-//#pragma clang diagnostic push
-//#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
-const std::string UnixFile::user_documents_path( void )
+const std::string DarwinFile::user_documents_path( void )
 {
-  return "/home/jeff/Documents";
+  FSRef ref;
+  // This should return something like:
+  // $HOME/Documents == /Users/<user>/Documents
+  OSType folderType = kDocumentsFolderType;
+  char path[PATH_MAX];
+
+  FSFindFolder ( kUserDomain, folderType, kCreateFolder, &ref );
+
+  FSRefMakePath ( &ref, (uint8*) &path, PATH_MAX );
+
+  return std::string ( path );
 }
 
-const std::string UnixFile::user_app_support_path( void )
+const std::string DarwinFile::user_app_support_path( void )
 {
-  return "/home/jeff/.config";
+  FSRef ref;
+  // This should return something like:
+  // $HOME/Library/Application Support ==
+  //    /Users/<user>/Library/Application Support
+  OSType folderType = kApplicationSupportFolderType;
+  char path[PATH_MAX];
+
+  FSFindFolder ( kUserDomain, folderType, kCreateFolder, &ref );
+
+  FSRefMakePath ( &ref, (uint8*) &path, PATH_MAX );
+
+  return std::string ( path );
 }
 
-const std::string UnixFile::user_home_path( void )
+const std::string DarwinFile::user_home_path( void )
 {
-  return "/home/jeff";
+  char path[PATH_MAX];
+  FSRef ref;
+  // This should return something like:
+  // $HOME == /Users/<user>
+  OSType folderType = kCurrentUserFolderType;
+
+  FSFindFolder( kUserDomain, folderType, kCreateFolder, &ref );
+
+  FSRefMakePath( &ref, ( uint8* ) &path, PATH_MAX );
+
+  return path;
 }
 
-const std::string UnixFile::system_path( void )
+const std::string DarwinFile::system_path( void )
 {
-  return "\0";
+  char path[PATH_MAX];
+  FSRef ref;
+  // This should return something like:
+  // /System == 'macs' OSType
+  OSType folderType = kSystemFolderType;
+
+  FSFindFolder( kUserDomain, folderType, kCreateFolder, &ref );
+
+  FSRefMakePath( &ref, ( uint8* ) &path, PATH_MAX );
+
+  return path;
 }
 
-// const std::string UnixFile::system_library_path( void )
+// const std::string DarwinFile::system_library_path( void )
 // {
 //   Path p( this->system_path() );
 
 //   return p.prepend( "Library" );
 // }
 
-// const std::string UnixFile::system_fonts_path( void )
+// const std::string DarwinFile::system_fonts_path( void )
 // {
 //   Path p( this->system_library_path() );
 
@@ -272,7 +355,7 @@ const std::string UnixFile::system_path( void )
 
 //#pragma clang diagnostic pop
 
-bool UnixFile::mkdir( const std::string& path )
+bool DarwinFile::mkdir( const std::string& path )
 {
   int ret = 0;
   mode_t perms = 0755;
@@ -297,7 +380,7 @@ bool UnixFile::mkdir( const std::string& path )
   return false;
 }
 
-bool UnixFile::recursive_mkdir( const std::string& path )
+bool DarwinFile::recursive_mkdir( const std::string& path )
 {
   nom::size_type pos = std::string::npos;
 
@@ -327,7 +410,7 @@ bool UnixFile::recursive_mkdir( const std::string& path )
   return false;
 }
 
-bool UnixFile::rmdir( const std::string& path )
+bool DarwinFile::rmdir( const std::string& path )
 {
   int ret = 0;
 
@@ -343,7 +426,7 @@ bool UnixFile::rmdir( const std::string& path )
   return false;
 }
 
-bool UnixFile::mkfile( const std::string& path )
+bool DarwinFile::mkfile( const std::string& path )
 {
   std::ofstream fp;
 
@@ -361,7 +444,7 @@ bool UnixFile::mkfile( const std::string& path )
   return false;
 }
 
-std::string UnixFile::env( const std::string& path )
+std::string DarwinFile::env( const std::string& path )
 {
   char* value = nullptr;
 
@@ -376,7 +459,7 @@ std::string UnixFile::env( const std::string& path )
   return "\0";
 }
 
-nom::size_type UnixFile::num_files(const std::string& path)
+nom::size_type DarwinFile::num_files(const std::string& path)
 {
   std::vector<std::string> num_files_per_dir =
     this->read_dir(path);

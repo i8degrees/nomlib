@@ -31,21 +31,36 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Forward declarations
 #include "nomlib/system/IFile.hpp"
 
-#if defined(NOM_PLATFORM_OSX) || defined(NOM_PLATFORM_LINUX)
+#if defined(NOM_PLATFORM_LINUX) || defined(NOM_PLATFORM_POSIX)
   #include "nomlib/system/unix/UnixFile.hpp"
+// TODO(JEFF): Add the SDK version checks in [DarwinFile][1] in order to
+// ensure that we choose the correct implementation, i.e.: use the POSIX
+// impl until we have updated the DarwinFile impl to support MacOSX 10.15+.
+//
+// [1]: src/system/darwin/DarwinFile.cpp
+#elif defined(NOM_PLATFORM_OSX)
+  #include "nomlib/system/darwin/DarwinFile.hpp"
 #elif defined(NOM_PLATFORM_WINDOWS)
   #include "nomlib/system/windows/WinFile.hpp"
 #else
-  #pragma message("The file interface must be implemented for this platform")
+  #pragma message("The file interface must be implemented for your platform")
 #endif
 
 namespace nom {
 
 File::File()
 {
-#if defined (NOM_PLATFORM_WINDOWS) // Use Windows APIs
+#if defined(NOM_PLATFORM_WINDOWS) // Use Windows APIs
   this->file = std::unique_ptr<IFile> ( new WinFile() );
-#else // Assume POSIX compatibility; use POSIX / BSD & GNU APIs
+// TODO(JEFF): Add the SDK version checks in [DarwinFile][1] in order to
+// ensure that we choose the correct implementation, i.e.: use the POSIX
+// impl until we have updated the DarwinFile impl to support MacOSX 10.15+.
+//
+// [1]: src/system/darwin/DarwinFile.cpp
+#elif defined(NOM_PLATFORM_OSX) // Use Darwin APIs
+  this->file = std::unique_ptr<IFile> ( new DarwinFile() );
+#elif defined(NOM_PLATFORM_LINUX) || defined(NOM_PLATFORM_POSIX)
+  // Assume POSIX compatibility; use POSIX / BSD & GNU APIs
   this->file = std::unique_ptr<IFile> ( new UnixFile() );
 #endif
 }

@@ -132,6 +132,9 @@ const VersionInfo NOM_VERSION(@PROJECT_VERSION_MAJOR@, @PROJECT_VERSION_MINOR@, 
 /// \returns A std::string containing the top git commit ID (SHA).
 std::string revision();
 
+/// \brief Track version info from project's CMake build script
+static const std::string GIT_REVISION = "@GIT_REVISION@";
+
 } // namespace nom
 
 #endif // defined include guard

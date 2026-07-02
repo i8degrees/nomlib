@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Rocket/Core/Core.h>
 #include <Rocket/Core/RenderInterface.h>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 #if defined(NOM_PLATFORM_WINDOWS)
@@ -59,7 +60,7 @@ class RenderWindow;
 ///
 /// \todo Add support for OpenGLES and OpenGLES2 (mobile platforms).
 /// \see http://mdqinc.com/blog/2013/01/integrating-librocket-with-sdl-2
-class RocketSDL2RenderInterface: public Rocket::Core::RenderInterface
+class NOM_EXPORT RocketSDL2RenderInterface: public Rocket::Core::RenderInterface
 {
   public:
     /// \brief Initialize OpenGL with the necessary settings for libRocket and
@@ -77,7 +78,7 @@ class RocketSDL2RenderInterface: public Rocket::Core::RenderInterface
     ///
     /// \remarks This is not part of the libRocket interface, and is provided
     /// as part of nomlib's high-level initialization routines.
-    static bool gl_init( int width, int height );
+    NOM_EXPORT static bool gl_init( int width, int height );
 
     RocketSDL2RenderInterface( RenderWindow* window );
 
@@ -124,7 +125,7 @@ class RocketSDL2RenderInterface: public Rocket::Core::RenderInterface
     ///
     /// \note We bypass the use of GLEW by requesting this extension through
     /// SDL2.
-    static priv::glUseProgramObjectARB_func ctx_;
+    NOM_NO_EXPORT static priv::glUseProgramObjectARB_func ctx_;
 };
 
 } // namespace nom

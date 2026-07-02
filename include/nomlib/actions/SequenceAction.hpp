@@ -32,13 +32,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <vector>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/actions/IActionObject.hpp"
 
 namespace nom {
 
 /// \brief Run a collection of actions sequentially
-class SequenceAction: public virtual IActionObject
+class NOM_EXPORT SequenceAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.

@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <SDL.h>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Rect.hpp"
@@ -50,7 +51,7 @@ class Texture;
 /// (think: *very* fancy back-buffer).
 ///
 /// A nom::RenderWindow is lifeless without its attached Renderer buddy!
-class Renderer
+class NOM_EXPORT Renderer
 {
   public:
     /// \brief The index of the default rendering driver to use.
@@ -59,9 +60,9 @@ class Renderer
     /// driver that supports the requested rendering flags.
     ///
     /// \see nom::available_render_driver
-    static const int DEFAULT_RENDERING_DRIVER = -1;
+    NOM_EXPORT static const int DEFAULT_RENDERING_DRIVER = -1;
 
-    static const uint32 DEFAULT_RENDERER_FLAGS =
+    NOM_EXPORT static const uint32 DEFAULT_RENDERER_FLAGS =
       SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE;
 
     /// Default constructor; initializes instance to sane defaults
@@ -120,7 +121,7 @@ class Renderer
     ///
     /// \note   This method is used internally by nomlib -- nom::Renderer::caps()
     ///         is probably the API you want to use outside of nomlib.
-    static const RendererInfo caps ( SDL_Renderer* target );
+    NOM_EXPORT static const RendererInfo caps ( SDL_Renderer* target );
 
     /// \brief Set the current rendering target back to the default renderer.
     bool reset_render_target() const;

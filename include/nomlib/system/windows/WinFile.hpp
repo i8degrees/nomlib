@@ -38,13 +38,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <errno.h>
 #include <direct.h>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/system/IFile.hpp"
 
 namespace nom {
 
 /// \brief Platform-specific interface for file based access in Windows
-class WinFile: public IFile
+class NOM_EXPORT WinFile: public IFile
 {
   public:
     WinFile ( void );

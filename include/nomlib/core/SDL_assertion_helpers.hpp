@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <SDL.h>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -44,7 +45,7 @@ namespace nom {
 ///
 /// \note By default, NOM_ASSERT uses SDL's assertion facilities. This handler
 /// will do nothing when NOM_ASSERT has been disabled.
-SDL_assert_state null_assert_handler(const SDL_assert_data*, void*);
+NOM_EXPORT SDL_assert_state null_assert_handler(const SDL_assert_data*, void*);
 
 /// \brief A custom assertion callback handler for reporting failed assertions
 /// at the end of the program execution (no dialog prompt).
@@ -55,7 +56,7 @@ SDL_assert_state null_assert_handler(const SDL_assert_data*, void*);
 ///
 /// \note By default, NOM_ASSERT uses SDL's assertion facilities. This handler
 /// will do nothing when NOM_ASSERT has been disabled.
-SDL_assert_state log_assert_handler(const SDL_assert_data* item, void*);
+NOM_EXPORT SDL_assert_state log_assert_handler(const SDL_assert_data* item, void*);
 
 /// \brief Set an application-defined assertion handler.
 ///
@@ -68,7 +69,7 @@ SDL_assert_state log_assert_handler(const SDL_assert_data* item, void*);
 /// to SDL_Quit().
 ///
 /// \see https://wiki.libsdl.org/SDL_SetAssertionHandler
-void set_assertion_handler(SDL_AssertionHandler callback, void* userdata);
+NOM_EXPORT void set_assertion_handler(SDL_AssertionHandler callback, void* userdata);
 
 } // namespace nom
 

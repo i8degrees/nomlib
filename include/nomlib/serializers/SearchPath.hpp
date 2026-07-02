@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <vector>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -43,7 +44,7 @@ class IValueDeserializer;
 /// \brief Determine the directory location to use based on search prefixes
 ///
 /// \todo Add an interface for using this class without a file.
-class SearchPath
+class NOM_EXPORT SearchPath
 {
   public:
     typedef SearchPath self_type;

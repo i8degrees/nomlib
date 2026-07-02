@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SYSTEM_GAME_CONTROLLER_HPP
 #define NOMLIB_SYSTEM_GAME_CONTROLLER_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/system/Joystick.hpp"
 
@@ -43,16 +44,16 @@ namespace nom {
 /// \returns Boolean TRUE if the joystick and game controller subsystems was
 /// successfully initialized, and boolean FALSE if the joystick and game
 /// controller subsystems was **not** successfully initialized.
-bool init_game_controller_subsystem();
+NOM_EXPORT bool init_game_controller_subsystem();
 
 /// \brief Shutdown the joystick and game controller subsystems.
-void shutdown_game_controller_subsystem();
+NOM_EXPORT void shutdown_game_controller_subsystem();
 
 /// \brief Custom deleter for SDL_GameController pointers.
-void GameControllerDeleter(SDL_GameController* dev);
+NOM_EXPORT void GameControllerDeleter(SDL_GameController* dev);
 
 /// \brief SDL2 game controller interface
-class GameController
+class NOM_EXPORT GameController
 {
   public:
     /// \brief Game controller axis definitions.
@@ -95,7 +96,7 @@ class GameController
     // This issue can be reliably reproduced by adding a second
     // SDL_GameControllerClose call to test/testgamecontroller.c from the SDL
     // source repository.
-    static bool device_closed_;
+    NOM_EXPORT static bool device_closed_;
 
     typedef GameController self_type;
 
@@ -153,7 +154,7 @@ class GameController
     /// \remarks This function can be called before any joysticks are accessed.
     ///
     /// \see Joystick::num_joysticks
-    static std::string name(JoystickIndex device_index);
+    NOM_EXPORT static std::string name(JoystickIndex device_index);
 
     /// \brief Toggle the game controller's event polling state.
     ///
@@ -170,26 +171,27 @@ class GameController
     /// \note This does not disable the underlying joystick events.
     ///
     /// \see Joystick::set_event_state
-    static int set_event_state(int state);
+    NOM_EXPORT static int set_event_state(int state);
 
     /// \brief Update the current state of the opened game controllers.
     ///
     /// \remarks This method is automatically called by the internal event loop
     /// of SDL if any joystick events are enabled.
-    static void update();
+    NOM_EXPORT static void update();
 
     std::string mapping_string();
 
     /// \remarks This function can be called before any joysticks are accessed.
-    static std::string mapping_string(JoystickGUID guid);
+    NOM_EXPORT static std::string mapping_string(JoystickGUID guid);
 
     /// \todo Implement this function
+    NOM_EXPORT
     static int load_mapping_memory(const char* buffer, int buffer_size);
 
     /// \fixme This function call leaks memory from within SDL!
-    static int load_mapping_file(const std::string& filename);
+    NOM_EXPORT static int load_mapping_file(const std::string& filename);
 
-    static int load_mapping_string(const std::string& mapping);
+    NOM_EXPORT static int load_mapping_string(const std::string& mapping);
 
     /// \brief Get the instance ID of a joystick device.
     ///
@@ -202,11 +204,11 @@ class GameController
     /// \remarks This function can be called before any joysticks are accessed.
     ///
     /// \see Joystick::num_joysticks
-    static JoystickID device_id(JoystickIndex device_index);
+    NOM_EXPORT static JoystickID device_id(JoystickIndex device_index);
 
     /// \brief Check to see if the joystick is supported by SDL's game
     /// controller interface.
-    static bool compatible_joystick(JoystickIndex device_index);
+    NOM_EXPORT static bool compatible_joystick(JoystickIndex device_index);
 
   private:
     typedef std::unique_ptr<SDL_GameController, void (*)(SDL_GameController*)>
@@ -215,8 +217,8 @@ class GameController
     joystick_dev device_;
 };
 
-std::unique_ptr<GameController> make_unique_game_controller();
-std::shared_ptr<GameController> make_shared_game_controller();
+NOM_EXPORT std::unique_ptr<GameController> make_unique_game_controller();
+NOM_EXPORT std::shared_ptr<GameController> make_shared_game_controller();
 
 } // namespace nom
 

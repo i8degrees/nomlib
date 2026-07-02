@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <fstream>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/system/IFile.hpp"
 
@@ -44,7 +45,7 @@ namespace nom {
 /// \brief Platform-specific interface for file based access in Unix
 ///
 /// \see http://www.gnu.org/software/libc/manual/html_node/File-System-Interface.html#File-System-Interface
-class UnixFile: public IFile
+class NOM_EXPORT UnixFile: public IFile
 {
   public:
     UnixFile ( void );

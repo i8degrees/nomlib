@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <map>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/system/InputMapper/InputActionMapper.hpp"
 
@@ -41,7 +42,7 @@ struct Event;
 class EventHandler;
 class InputAction;
 
-struct InputActionState
+struct NOM_EXPORT InputActionState
 {
   bool active;
   InputActionMapper::ActionMap actions;
@@ -50,7 +51,7 @@ struct InputActionState
 /// \brief High-level API for collections of input action maps.
 ///
 /// \remarks See also, nom::InputActionMapper, nom::InputAction.
-class InputStateMapper
+class NOM_EXPORT InputStateMapper
 {
   public:
     typedef InputStateMapper SelfType;

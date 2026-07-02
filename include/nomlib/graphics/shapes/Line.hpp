@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Rect.hpp"
@@ -43,7 +44,7 @@ namespace nom {
 /// \todo Use SDL2's new multi-line API; see SDL_RenderDrawLines.
 ///
 /// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-03
-class Line: public Shape
+class NOM_EXPORT Line: public Shape
 {
   public:
     typedef Line self_type;

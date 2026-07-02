@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <SDL.h>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Rect.hpp"
@@ -160,46 +161,47 @@ namespace SDL_TEXTURE
 
 /// \brief Convert a SDL_BlendMode enumeration value to a nom::BlendMode
 /// enumeration value.
-BlendMode blend_mode(SDL_BlendMode mode);
+NOM_EXPORT BlendMode blend_mode(SDL_BlendMode mode);
 
 /// \brief Convert a nom::BlendMode enumeration value to a SDL_BlendMode
 /// enumeration value.
-SDL_BlendMode SDL_blend_mode(BlendMode mode);
+NOM_EXPORT SDL_BlendMode SDL_blend_mode(BlendMode mode);
 
 /// SDL data structure wrappers for nomlib
 ///
 /// \return SDL_Rect structure composed from a nom::IntRect object
-SDL_Rect SDL_RECT ( const IntRect& rectangle );
+NOM_EXPORT SDL_Rect SDL_RECT ( const IntRect& rectangle );
 
 /// \brief Convert nomlib's internal data type(s) to a SDL_Rect struct
 ///
 /// \remarks Frequently used in data passing between nomlib's SDL2 API calls.
 ///
 /// \return SDL_Rect struct composed from a nom::Point2i & nom::Size2i object.
-SDL_Rect SDL_RECT ( const Point2i& pos, const Size2i& size );
+NOM_EXPORT SDL_Rect SDL_RECT ( const Point2i& pos, const Size2i& size );
 
 /// SDL2 data structure wrappers for nomlib
 ///
 /// \return SDL_Point structure composed from a nom::Point2i object
-SDL_Point SDL_POINT ( const Point2i& );
+NOM_EXPORT SDL_Point SDL_POINT ( const Point2i& );
 
 /// SDL2 data structure wrappers for nomlib
 ///
 /// \return A SDL_Color structure composed from a nom::Color object
-SDL_Color SDL_COLOR ( const Color4i& color );
+NOM_EXPORT SDL_Color SDL_COLOR ( const Color4i& color );
 
 /// SDL helper functions for nomlib
 ///
 /// \return RGB components of a pixel represented as a nom::Color object
-const Color4i pixel ( uint32 pixel, const SDL_PixelFormat* fmt );
+NOM_EXPORT const Color4i pixel ( uint32 pixel, const SDL_PixelFormat* fmt );
 
 /// SDL helper functions for nomlib
 ///
 /// \return RGBA components of a pixel represented as a nom::Color object
+NOM_EXPORT
 const Color4i alpha_pixel ( uint32 pixel, const SDL_PixelFormat* fmt );
 
-const Color4i pixel ( uint32 pixel, uint32 fmt );
-const Color4i alpha_pixel ( uint32 pixel, uint32 fmt );
+NOM_EXPORT const Color4i pixel ( uint32 pixel, uint32 fmt );
+NOM_EXPORT const Color4i alpha_pixel ( uint32 pixel, uint32 fmt );
 
 /// SDL helper functions for nomlib
 ///
@@ -207,6 +209,7 @@ const Color4i alpha_pixel ( uint32 pixel, uint32 fmt );
 /// (color bit per pixel).
 ///
 /// \return RGB components as an unsigned integer.
+NOM_EXPORT
 uint32 RGB ( const Color4i& color, const SDL_PixelFormat* fmt );
 
 /// SDL2 helper functions for nomlib
@@ -215,7 +218,7 @@ uint32 RGB ( const Color4i& color, const SDL_PixelFormat* fmt );
 /// enum, a new SDL2 structure
 ///
 /// \return RGBA components as an unsigned integer.
-uint32 RGB ( const Color4i& color, uint32 fmt );
+NOM_EXPORT uint32 RGB ( const Color4i& color, uint32 fmt );
 
 /// SDL helper functions for nomlib
 ///
@@ -223,7 +226,7 @@ uint32 RGB ( const Color4i& color, uint32 fmt );
 /// (color bit per pixel).
 ///
 /// \return RGBA components as an unsigned integer.
-uint32 RGBA ( const Color4i& color, const SDL_PixelFormat* fmt );
+NOM_EXPORT uint32 RGBA ( const Color4i& color, const SDL_PixelFormat* fmt );
 
 /// SDL2 helper functions for nomlib
 ///
@@ -231,7 +234,7 @@ uint32 RGBA ( const Color4i& color, const SDL_PixelFormat* fmt );
 /// enum, a new SDL2 structure
 ///
 /// \return RGBA components as an unsigned integer.
-uint32 RGBA ( const Color4i& color, uint32 fmt );
+NOM_EXPORT uint32 RGBA ( const Color4i& color, uint32 fmt );
 
 /// SDL2 helper function
 ///
@@ -240,7 +243,7 @@ uint32 RGBA ( const Color4i& color, uint32 fmt );
 /// \param name   Hint to query
 ///
 /// \return Value of the queried name, or a null-terminated string if not set
-std::string hint(const std::string& name);
+NOM_EXPORT std::string hint(const std::string& name);
 
 /// SDL2 helper function
 ///
@@ -253,9 +256,9 @@ std::string hint(const std::string& name);
 /// been made, as certain hints, i.e.: SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES
 /// must be called before video initialization, whereas others depend on a valid
 /// renderer, etc.
-bool set_hint(const std::string& name, const std::string& value);
+NOM_EXPORT bool set_hint(const std::string& name, const std::string& value);
 
-const std::string PIXEL_FORMAT_NAME ( uint32 format );
+NOM_EXPORT const std::string PIXEL_FORMAT_NAME ( uint32 format );
 
 /// Save a screen shot as a Portable Network Graphics (PNG) file.
 ///
@@ -264,7 +267,7 @@ const std::string PIXEL_FORMAT_NAME ( uint32 format );
 ///
 /// \note SDL2_image appears to be saving PNG files with ARGB pixel
 /// ordering; SDL_PIXELFORMAT_ARGB8888
-bool save_png ( SDL_SURFACE::RawPtr, const std::string& filename );
+NOM_EXPORT bool save_png ( SDL_SURFACE::RawPtr, const std::string& filename );
 
 /// \brief Query for the platform's support of a rendering driver.
 ///
@@ -272,35 +275,38 @@ bool save_png ( SDL_SURFACE::RawPtr, const std::string& filename );
 ///
 /// \returns The index of the requested rendering driver on success, or
 /// negative one (-1) on failure.
-int available_render_driver(const std::string& driver);
+NOM_EXPORT int available_render_driver(const std::string& driver);
 
 namespace priv {
 
 /// Custom deleter for SDL_Window structures
-void FreeWindow ( SDL_Window* );
+NOM_EXPORT void FreeWindow ( SDL_Window* );
 
 /// Custom deleter for SDL_Renderer structures
-void FreeRenderTarget ( SDL_Renderer* );
+NOM_EXPORT void FreeRenderTarget ( SDL_Renderer* );
 
 /// Custom deleter for SDL_Texture structures
-void FreeTexture ( SDL_Texture* );
+NOM_EXPORT void FreeTexture ( SDL_Texture* );
 
 /// Custom deleter for SDL_Surface structures
-void FreeSurface ( SDL_Surface* );
+NOM_EXPORT void FreeSurface ( SDL_Surface* );
 
 /// Custom deleter for TTF_Font* structures
-void TTF_FreeFont ( TTF_Font* );
+NOM_EXPORT void TTF_FreeFont ( TTF_Font* );
 
 } // namespace priv
 } // namespace nom
 
 /// \brief Output operator overload for SDL_Point (debugging aid)
+NOM_EXPORT
 std::ostream& operator <<( std::ostream& os, const SDL_Point& pos );
 
 /// \brief Output operator overload for SDL_Rect (debugging aid)
+NOM_EXPORT
 std::ostream& operator <<( std::ostream& os, const SDL_Rect& rect );
 
 /// \brief Output operator overload for SDL_Color (debugging aid)
+NOM_EXPORT
 std::ostream& operator <<( std::ostream& os, const SDL_Color& color );
 
 #endif // include guard defined

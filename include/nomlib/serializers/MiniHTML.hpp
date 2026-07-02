@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <list>
 #include <sstream>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/serializers/serializers_config.hpp"
 
@@ -43,7 +44,7 @@ namespace nom {
 /// \brief The following is a very simple representation of the HTML DOM.
 /// It's sole purpose is outputting formatted html documents, there
 /// are no provisions for traversal, parsing, etc.
-class HTMLNode
+class NOM_EXPORT HTMLNode
 {
   public:
     HTMLNode( void );
@@ -53,7 +54,7 @@ class HTMLNode
 };
 
 /// \brief A plain text node (cannot have children, text only).
-class HTMLTextNode: public HTMLNode
+class NOM_EXPORT HTMLTextNode: public HTMLNode
 {
   public:
     HTMLTextNode( const std::string& text );
@@ -68,7 +69,7 @@ class HTMLTextNode: public HTMLNode
 
 /// \brief An HTML element, can contain children (either text or other
 /// elements), as well as storing a list of attributes.
-class HTMLElement: public HTMLNode
+class NOM_EXPORT HTMLElement: public HTMLNode
 {
   public:
     HTMLElement( void );

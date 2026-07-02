@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <map>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/system/GameController.hpp"
 
@@ -41,7 +42,7 @@ namespace nom {
 class GameController;
 
 /// \brief Internal management of hot-pluggable joystick devices handling
-class GameControllerEventHandler
+class NOM_EXPORT GameControllerEventHandler
 {
   public:
     GameControllerEventHandler();

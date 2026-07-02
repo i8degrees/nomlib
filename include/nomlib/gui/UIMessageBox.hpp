@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/gui/UIWidget.hpp"
 #include "nomlib/math/Point2.hpp"
@@ -42,7 +43,7 @@ namespace nom {
 /// \brief Simple message box model
 ///
 /// \todo Check for valid element IDs
-class UIMessageBox: public UIWidget
+class NOM_EXPORT UIMessageBox: public UIWidget
 {
   public:
     typedef UIMessageBox self_type;

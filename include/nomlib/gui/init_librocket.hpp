@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_GUI_INIT_LIBROCKET_HPP
 #define NOMLIB_GUI_INIT_LIBROCKET_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 // Forward declarations (third-party)
@@ -56,17 +57,19 @@ namespace nom {
 /// \see nom::UIContext.
 /// \see nom::RocketFileInterface
 /// \see nom::RocketSDL2SystemInterface
+NOM_EXPORT
 bool init_librocket(  Rocket::Core::FileInterface* fs,
                       Rocket::Core::SystemInterface* sys );
 
 /// \brief Shutdown libRocket interface.
-void shutdown_librocket();
+NOM_EXPORT void shutdown_librocket();
 
 /// \brief Return the compiled version libRocket in use with nomlib.
 ///
 /// \params flags Reserved for future use.
 ///
 /// \see examples/device_info.cpp
+NOM_EXPORT
 std::string version_librocket(uint32_t flags = 0);
 
 } // namespace nom

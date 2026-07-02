@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <Rocket/Core/Decorator.h>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -44,7 +45,7 @@ class Texture;
 ///
 /// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Decorators
 /// \see http://librocket.com/wiki/documentation/RCSS/Decorators
-class DecoratorSpriteBatch: public Rocket::Core::Decorator
+class NOM_EXPORT DecoratorSpriteBatch: public Rocket::Core::Decorator
 {
   public:
     /// \brief Default constructor.

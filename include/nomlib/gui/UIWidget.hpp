@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point2.hpp"
 #include "nomlib/math/Size2.hpp"
@@ -42,7 +43,7 @@ namespace nom {
 class UIEventListener;
 class UIContext;
 
-class UIWidget
+class NOM_EXPORT UIWidget
 {
   public:
     typedef UIWidget self_type;

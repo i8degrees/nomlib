@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <vector>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/actions/IActionObject.hpp"
 
@@ -41,7 +42,7 @@ namespace nom {
 struct group_action;
 
 /// \brief Run a collection of actions together (in parallel)
-class GroupAction: public virtual IActionObject
+class NOM_EXPORT GroupAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.

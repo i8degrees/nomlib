@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Third-party headers
 //#include <SDL_ttf.h>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/fonts/IFont.hpp"
 #include "nomlib/graphics/fonts/FontMetrics.hpp"
@@ -82,7 +83,7 @@ namespace nom {
 class Image;
 
 /// \brief TrueType fonts renderer
-class TrueTypeFont: public IFont
+class NOM_EXPORT TrueTypeFont: public IFont
 {
   public:
     typedef TrueTypeFont self_type;

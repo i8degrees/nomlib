@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/actions/IActionObject.hpp"
 
@@ -40,7 +41,7 @@ namespace nom {
 class SpriteBatch;
 
 /// \brief Animate a sprite using a sprite sheet
-class SpriteBatchAction: public virtual IActionObject
+class NOM_EXPORT SpriteBatchAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.

@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SYSTEM_PTREE_VALUE_ITERATOR_HPP
 #define NOMLIB_SYSTEM_PTREE_VALUE_ITERATOR_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/ptree/ptree_config.hpp"
 #include "nomlib/ptree/ptree_forwards.hpp"
@@ -36,7 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-class ValueIterator: public ValueIteratorBase
+class NOM_EXPORT ValueIterator: public ValueIteratorBase
 {
   public:
     typedef ValueIterator SelfType;

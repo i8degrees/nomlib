@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <map>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/fonts/Glyph.hpp"
 #include "nomlib/graphics/fonts/FontRow.hpp"
@@ -41,7 +42,7 @@ namespace nom {
 class Image;
 
 /// \brief Container structure for font data
-struct FontPage
+struct NOM_EXPORT FontPage
 {
   /// \brief Default constructor; initialize the font page to its empty state.
   FontPage();

@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sstream>
 #include <fstream>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/serializers/serializers_config.hpp"
 #include "nomlib/serializers/IValueSerializer.hpp"
@@ -55,11 +56,11 @@ namespace nom {
 /// \brief Number of spaces to pass to JsonCpp for indention.
 ///
 /// \remarks Two space tabbed indention.
-const std::string JSONCPP_INDENTION_LEVEL = "  ";
+NOM_EXPORT const std::string JSONCPP_INDENTION_LEVEL = "  ";
 
 /// \brief Saving of nom::Value objects to JSON documents using the JsonCpp
 /// library.
-class JsonCppSerializer: public IValueSerializer
+class NOM_EXPORT JsonCppSerializer: public IValueSerializer
 {
   public:
     typedef JsonCppSerializer SelfType;
@@ -120,7 +121,7 @@ class JsonCppSerializer: public IValueSerializer
     bool write_object( const Value& object, Json::Value& dest ) const;
 };
 
-std::unique_ptr<IValueSerializer> make_unique_json_serializer();
+NOM_EXPORT std::unique_ptr<IValueSerializer> make_unique_json_serializer();
 
 } // namespace nom
 

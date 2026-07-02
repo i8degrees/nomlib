@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Rocket/Core/Input.h>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/gui/IUIEventHandler.hpp"
 
@@ -41,7 +42,7 @@ class UIContext;
 struct Event;
 
 /// \brief The default event handler interface for a nom::UIContext
-class UIContextEventHandler: public IUIEventHandler
+class NOM_EXPORT UIContextEventHandler: public IUIEventHandler
 {
   public:
     typedef UIContextEventHandler self_type;

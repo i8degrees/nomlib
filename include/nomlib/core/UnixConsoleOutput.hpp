@@ -31,8 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
-
 #include "nomlib/core/ConsoleOutput.hpp"
 
 namespace nom {
@@ -40,7 +40,7 @@ namespace nom {
 /// \see http://misc.flogisoft.com/bash/tip_colors_and_formatting
 /// \see http://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 /// \see http://pubs.opengroup.org/onlinepubs/009695399/functions/isatty.html
-class UnixConsoleOutput: public ConsoleOutput
+class NOM_EXPORT UnixConsoleOutput: public ConsoleOutput
 {
   public:
     UnixConsoleOutput();

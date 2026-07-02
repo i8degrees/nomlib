@@ -32,8 +32,8 @@ namespace nom {
 
 namespace priv {
 
-std::random_device rd;
-std::default_random_engine rd_generator;
+NOM_EXPORT std::random_device rd;
+NOM_EXPORT std::default_random_engine rd_generator;
 
 } // namespace priv
 

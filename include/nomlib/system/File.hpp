@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <vector>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/system/IFile.hpp"
 
@@ -51,7 +52,7 @@ namespace nom {
 class IFile;
 
 /// \brief Platform-agnostic file system interface
-class File
+class NOM_EXPORT File
 {
   public:
     File();
@@ -122,7 +123,7 @@ class File
 namespace priv {
 
 /// \brief The root directory path.
-extern std::string file_root_;
+NOM_EXPORT extern std::string file_root_;
 
 } // namespace priv
 
@@ -131,7 +132,7 @@ extern std::string file_root_;
 /// \returns A string containing the directory path root.
 ///
 /// \see nom::set_file_root.
-std::string file_root();
+NOM_EXPORT std::string file_root();
 
 /// \brief Set the root directory path.
 ///
@@ -141,7 +142,7 @@ std::string file_root();
 /// prepend onto a file name to form a complete, absolute path.
 ///
 /// \see nom::BMFont::build
-void set_file_root(const std::string& root);
+NOM_EXPORT void set_file_root(const std::string& root);
 
 } // namespace nom
 

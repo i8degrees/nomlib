@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 #include <Rocket/Core/String.h>
@@ -66,7 +67,7 @@ namespace nom {
  */
 
 /// \brief Filesystem interfacing bridge between libRocket and nomlib
-class RocketFileInterface: public Rocket::Core::FileInterface
+class NOM_EXPORT RocketFileInterface: public Rocket::Core::FileInterface
 {
   public:
     RocketFileInterface( const std::string& root );

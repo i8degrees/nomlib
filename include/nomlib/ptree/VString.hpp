@@ -31,13 +31,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cstring>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
 
 typedef nom::size_type ArrayIndex;
 
-class VString
+class NOM_EXPORT VString
 {
   public:
     typedef VString self_type;

@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <random>
 #include <cmath>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point2.hpp"
 #include "nomlib/math/Size2.hpp"
@@ -58,7 +59,7 @@ extern std::default_random_engine rd_generator;
 /// random number generators provided by nomlib.
 ///
 /// \see nom::uniform_int_rand, nom::uniform_real_rand.
-void init_rand(uint32 seed_seq);
+NOM_EXPORT void init_rand(uint32 seed_seq);
 
 /// \brief Generate a random number.
 ///
@@ -66,7 +67,7 @@ void init_rand(uint32 seed_seq);
 ///
 /// \remarks This function should only be used with signed or unsigned integers.
 template <typename T>
-inline T uniform_int_rand(T start_range, T end_range)
+NOM_EXPORT inline T uniform_int_rand(T start_range, T end_range)
 {
   std::uniform_int_distribution<T> distribution(start_range, end_range);
 
@@ -79,7 +80,7 @@ inline T uniform_int_rand(T start_range, T end_range)
 ///
 /// \remarks This function should only be used with float or double numbers.
 template <typename T>
-inline T uniform_real_rand(T start_range, T end_range)
+NOM_EXPORT inline T uniform_real_rand(T start_range, T end_range)
 {
   std::uniform_real_distribution<T> distribution(start_range, end_range);
 

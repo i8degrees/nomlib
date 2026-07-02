@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_LIBROCKET_IUIEVENT_HANDLER_HPP
 #define NOMLIB_LIBROCKET_IUIEVENT_HANDLER_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -37,7 +38,7 @@ namespace nom {
 struct Event;
 
 /// \brief Interface for a nom::UIContext event processing loop
-class IUIEventHandler
+class NOM_EXPORT IUIEventHandler
 {
   public:
     typedef IUIEventHandler self_type;

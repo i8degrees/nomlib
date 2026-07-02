@@ -31,13 +31,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/gui/Decorator.hpp"
 
 namespace nom {
 
 /// \brief Final Fantasy theme widget style.
-class FinalFantasyDecorator: public Decorator
+class NOM_EXPORT FinalFantasyDecorator: public Decorator
 {
   public:
     typedef FinalFantasyDecorator self_type;

@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Point2.hpp"
@@ -41,7 +42,7 @@ namespace nom {
 /// \brief 2D Point (pixel representation)
 ///
 /// \todo Use SDL2's new multi-point API; see SDL_RenderDrawPoints.
-class Point: public Shape
+class NOM_EXPORT Point: public Shape
 {
   public:
     /// \brief Default constructor.

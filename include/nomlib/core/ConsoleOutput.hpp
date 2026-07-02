@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -40,7 +41,7 @@ namespace nom {
 /// \remarks This is intended to be a minimal interface for debug logging aid.
 ///
 /// \see nom::SDL2Logger
-class ConsoleOutput
+class NOM_EXPORT ConsoleOutput
 {
   public:
     enum Color

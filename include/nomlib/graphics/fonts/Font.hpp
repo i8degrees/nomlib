@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_GRAPHICS_FONTS_FONT_HPP
 #define NOMLIB_GRAPHICS_FONTS_FONT_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/fonts/IFont.hpp"
 
@@ -37,7 +38,7 @@ namespace nom {
 /// \brief Font interface wrapper for nom::IFont derived objects.
 ///
 /// \see nom::IFont, nom::BitmapFont, nom::TrueTypeFont, nom::BMFont
-class Font
+class NOM_EXPORT Font
 {
   public:
     typedef Font self_type;

@@ -29,13 +29,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_GRAPHICS_SHAPES_SHAPE_HPP
 #define NOMLIB_GRAPHICS_SHAPES_SHAPE_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/math/Color4.hpp"
 
 namespace nom {
 
-class Shape: public Transformable
+class NOM_EXPORT Shape: public Transformable
 {
   public:
     typedef Shape self_type;

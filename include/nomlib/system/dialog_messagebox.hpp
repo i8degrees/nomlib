@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <SDL.h>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -57,6 +58,7 @@ enum MessageBoxType
 /// \todo
 /// Implement a fall-back mechanism for when video subsystem fails to initialize
 /// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-03
+NOM_EXPORT
 int32 DialogMessageBox  (
                           const std::string& title, const std::string& message,
                           enum MessageBoxType type = NOM_DIALOG_INFORMATION,

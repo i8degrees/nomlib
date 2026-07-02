@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <SDL.h>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Rect.hpp"
 #include "nomlib/math/Color4.hpp"
@@ -48,12 +49,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Custom deleter for void* return of Renderer::pixels()
-struct PixelsDeleter
+struct NOM_EXPORT PixelsDeleter
 {
   void operator()(void* ptr);
 };
 
-class RenderWindow: public Renderer
+class NOM_EXPORT RenderWindow: public Renderer
 {
   public:
     typedef RenderWindow SelfType;
@@ -221,7 +222,7 @@ class RenderWindow: public Renderer
     /// \todo Is there a reason why this is a static method???
     ///
     /// \todo Rename to window_from_id?
-    static SDL_WINDOW::RawPtr window_id( uint32 id );
+    NOM_EXPORT static SDL_WINDOW::RawPtr window_id( uint32 id );
 
     /// \brief Get the display index associated with this window.
     ///
@@ -237,7 +238,7 @@ class RenderWindow: public Renderer
     /// string on failure.
     ///
     /// \remarks The display name is platform-dependent.
-    static std::string display_name(int display_id);
+    NOM_EXPORT static std::string display_name(int display_id);
 
     /// \brief Get the display name associated with this window.
     ///
@@ -360,21 +361,21 @@ class RenderWindow: public Renderer
     ///
     /// \remarks  Used internally within nomlib for automatically using the
     ///           active context -- set by nom::RenderWindow::make_current.
-    static SDL_Renderer* context( void );
+    NOM_EXPORT static SDL_Renderer* context( void );
 
     /// \brief Get the number of available video displays.
     ///
     /// \returns The number of video displays -- a number greater than or equal
     /// to one (1) on success, or a negative number on failure.
-    static int num_video_displays();
+    NOM_EXPORT static int num_video_displays();
 
   private:
     /// \brief  Set a new nom::RenderWindow as the active rendering context; we must
     ///         always have a context active at any given time for generating
     ///         resources -- nom::Texture, nom::Image, etc.
-    static void set_context ( RenderWindow::RawPtr window );
+    NOM_NO_EXPORT static void set_context ( RenderWindow::RawPtr window );
 
-    static SDL_Renderer* context_;
+    NOM_NO_EXPORT static SDL_Renderer* context_;
 
     SDL_WINDOW::UniquePtr window_;
 
@@ -401,8 +402,8 @@ extern RenderWindow* render_dev_;
 
 } // namespace priv
 
-RenderWindow* render_interface();
-void set_render_interface(RenderWindow& win);
+NOM_EXPORT RenderWindow* render_interface();
+NOM_EXPORT void set_render_interface(RenderWindow& win);
 
 } // namespace nom
 

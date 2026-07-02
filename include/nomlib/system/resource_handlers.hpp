@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -45,7 +46,7 @@ class IFont;
 /// and nom::TrueTypeFont objects are marked as sharable nom::Font objects.
 ///
 /// \see nom::ResourceCache, nom::Font, nom::SDLApp::initialize.
-void create_font( const ResourceFile& res, IFont* font );
+NOM_EXPORT void create_font( const ResourceFile& res, IFont* font );
 
 } // namespace nom
 

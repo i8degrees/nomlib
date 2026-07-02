@@ -34,12 +34,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstring>
 #include <vector>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
 
 /// \brief Abstract interface class for Platform-agnostic file access
-class IFile
+class NOM_EXPORT IFile
 {
   public:
     IFile ( void ) {}

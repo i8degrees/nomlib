@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_CORE_UNIQUE_PTR_HPP
 #define NOMLIB_CORE_UNIQUE_PTR_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 #include <memory>
@@ -46,13 +47,13 @@ namespace nom {
 ///
 /// 1. http://stackoverflow.com/questions/7038357/make-unique-and-perfect-forwarding
 template<typename T, typename... Args>
-std::unique_ptr<T> make_unique(Args&&... args)
+NOM_EXPORT std::unique_ptr<T> make_unique(Args&&... args)
 {
   return std::unique_ptr<T>(new T(std::forward<Args>(args) ...));
 }
 
 template<typename T>
-inline std::string make_str(const T& str)
+NOM_EXPORT inline std::string make_str(const T& str)
 {
   std::string result = std::to_string(str);
   return result;

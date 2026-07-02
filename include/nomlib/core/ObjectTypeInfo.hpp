@@ -32,12 +32,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <typeinfo>   // std::type_info (typeid)
 #include <typeindex>  // std::type_index
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
 
 /// \brief Run-time type information (RTTI) container class.
-class ObjectTypeInfo
+class NOM_EXPORT ObjectTypeInfo
 {
   public:
     typedef ObjectTypeInfo self_type;
@@ -125,7 +126,7 @@ class ObjectTypeInfo
 /// \remarks This wrapper structure should always be used (instead of typeid),
 /// in order to encapsulate functionality that is subject to availability.
 template<typename T>
-struct RTTIObject
+struct NOM_EXPORT RTTIObject
 {
   typedef T type;
 };
@@ -140,7 +141,7 @@ struct RTTIObject
 /// all platforms support RTII, nor do the supported platforms implement
 /// specifics the same (i.e.: name strings).
 template<class T>
-static ObjectTypeInfo ObjectType()
+NOM_EXPORT static ObjectTypeInfo ObjectType()
 {
   return ObjectTypeInfo( typeid( RTTIObject<T> ) );
 }

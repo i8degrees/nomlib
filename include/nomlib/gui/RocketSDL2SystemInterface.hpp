@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <functional>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 #include <Rocket/Core/SystemInterface.h>
@@ -43,7 +44,7 @@ namespace nom {
 /// \brief System interfacing bridge between libRocket and nomlib
 ///
 /// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Input
-class RocketSDL2SystemInterface: public Rocket::Core::SystemInterface
+class NOM_EXPORT RocketSDL2SystemInterface: public Rocket::Core::SystemInterface
 {
   public:
     virtual ~RocketSDL2SystemInterface();

@@ -55,7 +55,7 @@ if(NOM_INSTALL_PKGCONFIG_SUPPORT)
   )
 endif(NOM_INSTALL_PKGCONFIG_SUPPORT)
 
-# Install nomlib's icon
+# Install nomlib's icon files
 install(  FILES
           "${NOMLIB_RESOURCES_DIR}/nomlib.icns"
           "${NOMLIB_RESOURCES_DIR}/icon.png"
@@ -64,19 +64,13 @@ install(  FILES
           COMPONENT Core
 )
 
-# Install hardware definitions for input devices (game controllers)
-install(DIRECTORY "${NOMLIB_SHARED_SUPPORT_DIR}/InputDevices"
-  DESTINATION
-    "${CMAKE_INSTALL_DATAROOTDIR}/nomlib/Resources"
-  OPTIONAL
-  COMPONENT Core
-  PATTERN ".*" EXCLUDE
-)
 
 # Install software license & general project information
 install(  FILES
           ${PROJECT_SOURCE_DIR}/README.md
           ${PROJECT_SOURCE_DIR}/LICENSE.md
+          # Install hardware definitions for input devices (game controllers)
+          "${gcdb_SOURCE_DIR}/gamecontrollerdb.txt"
           DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/nomlib"
           COMPONENT Core
         )

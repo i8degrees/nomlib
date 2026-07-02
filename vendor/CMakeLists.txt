@@ -88,6 +88,17 @@ FetchContent_Declare(
   PATCH_COMMAND   patch -i "${PATCHES_DIR}/rapidxml_bug16.patch"
 )
 
+set(GCDB_TAG "master")
+set(GCDB_URL "https://github.com/mdqinc/SDL_GameControllerDB/archive/refs/heads/${GCDB_TAG}.zip")
+set(GCDB_MD5 "445e33046f12359d9566dd8fa89da60c")
+set(GCDB_SHA512 "f2f7cc2b6e90977e31cb9754a70d730de24e7f2a1d242bbefb97adbe0feb378702ee76cfd0d33a7f4bbb6f1c4dc70e8d30cc84e2e2652a66fa82c173a7c09a97")
+FetchContent_Declare(
+  gamecontroller_db
+  URL             "${GCDB_URL}"
+  URL_MD5         "${GCDB_MD5}"
+  URL_HASH        "SHA512=${GCDB_SHA512}"
+)
+
 #
 ## build settings
 #
@@ -100,7 +111,7 @@ set(JSONCPP_WITH_POST_BUILD_UNITTEST OFF CACHE INTERNAL "prevent cache pollution
 set(JSONCPP_WITH_PKGCONFIG_SUPPORT OFF CACHE INTERNAL "prevent cache pollution")
 set(JSONCPP_WITH_CMAKE_PACKAGE OFF CACHE INTERNAL "prevent cache pollution")
 
-FetchContent_MakeAvailable(jsoncpp tclap rapidxml)
+FetchContent_MakeAvailable(jsoncpp tclap rapidxml gamecontroller_db)
 
 #
 ## Internal env
@@ -111,6 +122,7 @@ set(JSONCPP_SOURCE_DIR "${CMAKE_BINARY_DIR}/_deps/jsoncpp-src/dist" CACHE PATH "
 set(JSONCPP_INCLUDE_DIR "${CMAKE_BINARY_DIR}/_deps/jsoncpp-src/dist" CACHE PATH "jsoncpp headers tree")
 set(TCLAP_INCLUDE_DIR "${CMAKE_BINARY_DIR}/_deps/tclap-src/include" CACHE PATH "tclap headers tree")
 set(RAPIDXML_INCLUDE_DIR "${CMAKE_BINARY_DIR}/_deps/rapidxml-src" CACHE PATH "rapidxml headers tree")
+set(gcdb_SOURCE_DIR "${CMAKE_BINARY_DIR}/_deps/gamecontroller_db-src" CACHE PATH "SDL_gamecontrollerDB source tree")
 
 if(BUILD_TESTS)
   add_subdirectory("${PROJECT_SOURCE_DIR}/vendor/googletest")

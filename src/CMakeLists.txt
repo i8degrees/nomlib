@@ -1,122 +1,63 @@
-# Project modules source tree root
+# src/CMakeLists.txt:jeff
+#
+# Project modules source tree
 
 # Use common build output directories for MSVCPP && Xcode project files.
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+
+# Auto-generation for NOM_EXPORT macros, i.e.: __declspec(dllexport) when
+# building DLL shared library targets (MS Windows)
+include(GenerateExportHeader)
+
+# This module is required for finding the current git SHA we are at
+include(GetGitRevisionNumber)
+
+set(SDL2_BUILDING_LIBRARY true) # Do not link SDL2main; we do this explicitly
+
 #
-# IMPORTANT: Debug and Release build targets **must** be kept in separate build
-# trees!
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/Debug")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/Release")
+## config.hpp.in (CMake template) -> config.hpp
+#
+### Environment variables we set that influence the settings in config.hpp
+#
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/Debug")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/Release")
-
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/Debug")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/Release")
-
-if(DEBUG)
-  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG})
-  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG})
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG})
-else() # Release builds
-  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE})
-  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE})
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE})
+if(SDL2_FOUND)
+  set(NOM_USE_SDL2_ASSERT FALSE)
+  set(NOM_USE_SDL2 TRUE)         # TODO: add to config.hpp.in
 endif()
 
-# Third-party dependencies
+if(NOM_BUILD_GUI_UNIT)
+  set(NOM_USE_LIBROCKET TRUE)
+  # set(NOM_USE_LIBROCKET_LUA FALSE)
+  # set(NOM_USE_LIBROCKET_PYTHON FALSE)
+endif(NOM_BUILD_GUI_UNIT)
 
-# SDL2 is required by nomlib-core, which is a required dependency among all
-# other modules.
-set( SDL2_BUILDING_LIBRARY true ) # Do not link SDL2main; we do this explicitly
-find_package( SDL2 REQUIRED )
-if( SDL2_FOUND )
-  include_directories( ${SDL2_INCLUDE_DIR} )
-endif( SDL2_FOUND )
+if(NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT)
+  set(NOM_USE_SCALEX TRUE)
+  set(NOM_USE_HQX TRUE)
+endif(NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT)
 
-# These variables influence preprocessor definitions for config.hpp.in --
-# part of nomlib-core
-if( NOM_BUILD_GUI_UNIT )
-  set( NOM_USE_LIBROCKET TRUE )
-  # TODO: include and library paths need to be added to
-  # cmake/modules/FindLibRocket.cmake
-  # set( NOM_USE_LIBROCKET_LUA FALSE )
-endif( NOM_BUILD_GUI_UNIT )
+if(SDL2_image_FOUND)
+  set(NOM_USE_SDL2_IMAGE TRUE)
+endif(SDL2_image_FOUND)
 
-if( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT )
-  set( NOM_USE_SCALEX TRUE )
-  set( NOM_USE_HQX TRUE )
-endif( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT )
-
-find_package(SDL2_IMAGE)
-if(SDL2_IMAGE_FOUND)
-  # Stub option (not implemented)
-  set( NOM_USE_SDL2_IMAGE TRUE )
-endif()
-
-# We must do this before cmake reaches `src/core/... to make it in time for
-# config.hpp population!`
-find_package( SDL2_TTF 2.0...2.22)
-if( SDL2_TTF_FOUND )
+find_package(SDL2_TTF 2.0...2.22)
+if(SDL2_TTF_FOUND)
   set(NOM_USE_SDL2_TTF TRUE)
   set(NOM_USE_SDL_TTF_MAJOR_VERSION 2)
   set(NOM_USE_SDL_TTF_MINOR_VERSION 0)
   set(NOM_USE_SDL_TTF_PATCH_VERSION 12)
-endif( SDL2_TTF_FOUND )
+endif(SDL2_TTF_FOUND)
 
-find_package( SDL2_TTF 2.23...<3)
+find_package(SDL2_TTF 2.23...<3)
 if(SDL2_TTF_FOUND)
   set(NOM_USE_SDL2_TTF TRUE)
   set(NOM_USE_SDL_TTF_MAJOR_VERSION 2)
   set(NOM_USE_SDL_TTF_MINOR_VERSION 23)
   set(NOM_USE_SDL_TTF_PATCH_VERSION 0)
-endif()
+endif(SDL2_TTF_FOUND)
 
-if( SDL2_TTF_FOUND )
-  # Add development header files; SDL_ttf.h & friends
-  include_directories( ${SDL2_TTF_INCLUDE_DIR} )
-endif( SDL2_TTF_FOUND )
-
-# nomlib-core
-if( NOM_BUILD_CORE_UNIT )
-  add_subdirectory("core")
-endif( NOM_BUILD_CORE_UNIT )
-
-# nomlib-file
-if( NOM_BUILD_FILE_UNIT )
-  add_subdirectory("file")
-endif( NOM_BUILD_FILE_UNIT )
-
-# nomlib-math
-if( NOM_BUILD_MATH_UNIT )
-  add_subdirectory("math")
-endif( NOM_BUILD_MATH_UNIT )
-
-# nomlib-ptree
-if( NOM_BUILD_PTREE_UNIT )
-  add_subdirectory("ptree")
-endif( NOM_BUILD_PTREE_UNIT )
-
-# nomlib-serializers
-if( NOM_BUILD_SERIALIZERS_UNIT )
-  add_subdirectory("serializers")
-endif( NOM_BUILD_SERIALIZERS_UNIT )
-
-# nomlib-system
-if( NOM_BUILD_SYSTEM_UNIT )
-  add_subdirectory("system")
-endif( NOM_BUILD_SYSTEM_UNIT )
-
-# nomlib-graphics
-if(NOM_BUILD_GRAPHICS_UNIT)
-  add_subdirectory("graphics")
-endif(NOM_BUILD_GRAPHICS_UNIT)
-
-# nomlib-gui
-if( NOM_BUILD_GUI_UNIT )
-  add_subdirectory("gui")
-endif( NOM_BUILD_GUI_UNIT )
-
-# nomlib-audio
 if(NOM_BUILD_AUDIO_UNIT)
   # TODO(jeff): Consider setting NOM_USE_OPENAL when one of these three are
   # set; it might also be good to add a check inside the OpenAL header file
@@ -132,17 +73,84 @@ if(NOM_BUILD_AUDIO_UNIT)
   set(NOM_USE_OPENAL_SOFT FALSE)
   set(NOM_USE_LIBSNDFILE TRUE)
 
-  if ( PLATFORM_POSIX )
+  if(PLATFORM_POSIX)
     set(NOM_USE_OPENAL_SOFT TRUE)
-  endif ( PLATFORM_POSIX )
+  endif(PLATFORM_POSIX)
 
-  if ( PLATFORM_OSX )
+  if(PLATFORM_OSX)
     set(NOM_USE_APPLE_OPENAL TRUE)
-  endif ( PLATFORM_OSX )
-
-  add_subdirectory("audio")
+  endif(PLATFORM_OSX)
 endif(NOM_BUILD_AUDIO_UNIT)
 
+#
+## Auto-generation of header files must occur before build of library targets
+#
+
+# Used in revision.hpp.in
+git_rev_number(GIT_REVISION "--short")
+set(GIT_REVISION "${GIT_REVISION}")
+
+# config.hpp.in -> include/nomlib/config.hpp
+configure_file("${PROJECT_SOURCE_DIR}/cmake/templates/config.hpp.in"
+  "${PROJECT_SOURCE_DIR}/include/nomlib/config.hpp"
+)
+
+# revision.hpp.in -> include/nomlib/revision.hpp
+configure_file("${PROJECT_SOURCE_DIR}/cmake/templates/revision.cpp.in"
+  "${PROJECT_SOURCE_DIR}/src/revision.cpp"
+)
+
+# version.hpp.in -> include/nomlib/version.hpp
+configure_file("${PROJECT_SOURCE_DIR}/cmake/templates/version.hpp.in"
+  "${PROJECT_SOURCE_DIR}/include/nomlib/version.hpp"
+)
+
+# nomlib-actions
 if(NOM_BUILD_ACTIONS_UNIT)
   add_subdirectory("actions")
 endif(NOM_BUILD_ACTIONS_UNIT)
+
+# nomlib-audio
+if(NOM_BUILD_AUDIO_UNIT)
+  add_subdirectory("audio")
+endif(NOM_BUILD_AUDIO_UNIT)
+
+# nomlib-core
+if(NOM_BUILD_CORE_UNIT)
+  add_subdirectory("core")
+endif(NOM_BUILD_CORE_UNIT)
+
+# nomlib-file
+if(NOM_BUILD_FILE_UNIT)
+  add_subdirectory("file")
+endif(NOM_BUILD_FILE_UNIT)
+
+# nomlib-graphics
+if(NOM_BUILD_GRAPHICS_UNIT)
+  add_subdirectory("graphics")
+endif(NOM_BUILD_GRAPHICS_UNIT)
+
+# nomlib-gui
+if(NOM_BUILD_GUI_UNIT)
+  add_subdirectory("gui")
+endif(NOM_BUILD_GUI_UNIT)
+
+# nomlib-math
+if(NOM_BUILD_MATH_UNIT)
+  add_subdirectory("math")
+endif(NOM_BUILD_MATH_UNIT)
+
+# nomlib-ptree
+if(NOM_BUILD_PTREE_UNIT)
+  add_subdirectory("ptree")
+endif(NOM_BUILD_PTREE_UNIT)
+
+# nomlib-serializers
+if(NOM_BUILD_SERIALIZERS_UNIT)
+  add_subdirectory("serializers")
+endif(NOM_BUILD_SERIALIZERS_UNIT)
+
+# nomlib-system
+if(NOM_BUILD_SYSTEM_UNIT)
+  add_subdirectory("system")
+endif(NOM_BUILD_SYSTEM_UNIT)

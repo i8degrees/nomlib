@@ -1,32 +1,89 @@
 {
-  "$schema": "https://github.com/i8degrees/nomlib.git",
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "port-version": 0,
+  "version-semver": "0.13.1",
   "name": "nomlib",
-  "version": "1.0.0",
+  "description": "C++11 game engine",
+  "license": "BSD-2-Clause",
+  "homepage": "https://nomlib.479831.xyz/#",
+  "documentation": "https://nomlib.479831.xyz/docs/#",
+  "maintainers": [
+    "Jeffrey Carpenter <1329364+i8degrees@users.noreply.github.com"
+  ],
+  "supports": "(osx & x64), (linux & x64), (windows & x86 & static)",
   "dependencies": [
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    },
+    "librocket",
+    {
+      "name": "librocket",
+      "version>=": "1.3.0.1#1",
+      "platform": "(osx & x64), (linux & x64), (windows & x86 & static)"
+    },
     "sdl2",
     {
       "name": "sdl2",
-      "features": ["x11", "wayland", "vulkan"]
+      "version>=": "2.0.4",
+      "features": [
+        "x11"
+      ],
+      "platform": "(osx & x64), (linux & x64), (windows & x86 & static)"
     },
-    "sdl2-image", {
+    "sdl2-image",
+    {
       "name": "sdl2-image",
-      "features": ["tiff"]
+      "version>=": "2.0.1",
+      "features": [
+        "tiff"
+      ],
+      "platform": "(osx & x64), (linux & x64), (windows & x86 & static)"
     },
-    "sdl2-ttf", {
+    "sdl2-ttf",
+    {
       "name": "sdl2-ttf",
-      "platform": "windows, linux",
-      "features": ["harfbuzz"]
+      "version>=": "2.0.14",
+      "platform": "(osx & x64), (linux & x64), (windows & x86 & static)",
+      "features": [],
+      "default-features": false
     },
-    "openal-soft",  {
+    "openal-soft",
+    {
       "name": "openal-soft",
-      "platform": "windows, linux",
-      "features": ["pipewire", "pulseaudio"]
+      "version>=": "1.17.2",
+      "features": [
+        "pipewire"
+      ],
+      "platform": "(osx & x64), (linux & x64), (windows & x86 & static)"
     },
-    "libsndfile", {
+    "libsndfile",
+    {
       "name": "libsndfile",
-      "platform": "windows, linux",
-      "features": ["external-libs"]
+      "version>=": "1.2.2",
+      "features": [
+        "external-libs"
+      ],
+      "platform": "(osx & x64), (linux & x64), (windows & x86 & static)"
     }
-  ]
+  ],
+  "overrides": [
+    {
+      "name": "openal-soft",
+      "version": "1.25.1"
+    },
+    {
+      "name": "sdl2",
+      "version": "2.32.10"
+    },
+    {
+      "name": "sdl2-image",
+      "version": "2.8.12"
+    },
+    {
+      "name": "sdl2-ttf",
+      "version": "2.24.0"
+    }
+  ],
+  "builtin-baseline": "1894a9245a984a6d3e99b715e5d919f6deb5d448"
 }
-

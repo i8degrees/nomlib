@@ -18,7 +18,8 @@
 			"**/.ruby-lsp": true,
 			"node_modules": true,
 			"**/node_modules": true,
-      "vendor/**": true,
+      "**/vendor/prebuild/**": true,
+      "**/third-party/**": true,
       "tmp/**": true
 		}
   }

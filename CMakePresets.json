@@ -11,42 +11,122 @@
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "/usr/bin/clang",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
+        "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library"
+      },
+      "environment": {
+        "CC": "/usr/bin/clang",
+        "CXX": "/usr/bin/clang++"
       }
     },
     {
       "name": "debug",
-      "displayName": "Debug configuration for clang toolchain",
+      "displayName": "Debug configuration for clang toolchain (static lib)",
       "inherits": "common",
       "cacheVariables": {
+        "BUILD_SHARED_LIBS": "OFF",
         "CMAKE_BUILD_TYPE": "Debug",
-        "DEBUG": "on",
-        "DEBUG_ASSERT": "on"
+        "DEBUG_ASSERT": "ON",
+        "BUILD_EXAMPLES": "ON",
+        "BUILD_TESTS": "ON",
+        "VCPKG_TARGET_TRIPLET": "x64-linux",
+        "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library-d"
+      },
+      "environment": {
+        "CC": "/usr/bin/clang",
+        "CXX": "/usr/bin/clang++",
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_OVERLAY_PORTS": "$env{VCPKG_ROOT}/ports/librocket"
+      }
+    },
+    {
+      "name": "debug-dynamic",
+      "displayName": "Debug configuration for clang toolchain (shared lib)",
+      "inherits": "debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUILD_SHARED_LIBS": "ON",
+        "DEBUG_ASSERT": "ON",
+        "BUILD_EXAMPLES": "ON",
+        "BUILD_TESTS": "ON",
+        "HIDE_SYMBOL_VISIBILITY": "ON",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-dynamic",
+        "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library-d"
+      },
+      "environment": {
+        "CC": "/usr/bin/clang",
+        "CXX": "/usr/bin/clang++",
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_OVERLAY_PORTS": "$env{VCPKG_ROOT}/ports/librocket"
       }
     },
     {
       "name": "release",
-      "displayName": "Release configuration for clang toolchain",
+      "displayName": "Release configuration for clang toolchain (static lib)",
       "inherits": "common",
       "cacheVariables": {
+        "BUILD_SHARED_LIBS": "OFF",
         "CMAKE_BUILD_TYPE": "Release",
-        "DEBUG": "off",
-        "DEBUG_ASSERT": "off"
+        "DEBUG_ASSERT": "ON",
+        "BUILD_EXAMPLES": "ON",
+        "BUILD_TESTS": "OFF",
+        "VCPKG_TARGET_TRIPLET": "x64-linux"
+      },
+      "environment": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_OVERLAY_PORTS": "$env{VCPKG_ROOT}/ports/librocket"
       }
     },
-
+    {
+      "name": "release-dynamic",
+      "displayName": "Release configuration for clang toolchain (shared lib)",
+      "inherits": "release",
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "ON",
+        "CMAKE_BUILD_TYPE": "Release",
+        "DEBUG_ASSERT": "ON",
+        "BUILD_EXAMPLES": "ON",
+        "BUILD_TESTS": "OFF",
+        "HIDE_SYMBOL_VISIBILITY": "ON",
+        "CMAKE_VERBOSE_MAKEFILE": "OFF",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-dynamic"
+      },
+      "environment": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_OVERLAY_PORTS": "$env{VCPKG_ROOT}/ports/librocket"
+      }
+    },
+    {
+      "name": "RelWithDebInfo",
+      "displayName": "Release configuration with debug syms for clang toolchain (shared lib)",
+      "inherits": "release",
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "ON",
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "DEBUG_ASSERT": "ON",
+        "BUILD_EXAMPLES": "ON",
+        "BUILD_TESTS": "ON",
+        "HIDE_SYMBOL_VISIBILITY": "ON",
+        "CMAKE_VERBOSE_MAKEFILE": "ON",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-dynamic"
+      },
+      "environment": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_OVERLAY_PORTS": "$env{VCPKG_ROOT}/ports/librocket"
+      }
+    },
     {
       "name": "debug-clang-cl",
       "displayName": "Debug configuration for clang-cl toolchain",
       "inherits": "common",
       "cacheVariables": {
+        "CMAKE_RELEASE_POSTFIX": "_static",
         "CMAKE_BUILD_TYPE": "Debug",
-        "DEBUG": "on",
         "DEBUG_ASSERT": "on",
         "CMAKE_C_COMPILER": "/usr/bin/clang-cl",
         "CMAKE_CXX_COMPILER": "/usr/bin/clang-cl",
-        "EXAMPLES": "ON",
-        "NOM_BUILD_TESTS": "OFF",
+        "BUILD_EXAMPLES": "ON",
+        "BUILD_TESTS": "OFF",
         "NOMLIB_DEPS_DIR": "${sourceDir}/vendor/prebuild",
         "NOM_USE_OPENAL": "0",
         "NOM_USE_OPENAL_SOFT": "0",
@@ -77,7 +157,6 @@
       "inherits": "common",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
-        "DEBUG": "off",
         "CMAKE_C_COMPILER": "/usr/bin/clang-cl",
         "CMAKE_CXX_COMPILER": "/usr/bin/clang-cl"
       }
@@ -90,41 +169,22 @@
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_INSTALL_PREFIX": "/usr/local",
         "OPENGL_GL_PREFERENCE": "GLVND",
-        "EXAMPLES": "ON",
-        "NOM_BUILD_TESTS": "ON"
+        "BUILD_EXAMPLES": "ON",
+        "BUILD_TESTS": "ON"
       },
       "environment": {
-        "SDLDIR": "${sourceDir}/vendor/prebuild/linux/sdl2",
+        "_SDLDIR": "${sourceDir}/vendor/prebuild/linux/sdl2",
         "LIBROCKETDIR": "${sourceDir}/vendor/prebuild/linux/libRocket",
         "LIBSNDFILEDIR": "${sourceDir}/vendor/prebuild/linux/libsndfile",
         "OPENALDIR": "${sourceDir}/vendor/prebuild/linux/openal"
       }
     },
     {
-      "name": "host-linux",
-      "displayName": "Build nomlib on host",
-      "inherits": "debug",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_INSTALL_PREFIX": "/usr/local",
-        "OPENGL_GL_PREFERENCE": "GLVND",
-        "EXAMPLES": "ON",
-        "NOM_BUILD_TESTS": "ON",
-        "NOMLIB_DEPS_DIR": "${sourceDir}/third-party"
-      },
-      "environment": {
-        "SDL2DIR": "${sourceDir}/third-party/linux/sdl2",
-        "SDL2TTFDIR": "${sourceDir}/third-party/linux/sdl2_ttf",
-        "SDL2IMAGEDIR": "${sourceDir}/third-party/linux/sdl2_image",
-        "LIBROCKETDIR": "${sourceDir}/third-party/linux/libRocket"
-      }
-    },
-    {
       "name": "release-docker-linux",
       "inherits": "release",
       "cacheVariables": {
-        "NOM_BUILD_TESTS": "OFF",
-        "EXAMPLES": "ON",
+        "BUILD_TESTS": "OFF",
+        "BUILD_EXAMPLES": "ON",
         "CMAKE_INSTALL_PREFIX": "/usr/local",
         "NOMLIB_DEPS_DIR": "${sourceDir}/vendor/prebuild"
       },
@@ -144,12 +204,11 @@
         "CMAKE_CXX_COMPILER": "/usr/bin/o64-clang++",
         "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/osxcross.cmake",
         "CMAKE_BUILD_TYPE": "Debug",
-        "DEBUG": "ON",
         "DEBUG_ASSERT": "ON",
         "CMAKE_INSTALL_PREFIX": "/usr/local",
-        "EXAMPLES": "ON",
+        "BUILD_EXAMPLES": "ON",
         "FRAMEWORK": "OFF",
-        "NOM_BUILD_TESTS": "OFF",
+        "BUILD_TESTS": "OFF",
         "NOMLIB_DEPS_DIR": "${sourceDir}/third-party/macos",
         "CMAKE_OSX_DEPLOYMENT_TARGET": "10.9"
       },
@@ -165,7 +224,7 @@
         "LIBROCKET_DEBUGGER_LIBRARY": "${sourceDir}/third-party/osx/librocket/lib/libRocketDebugger.1.dylib",
         "LIBROCKET_CORE_INCLUDE_DIR": "${sourceDir}/third-party/osx/librocket/include",
         "LIBROCKET_CONTROLS_INCLUDE_DIR": "${sourceDir}/third-party/osx/librocket/include",
-        "LIBROCKET_DEBUGGER_INCLUDE_DIR":" ${sourceDir}/third-party/osx/librocket/include"
+        "LIBROCKET_DEBUGGER_INCLUDE_DIR": " ${sourceDir}/third-party/osx/librocket/include"
       }
     }
   ],

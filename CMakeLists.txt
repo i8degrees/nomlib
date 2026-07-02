@@ -2,36 +2,41 @@
 #
 # nomlib
 #
-cmake_minimum_required( VERSION 3.14 )
+cmake_minimum_required(VERSION 3.23..3.3.0)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
+list(APPEND CMAKE_TEMPLATE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates")
 
 include("${CMAKE_SOURCE_DIR}/cmake/policy.cmake")
-include("version.cmake") # Project version
-
 include("${CMAKE_SOURCE_DIR}/cmake/functions.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake/macros.cmake")
-
-
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules" )
-set ( CMAKE_TEMPLATE_PATH ${CMAKE_TEMPLATE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates" )
+# Uninstall make target support, i.e.: `make uninstall`
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/uninstall.cmake")
 
 ##
 # Project Options
 ##
 
+include("version.cmake") # Project version
+
 # Debugging
-option ( DEBUG "Build with all debugging features" off )
-option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
-# ?? Replace DEBUG_ASSERT option with the following; this should result in assertions
-# ?? being left on unless explicitly being disabled when DEBUG builds are present.
-#option( DISABLE_DEBUG_ASSERTIONS "" off)
-
+# >> DEBUG option is DEPRECATED - use CMAKE_BUILD_TYPE
+option(DEBUG "Build debug library targets" OFF)
+option(DEBUG_ASSERT "Build with run-time assertions enabled" OFF)
+option(HIDE_SYMBOL_VISIBILITY "Enforce symbol visibility - see NOM_EXPORT macros" OFF)
 # Engine build configuration
-option( EXAMPLES "Build nomlib usage examples" off )
-option( NOM_BUILD_TESTS "Build unit tests" off )
+option(BUILD_SHARED_LIBS "Build dynamic library targets" OFF)
+option(BUILD_EXAMPLES "Build usage examples" OFF)
+option(BUILD_TESTS "Build unit tests" OFF)
+option(BUILD_DOCS "Build engine documentation" ON)
+# !! DEPRECATED - This option will be removed in a future release; use BUILD_EXAMPLES
+option(EXAMPLES "Build nomlib usage examples" OFF)
+# !! DEPRECATED - This option will be removed in a future release; use BUILD_TESTS
+option(NOM_BUILD_TESTS "Build unit tests" OFF)
+# !! DEPRECATED - This option will be removed in a future release; use BUILD_DOCS
 option(NOM_BUILD_DOCS "Build engine documentation" ON)
-option(NOM_INSTALL_CMAKE_PACKAGE "Install CMake module for finding nomlib" ON)
-option(NOM_INSTALL_PKGCONFIG_SUPPORT "Install pkg-config script for finding nomlib" ON)
-
+#
+## Library units
+#
 option( NOM_BUILD_ACTIONS_UNIT "Animations subsystem" ON)
 option( NOM_BUILD_CORE_UNIT "Engine core" ON)
 option( NOM_BUILD_MATH_UNIT "Math utilities" ON)
@@ -43,16 +48,50 @@ option( NOM_BUILD_SYSTEM_UNIT "System unit" ON)
 option( NOM_BUILD_PTREE_UNIT "Generic container for serialization" ON)
 option( NOM_BUILD_SERIALIZERS_UNIT "Serialization for JSON, XML, HTML" ON)
 option( NOM_BUILD_GUI_UNIT "GUI subsystem" ON)
+#
+## install and packaging
+#
+string(COMPARE EQUAL "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}" is_top_level)
+option(NOM_INSTALL_CMAKE_PACKAGE "Install CMake export package for finding nomlib" "${is_top_level}")
+option(NOM_INSTALL_PKGCONFIG_SUPPORT "Install pkg-config helper for finding nomlib" "${is_top_level}")
+
+if(DEFINED nomlib_SHARED_LIBS)
+  set(BUILD_SHARED_LIBS "${nomlib_SHARED_LIBS}")
+endif()
+
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "Setting build type to 'Release' as none was specified.")
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "RelWithDebInfo" "MinSizeRel")
+endif()
+
+if(EXAMPLES)
+  set(BUILD_EXAMPLES ${EXAMPLES} "option EXAMPLES is DEPRECATED")
+endif(EXAMPLES)
+
+if(NOM_BUILD_TESTS)
+  set(BUILD_TESTS ${NOM_BUILD_TESTS} "option NOM_BUILD_EXAMPLES is DEPRECATED")
+endif(NOM_BUILD_TESTS)
+
+if(NOM_BUILD_DOCS)
+  set(BUILD_DOCS ${NOM_BUILD_DOCS} "option NOM_BUILD_DOCS is DEPRECATED")
+endif(NOM_BUILD_DOCS)
 
 # IMPORTANT(JEFF): This initializes our engine versioning variables;
 # `PROJECT_VERSION_MAJOR` & friends at `include/nomlib/version.hpp.in`
-project( nomlib
+project(nomlib
   VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"
   DESCRIPTION "C++11 2D game framework using SDL2"
   HOMEPAGE_URL "https://github.com/i8degrees/nomlib"
   #SPDX_LICENSE "BSD-2-Clause-FreeBSD"
   LANGUAGES CXX
 )
+
+# Adhere to a common hierarchy acording to the chosen platform
+include(GNUInstallDirs)
+
+# nomlib.pc.in -> nomlib.pc
+include(PkgConfig)
 
 # Platform-specific implementations & dependencies
 #
@@ -66,458 +105,128 @@ include("${CMAKE_SOURCE_DIR}/vendor/CMakeLists.txt")
 # !!! Additional build target options are found here
 include("${CMAKE_SOURCE_DIR}/cmake/platform.cmake")
 
-if ( PLATFORM_WINDOWS )
-  # Building nomlib on Windows is only supported as a static library for the
-  # moment
-  set ( BUILD_SHARED_LIBS off )
-else ( NOT PLATFORM_WINDOWS )
-  # We only support building nomlib as a dynamic library at the moment
-  set ( BUILD_SHARED_LIBS on )
-endif ( PLATFORM_WINDOWS )
+#
+## Project-wide build settings
+#
 
-# TODO: We should be setting CMAKE_BUILD_TYPE directly from the command line
-# instead of DEBUG
-set ( CMAKE_VERBOSE_MAKEFILE ON )
-if ( DEBUG )
-  set ( CMAKE_BUILD_TYPE "Debug" )
-  # >> Explicit `DEBUG_ASSERT` option will be deprecated in a future version...
-  if ( NOT DISABLE_DEBUG_ASSERTIONS )
-    set ( DEBUG_ASSERT on )
-  endif ( NOT DISABLE_DEBUG_ASSERTIONS )
+# >> We support building nomlib as a DLL shared library on MS Windows; the
+# >> following properties ensure that all library targets built will have the
+# >> right symbol visibility in conjunction with the use of the internal
+# >> NOM_EXPORT macros that wrap the necessary __declspec(dllexport) declarations.
+# >>
+# >> HIDE_SYMBOL_VISIBILITY is an option that lets us ensure that we have exported
+# >> the necessary functions, classes and global data from our engine when building
+# >> on other platforms. This option has no effect unless the library is built as
+# >> a shared library, i.e.: BUILD_SHARED_LIBS=ON.
+if(WIN32 OR HIDE_SYMBOL_VISIBILITY)
+  if(NOT DEFINED CMAKE_CXX_VISIBILITY_PRESET AND
+    NOT DEFINED CMAKE_VISIBILITY_INLINES_HIDDEN)
+    set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+    set(CMAKE_VISIBILITY_INLINES_HIDDEN YES)
+  endif()
+endif(WIN32 OR HIDE_SYMBOL_VISIBILITY)
 
-  if ( NOT PLATFORM_WINDOWS )
+if(CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
+  set(CMAKE_VERBOSE_MAKEFILE ON)
+  if(WIN32 AND MSVC)
+    add_definitions("/D NOM_DEBUG /W4 -Wunused") # -O0
+  else(NOT WIN32 AND MSVC)
+    add_definitions("-D NOM_DEBUG -Wall -Wextra -Wunused") # -O0
     # TODO: Enable -Wsign-conversion, -Wextra
     # TODO: Consider enabling some of these run-time checks that clang offers,
-    # i.e.:: -fsanitize=address, -fsanitize=integer, -fsanitize=undefined,
-    # -fsanitize=unsigned-integer-overflow, -fsanitize=float-divide-by-zero, etc.
-    # See also: http://clang.llvm.org/docs/UsersManual.html#controlling-code-generation
-    # See also: Malloc Debugging under OSX: https://developer.apple.com/library/mac/documentation/Performance/Conceptual/ManagingMemory/Articles/MallocDebug.html#//apple_ref/doc/uid/20001884-CJBJFIDD
-    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused -O0" )
+  endif(WIN32 AND MSVC)
+endif()
 
-    # Measure the time it takes per source file to build, so we can try
-    # speeding up slow builds!
-    # set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -ftime-report" )
-  else ( PLATFORM_WINDOWS )
-    # TODO: split these options up like we have for other platforms
-    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D NOM_DEBUG /D NOM_DEBUG_ASSERT" )
-  endif( NOT PLATFORM_WINDOWS )
+if(DEBUG_ASSERT)
+  # Enable NOM_ASSERT macros
+  if(WIN32 AND MSVC)
+    add_definitions("/D NOM_DEBUG_ASSERT") # clang-cl or cl.exe
+  else(NOT WIN32 AND MSVC)
+    add_definitions("-D NOM_DEBUG_ASSERT") # clang / g++
+  endif(WIN32 AND MSVC)
+else(NOT DEBUG_ASSERT)
+  # Disable NOM_ASSERT macros
+  if(WIN32 AND MSVC)
+    add_definitions("/D NDEBUG") # clang-cl or cl.exe
+  else(NOT WIN32 AND MSVC)
+    add_definitions("-D NDEBUG") # clang / g++
+  endif(WIN32 AND MSVC)
+endif()
 
-  message ( STATUS "Building ${PROJECT_NAME} with debugging." )
-  message ( STATUS "CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}" )
-else ( NOT DEBUG ) # Build with optimizations for maximum speed and minimal size
-  set ( CMAKE_BUILD_TYPE "Release" )
-  message ( STATUS "Building ${PROJECT_NAME} with high speed, low drag!" )
-  message ( STATUS "CMAKE_CXX_FLAGS_RELEASE: ${CMAKE_CXX_FLAGS_RELEASE}" )
-endif ( DEBUG )
+if(BUILD_SHARED_LIBS)
+  set(LIBRARY_OUTPUT_TYPE "SHARED")
+else(NOT BUILD_SHARED_LIBS)
+  set(LIBRARY_OUTPUT_TYPE "STATIC")
+endif(BUILD_SHARED_LIBS)
 
-if ( DEBUG_ASSERT )
-  add_definitions ( "-DNOM_DEBUG_ASSERT" ) # Enable NOM_ASSERT macros
-  message ( STATUS "Run-time assertions are ON." )
-else ( NOT DEBUG_ASSERT )
-  add_definitions ( "-DNDEBUG" ) # Disable NOM_ASSERT macros
-  message ( STATUS "Run-time assertions are OFF." )
-endif ( DEBUG_ASSERT )
+message(STATUS "Building nomlib as ${LIBRARY_OUTPUT_TYPE} library targets")
 
-if( BUILD_SHARED_LIBS )
-  set( LIBRARY_OUTPUT_TYPE "SHARED" )
-else( NOT BUILD_SHARED_LIBS )
-  set( LIBRARY_OUTPUT_TYPE "STATIC" )
-endif( BUILD_SHARED_LIBS )
-
-# TODO: Rename to NOMLIB_SRC_DIR..?
-set( SRC_DIR "${PROJECT_SOURCE_DIR}/src" )
-set( NOMLIB_RESOURCES_DIR "${PROJECT_SOURCE_DIR}/Resources" )
-
-set( NOMLIB_SHARED_SUPPORT_DIR "${NOMLIB_RESOURCES_DIR}/SharedSupport" )
-
-# TODO: Rename to NOMLIB_INCLUDE_ROOT_DIR..?
-set( INC_ROOT_DIR "${PROJECT_SOURCE_DIR}/include" )
-
-# TODO: Rename to NOMLIB_INCLUDE_DIR..?
-set( INC_DIR "${INC_ROOT_DIR}/nomlib" )
-
-#set(NOMLIB_DEPS_DIR "${PROJECT_SOURCE_DIR}/vendor/prebuilt")
-
-# Relative path from project root to nomlib demonstration examples
-set ( EXAMPLES_SRC_DIR "${PROJECT_SOURCE_DIR}/examples" )
+# Public API headers base
+set(HDR_BASE "${PROJECT_SOURCE_DIR}/include/nomlib")
+set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 
 # Resources path for engine examples
-set( NOM_EXAMPLES_RESOURCES_DIR "${NOMLIB_RESOURCES_DIR}/examples" )
-
+set(NOMLIB_RESOURCES_DIR "${PROJECT_SOURCE_DIR}/Resources")
+set(NOMLIB_SHARED_SUPPORT_DIR "${NOMLIB_RESOURCES_DIR}/SharedSupport")
+set(NOM_EXAMPLES_RESOURCES_DIR "${NOMLIB_RESOURCES_DIR}/examples")
 # Unit testing resources path
-set( NOM_TESTS_RESOURCES_DIR "${NOMLIB_RESOURCES_DIR}/tests" )
-
-# Additional flags to pass add_executable -- used when library examples are
-# built
-set ( EXECUTABLE_FLAGS "" )
-
+set(NOM_TESTS_RESOURCES_DIR "${NOMLIB_RESOURCES_DIR}/tests")
 # Files used with documentation generation
-set ( PROJECT_DOXYGEN_DIR "${NOMLIB_RESOURCES_DIR}/doxygen" )
+set(PROJECT_DOXYGEN_DIR "${NOMLIB_RESOURCES_DIR}/doxygen")
 
 # CMAKE_SYSTEM_PREFIX_PATH is searched to find libraries when the find_package
 # command is used.
-message ( STATUS "Library Search Prefix: ${CMAKE_SYSTEM_PREFIX_PATH}" )
-
+message(STATUS "Library Search Prefix: ${CMAKE_SYSTEM_PREFIX_PATH}")
 # Installation prefix path set for our project
-message ( STATUS "Installation Prefix: ${CMAKE_INSTALL_PREFIX}" )
+message(STATUS "Installation Prefix: ${CMAKE_INSTALL_PREFIX}")
 
-if(NOM_BUILD_DOCS)
+#
+## Third-party dependencies
+#
+
+# This is a hard requirement for GoogleTest (BUILD_TESTS=on)
+find_package(Threads REQUIRED)
+find_package(SDL2 CONFIG REQUIRED)
+find_package(SDL2_image CONFIG REQUIRED)
+find_package(SDL2_ttf CONFIG REQUIRED)
+if(NOM_BUILD_GUI_UNIT)
+  find_package(OpenGL REQUIRED COMPONENTS OpenGL)
+  find_package(libRocket CONFIG REQUIRED)
+endif()
+
+if(NOM_BUILD_AUDIO_UNIT) # required dependencies
+  find_package(OpenAL CONFIG REQUIRED)
+  find_package(SndFile CONFIG REQUIRED)
+else(NOT NOM_BUILD_AUDIO_UNIT) # optional dependencies
+  find_package(OpenAL CONFIG)
+  find_package(SndFile CONFIG)
+endif(NOM_BUILD_AUDIO_UNIT)
+
+if(BUILD_DOCS)
   # Doxygen configuration
   include("${PROJECT_SOURCE_DIR}/cmake/doxygen.cmake")
-endif(NOM_BUILD_DOCS)
+endif(BUILD_DOCS)
 
-# Third-party dependencies
-
-if ( PLATFORM_WINDOWS )
-  if(NOT DEFINED ENV{SDL2DIR})
-    #set(ENV{SDL2DIR} "${NOMLIB_DEPS_DIR}/windows/SDL2")
-  endif(NOT DEFINED ENV{SDL2DIR})
-
-  if(NOT DEFINED ENV{SDL2IMAGEDIR})
-    #set(ENV{SDL2IMAGEDIR} "${NOMLIB_DEPS_DIR}/windows/SDL2_image")
-  endif(NOT DEFINED ENV{SDL2IMAGEDIR})
-
-  if(NOT DEFINED ENV{SDL2TTFDIR})
-    #set(ENV{SDL2TTFDIR} "${NOMLIB_DEPS_DIR}/windows/SDL2_ttf")
-  endif(NOT DEFINED ENV{SDL2TTFDIR})
-
-  if(NOT DEFINED ENV{OPENALDIR})
-    #set(ENV{OPENALDIR} "${NOMLIB_DEPS_DIR}/windows/OpenAL")
-  endif(NOT DEFINED ENV{OPENALDIR})
-
-  if(NOT DEFINED ENV{LIBSNDFILEDIR})
-    #set(ENV{LIBSNDFILEDIR} "${NOMLIB_DEPS_DIR}/windows/libsndfile")
-  endif(NOT DEFINED ENV{LIBSNDFILEDIR})
-
-  if(NOT DEFINED ENV{LIBROCKETDIR})
-    #set(ENV{LIBROCKETDIR} "${NOMLIB_DEPS_DIR}/windows/libRocket")
-  endif(NOT DEFINED ENV{LIBROCKETDIR})
-
-  # Redistribution paths must be absolute, a directory and end with a trailing
-  # slash character (these are fed to CMake's install command). Only filenames
-  # with the extension of '.dll' and '.lib' (case-insensitive) will be copied.
-
-  set( SDL2_REDIST_DIR "${NOMLIB_DEPS_DIR}/windows/SDL2/lib/${PLATFORM_ARCH}/" )
-  set( SDL2_IMAGE_REDIST_DIR "${NOMLIB_DEPS_DIR}/windows/SDL2_image/lib/${PLATFORM_ARCH}/" )
-  set( SDL2_TTF_REDIST_DIR "${NOMLIB_DEPS_DIR}/windows/SDL2_ttf/lib/${PLATFORM_ARCH}/" )
-
-  # The CMake-distributed FindOpenAL.cmake doesn't recognize lib/x86, lib/x64,
-  # so in order to avoid creating our own, we break from our norm and conform
-  # to libs/Win32, libs/Win64
-  if( PLATFORM_ARCH STREQUAL "x86" )
-    set( OPENAL_REDIST_DIR "${NOMLIB_DEPS_DIR}/windows/OpenAL/libs/Win32/" )
-  elseif( PLATFORM_ARCH STREQUAL "x64" )
-    set( OPENAL_REDIST_DIR "${NOMLIB_DEPS_DIR}/windows/OpenAL/libs/Win64/" )
-  endif( PLATFORM_ARCH STREQUAL "x86" )
-
-  set( LIBSNDFILE_REDIST_DIR "${NOMLIB_DEPS_DIR}/windows/libsndfile/lib/${PLATFORM_ARCH}/" )
-
-  # FreeType2
-  set( LIBROCKET_EXT_REDIST_DIR "${NOMLIB_DEPS_DIR}/windows/libRocket/bin/${PLATFORM_ARCH}/" )
-
-  set( LIBROCKET_REDIST_DIR "${NOMLIB_DEPS_DIR}/windows/libRocket/lib/${PLATFORM_ARCH}/" )
-
-  set( MSVCPP_REDIST_DIR "${NOMLIB_DEPS_DIR}/windows/msvcpp2013/${PLATFORM_ARCH}/" )
-endif ( PLATFORM_WINDOWS )
-
-if ( PLATFORM_OSX )
-
-  if(NOT DEFINED ENV{SDL2DIR})
-    #set(ENV{SDL2DIR} "${NOMLIB_DEPS_DIR}/osx")
-  endif(NOT DEFINED ENV{SDL2DIR})
-
-  if(NOT DEFINED ENV{SDL2IMAGEDIR})
-    #set(ENV{SDL2IMAGEDIR} "${NOMLIB_DEPS_DIR}/osx")
-  endif(NOT DEFINED ENV{SDL2IMAGEDIR})
-
-  if(NOT DEFINED ENV{SDL2TTFDIR})
-    #set(ENV{SDL2TTFDIR} "${NOMLIB_DEPS_DIR}/osx")
-  endif(NOT DEFINED ENV{SDL2TTFDIR})
-
-  if(NOT DEFINED ENV{OPENALDIR})
-    # Use platform-distributed headers for OpenAL; should automatically use the
-    # proper platform SDK version as configured by CMAKE_OSX_SYSROOT
-    #set(ENV{OPENALDIR} "/System/Library/Frameworks/OpenAL.framework")
-  endif(NOT DEFINED ENV{OPENALDIR})
-
-  if(NOT DEFINED ENV{LIBSNDFILEDIR})
-    #set(ENV{LIBSNDFILEDIR} "${NOMLIB_DEPS_DIR}/osx")
-  endif(NOT DEFINED ENV{LIBSNDFILEDIR})
-
-  if(NOT DEFINED ENV{LIBROCKETDIR})
-    #set(ENV{LIBROCKETDIR} "${NOMLIB_DEPS_DIR}/osx/librocket")
-  endif(NOT DEFINED ENV{LIBROCKETDIR})
-
-  # FIXME: This file needs its RPATH modified for redistribution; it is **not**
-  # being used as the run-time library for executables yet. We are using brew's
-  # version installed under /usr/local
-  set(  LIBROCKET_EXT_REDIST_FILES
-        "${NOMLIB_DEPS_DIR}/osx/librocket/bin/libfreetype.6.dylib" )
-endif ( PLATFORM_OSX )
-
-if ( PLATFORM_LINUX OR PLATFORM_POSIX )
-
-  # DEPRECATED: Use SDLDIR
-  if(NOT DEFINED ENV{SDL2DIR})
-    #set(ENV{SDL2DIR} "${NOMLIB_DEPS_DIR}/linux/sdl2")
-  endif(NOT DEFINED ENV{SDL2DIR})
-
-  # DEPRECATED: Use SDLDIR and SDLIMAGEDIR
-  if(NOT DEFINED ENV{SDL2IMAGEDIR})
-    #set(ENV{SDL2IMAGEDIR} "${NOMLIB_DEPS_DIR}/linux/sdl2_image")
-  endif(NOT DEFINED ENV{SDL2IMAGEDIR})
-  # DEPRECATED: Use SDLDIR and SDLTTFDIR
-  if(NOT DEFINED ENV{SDL2TTFDIR})
-    #set(ENV{SDL2TTFDIR} "${NOMLIB_DEPS_DIR}/linux/sdl2_ttf")
-  endif(NOT DEFINED ENV{SDL2TTFDIR})
-
-  if(NOT DEFINED ENV{OPENALDIR})
-    # Use platform-distributed headers for OpenAL
-    #set(ENV{OPENALDIR} "${NOMLIB_DEPS_DIR}/linux/openal")
-    # FIXME(JEFF): This is a temporary workaround until we have a proper distribution
-    # build of OpenAL-Soft, sourced from `vendor/openal-soft.git`
-    #set(ENV{OPENALDIR} "/usr/include/AL")
-  endif(NOT DEFINED ENV{OPENALDIR})
-
-  if(NOT DEFINED ENV{LIBSNDFILEDIR})
-    #set(ENV{LIBSNDFILEDIR} "${NOMLIB_DEPS_DIR}/linux/libsndfile")
-  endif(NOT DEFINED ENV{LIBSNDFILEDIR})
-
-  # DEPRECATED: Use LIBROCKETDIR
-  if(NOT DEFINED ENV{LIBROCKETDIR})
-    #set(ENV{LIBROCKETDIR} "${NOMLIB_DEPS_DIR}/linux/libRocket")
-  endif(NOT DEFINED ENV{LIBROCKETDIR})
-endif( PLATFORM_LINUX OR PLATFORM_POSIX )
-
-# List of our source code to be compiled
-add_subdirectory( ${SRC_DIR} )
-
-# Installation phase
-
-# Bundle libraries we depend on in the appropriate modules
-if( PLATFORM_OSX AND FRAMEWORK )
-
-  if( NOM_BUILD_CORE_UNIT )
-    install(  DIRECTORY ${SDL2_LIBRARY}
-              DESTINATION "${PROJECT_NAME}-core.framework/Frameworks"
-              PATTERN ".*" EXCLUDE
-    )
-  endif( NOM_BUILD_CORE_UNIT )
-
-  if( NOM_BUILD_SYSTEM_UNIT )
-    install(  DIRECTORY ${SDL2_IMAGE_LIBRARY} ${SDL2_TTF_LIBRARY}
-              DESTINATION "${PROJECT_NAME}-system.framework/Frameworks"
-              PATTERN ".*" EXCLUDE
-    )
-  endif( NOM_BUILD_SYSTEM_UNIT )
-
-  if( NOM_BUILD_AUDIO_UNIT )
-    install(  DIRECTORY ${LIBSNDFILE_LIBRARY}
-              DESTINATION "${PROJECT_NAME}-audio.framework/Frameworks"
-              PATTERN ".*" EXCLUDE
-    )
-  endif( NOM_BUILD_AUDIO_UNIT )
-
-  if( NOM_BUILD_GUI_UNIT )
-    # dylibs
-    install(  FILES ${LIBROCKET_CORE_LIBRARY} ${LIBROCKET_CONTROLS_LIBRARY}
-              ${LIBROCKET_DEBUGGER_LIBRARY}
-              DESTINATION "${PROJECT_NAME}-gui.framework/Libraries"
-    )
-  endif( NOM_BUILD_GUI_UNIT )
-
-  # Install nomlib's header files in a stub framework, nomlib.framework
-  #
-  # NOTE: The trailing slash is necessary, to prevent the last directory
-  # component -- 'nomlib' -- from being copied. This keeps the nomlib root
-  # namespace preserved, so we can include headers the same way across
-  # platforms, i.e.: <nomlib/config.hpp>.
-  install(  DIRECTORY "${INC_DIR}/"
-            DESTINATION "${PROJECT_NAME}.framework/Headers"
-            PATTERN ".*" EXCLUDE
-  )
-
-  # nomlib's icon
-  install(  FILES
-            "${NOMLIB_RESOURCES_DIR}/nomlib.icns"
-            DESTINATION "${PROJECT_NAME}.framework/Resources"
-            OPTIONAL
-  )
-
-  # Install nomlib's CMake find module; this should end up in a spot that is
-  # automatically searched by find_package.
-  install(  DIRECTORY
-            "${NOMLIB_RESOURCES_DIR}/CMake"
-            DESTINATION "${PROJECT_NAME}.framework/Resources"
-            PATTERN ".*" EXCLUDE
-  )
-
-  # Install nomlib's pkg-config module so third-party software can find us
-  install(  FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc"
-            DESTINATION "${PROJECT_NAME}.framework/Resources")
-
-  # Install software license & general project information
-  install(  FILES
-            ${PROJECT_SOURCE_DIR}/README.md
-            ${PROJECT_SOURCE_DIR}/LICENSE.md
-            DESTINATION "${PROJECT_NAME}.framework/Resources"
-  )
-
-  # Install the generated documentation files
-  # if( NOM_BUILD_DOCS )
-  #   install(  DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
-  #             DESTINATION "${PROJECT_NAME}.framework/Resources/Documentation"
-  #             PATTERN ".*" EXCLUDE
-  #   )
-  # endif( NOM_BUILD_DOCS )
-
-  # Install hardware definitions for input devices (game controllers)
-  install(  DIRECTORY "${NOMLIB_SHARED_SUPPORT_DIR}/InputDevices"
-            DESTINATION "${PROJECT_NAME}.framework/Resources/SharedSupport"
-            OPTIONAL
-            PATTERN ".*" EXCLUDE )
-endif ( PLATFORM_OSX AND FRAMEWORK )
-
-# POSIX install layout scheme is the default installation scheme.
-# Additionally, the following applies to Darwin platform when MacOS library
-# framework targets are disabled (FRAMEWORK=0)
-if( NOT FRAMEWORK )
-
-  # Install nomlib's header files to system-wide path for other apps to use
-  install ( DIRECTORY ${INC_DIR}
-            DESTINATION "include"
-            PATTERN "." EXCLUDE     # dotfiles, i.e. .DS_Store, .gitignore
-            PATTERN "*.in" EXCLUDE  # cmake generated files, i.e.: config.hpp.in
-          )
-
-  # Install nomlib's icon
-  install(  FILES
-            "${NOMLIB_RESOURCES_DIR}/nomlib.icns"
-            "${NOMLIB_RESOURCES_DIR}/icon.png"
-            DESTINATION "share/${PROJECT_NAME}"
-            OPTIONAL
-  )
-
-  # Install nomlib's cmake module; this should be installed somewhere that is
-  # automatically searched by find_package.
-  #
-  # See also (installation prefixes for a package):
-  # http://www.cmake.org/cmake/help/v3.0/command/find_package.html?highlight=find_package.
-  if( PLATFORM_WINDOWS )
-    if(NOM_INSTALL_CMAKE_PACKAGE)
-      # i.e.: C:\Program Files (x86)\nomlib\CMake
-      install(  DIRECTORY
-                "${NOMLIB_RESOURCES_DIR}/CMake/"
-                DESTINATION
-                "CMake"
-                PATTERN ".*" EXCLUDE
-              )
-    endif()
-
-    # Install hardware definitions for input devices (game controllers)
-    install(  DIRECTORY "${NOMLIB_SHARED_SUPPORT_DIR}/InputDevices"
-              DESTINATION "SharedSupport"
-              OPTIONAL
-              PATTERN ".*" EXCLUDE )
-
-
-  else( NOT PLATFORM_WINDOWS )
-    # Install nomlib's official cmake find module as part of engine's shared
-    # files
-    # i.e.: /usr/local/share/nomlib/CMake
-    install(  DIRECTORY
-              "${NOMLIB_RESOURCES_DIR}/CMake"
-              DESTINATION
-              "share/${PROJECT_NAME}/CMake"
-              PATTERN ".*" EXCLUDE
-            )
-    # Install nomlib's cmake find module in a system-wide location that can
-    # be referenced by others to find us
-    if(NOM_INSTALL_CMAKE_PACKAGE)
-      install(  DIRECTORY
-                "${NOMLIB_RESOURCES_DIR}/CMake/"
-                DESTINATION
-                "lib/cmake/${PROJECT_NAME}"
-                PATTERN ".*" EXCLUDE
-              )
-    endif()
-    if(NOM_INSTALL_PKGCONFIG_SUPPORT)
-      # Install nomlib's pkg-config module so others can find us
-      install(  FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc"
-                DESTINATION "lib/pkgconfig")
-    endif()
-  endif( PLATFORM_WINDOWS )
-
-  # Install software license & general project information
-  install(  FILES
-            ${PROJECT_SOURCE_DIR}/README.md
-            ${PROJECT_SOURCE_DIR}/LICENSE.md
-            #${CMAKE_CURRENT_BINARY_DIR}/nomlib.desktop
-            DESTINATION "share/${PROJECT_NAME}"
-          )
-
-  if( EXISTS("${CMAKE_CURRENT_BINARY_DIR}/nomlib.desktop"))
-    install(  FILES
-              "${CMAKE_CURRENT_BINARY_DIR}/nomlib.desktop"
-              DESTINATION "share/${PROJECT_NAME}")
-  endif()
-
-  # Install the generated documentation files
-  if(NOM_BUILD_DOCS AND EXISTS "${CMAKE_BINARY_DIR}/docs/html")
-    install(  DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
-              DESTINATION "share/doc/${PROJECT_NAME}/${CMAKE_PROJECT_VERSION}"
-              PATTERN ".*" EXCLUDE
-    )
-  endif()
-endif ( NOT FRAMEWORK )
+# >> src/<component>/CMakeLists.txt contains our NOM_BUILD_<component> options
+add_subdirectory(src)
 
 # nomlib examples configuration
-if( EXAMPLES )
+if(BUILD_EXAMPLES)
   add_subdirectory("examples")
-endif( EXAMPLES )
+endif()
 
 # NOTE: we *MUST* enable testing from the top-level build script -- that's this
 # file -- or else 'make test' breaks. (Dated 2014-04-05)
-if( NOM_BUILD_TESTS )
+if(BUILD_TESTS)
   enable_testing()
   add_subdirectory("tests")
-endif( NOM_BUILD_TESTS )
+endif()
 
-# Make a version file containing the current version from git
-#
-# Source: http://brianmilco.blogspot.com/2012/11/cmake-automatically-use-git-tags-as.html
-#
-# NOTE: This has been removed from the project due to wrong version output from
-# `git describe` when using our git branching strategy -- also known as Vincent
-# Driessen’s "Git branching model".
-#
-# In short, the problem is introduced during the "Finishing a release branch"
-# section of the model, when we create our release tag. The algorithm
-# `git describe` uses to determine the "nearest" tag is, I believe, the root
-# cause of the problem. It's especially worth mentioning that the problem only
-# occurs on non-HEAD branches -- i.e.: development branches, such as dev or
-# feature/<name>.
-#
-# Full problem description: http://www.xerxesb.com/2010/git-describe-and-the-tale-of-the-wrong-commits/
-#
-# include( GetGitRevisionDescription )
-# git_describe( GIT_REVISION )
-# string( REGEX REPLACE "^v[0-9]+\\.[0-9]+\\.[0-9]+(.*)" "\\1" VERSION_SHA1 "${GIT_REVISION}" )
+# Installation phase
 
-# Auto-generate a build revision file containing the last recorded git revision
-# number (top of branch).
-include(GetGitRevisionNumber)
-# git_rev_number(GIT_REVISION) # Full SHA
-git_rev_number(GIT_REVISION "--short")
-set(GIT_REVISION "${GIT_REVISION}")
-
-# TODO(JEFF): This needs to be tested!
-#configure_file( ${INCLUDE_DIR}/version.hpp.in ${INCLUDE_DIR}/version.hpp )
-
-configure_file( ${SRC_DIR}/revision.cpp.in ${SRC_DIR}/revision.cpp )
-
-# Uninstall make target support, i.e.: `make uninstall`
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/uninstall.cmake")
-# nomlib.pc.in -> nomlib.pc
-include(PkgConfig)
-
+# >> We will not be the top-level project if being included via CMake's FetchContent
+# >> mechanism. If so, we should try not to assume that the end-user wants anything
+# >> to be packaged (installed), and let them decide what they want to do themselves.
+if(is_top_level)
+  add_subdirectory(src/packages)
+endif(is_top_level)

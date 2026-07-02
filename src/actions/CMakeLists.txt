@@ -1,80 +1,186 @@
 # nomlib-actions library
 
-if(NOM_BUILD_ACTIONS_UNIT)
-  # Library name
-  set(NOM_ACTIONS_LIBRARY "nomlib-actions")
+# Add and link the library
+add_library(nomlib-actions
+  ${LIBRARY_OUTPUT_TYPE}
+)
 
-  # Library headers inclusion path
-  include_directories("${INC_ROOT_DIR}")
+# CMake generates our NOM_EXPORT macros, i.e.: __declspec(dllexport)
+generate_export_header(nomlib-actions
+  BASE_NAME
+    NOM
+  EXPORT_FILE_NAME
+    export.hpp
+)
 
-  set(NOM_ACTIONS_SOURCE
-      ${INC_DIR}/actions.hpp
-      ${SRC_DIR}/actions/ActionTimingCurves.cpp
-      ${INC_DIR}/actions/ActionTimingCurves.hpp
-      ${SRC_DIR}/actions/IActionObject.cpp
-      ${INC_DIR}/actions/IActionObject.hpp
-      ${SRC_DIR}/actions/ActionPlayer.cpp
-      ${INC_DIR}/actions/ActionPlayer.hpp
-      ${SRC_DIR}/actions/CallbackAction.cpp
-      ${INC_DIR}/actions/CallbackAction.hpp
-      ${SRC_DIR}/actions/DispatchQueue.cpp
-      ${INC_DIR}/actions/DispatchQueue.hpp
-      ${SRC_DIR}/actions/GroupAction.cpp
-      ${INC_DIR}/actions/GroupAction.hpp
-      ${SRC_DIR}/actions/RemoveAction.cpp
-      ${INC_DIR}/actions/RemoveAction.hpp
-      ${SRC_DIR}/actions/RepeatForAction.cpp
-      ${INC_DIR}/actions/RepeatForAction.hpp
-      ${SRC_DIR}/actions/RepeatForeverAction.cpp
-      ${INC_DIR}/actions/RepeatForeverAction.hpp
-      ${SRC_DIR}/actions/ReversedAction.cpp
-      ${INC_DIR}/actions/ReversedAction.hpp
-      ${SRC_DIR}/actions/SequenceAction.cpp
-      ${INC_DIR}/actions/SequenceAction.hpp
-      ${SRC_DIR}/actions/WaitForDurationAction.cpp
-      ${INC_DIR}/actions/WaitForDurationAction.hpp)
+set_target_properties(nomlib-actions
+  PROPERTIES
+    VERSION "${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
+    SOVERSION ${PROJECT_VERSION_MAJOR}
+    DEBUG_POSTFIX "-d"
+    CXX_STANDARD 14
+    CXX_STANDARD_REQUIRED ON
+    CXX_EXTENSION_REQUIRED OFF
+)
 
-    # Common internal dependencies for actions
-    set(NOM_ACTIONS_DEPS nomlib-core nomlib-math nomlib-system)
+# TODO(JEFF): Add debug compile flags when configuration uses debug flag
 
-  if(NOM_BUILD_GRAPHICS_UNIT)
-    list(APPEND NOM_ACTIONS_SOURCE
-         ${SRC_DIR}/actions/AnimateTexturesAction.cpp
-         ${INC_DIR}/actions/AnimateTexturesAction.hpp
-         ${SRC_DIR}/actions/FadeInAction.cpp
-         ${INC_DIR}/actions/FadeInAction.hpp
-         ${SRC_DIR}/actions/FadeOutAction.cpp
-         ${INC_DIR}/actions/FadeOutAction.hpp
-         ${SRC_DIR}/actions/FadeAlphaByAction.cpp
-         ${INC_DIR}/actions/FadeAlphaByAction.hpp
-         ${SRC_DIR}/actions/MoveByAction.cpp
-         ${INC_DIR}/actions/MoveByAction.hpp
-         ${SRC_DIR}/actions/ScaleByAction.cpp
-         ${INC_DIR}/actions/ScaleByAction.hpp
-         ${SRC_DIR}/actions/SpriteBatchAction.cpp
-         ${INC_DIR}/actions/SpriteBatchAction.hpp)
+if(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
 
-      # Internal dependencies for this action subgroup
-      list(APPEND NOM_ACTIONS_DEPS nomlib-graphics)
-  endif(NOM_BUILD_GRAPHICS_UNIT)
+  # Skip dllimport/dllexport logic when building as a static library target
+  target_compile_definitions(nomlib-actions
+    PUBLIC
+      NOM_STATIC_DEFINE
+  )
+  # Ensure that our target can be cleanly combined or linked by shared
+  # library targets; this adds -fPIC to the build for this unit
+  set_target_properties(nomlib-actions
+    PROPERTIES
+      POSITION_INDEPENDENT_CODE ON
+  )
+endif(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
 
-  if(NOM_BUILD_AUDIO_UNIT)
-    list(APPEND NOM_ACTIONS_SOURCE
-         ${SRC_DIR}/actions/FadeAudioGainBy.cpp
-         ${INC_DIR}/actions/FadeAudioGainBy.hpp
-         ${SRC_DIR}/actions/PlayAudioSource.cpp
-         ${INC_DIR}/actions/PlayAudioSource.hpp)
+# Base unit
+target_sources(nomlib-actions
+  PRIVATE
+  ${SRC_DIR}/actions/ActionTimingCurves.cpp
+  ${SRC_DIR}/actions/IActionObject.cpp
+  ${SRC_DIR}/actions/ActionPlayer.cpp
+  ${SRC_DIR}/actions/CallbackAction.cpp
+  ${SRC_DIR}/actions/DispatchQueue.cpp
+  ${SRC_DIR}/actions/GroupAction.cpp
+  ${SRC_DIR}/actions/RemoveAction.cpp
+  ${SRC_DIR}/actions/RepeatForAction.cpp
+  ${SRC_DIR}/actions/RepeatForeverAction.cpp
+  ${SRC_DIR}/actions/ReversedAction.cpp
+  ${SRC_DIR}/actions/SequenceAction.cpp
+  ${SRC_DIR}/actions/WaitForDurationAction.cpp
+  PUBLIC
+    FILE_SET HEADERS
+    BASE_DIRS ${HDR_BASE}
+    FILES
+    ${HDR_BASE}/actions.hpp
+    ${HDR_BASE}/actions/ActionTimingCurves.hpp
+    ${HDR_BASE}/actions/IActionObject.hpp
+    ${HDR_BASE}/actions/ActionPlayer.hpp
+    ${HDR_BASE}/actions/CallbackAction.hpp
+    ${HDR_BASE}/actions/DispatchQueue.hpp
+    ${HDR_BASE}/actions/GroupAction.hpp
+    ${HDR_BASE}/actions/RemoveAction.hpp
+    ${HDR_BASE}/actions/RepeatForAction.hpp
+    ${HDR_BASE}/actions/RepeatForeverAction.hpp
+    ${HDR_BASE}/actions/ReversedAction.hpp
+    ${HDR_BASE}/actions/SequenceAction.hpp
+    ${HDR_BASE}/actions/WaitForDurationAction.hpp
+    FILE_SET generated_headers
+    TYPE HEADERS
+    BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/export.hpp
+)
 
-    # Internal dependencies for this action subgroup
-    list(APPEND NOM_ACTIONS_DEPS nomlib-audio)
-  endif(NOM_BUILD_AUDIO_UNIT)
+target_include_directories(nomlib-actions
+  PRIVATE
+  ${PROJECT_SOURCE_DIR}/include # include/nomlib
+  ${SDL2_INCLUDE_DIR}
+)
 
-  # Add and link the library
-  nom_add_library(  ${NOM_ACTIONS_LIBRARY} ${LIBRARY_OUTPUT_TYPE}
-                    "${NOM_ACTIONS_SOURCE}" ""
-                    "${NOM_ACTIONS_DEPS}" )
+# sub-feature unit available with nomlib-graphics
+if(NOM_BUILD_GRAPHICS_UNIT)
+  # add graphics option for using sprite actions
+  target_sources(nomlib-actions
+    PRIVATE
+    ${SRC_DIR}/actions/AnimateTexturesAction.cpp
+    ${SRC_DIR}/actions/FadeInAction.cpp
+    ${SRC_DIR}/actions/FadeOutAction.cpp
+    ${SRC_DIR}/actions/FadeAlphaByAction.cpp
+    ${SRC_DIR}/actions/MoveByAction.cpp
+    ${SRC_DIR}/actions/ScaleByAction.cpp
+    ${SRC_DIR}/actions/SpriteBatchAction.cpp
+    PUBLIC
+      FILE_SET HEADERS
+      BASE_DIRS ${HDR_BASE}
+      FILES
+      ${HDR_BASE}/actions/AnimateTexturesAction.hpp
+      ${HDR_BASE}/actions/FadeInAction.hpp
+      ${HDR_BASE}/actions/FadeOutAction.hpp
+      ${HDR_BASE}/actions/FadeAlphaByAction.hpp
+      ${HDR_BASE}/actions/MoveByAction.hpp
+      ${HDR_BASE}/actions/ScaleByAction.hpp
+      ${HDR_BASE}/actions/SpriteBatchAction.hpp
+  )
 
-  # Re-declare globally, so other build units that depend on us can refer to
-  # this variable
-  # set(NOM_ACTIONS_LIBRARY ${NOM_ACTIONS_LIBRARY} PARENT_SCOPE)
-endif(NOM_BUILD_ACTIONS_UNIT)
+  # Internal dependencies for this action subgroup
+  target_link_libraries(nomlib-actions
+    PUBLIC
+      nomlib-graphics
+    #PRIVATE
+      #$<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+  )
+endif(NOM_BUILD_GRAPHICS_UNIT)
+
+# sub-feature unit available with nomlib-audio for audio actions
+if(NOM_BUILD_AUDIO_UNIT)
+  target_sources(nomlib-actions
+    PRIVATE
+    ${SRC_DIR}/actions/FadeAudioGainBy.cpp
+    ${SRC_DIR}/actions/PlayAudioSource.cpp
+    PUBLIC
+      FILE_SET HEADERS
+      BASE_DIRS ${HDR_BASE}
+      FILES
+      ${HDR_BASE}/actions/FadeAudioGainBy.hpp
+      ${HDR_BASE}/actions/PlayAudioSource.hpp
+  )
+
+  # Internal dependencies for this action subgroup
+  target_link_libraries(nomlib-actions
+    PUBLIC
+      nomlib-audio
+    PRIVATE
+      $<IF:$<TARGET_EXISTS:OpenAL::OpenAL>,OpenAL::OpenAL>
+  )
+endif(NOM_BUILD_AUDIO_UNIT)
+
+
+# Common internal dependencies for actions
+target_link_libraries(nomlib-actions
+  PUBLIC
+  nomlib-core
+  nomlib-math
+  #nomlib-system
+)
+
+# MacOSX Framework bundle support
+set_target_properties(nomlib-actions
+  PROPERTIES
+    FRAMEWORK TRUE
+    MACOSX_FRAMEWORK_INFO_PLIST
+      "${CMAKE_TEMPLATE_PATH}/Info.plist.in"
+    MACOSX_FRAMEWORK_NAME
+      nomlib-actions
+    MACOSX_FRAMEWORK_BUNDLE_VERSION
+      "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_BUILD_TYPE}"
+    MACOSX_FRAMEWORK_SHORT_VERSION_STRING
+      "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+    MACOSX_FRAMEWORK_IDENTIFIER
+      "net.i8degrees.nomlib-actions"
+    # PUBLIC_HEADER
+    # "${headers}"
+)
+
+install(TARGETS nomlib-actions
+  EXPORT libtarget
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT Runtime
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT Runtime
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT Runtime
+  FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+    COMPONENT Development
+  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/actions"
+    COMPONENT Development
+  # MacOSX framework bundle
+  LIBRARY FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX}
+    COMPONENT Runtime
+)

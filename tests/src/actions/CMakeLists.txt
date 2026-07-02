@@ -5,20 +5,41 @@ set( NOM_BUILD_ACTION_TIMING_CURVES_TESTS ON )
 
 if( NOM_BUILD_ACTION_TESTS )
 
-  set(  ACTION_SRC
-        ${ACTION_SRC}
-        "ActionTest.cpp"
-        "ActionTest_ActionPlayer.cpp"
-        "ActionTest_AlphaBlending.cpp"
-        "ActionTest_Reversed.cpp"
-        "ActionTest_Demos.cpp"
-        "ActionTest_Repeating.cpp"
+  add_executable(ActionTest
+    WIN32
+    ActionTest.cpp
+    ActionTest_ActionPlayer.cpp
+    ActionTest_AlphaBlending.cpp
+    ActionTest_Reversed.cpp
+    ActionTest_Demos.cpp
+    ActionTest_Repeating.cpp
   )
 
-  add_executable( ActionTest ${ACTION_SRC} )
+  add_dependencies(ActionTest gtest)
 
-  target_link_libraries(ActionTest nomlib-visual-unit-test nomlib-actions
-                        nomlib-graphics)
+  target_include_directories(ActionTest
+    PUBLIC
+    # ${PROJECT_SOURCE_DIR}/include # include/nomlib
+    ${PROJECT_SOURCE_DIR}/tests/include
+    PRIVATE
+    ${GTEST_INCLUDE_DIR}
+    ${SDL2_INCLUDE_DIR}
+    # TCLAP v1.2.1-release-final headers only distribution
+    ${TCLAP_INCLUDE_DIR}
+  )
+
+  target_link_libraries(ActionTest
+    PUBLIC
+    nomlib-actions
+    nomlib-core
+    nomlib-graphics
+    nomlib-visual-unit-test
+    PRIVATE
+    Threads::Threads
+    ${GTEST_LIBRARY}
+    #$<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+  )
 
   set( ACTION_TEST_BIN "${TESTS_INSTALL_DIR}/ActionTest" )
 
@@ -93,17 +114,36 @@ endif( NOM_BUILD_ACTION_TESTS )
 
 if( NOM_BUILD_ACTION_TIMING_CURVES_TESTS )
 
-  set(  ACTION_TIMING_CURVES_SRC
-        ${ACTION_TIMING_CURVES_SRC}
-        "ActionTimingCurvesTest.cpp" )
+  add_executable(ActionTimingCurvesTest
+    WIN32
+    ActionTimingCurvesTest.cpp
+  )
 
-  add_executable( ActionTimingCurvesTest ${ACTION_TIMING_CURVES_SRC} )
+  add_dependencies(ActionTimingCurvesTest gtest)
 
-  target_link_libraries(ActionTimingCurvesTest nomlib-unit-test
-                        nomlib-actions)
+  target_include_directories(ActionTimingCurvesTest
+    PUBLIC
+    #${PROJECT_SOURCE_DIR}/include # include/nomlib
+    ${PROJECT_SOURCE_DIR}/tests/include
+    PRIVATE
+    ${GTEST_INCLUDE_DIR}
+    ${SDL2_INCLUDE_DIR}
+  )
+
+  target_link_libraries(ActionTimingCurvesTest
+    PUBLIC
+    nomlib-actions
+    nomlib-core
+    nomlib-unit-test
+    PRIVATE
+    Threads::Threads
+    ${GTEST_LIBRARY}
+    #$<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+  )
 
   GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/ActionTimingCurvesTest
                     "" # args
-                    ${ACTION_TIMING_CURVES_SRC} )
+                    ActionTimingCurvesTest.cpp)
 
 endif( NOM_BUILD_ACTION_TIMING_CURVES_TESTS )

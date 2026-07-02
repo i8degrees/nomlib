@@ -15,4 +15,3 @@ configure_file( "${UNINSTALL_FILE_TEMPLATE}"
                 IMMEDIATE @ONLY)
 add_custom_target( uninstall # new target name, i.e.: `make uninstall`
   COMMAND ${CMAKE_COMMAND} -P "${UNINSTALL_FILE_DEST}")
-

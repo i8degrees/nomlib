@@ -1,102 +1,6 @@
 # nomlib-gui library
 
-# Library headers inclusion path
-include_directories( "${INC_ROOT_DIR}" )
-
-# Library name
-set( NOM_GUI_LIBRARY "nomlib-gui" )
-
-set(  NOM_GUI_SOURCE
-      ${INC_DIR}/gui.hpp
-
-      ${SRC_DIR}/gui/RocketSDL2RenderInterface.cpp
-      ${INC_DIR}/gui/RocketSDL2RenderInterface.hpp
-
-      ${SRC_DIR}/gui/RocketSDL2SystemInterface.cpp
-      ${INC_DIR}/gui/RocketSDL2SystemInterface.hpp
-
-      ${SRC_DIR}/gui/RocketFileInterface.cpp
-      ${INC_DIR}/gui/RocketFileInterface.hpp
-
-      ${SRC_DIR}/gui/UIEventListener.cpp
-      ${INC_DIR}/gui/UIEventListener.hpp
-
-      ${SRC_DIR}/gui/DecoratorInstancerFinalFantasyFrame.cpp
-      ${INC_DIR}/gui/DecoratorInstancerFinalFantasyFrame.hpp
-
-      ${SRC_DIR}/gui/DecoratorFinalFantasyFrame.cpp
-      ${INC_DIR}/gui/DecoratorFinalFantasyFrame.hpp
-
-      ${SRC_DIR}/gui/DecoratorPhotograph.cpp
-      ${INC_DIR}/gui/DecoratorPhotograph.hpp
-
-      ${SRC_DIR}/gui/DecoratorInstancerSprite.cpp
-      ${INC_DIR}/gui/DecoratorInstancerSprite.hpp
-
-      ${SRC_DIR}/gui/DecoratorSpriteBatch.cpp
-      ${INC_DIR}/gui/DecoratorSpriteBatch.hpp
-
-      ${SRC_DIR}/gui/UIWidget.cpp
-      ${INC_DIR}/gui/UIWidget.hpp
-
-      ${SRC_DIR}/gui/UIMessageBox.cpp
-      ${INC_DIR}/gui/UIMessageBox.hpp
-
-      ${SRC_DIR}/gui/UIQuestionDialogBox.cpp
-      ${INC_DIR}/gui/UIQuestionDialogBox.hpp
-
-      ${SRC_DIR}/gui/UIDataViewList.cpp
-      ${INC_DIR}/gui/UIDataViewList.hpp
-
-      # ${SRC_DIR}/gui/DOM.cpp
-      # ${INC_DIR}/gui/DOM.hpp
-
-      ${SRC_DIR}/gui/RocketUtilities.cpp
-      ${INC_DIR}/gui/RocketUtilities.hpp
-
-      ${SRC_DIR}/gui/UIContext.cpp
-      ${INC_DIR}/gui/UIContext.hpp
-
-      ${SRC_DIR}/gui/init_librocket.cpp
-      ${INC_DIR}/gui/init_librocket.hpp
-
-      ${SRC_DIR}/gui/UIContextEventHandler.cpp
-      ${INC_DIR}/gui/UIContextEventHandler.hpp
-
-      # Decorator helpers
-      ${SRC_DIR}/gui/FinalFantasyFrame.cpp
-      ${INC_DIR}/gui/FinalFantasyFrame.hpp
-
-      ${SRC_DIR}/gui/Drawables.cpp
-      ${INC_DIR}/gui/Drawables.hpp
-
-      ${INC_DIR}/gui/IDecorator.hpp
-
-      ${SRC_DIR}/gui/Decorator.cpp
-      ${INC_DIR}/gui/Decorator.hpp
-
-      ${SRC_DIR}/gui/MinimalDecorator.cpp
-      ${INC_DIR}/gui/MinimalDecorator.hpp
-      ${SRC_DIR}/gui/FinalFantasyDecorator.cpp
-)
-
-# Common dependencies on all platforms
-set( NOM_GUI_DEPS nomlib-graphics )
-
 # Platform-specific implementations & dependencies
-
-find_package( SDL2_image REQUIRED )
-if( SDL2_IMAGE_FOUND )
-  # Add development header files; SDL_image.h
-  include_directories( ${SDL2_IMAGE_INCLUDE_DIR} )
-endif( SDL2_IMAGE_FOUND )
-
-find_package( OpenGL REQUIRED )
-if( OPENGL_FOUND )
-  # Add development header files; gl.h
-  include_directories( ${OPENGL_INCLUDE_DIR} )
-  list( APPEND NOM_GUI_DEPS ${OPENGL_LIBRARY} )
-endif( OPENGL_FOUND )
 
 # if( NOM_USE_LIBROCKET_LUA )
 #   find_package( Lua REQUIRED )
@@ -105,18 +9,159 @@ endif( OPENGL_FOUND )
 #   endif( LUA_FOUND )
 # endif( NOM_USE_LIBROCKET_LUA )
 
-find_package( LibRocket REQUIRED )
-if( LIBROCKET_FOUND )
-  # Add development header files
-  include_directories( ${LIBROCKET_INCLUDE_DIRS} )
-  list( APPEND NOM_GUI_DEPS ${LIBROCKET_LIBRARIES} )
-endif( LIBROCKET_FOUND )
-
 # Add and link the library
-nom_add_library(  ${NOM_GUI_LIBRARY} ${LIBRARY_OUTPUT_TYPE}
-                  "${NOM_GUI_SOURCE}" ""
-                  "${NOM_GUI_DEPS}" )
+add_library(nomlib-gui
+  ${LIBRARY_OUTPUT_TYPE} # STATIC || SHARED
+)
 
-# Re-declare globally, so other build units that depend on us can refer to this
-# variable
-# set( NOM_GUI_LIBRARY ${NOM_GUI_LIBRARY} PARENT_SCOPE )
+# CMake generates our NOM_EXPORT macros, i.e.: __declspec(dllexport)
+generate_export_header(nomlib-gui
+  BASE_NAME
+    NOM
+  EXPORT_FILE_NAME
+    export.hpp
+)
+
+set_target_properties(nomlib-gui
+  PROPERTIES
+    VERSION "${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
+    SOVERSION ${PROJECT_VERSION_MAJOR}
+    DEBUG_POSTFIX "-d"
+    CXX_STANDARD 14
+    CXX_STANDARD_REQUIRED ON
+    CXX_EXTENSION_REQUIRED OFF
+)
+
+if(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
+  # Skip dllimport/dllexport logic when building as a static library target
+  target_compile_definitions(nomlib-gui
+    PUBLIC
+      NOM_STATIC_DEFINE
+  )
+  # Ensure that our target can be cleanly combined or linked by shared
+  # library targets; this adds -fPIC to the build for this unit
+  set_target_properties(nomlib-gui
+    PROPERTIES
+      POSITION_INDEPENDENT_CODE ON
+  )
+endif(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
+
+target_sources(nomlib-gui
+  PRIVATE
+  ${SRC_DIR}/gui/RocketSDL2RenderInterface.cpp
+  ${SRC_DIR}/gui/RocketSDL2SystemInterface.cpp
+  ${SRC_DIR}/gui/RocketFileInterface.cpp
+  ${SRC_DIR}/gui/UIEventListener.cpp
+  ${SRC_DIR}/gui/DecoratorInstancerFinalFantasyFrame.cpp
+  ${SRC_DIR}/gui/DecoratorFinalFantasyFrame.cpp
+  ${SRC_DIR}/gui/DecoratorPhotograph.cpp
+  ${SRC_DIR}/gui/DecoratorInstancerSprite.cpp
+  ${SRC_DIR}/gui/DecoratorSpriteBatch.cpp
+  ${SRC_DIR}/gui/UIWidget.cpp
+  ${SRC_DIR}/gui/UIMessageBox.cpp
+  ${SRC_DIR}/gui/UIQuestionDialogBox.cpp
+  ${SRC_DIR}/gui/UIDataViewList.cpp
+  # ${SRC_DIR}/gui/DOM.cpp
+  ${SRC_DIR}/gui/RocketUtilities.cpp
+  ${SRC_DIR}/gui/UIContext.cpp
+  ${SRC_DIR}/gui/init_librocket.cpp
+  ${SRC_DIR}/gui/UIContextEventHandler.cpp
+  # Decorator helpers
+  ${SRC_DIR}/gui/FinalFantasyFrame.cpp
+  ${SRC_DIR}/gui/Drawables.cpp
+  ${SRC_DIR}/gui/Decorator.cpp
+  ${SRC_DIR}/gui/MinimalDecorator.cpp
+  ${SRC_DIR}/gui/FinalFantasyDecorator.cpp
+  PUBLIC
+    FILE_SET HEADERS
+    BASE_DIRS ${HDR_BASE}
+    FILES
+    ${HDR_BASE}/gui.hpp
+    ${HDR_BASE}/gui/RocketSDL2RenderInterface.hpp
+    ${HDR_BASE}/gui/RocketSDL2RenderInterface.hpp
+    ${HDR_BASE}/gui/RocketSDL2SystemInterface.hpp
+    ${HDR_BASE}/gui/RocketFileInterface.hpp
+    ${HDR_BASE}/gui/UIEventListener.hpp
+    ${HDR_BASE}/gui/DecoratorInstancerFinalFantasyFrame.hpp
+    ${HDR_BASE}/gui/DecoratorFinalFantasyFrame.hpp
+    ${HDR_BASE}/gui/DecoratorPhotograph.hpp
+    ${HDR_BASE}/gui/DecoratorInstancerSprite.hpp
+    ${HDR_BASE}/gui/DecoratorSpriteBatch.hpp
+    ${HDR_BASE}/gui/UIWidget.hpp
+    ${HDR_BASE}/gui/UIMessageBox.hpp
+    ${HDR_BASE}/gui/UIQuestionDialogBox.hpp
+    ${HDR_BASE}/gui/UIDataViewList.hpp
+    ${HDR_BASE}/gui/DOM.hpp
+    ${HDR_BASE}/gui/RocketUtilities.hpp
+    ${HDR_BASE}/gui/UIContext.hpp
+    ${HDR_BASE}/gui/init_librocket.hpp
+    ${HDR_BASE}/gui/UIContextEventHandler.hpp
+    # Decorator helpers
+    ${HDR_BASE}/gui/FinalFantasyFrame.hpp
+    ${HDR_BASE}/gui/Drawables.hpp
+    ${HDR_BASE}/gui/IDecorator.hpp
+    ${HDR_BASE}/gui/Decorator.hpp
+    ${HDR_BASE}/gui/MinimalDecorator.hpp
+    FILE_SET generated_headers
+    TYPE HEADERS
+    BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/export.hpp
+)
+
+target_include_directories(nomlib-gui
+  # INTERFACE
+  # Path used when building this project locally
+  # $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/nomlib>
+  # Path used by downstream consumers after the project is installed
+  # $<INSTALL_INTERFACE:include/nomlib>
+  PRIVATE
+  ${PROJECT_SOURCE_DIR}/include # include/nomlib
+  ${SDL2_INCLUDE_DIR}
+  ${libRocket_INCLUDE_DIRS}
+  ${OPENGL_INCLUDE_DIR}
+)
+
+target_link_libraries(nomlib-gui
+  PUBLIC
+  nomlib-graphics
+  PRIVATE
+  OpenGL::GL
+  $<IF:$<TARGET_EXISTS:RocketCore>,RocketCore,RocketCore-static>
+  $<IF:$<TARGET_EXISTS:RocketControls>,RocketControls,RocketControls-static>
+  $<IF:$<TARGET_EXISTS:RocketDebugger>,RocketDebugger,RocketDebugger-static>
+)
+
+# MacOSX Framework bundle support
+set_target_properties(nomlib-gui
+  PROPERTIES
+    FRAMEWORK TRUE
+    MACOSX_FRAMEWORK_INFO_PLIST
+      "${CMAKE_TEMPLATE_PATH}/Info.plist.in"
+    MACOSX_FRAMEWORK_NAME
+      nomlib-gui
+    MACOSX_FRAMEWORK_BUNDLE_VERSION
+      "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_BUILD_TYPE}"
+    MACOSX_FRAMEWORK_SHORT_VERSION_STRING
+      "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+    MACOSX_FRAMEWORK_IDENTIFIER
+      "net.i8degrees.nomlib-gui"
+    # PUBLIC_HEADER
+    # "${headers}"
+)
+
+install(TARGETS nomlib-gui
+  EXPORT libtarget
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT Runtime
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT Runtime
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT Runtime
+  FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+    COMPONENT Development
+  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/gui"
+    COMPONENT Development
+  # MacOSX framework bundle
+  LIBRARY FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX}
+    COMPONENT Runtime
+)

@@ -85,7 +85,7 @@ class App: public nom::SDLApp
       NOM_LOG_TRACE ( NOM );
     }
 
-    bool on_init( void )
+    bool on_init( void ) override
     {
       nom::uint32 window_flags = SDL_WINDOW_SHOWN;
 
@@ -113,7 +113,7 @@ class App: public nom::SDLApp
       return true;
     }
 
-    nom::int32 Run( void )
+    nom::int32 Run( void ) override
     {
       nom::MouseState mouse;
 

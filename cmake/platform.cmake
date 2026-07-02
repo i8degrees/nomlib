@@ -48,7 +48,22 @@ if ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
   #
   # NOTE: CMAKE_OSX_SYSROOT must be set **before** the project command is
   # called.
-  message( STATUS "Using SDK: ${CMAKE_OSX_SYSROOT}" )
+  if(NOT CMAKE_OSX_SYSROOT)
+    execute_process(
+        COMMAND xcrun --show-sdk-path
+        OUTPUT_VARIABLE DETECTED_SDK_PATH
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    execute_process(
+        COMMAND xcrun --show-sdk-version
+        OUTPUT_VARIABLE DETECTED_SDK_VERSION
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    set(CMAKE_OSX_SYSROOT ${DETECTED_SDK_PATH} CACHE PATH "macOS SDK Path" FORCE)
+    set(NOM_MACOSX_SDK_VERSION ${DETECTED_SDK_VERSION} CACHE PATH "macOS SDK Version" FORCE)
+  endif(NOT CMAKE_OSX_SYSROOT)
+
+  message(STATUS "Using macOS SDK: ${CMAKE_OSX_SYSROOT}")
 
   # libc++ requires OSX v10.7+
   set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++" )
@@ -76,23 +91,19 @@ elseif ( CMAKE_SYSTEM_NAME STREQUAL "Linux" ) # Tested on Ubuntu v12.04-LTS
     message ( STATUS "Using clang based platform to build..." )
     #set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14" )
     # nomlib began its life under c++14 on Intel Darwin Mac OSX
-    set ( CMAKE_CXX_STANDARD 14 )
     # >> Modern GTest build requires a c++17 minimum
-    set ( CMAKE_CXX_STANDARD 14 )
-    set ( CMAKE_CXX_STANDARD_REQUIRED ON )
-    set ( CMAKE_CXX_EXTENSIONS OFF)
-
+    set(CMAKE_CXX_STANDARD 14)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+    set(CMAKE_CXX_EXTENSIONS OFF)
     # libc++ requires OSX v10.7+
     #set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++" )
   elseif ( CMAKE_C_COMPILER MATCHES "gcc" )
     message ( STATUS "Using gcc based platform to build..." )
-    message ( FATAL_ERROR "nomlib only supports building with clang." )
+    message ( WARNING "nomlib only supports building with clang." )
 
     # !! GoogleTest unit testing framework v1.10.x requires a minimum C++ level 11
-    set( CMAKE_CXX_STANDARD 11 )
-    # !! Our engine is based on a c++ level of 14
-    set( CMAKE_CXX_STANDARD 14 )
-    # NOTE(JEFF): This should only be set when GNU GCC is enabled?
+    set(CMAKE_CXX_STANDARD 11)
+    set(CMAKE_CXX_STANDARD 14)
     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
   endif( CMAKE_CXX_COMPILER MATCHES "clang" )
 
@@ -120,4 +131,3 @@ endif ( PLATFORM_WINDOWS AND ARCH_32 )
 
 message(STATUS "Target architectures: ${PLATFORM_ARCH}")
 message(STATUS "Generating CMake project files with ${CMAKE_GENERATOR}")
-

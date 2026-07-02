@@ -31,9 +31,9 @@ docs/html/*
 !docs/.placeholder
 
 vendor/prebuilt/**
-vendor**/
-wiki*/
 third-party*/
 
+# vcpkg related
 vcpkg_installed/*
+!vcpkg-lock.json
 

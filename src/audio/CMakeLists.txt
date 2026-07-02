@@ -1,103 +1,162 @@
 # nomlib-audio library
 
-# Library headers inclusion path
-include_directories( "${INC_ROOT_DIR}" )
+# Add and link the library
+add_library(nomlib-audio
+  ${LIBRARY_OUTPUT_TYPE} # STATIC || SHARED
+)
 
-# Library name
-set( NOM_AUDIO_LIBRARY "nomlib-audio" )
+# CMake generates our NOM_EXPORT macros, i.e.: __declspec(dllexport)
+generate_export_header(nomlib-audio
+  BASE_NAME
+    NOM
+  EXPORT_FILE_NAME
+    export.hpp
+)
 
 # Default implementation sources (always built)
-set(  NOM_AUDIO_SOURCE
-      ${INC_DIR}/audio.hpp
-      ${INC_DIR}/audio/audio_defs.hpp
-
-      ${INC_DIR}/audio/SoundBuffer.hpp
-      ${INC_DIR}/audio/ISoundFileReader.hpp
-      ${INC_DIR}/audio/ISoundFileWriter.hpp
-      ${INC_DIR}/audio/SoundFile.hpp
-
-      ${INC_DIR}/audio/IAudioDevice.hpp
-      ${INC_DIR}/audio/IOAudioEngine.hpp
-
-      # ${SRC_DIR}/audio/AudioDeviceLocator.cpp
-      # ${INC_DIR}/audio/AudioDeviceLocator.hpp
-
-      # ${SRC_DIR}/audio/NullAudioDevice.cpp
-      # ${INC_DIR}/audio/NullAudioDevice.hpp
-      # ${SRC_DIR}/audio/NullAudioDeviceCaps.cpp
-      # ${INC_DIR}/audio/NullAudioDeviceCaps.hpp
+target_sources(nomlib-audio
+  PRIVATE
+  # ${SRC_DIR}/audio/AudioDeviceLocator.cpp
+  # ${SRC_DIR}/audio/NullAudioDevice.cpp
+  # ${SRC_DIR}/audio/NullAudioDeviceCaps.cpp
+  PUBLIC
+    FILE_SET HEADERS
+    BASE_DIRS ${HDR_BASE}
+    FILES
+    ${HDR_BASE}/audio.hpp
+    ${HDR_BASE}/audio/audio_defs.hpp
+    ${HDR_BASE}/audio/SoundBuffer.hpp
+    ${HDR_BASE}/audio/ISoundFileReader.hpp
+    ${HDR_BASE}/audio/ISoundFileWriter.hpp
+    ${HDR_BASE}/audio/SoundFile.hpp
+    ${HDR_BASE}/audio/IAudioDevice.hpp
+    ${HDR_BASE}/audio/IOAudioEngine.hpp
+    # ${HDR_BASE}/audio/AudioDeviceLocator.hpp
+    # ${HDR_BASE}/audio/NullAudioDevice.hpp
+    # ${HDR_BASE}/audio/NullAudioDeviceCaps.hpp
+    FILE_SET generated_headers
+    TYPE HEADERS
+    BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/export.hpp
 )
 
 # Common dependencies on all platforms
-# TODO(jeff): Try and rid ourselves of dependence on nomlib-system here for the
-# audio subsystem!
-set(NOM_AUDIO_DEPS nomlib-core nomlib-math nomlib-system)
-
 if(NOM_BUILD_AUDIO_UNIT)
-
   # Common implementation sources (OpenAL)
-  set(NOM_AUDIO_AL_SOURCE
-      ${SRC_DIR}/audio/AL/ALAudioDevice.cpp
-      ${INC_DIR}/audio/AL/ALAudioDevice.hpp
-      ${SRC_DIR}/audio/AL/ALAudioDeviceCaps.cpp
-      ${INC_DIR}/audio/AL/ALAudioDeviceCaps.hpp
-
-      ${SRC_DIR}/audio/AL/OpenAL.cpp
-      ${INC_DIR}/audio/AL/OpenAL.hpp
-
+  target_sources(nomlib-audio
+    PRIVATE
+    ${SRC_DIR}/audio/AL/ALAudioDevice.cpp
+    ${SRC_DIR}/audio/AL/ALAudioDeviceCaps.cpp
+    ${SRC_DIR}/audio/AL/OpenAL.cpp
+    # TODO(jeff): Divide libsndfile directory into its own source segment
+    ${SRC_DIR}/audio/libsndfile/SoundFileReader.cpp
+    # ${SRC_DIR}/audio/libsndfile/SoundFileWriter.cpp
+    ${SRC_DIR}/audio/AL/SoundSource.cpp
+    PUBLIC
+      FILE_SET HEADERS
+      BASE_DIRS ${HDR_BASE}
+      FILES
+      ${HDR_BASE}/audio/AL/ALAudioDevice.hpp
+      ${HDR_BASE}/audio/AL/ALAudioDeviceCaps.hpp
+      ${HDR_BASE}/audio/AL/OpenAL.hpp
+      ${HDR_BASE}/audio/AL/SoundSource.hpp
       # TODO(jeff): Divide libsndfile directory into its own source segment
-      ${SRC_DIR}/audio/libsndfile/SoundFileReader.cpp
-      ${INC_DIR}/audio/libsndfile/SoundFileReader.hpp
-      # ${SRC_DIR}/audio/libsndfile/SoundFileWriter.cpp
-      # ${INC_DIR}/audio/libsndfile/SoundFileWriter.hpp
-
-      ${SRC_DIR}/audio/AL/SoundSource.cpp
-      ${INC_DIR}/audio/AL/SoundSource.hpp)
-
-  list(APPEND NOM_AUDIO_SOURCE ${NOM_AUDIO_AL_SOURCE})
-
-  # ...Mac OS X specific OpenAL implementation details...
-  # FIXME(jeff): ...
-  if(PLATFORM_OSX AND NOM_USE_APPLE_OPENAL)
-    set(NOM_AUDIO_AL_OSX_SOURCE
+      ${HDR_BASE}/audio/libsndfile/SoundFileReader.hpp
+      ${HDR_BASE}/audio/libsndfile/SoundFileWriter.hpp
+    )
+    # ...Mac OS X specific OpenAL implementation details...
+    if(PLATFORM_OSX OR NOM_USE_APPLE_OPENAL)
+      target_sources(nomlib-audio
+        PRIVATE
         ${SRC_DIR}/audio/AL/osx/apple_extensions.cpp
-        ${INC_DIR}/audio/AL/osx/apple_extensions.hpp)
-    list(APPEND NOM_AUDIO_SOURCE ${NOM_AUDIO_AL_OSX_SOURCE})
-  endif(PLATFORM_OSX AND NOM_USE_APPLE_OPENAL)
-
-  # OpenAL Library dependencies
-  if(NOM_USE_OPENAL OR NOM_USE_APPLE_OPENAL)
-    find_package(OpenAL REQUIRED)
-  elseif(NOM_USE_OPENAL_SOFT)
-    # TODO(jeff): Implement custom packaging of the OpenAL library and header
-    # file paths; nomlib-config.cmake & friends.
-    set(OPENAL_INCLUDE_DIR "/usr/local/opt/openal-soft/include/")
-    set(OPENAL_LIBRARY "/usr/local/opt/openal-soft/lib/libopenal.dylib")
-    set(OPENAL_FOUND true)
-  endif(NOM_USE_OPENAL OR NOM_USE_APPLE_OPENAL)
-
-  if(OPENAL_FOUND)
-    # Add development header files; al.h, alc.h
-    NOM_LOG_INFO("OPENAL_INCLUDE_DIR: ${OPENAL_INCLUDE_DIR}")
-    include_directories(${OPENAL_INCLUDE_DIR})
-    list(APPEND NOM_AUDIO_DEPS ${OPENAL_LIBRARY})
-  endif(OPENAL_FOUND)
-
-  find_package(libsndfile REQUIRED)
-  if(LIBSNDFILE_FOUND)
-    # Add development header files; sndfile.h
-    include_directories(${LIBSNDFILE_INCLUDE_DIR})
-  endif(LIBSNDFILE_FOUND)
-
-  list(APPEND NOM_AUDIO_DEPS ${LIBSNDFILE_LIBRARY})
-
+        PUBLIC
+          FILE_SET HEADERS
+          BASE_DIRS ${HDR_BASE}
+          FILES
+          ${HDR_BASE}/audio/AL/osx/apple_extensions.hpp
+      )
+    endif(PLATFORM_OSX OR NOM_USE_APPLE_OPENAL)
 endif(NOM_BUILD_AUDIO_UNIT)
 
-# Add and link the library
-nom_add_library(  ${NOM_AUDIO_LIBRARY} ${LIBRARY_OUTPUT_TYPE}
-                  "${NOM_AUDIO_SOURCE}" ""
-                  "${NOM_AUDIO_DEPS}" )
+# This is embedded as the SONAME in the library's ELF header and determinnes
+# which file the dynamic linker searches for at runtime, i.e.:
+# `libnomlib-actions.so.1 -> `libnomlib-actions.so.0.11`
+# The Application Binary Interface (ABI) version; PATCH level versions are
+# intended **not** to break the ABI version.
+set_target_properties(nomlib-audio
+  PROPERTIES
+    VERSION "${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
+    SOVERSION ${PROJECT_VERSION_MAJOR}
+    DEBUG_POSTFIX "-d"
+    CXX_STANDARD 14
+    CXX_STANDARD_REQUIRED ON
+    CXX_EXTENSION_REQUIRED OFF
+)
 
-# Re-declare globally, so other build units that depend on us can refer to this
-# variable
-# set( NOM_AUDIO_LIBRARY ${NOM_AUDIO_LIBRARY} PARENT_SCOPE )
+if(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
+  # Skip dllimport/dllexport logic when building as a static library target
+  target_compile_definitions(nomlib-audio
+    PUBLIC
+      NOM_STATIC_DEFINE
+  )
+  # Ensure that our target can be cleanly combined or linked by shared
+  # library targets; this adds -fPIC to the build for this unit
+  set_target_properties(nomlib-audio
+    PROPERTIES
+      POSITION_INDEPENDENT_CODE ON
+  )
+endif(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
+
+target_include_directories(nomlib-audio
+  PRIVATE
+  ${PROJECT_SOURCE_DIR}/include # include/nomlib
+  ${SDL2_INCLUDE_DIR}
+  ${OPENAL_INCLUDE_DIR}
+  ${LIBSNDFILE_INCLUDE_DIR}
+)
+
+# Common dependencies on all platforms
+target_link_libraries(nomlib-audio
+  PUBLIC
+  nomlib-core
+  nomlib-math
+  nomlib-system
+  PRIVATE
+  OpenAL::OpenAL
+  SndFile::sndfile
+)
+
+# MacOSX Framework bundle support
+set_target_properties(nomlib-audio
+  PROPERTIES
+    FRAMEWORK TRUE
+    MACOSX_FRAMEWORK_INFO_PLIST
+      "${CMAKE_TEMPLATE_PATH}/Info.plist.in"
+    MACOSX_FRAMEWORK_NAME
+      nomlib-audio
+    MACOSX_FRAMEWORK_BUNDLE_VERSION
+      "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_BUILD_TYPE}"
+    MACOSX_FRAMEWORK_SHORT_VERSION_STRING
+      "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+    MACOSX_FRAMEWORK_IDENTIFIER
+      "net.i8degrees.nomlib-audio"
+    # PUBLIC_HEADER
+    # "${headers}"
+)
+
+install(TARGETS nomlib-audio
+  EXPORT libtarget
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT Runtime
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT Runtime
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT Runtime
+  FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+    COMPONENT Development
+  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/audio"
+    COMPONENT Development
+  # MacOSX framework bundle
+  LIBRARY FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX}
+    COMPONENT Runtime
+)

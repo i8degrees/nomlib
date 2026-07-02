@@ -164,7 +164,7 @@ class FontRenderingApp: public nom::SDLApp
       // 2. Logic
       // 3. Render
 
-      nom::Event ev;
+      NOM_IGNORED_VARS(nom::Event ev);
       while( this->running() == true ) {
 
         nom::Event evt;

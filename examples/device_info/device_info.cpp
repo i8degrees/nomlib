@@ -169,10 +169,10 @@ void SDL2_ttf_version_info( void )
   #endif
 }
 struct OpenALVersionInfo {
-  std::string version = "N/A";
-  std::string renderer = "N/A";
-  std::string vendor = "N/A";
-  std::string extensions = "N/A";
+  std::string version = "N/A (engine was not built with NOM_BUILD_AUDIO_UNIT)";
+  std::string renderer = "N/A (engine was not built with NOM_BUILD_AUDIO_UNIT)";
+  std::string vendor = "N/A (engine was not built with NOM_BUILD_AUDIO_UNIT)";
+  std::string extensions = "N/A (engine was not built with NOM_BUILD_AUDIO_UNIT)";
 };
 
 //OpenALVersionInfo info;
@@ -185,11 +185,6 @@ OpenALVersionInfo OpenAL_version() {
   AL_CHECK_ERR( res_al.vendor = alGetString( AL_VENDOR ) );
   AL_CHECK_ERR( res_al.extensions = alGetString( AL_EXTENSIONS ) );
 #endif // end if NOM_USE_OPENAL
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL version: ", res_al.version );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL renderer: ", res_al.renderer );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL vendor: ", res_al.vendor );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL extensions: ", res_al.extensions );
-
   return res_al;
 }
 
@@ -197,17 +192,17 @@ void libsndfile_version_info( void )
 {
   #if defined(NOM_USE_LIBSNDFILE)
     NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
-                  "libsndfile version:", nom::libsndfile_version() );
+                  "libsndfile version:", nom::audio::libsndfile_version() );
   #else
     NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
-                  "libsndfile version:", "N/A");
+                  "libsndfile version:", "N/A (engine was not built with NOM_BUILD_AUDIO_UNIT)");
   #endif // defined(NOM_USE_LIBSNDFILE)
 }
 
 void libs_version_info( void )
 {
   auto res_al = OpenAL_version();
-  std::string librocket_ver = "N/A";
+  std::string librocket_ver = "N/A (engine was not built with NOM_BUILD_GUI_UNIT)";
 
   std::cout << std::endl;
   nomlib_version_info();
@@ -219,9 +214,12 @@ void libs_version_info( void )
   SDL2_ttf_version_info();
   std::cout << std::endl;
 
-  std::cout << "AL version " << res_al.version << " " << "M " << res_al.vendor << "EXT " << res_al.extensions << std::endl;
-  std::cout << std::endl;
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL version: ", res_al.version );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL renderer: ", res_al.renderer );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL vendor: ", res_al.vendor );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL extensions: ", res_al.extensions );
 
+  std::cout << std::endl;
   libsndfile_version_info();
   std::cout << std::endl;
 

@@ -5,9 +5,31 @@ set( NOM_BUILD_GUI_DATAGRID_TESTS ON )
 
 if( NOM_BUILD_GUI_BASE_TEST )
 
-  add_executable( libRocketTest "libRocketTest.cpp" )
+  add_executable(libRocketTest
+    WIN32 # ...
+    libRocketTest.cpp
+  )
 
-  target_link_libraries( libRocketTest nomlib-visual-unit-test nomlib-gui )
+  add_dependencies(libRocketTest gtest)
+
+  target_include_directories(libRocketTest
+    PUBLIC
+    ${PROJECT_SOURCE_DIR}/include # include/nomlib
+    ${PROJECT_SOURCE_DIR}/tests/include
+    PRIVATE
+    ${SDL2_INCLUDE_DIR}
+    ${libRocket_INCLUDE_DIRS}
+    ${GTEST_INCLUDE_DIR}
+  )
+
+  target_link_libraries(libRocketTest
+    PUBLIC
+    nomlib-core
+    nomlib-gui
+    nomlib-visual-unit-test
+    PRIVATE
+    $<IF:$<TARGET_EXISTS:RocketCore>,RocketCore,RocketCore-static>
+  )
 
   nom_add_visual_test(  libRocketTest
                         ${TESTS_INSTALL_DIR}/libRocketTest )
@@ -24,13 +46,35 @@ endif( NOM_BUILD_GUI_BASE_TEST )
 
 if( NOM_BUILD_GUI_DATAGRID_TESTS )
 
-  add_executable( libRocketDataGridTest
-                  "datagrid/Card.cpp"
-                  "datagrid/CardCollection.cpp"
-                  "datagrid/CardsPageDataSource.cpp"
-                  "libRocketDataGridTest.cpp" )
+  add_executable(libRocketDataGridTest
+    WIN32 # ...
+    datagrid/Card.cpp
+    datagrid/CardCollection.cpp
+    datagrid/CardsPageDataSource.cpp
+    libRocketDataGridTest.cpp
+  )
 
-  target_link_libraries( libRocketDataGridTest nomlib-visual-unit-test nomlib-gui )
+  add_dependencies(libRocketDataGridTest gtest)
+
+  target_include_directories(libRocketDataGridTest
+    PUBLIC
+    ${PROJECT_SOURCE_DIR}/include # include/nomlib
+    ${PROJECT_SOURCE_DIR}/tests/include
+    PRIVATE
+    ${SDL2_INCLUDE_DIR}
+    ${libRocket_INCLUDE_DIRS}
+    ${GTEST_INCLUDE_DIR}
+  )
+
+  target_link_libraries(libRocketDataGridTest
+    PUBLIC
+    nomlib-core
+    nomlib-gui
+    nomlib-visual-unit-test
+    PRIVATE
+    $<IF:$<TARGET_EXISTS:RocketCore>,RocketCore,RocketCore-static>
+    $<IF:$<TARGET_EXISTS:RocketControls>,RocketControls,RocketControls-static>
+  )
 
   nom_add_visual_test(  libRocketDataGridTest
                         ${TESTS_INSTALL_DIR}/libRocketDataGridTest )
@@ -57,4 +101,3 @@ if ( PLATFORM_WINDOWS )
   )
 
 endif ( PLATFORM_WINDOWS )
-

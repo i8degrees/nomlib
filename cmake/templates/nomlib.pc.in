@@ -15,5 +15,5 @@ Requires:
 Requires.private: @PROJECT_DEPS@
 Libs.private: -lmp3lame
 
-Cflags: -F/home/jeff/Projects/nomlib.git/third-party -I${includedir}
+Cflags: -I${includedir}
 Libs: -L${libdir} @LIBS@

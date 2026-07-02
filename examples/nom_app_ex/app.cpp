@@ -122,7 +122,7 @@ class App: public nom::SDLApp
 
     } // ~App
 
-    bool on_init ( void )
+    bool on_init ( void ) override
     {
       nom::uint32 window_flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
       nom::uint32 render_flags = SDL_RENDERER_ACCELERATED;
@@ -373,7 +373,7 @@ class App: public nom::SDLApp
       return true;
     } // onInit
 
-    nom::int32 Run ( void )
+    nom::int32 Run ( void ) override
     {
       for ( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ )
       {

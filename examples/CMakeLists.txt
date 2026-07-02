@@ -30,254 +30,50 @@ set( NOM_BUILD_FONTS_EXAMPLE ON )
 set( NOM_BUILD_MOUSE_CURSORS_EXAMPLE ON )
 set( NOM_BUILD_MACROS_EXAMPLE ON )
 
-# Use common build output directories for MSVCPP && Xcode project files.
-#
-# IMPORTANT: Debug and Release build targets **must** be kept in separate build
-# trees!
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/examples/Debug")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/examples/Release")
-
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/examples/Debug")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/examples/Release")
-
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/examples/Debug")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/examples/Release")
-
-if(DEBUG)
-  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG})
-  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG})
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG})
-else() # Release builds
-  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE})
-  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE})
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE})
-endif()
+# Use common build output directories for MSVCPP && Xcode project files
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin")
 
 # This path is used for the local installation of required dependencies for
 # running examples, such as dependent resource files. Additionally, when
 # building on Windows, this will be the path that dependent DLLs are copied to.
-set( EXAMPLES_INSTALL_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" )
+set( EXAMPLES_INSTALL_DIR "${CMAKE_INSTALL_DATAROOTDIR}" )
 
-# Project headers files inclusions; our header files namespace, 'nomlib'
-include_directories( "${INC_ROOT_DIR}" )
+if(NOM_BUILD_APP_EXAMPLE) # nom_app_ex
+  add_subdirectory(nom_app_ex)
+endif(NOM_BUILD_APP_EXAMPLE)
 
-# Third-party dependencies
-include_directories("${TCLAP_INCLUDE_DIR}")
-
-# nomlib-core external deps
-find_package( SDL2 REQUIRED )
-if( SDL2_FOUND )
-  include_directories( ${SDL2_INCLUDE_DIR} )
-endif( SDL2_FOUND )
-
-# nomlib-audio external deps
-if ( NOM_BUILD_AUDIO_UNIT )
-  # nomlib-audio external deps; OpenAL-Soft or Apple's OpenAL
-  find_package( OpenAL REQUIRED )
-  if( OPENAL_FOUND )
-    include_directories( ${OPENAL_INCLUDE_DIR} )
-    message ( STATUS "Found OpenAL headers: ${OPENAL_INCLUDE_DIR}." )
-  else ( NOT OPENAL_FOUND )
-    message ( FATAL_ERROR "Missing OpenAL headers at ${OPENAL_INCLUDE_DIR}." )
-  endif ( OPENAL_FOUND )
-endif()
-
-# nomlib-gui external deps
-find_package( LibRocket REQUIRED )
-if( LIBROCKET_FOUND )
-  # Add development header files
-  include_directories( ${LIBROCKET_INCLUDE_DIRS} )
-endif( LIBROCKET_FOUND )
-
-if( PLATFORM_WINDOWS )
-  # Build as console app -- shows cmd.exe window for logging -- only when
-  # debugging is toggled on
-  if ( NOT DEBUG )
-    set ( EXECUTABLE_FLAGS "WIN32" ) # Implies WIN_MAIN
-  else ( DEBUG )
-    # MSVCPP should default to Console if we set EXECUTABLE_FLAGS empty
-    set ( EXECUTABLE_FLAGS "" )
-  endif ( NOT DEBUG )
-endif ( PLATFORM_WINDOWS )
-
-if( NOM_BUILD_APP_EXAMPLE )
-  add_executable ( app "${EXECUTABLE_FLAGS}" "app/app.cpp" )
-
-  set( APP_DEPS nomlib-gui nomlib-graphics nomlib-actions nomlib-serializers )
-
-  if( PLATFORM_WINDOWS )
-    # We need to link to SDL2main library on Windows
-    list( APPEND APP_DEPS ${SDL2MAIN_LIBRARY} )
-  endif( PLATFORM_WINDOWS )
-
-  target_link_libraries( app ${APP_DEPS} )
-
-  # Search paths file to use in finding the resources path
-  install (
-            FILES
-            "${NOM_EXAMPLES_RESOURCES_DIR}/app.json"
-            DESTINATION
-            "${EXAMPLES_INSTALL_DIR}"
-          )
-endif( NOM_BUILD_APP_EXAMPLE )
-
-if(NOM_BUILD_AUDIO_EXAMPLE AND NOM_BUILD_AUDIO_UNIT)
-  set(EX_SRC "audio/audio.cpp")
-  add_executable(audio "${EXECUTABLE_FLAGS}" ${EX_SRC})
-
-  set(AUDIO_DEPS nomlib-math nomlib-system nomlib-audio nomlib-actions
-      nomlib-serializers)
-
-  if(PLATFORM_WINDOWS)
-    # We need to link to SDL2main library on Windows
-    list(APPEND AUDIO_DEPS ${SDL2MAIN_LIBRARY})
-  endif(PLATFORM_WINDOWS)
-
-  target_link_libraries(audio ${AUDIO_DEPS})
-
-  # Copy resource files for the example
-  install_resource_file("${NOM_EXAMPLES_RESOURCES_DIR}/audio.json"
-                        "${EXAMPLES_INSTALL_DIR}")
-
+if(NOM_BUILD_AUDIO_EXAMPLE AND NOM_BUILD_AUDIO_UNIT) # nom_sfx
+  add_subdirectory(nom_sfx)
 endif(NOM_BUILD_AUDIO_EXAMPLE AND NOM_BUILD_AUDIO_UNIT)
 
-if(NOM_BUILD_EVENTS_EXAMPLE)
-  set(APP_NAME events)
-  set(EX_SRC "${APP_NAME}.cpp")
-  add_executable(${APP_NAME} "${EXECUTABLE_FLAGS}" ${EX_SRC})
-
-  set(APP_DEPS nomlib-system nomlib-graphics)
-
-  if(PLATFORM_WINDOWS)
-    # We need to link to SDL2main library on Windows
-    list(APPEND APP_DEPS ${SDL2MAIN_LIBRARY})
-  endif(PLATFORM_WINDOWS)
-
-  target_link_libraries(${APP_NAME} ${APP_DEPS})
+if(NOM_BUILD_EVENTS_EXAMPLE) # nom_ev
+  add_subdirectory(nom_ev)
 endif(NOM_BUILD_EVENTS_EXAMPLE)
 
-if( NOM_BUILD_JOYSTICK_EXAMPLE )
+if(NOM_BUILD_DEVICE_INFO_EXAMPLE) # nom_devinfo
+  add_subdirectory(device_info)
+endif(NOM_BUILD_DEVICE_INFO_EXAMPLE)
 
-  set( APP_NAME "joystick_events" )
-  add_executable( ${APP_NAME} "${EXECUTABLE_FLAGS}" "${APP_NAME}.cpp" )
+if(NOM_BUILD_FONTS_EXAMPLE) # nom_fontr
+  add_subdirectory(nom_font)
+endif(NOM_BUILD_FONTS_EXAMPLE)
 
-  set( APP_DEPS nomlib-system nomlib-graphics )
+if(NOM_BUILD_GAME_CONTROLLER_EXAMPLE) # nom_joystickgame_ev
+  add_subdirectory(nom_gamecontroller_ev)
+endif(NOM_BUILD_GAME_CONTROLLER_EXAMPLE)
 
-  if( PLATFORM_WINDOWS )
-    # We need to link to SDL2main library on Windows
-    list( APPEND APP_DEPS ${SDL2MAIN_LIBRARY} )
-  endif( PLATFORM_WINDOWS )
-
-  target_link_libraries( ${APP_NAME} ${APP_DEPS} )
+if( NOM_BUILD_JOYSTICK_EXAMPLE ) # nom_joystick_ev
+  add_subdirectory(nom_joystick_ev)
 endif( NOM_BUILD_JOYSTICK_EXAMPLE )
 
-if( NOM_BUILD_GAME_CONTROLLER_EXAMPLE )
+if(NOM_BUILD_MOUSE_CURSORS_EXAMPLE) # nom_cursors
+  add_subdirectory(nom_cursors)
+endif(NOM_BUILD_MOUSE_CURSORS_EXAMPLE)
 
-  set( APP_NAME "gamecontroller_events" )
-  add_executable( ${APP_NAME} "${EXECUTABLE_FLAGS}" "${APP_NAME}.cpp" )
-
-  set( APP_DEPS nomlib-system nomlib-graphics )
-
-  if( PLATFORM_WINDOWS )
-    # We need to link to SDL2main library on Windows
-    list( APPEND APP_DEPS ${SDL2MAIN_LIBRARY} )
-  endif( PLATFORM_WINDOWS )
-
-  target_link_libraries( ${APP_NAME} ${APP_DEPS} )
-
-  install(  FILES "${NOMLIB_SHARED_SUPPORT_DIR}/InputDevices.json"
-            DESTINATION "${EXAMPLES_INSTALL_DIR}" )
-endif( NOM_BUILD_GAME_CONTROLLER_EXAMPLE )
-
-if( NOM_BUILD_DEVICE_INFO_EXAMPLE )
-
-  add_executable ( device_info "${EXECUTABLE_FLAGS}" "device_info.cpp" )
-  set(DEVICE_INFO_DEPS nomlib-graphics nomlib-gui)
-
-  if(NOM_BUILD_AUDIO_UNIT)
-    list(APPEND DEVICE_INFO_DEPS nomlib-audio)
-  endif()
-
-  # Additional third-party dependency requirements
-  find_package( SDL2_image REQUIRED )
-  if( SDL2_IMAGE_FOUND )
-    # Add development header files; SDL_image.h
-    include_directories( ${SDL2_IMAGE_INCLUDE_DIR} )
-    list( APPEND DEVICE_INFO_DEPS ${SDL2_IMAGE_LIBRARY} )
-  endif( SDL2_IMAGE_FOUND )
-
-  find_package( SDL2_ttf REQUIRED )
-  if( SDL2_TTF_FOUND )
-    # Add development header files; SDL_ttf.h
-    include_directories( ${SDL2_TTF_INCLUDE_DIR} )
-    list( APPEND DEVICE_INFO_DEPS ${SDL2_TTF_LIBRARY} )
-  endif( SDL2_TTF_FOUND )
-
-  find_package( OpenGL REQUIRED )
-  if( OPENGL_FOUND )
-    # Add development header files; gl.h
-    include_directories( ${OPENGL_INCLUDE_DIR} )
-    list( APPEND DEVICE_INFO_DEPS ${OPENGL_LIBRARY} )
-  endif( OPENGL_FOUND )
-
-  find_package( LibRocket REQUIRED )
-  if( LIBROCKET_FOUND )
-    # Add development header files
-    include_directories( ${LIBROCKET_INCLUDE_DIRS} )
-    list( APPEND DEVICE_INFO_DEPS ${LIBROCKET_LIBRARIES} )
-  endif( LIBROCKET_FOUND )
-
-  if( PLATFORM_WINDOWS )
-    # We need to link to SDL2main library on Windows
-    list( APPEND DEVICE_INFO_DEPS ${SDL2MAIN_LIBRARY} )
-  endif( PLATFORM_WINDOWS )
-
-  target_link_libraries( device_info ${DEVICE_INFO_DEPS} )
-
-endif( NOM_BUILD_DEVICE_INFO_EXAMPLE )
-
-if( NOM_BUILD_FONTS_EXAMPLE )
-  add_executable ( renderfont "${EXECUTABLE_FLAGS}" "renderfont.cpp" )
-
-  set( FONTS_DEPS nomlib-graphics )
-
-  if( PLATFORM_WINDOWS )
-    # We need to link to SDL2main library on Windows
-    list( APPEND FONTS_DEPS ${SDL2MAIN_LIBRARY} )
-  endif( PLATFORM_WINDOWS )
-
-  target_link_libraries( renderfont ${FONTS_DEPS} )
-
-endif( NOM_BUILD_FONTS_EXAMPLE )
-
-if( NOM_BUILD_MOUSE_CURSORS_EXAMPLE )
-  add_executable( cursors "${EXECUTABLE_FLAGS}" "cursors.cpp" )
-
-  set( CURSORS_DEPS nomlib-graphics )
-
-  if( PLATFORM_WINDOWS )
-    # We need to link to SDL2main library on Windows
-    list( APPEND CURSORS_DEPS ${SDL2MAIN_LIBRARY} )
-  endif( PLATFORM_WINDOWS )
-
-  target_link_libraries( cursors ${CURSORS_DEPS} )
-
-  install(  FILES "${NOMLIB_RESOURCES_DIR}/icon.png"
-            DESTINATION "${EXAMPLES_INSTALL_DIR}/Resources" )
-endif( NOM_BUILD_MOUSE_CURSORS_EXAMPLE )
-
-if( NOM_BUILD_MACROS_EXAMPLE )
-  add_executable ( macros "${EXECUTABLE_FLAGS}" "macros.cpp" )
-
-  set( MACROS_DEPS nomlib-core )
-
-  if( PLATFORM_WINDOWS )
-    # We need to link to SDL2main library on Windows
-    list( APPEND MACROS_DEPS ${SDL2MAIN_LIBRARY} )
-  endif( PLATFORM_WINDOWS )
-
-  target_link_libraries( macros ${MACROS_DEPS} )
-endif( NOM_BUILD_MACROS_EXAMPLE )
+if(NOM_BUILD_MACROS_EXAMPLE) # nom_macros
+  add_subdirectory(nom_macros)
+endif(NOM_BUILD_MACROS_EXAMPLE)
 
 # Install library dependencies into binary output directory
 if( PLATFORM_WINDOWS )
@@ -299,10 +95,8 @@ if( PLATFORM_WINDOWS )
 
 endif ( PLATFORM_WINDOWS )
 
-if ( PLATFORM_LINUX )
-  install_resource_dir( "${NOM_EXAMPLES_RESOURCES_DIR}"
-                        "${EXAMPLES_INSTALL_DIR}/Resources")
-  # FIXME(JEFF): The app example requires the tests resources path
-  install_resource_dir( "${NOM_TESTS_RESOURCES_DIR}"
-                        "${EXAMPLES_INSTALL_DIR}/Resources")
-endif ( PLATFORM_LINUX )
+install_resource_dir( "${NOM_EXAMPLES_RESOURCES_DIR}"
+                      "${EXAMPLES_INSTALL_DIR}/Resources")
+# FIXME(JEFF): The app example requires the tests resources path
+install_resource_dir( "${NOM_TESTS_RESOURCES_DIR}"
+                      "${EXAMPLES_INSTALL_DIR}/Resources")

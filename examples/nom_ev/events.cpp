@@ -89,7 +89,7 @@ class App: public nom::SDLApp
       NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
     }
 
-    bool on_init()
+    bool on_init() override
     {
       uint32 window_flags = 0;
 
@@ -215,7 +215,7 @@ class App: public nom::SDLApp
       return true;
     }
 
-    int Run()
+    int Run() override
     {
       // Clear the render buffer
       for( auto idx = 0; idx < MAXIMUM_WINDOWS; ++idx ) {

@@ -21,15 +21,15 @@ set(LIBS "")
 # Release builds will have no suffix.
 set(LIB_SUFFIX "")
 
-if(CMAKE_BUILD_TYPE MATCHES "debug/i")
+if(CMAKE_BUILD_TYPE MATCHES Debug)
   set(LIB_SUFFIX "-d")
-endif(CMAKE_BUILD_TYPE MATCHES "debug/i")
+endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
 # DEPRECATED(JEFF): This "option" will be removed in a future release.
 # Favor the use of `CMAKE_BUILD_TYPE` instead.
-if(DEBUG)
+if(CMAKE_BUILD_TYPE MATCHES Debug)
   set(LIB_SUFFIX "-d")
-endif(DEBUG)
+endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
 if(NOM_BUILD_ACTIONS_UNIT)
   set(LIBS "${LIBS} -l${PROJECT_NAME}-actions${LIB_SUFFIX}")
@@ -71,8 +71,8 @@ if(NOM_BUILD_SYSTEM_UNIT)
   set(LIBS "${LIBS} -l${PROJECT_NAME}-system${LIB_SUFFIX}")
 endif()
 
-configure_file  ( "${CMAKE_TEMPLATE_PATH}/nomlib.pc.in"
-                  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc"
-                  #"${CMAKE_SOURCE_DIR}/Resources/pkgconfig/${PROJECT_NAME}.pc"
-                  @ONLY
-                )
+configure_file(# nomlib.pc
+  "${CMAKE_TEMPLATE_PATH}/nomlib.pc.in" # template (input)
+  "${CMAKE_BINARY_DIR}/nomlib.pc" # output (output)
+  @ONLY # options
+)

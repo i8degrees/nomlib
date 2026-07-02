@@ -1065,7 +1065,8 @@ const std::string Value::dump_key(const Value& key) const
   }
   else if( key.string_type() )
   {
-    os << this->print_key( key.type_name(), sizeof( key.get_string() ) );
+    std::string str = key.get_string();
+    os << this->print_key( key.type_name(), sizeof(str) + (str.capacity() > 15 ? str.capacity() + 1 : 0 ));
   }
   else if( key.bool_type() )
   {

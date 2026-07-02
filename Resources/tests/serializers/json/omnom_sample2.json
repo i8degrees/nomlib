@@ -1,0 +1,371 @@
+{
+  "playerRegionCount": 7,
+  "playerContent": {
+    "id": 4731,
+    "name": "fielding",
+    "worldId": 87,
+    "userId": 2766071,
+    "color": 18,
+    "allianceId": 401,
+    "factionEntityTagName": "ACADEMY",
+    "allianceName": "Audacious",
+    "allianceChiefType": "DIPLOMACY",
+    "allianceColor": 18,
+    "backgroundNb": 7,
+    "patternNb": 6,
+    "iconNb": 37,
+    "isSubscribed": 1,
+    "subscriptionCount": 3,
+    "heroCount": 8,
+    "regionCount": 7,
+    "heroNumberMinThreshold": 10,
+    "maxHeros": false,
+    "cityNumberBillingThreshold": 10,
+    "cityNumberGameplayThreshold": 7,
+    "cityNumberMinThreshold": 7,
+    "maxRankingType": "Honor",
+    "maxRankingTypeTagName": "HONOR",
+    "activeOrSubscribedCityCount": 7,
+    "activeOrSubscribedHeroCount": 8,
+    "worldSeasonNumber": 1,
+    "message": "G W MC \\n\\nProspective I8 Degrees Expansion"
+  },
+  "timeLineContent": {
+    "id": 4731,
+    "attachedMasterActionList": [{
+        "id": 3747041,
+        "worldId": 87,
+        "playerId": 4731,
+        "regionId": 341901,
+        "heroId": 178231,
+        "type": "UPGRADE_MINE",
+        "creationDate": 1289089745,
+        "startDate": 1289089745,
+        "endDate": 1289138583,
+        "params": "693121;1",
+        "status": "PENDING",
+        "attachedSlaveActionList": [
+          {
+            "id": 7533561,
+            "masterActionId": 3747041,
+            "type": "UPGRADE_MINE",
+            "startDate": 1289090764,
+            "endDate": 1289137564,
+            "params": "693121;1;13000",
+            "_next_slaveActionId": 7533551,
+            "status": "PENDING",
+            "paramList": [
+              "693121",
+              "1",
+              "13000"
+            ],
+            "typeName": "Upgrade mine"
+          },
+          {
+            "id": 7533551,
+            "masterActionId": 3747041,
+            "type": "UPGRADE_MINE_BACK",
+            "startDate": 1289137564,
+            "endDate": 1289138583,
+            "params": "693121;1",
+            "status": "PENDING",
+            "paramList": [
+              "693121",
+              "1"
+            ],
+            "typeName": "Back from mine upgrade",
+            "worldMapContent": {
+              "attachedRegionList": [
+                {
+                  "id": 355591,
+                  "x": 280,
+                  "y": 127,
+                  "type": "plain",
+                  "isC": true,
+                  "pId": 19411,
+                  "pN": "daddyo993",
+                  "pBgNb": 2,
+                  "pPNb": 3,
+                  "pINb": 8,
+                  "cN": "Chasbo",
+                  "fctN": "HAVEN",
+                  "_cL": 6,
+                  "dL": 1,
+                  "iN": true,
+                  "hG": 0,
+                  "aRL": [
+                    [
+                      1,
+                      126,
+                      "d0"
+                    ],
+                    [
+                      1,
+                      127,
+                      48
+                    ],
+                    [
+                      1,
+                      128,
+                      60
+                    ],
+                    [
+                      280,
+                      127,
+                      80
+                    ]
+                  ],
+                  "_ipCol": 2,
+                  "_iB": 80
+                }
+              ]
+            }
+          }
+        ],
+        "paramList": [
+          "693121",
+          "1"
+        ],
+        "actionDescription": "Alicia upgrades a mine in Guido Shore region"
+      }
+     ]},
+  "worldMapContent": {
+    "attachedRegionList": [
+      {
+        "id": 355591,
+        "x": 280,
+        "y": 127,
+        "type": "plain",
+        "isC": true,
+        "pId": 19411,
+        "pN": "daddyo993",
+        "pBgNb": 2,
+        "pPNb": 3,
+        "pINb": 8,
+        "cN": "Chasbo",
+        "fctN": "HAVEN",
+        "_cL": 6,
+        "dL": 1,
+        "iN": true,
+        "hG": 0,
+        "aRL": [
+          [
+            1,
+            126,
+            "d0"
+          ],
+          [
+            1,
+            127,
+            48
+          ],
+          [
+            1,
+            128,
+            60
+          ],
+          [
+            280,
+            127,
+            80
+          ]
+        ],
+        "_ipCol": 2,
+        "_iB": 80
+      }
+    ],
+        "attachedHeroList": [
+          {
+            "id": 22491,
+            "heroTrainingEntityId": 8,
+            "heroTrainingEntityTagName": "ILLUMINATED_PROTECTOR",
+            "heroTrainingEntityName": "Illuminated Protector",
+            "factionEntityId": 3,
+            "factionEntityTagName": "ACADEMY",
+            "factionEntityName": "Academy",
+            "playerId": 4731,
+            "regionId": 400661,
+            "picture": 14,
+            "name": "Elly",
+            "xp": 103137,
+            "attack": 0,
+            "magic": 29,
+            "defense": 32,
+            "availInitSkills": 0,
+            "availXpSkills": 1,
+            "_level": 21,
+            "recruitmentDate": 1284633156,
+            "isActive": 1,
+            "lastCombatXpGain": 0,
+            "lastCombatXpGainAttack": 1,
+            "status": "active",
+            "isMainHero": 0,
+            "tmpAttachedEquipedArtefactCount": 5,
+            "tmpAttachedHeroClassCount": 3,
+            "attachedUnitStackList": [],
+            "training": {
+              "id": 8,
+              "heroTrainingCategoryEntityId": 3,
+              "heroTrainingCategoryEntityTagName": "MAGE",
+              "heroTrainingCategoryEntityName": "Mage",
+              "attack_heroGrowthTypeEntityId": 50,
+              "attack_heroGrowthTypeEntityTagName": "NO_GROWTH",
+              "attack_heroGrowthTypeEntityName": "none",
+              "defense_heroGrowthTypeEntityId": 10,
+              "defense_heroGrowthTypeEntityTagName": "FANATIC_STRONG",
+              "defense_heroGrowthTypeEntityName": "fanatic, strong",
+              "magic_heroGrowthTypeEntityId": 10,
+              "magic_heroGrowthTypeEntityTagName": "FANATIC_STRONG",
+              "magic_heroGrowthTypeEntityName": "fanatic, strong",
+              "tagName": "ILLUMINATED_PROTECTOR",
+              "name": "Illuminated Protector"
+            },
+            "isActiveOrSubscribed": 1,
+            "heroBonuses": {
+              "skills": {
+                "pointBonus": {
+                  "INFANTRY": 0,
+                  "CAVALRY": 0,
+                  "SHOOTER": 0
+                },
+                "bonuses": {
+                  "global": 0,
+                  "INFANTRY": 0,
+                  "CAVALRY": 0,
+                  "SHOOTER": 0
+                },
+                "local": [
+                  {
+                    "id": 5671,
+                    "heroClassId": 1421,
+                    "heroClassSkillEntityId": 9,
+                    "heroClassSkillEntityTagName": "BUILDING_SPEED_INCREASE",
+                    "heroClassSkillEntityName": "Foreman",
+                    "level": 3,
+                    "currentLevelEffect": {
+                      "desc": "Buildings and mines are built and upgraded 27% faster"
+                    }
+                  },
+                  {
+                    "id": 5681,
+                    "heroClassId": 1421,
+                    "heroClassSkillEntityId": 10,
+                    "heroClassSkillEntityTagName": "BOMBARDING_BONUS",
+                    "heroClassSkillEntityName": "Master of ballistics",
+                    "level": 0,
+                    "nextLevelEffect": {
+                      "desc": "Catapults are 9% more efficient in bombarding"
+                    }
+                  },
+                  {
+                    "id": 5691,
+                    "heroClassId": 1421,
+                    "heroClassSkillEntityId": 11,
+                    "heroClassSkillEntityTagName": "TOWN_DEFENSE_INCREASE",
+                    "heroClassSkillEntityName": "Fortifications builder",
+                    "level": 0,
+                    "nextLevelEffect": {
+                      "desc": "The city fortification bonus is increased by 3%"
+                    }
+                  },
+                  {
+                    "id": 5701,
+                    "heroClassId": 1421,
+                    "heroClassSkillEntityId": 12,
+                    "heroClassSkillEntityTagName": "TOWN_DEFENSE_DECREASE",
+                    "heroClassSkillEntityName": "Sapper",
+                    "level": 0,
+                    "nextLevelEffect": {
+                      "desc": "The enemy's city fortification bonus is decreased by 3%"
+                    }
+                  },
+                  {
+                    "id": 236721,
+                    "heroClassId": 59421,
+                    "heroClassSkillEntityId": 16,
+                    "heroClassSkillEntityTagName": "TAVERN_COST_DECREASE",
+                    "heroClassSkillEntityName": "Tavern lover",
+                    "level": 0,
+                    "nextLevelEffect": {
+                      "desc": "Tavern costs are decreased by 9%"
+                    }
+                  },
+                  {
+                    "id": 236731,
+                    "heroClassId": 59421,
+                    "heroClassSkillEntityId": 17,
+                    "heroClassSkillEntityTagName": "HERO_RECRUITMENT_HERO_INCREASE",
+                    "heroClassSkillEntityName": "Enlister",
+                    "level": 3,
+                    "currentLevelEffect": {
+                      "desc": "Heroes have 3 more skill points when recruited"
+                    }
+                  },
+                  {
+                    "id": 236741,
+                    "heroClassId": 59421,
+                    "heroClassSkillEntityId": 18,
+                    "heroClassSkillEntityTagName": "HERO_RECRUITMENT_ARMY_INCREASE",
+                    "heroClassSkillEntityName": "Charismatic enlister",
+                    "level": 0,
+                    "nextLevelEffect": {
+                      "desc": "Heroes have 45% more troops when recruited"
+                    }
+                  },
+                  {
+                    "id": 236751,
+                    "heroClassId": 59421,
+                    "heroClassSkillEntityId": 50,
+                    "heroClassSkillEntityTagName": "MAINTENANCE_DECREASE",
+                    "heroClassSkillEntityName": "Round of drinks",
+                    "level": 0,
+                    "nextLevelEffect": {
+                      "desc": "Maintenance costs are decreased by 3%"
+                    }
+                  },
+                  {
+                    "id": 283921,
+                    "heroClassId": 71571,
+                    "heroClassSkillEntityId": 13,
+                    "heroClassSkillEntityTagName": "SCOUTING_LEVEL_INCREASE",
+                    "heroClassSkillEntityName": "Spying master",
+                    "level": 1,
+                    "currentLevelEffect": {
+                      "desc": "The scout receives 5 additional levels when scouting"
+                    },
+                    "nextLevelEffect": {
+                      "desc": "The scout receives 10 additional levels when scouting"
+                    }
+                  },
+                  {
+                    "id": 283931,
+                    "heroClassId": 71571,
+                    "heroClassSkillEntityId": 14,
+                    "heroClassSkillEntityTagName": "SCOUTING_DELAY_DECREASE",
+                    "heroClassSkillEntityName": "Fast runner",
+                    "level": 1,
+                    "currentLevelEffect": {
+                      "desc": "Faster journey to the target. Scout moves 9% faster"
+                    },
+                    "nextLevelEffect": {
+                      "desc": "Faster journey to the target. Scout moves 18% faster"
+                    }
+                  },
+                  {
+                    "id": 283941,
+                    "heroClassId": 71571,
+                    "heroClassSkillEntityId": 15,
+                    "heroClassSkillEntityTagName": "SCOUTING_DURATION_DECREASE",
+                    "heroClassSkillEntityName": "Intelligence expert",
+                    "level": 2,
+                    "currentLevelEffect": {
+                      "desc": "Scouting is 42% faster"
+                    },
+                    "nextLevelEffect": {
+                      "desc": "Scouting is 63% faster"
+                    }
+                  }
+                ]
+              }}}]
+  }
+}

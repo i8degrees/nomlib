@@ -100,3 +100,6 @@ install_resource_dir( "${NOM_EXAMPLES_RESOURCES_DIR}"
 # FIXME(JEFF): The app example requires the tests resources path
 install_resource_dir( "${NOM_TESTS_RESOURCES_DIR}"
                       "${EXAMPLES_INSTALL_DIR}/Resources")
+
+add_subdirectory(nom_jsonpp)
+

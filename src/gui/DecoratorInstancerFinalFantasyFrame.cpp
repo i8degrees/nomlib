@@ -32,6 +32,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // #include <Rocket/Core/String.h>
 #include "nomlib/gui/DecoratorFinalFantasyFrame.hpp"
 
+#ifndef ROCKET_UNUSED_PARAMETER
+  #define ROCKET_UNUSED_PARAMETER ROCKET_UNUSED(x)
+#endif
+
 namespace nom {
 
 DecoratorInstancerFinalFantasyFrame::DecoratorInstancerFinalFantasyFrame()

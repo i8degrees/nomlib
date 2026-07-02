@@ -31,6 +31,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Private headers
 #include "nomlib/gui/DecoratorSpriteBatch.hpp"
 
+// >> Newer versions of libRocket, such as 1.3.0.0 no longer define
+// >> ROCKET_UNUSED_PARAMETER for us, so this should take care of forward
+// >> compatibility for us.
+#ifndef ROCKET_UNUSED_PARAMETER
+  #define ROCKET_UNUSED_PARAMETER ROCKET_UNUSED(x)
+#endif
 namespace nom {
 
 DecoratorInstancerSprite::DecoratorInstancerSprite()

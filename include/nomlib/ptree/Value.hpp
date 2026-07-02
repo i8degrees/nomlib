@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <vector>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/ptree/ptree_config.hpp"
 #include "nomlib/ptree/ptree_types.hpp"
@@ -39,7 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Generic interface for opaque data containers
-class Value
+class NOM_EXPORT Value
 {
   public:
     typedef Value SelfType;
@@ -78,7 +79,7 @@ class Value
     /// \brief Declared value of Null for this object.
     ///
     /// \remarks Value::null is the default constructor's type.
-    static const Value& null;
+    NOM_EXPORT static const Value& null;
 
     /// \brief Default constructor; constructs an object with NullValue data
     /// type.
@@ -532,7 +533,7 @@ class Value
 ///
 /// \todo Implement upper limit to value length dump; ideally within ~80
 /// characters or less?
-std::ostream& operator <<(std::ostream& os, const Value& val);
+NOM_EXPORT std::ostream& operator <<(std::ostream& os, const Value& val);
 
 } // namespace nom
 

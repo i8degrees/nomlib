@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/system/Timer.hpp"
 
@@ -48,7 +49,7 @@ class StateMachine;
 ///
 /// \note http://docs.wxwidgets.org/trunk/classwx_app.html
 /// \note http://doc.qt.digia.com/4.6/qapplication.html
-class SDLApp
+class NOM_EXPORT SDLApp
 {
   public:
     typedef SDLApp self_type;

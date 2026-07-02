@@ -31,11 +31,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <sstream>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
 
-struct err
+struct NOM_EXPORT err
 {
   err();
   ~err();
@@ -46,41 +47,41 @@ struct err
   // const char* message = nullptr;
 };
 
-inline std::stringstream& operator <<(std::stringstream& os, const err& error);
+NOM_EXPORT inline std::stringstream& operator <<(std::stringstream& os, const err& error);
 
 /// \brief Get the error state (whether or not an error is set)
-bool error_state();
+NOM_EXPORT bool error_state();
 
 /// \brief Get the current error.
-std::string error();
+NOM_EXPORT std::string error();
 
 /// \brief Create an error.
-err make_error(const char* message);
+NOM_EXPORT err make_error(const char* message);
 
 /// \brief Set the error message.
 ///
 /// \remarks The global error buffer is cleared.
-void set_error(const err& error);
+NOM_EXPORT void set_error(const err& error);
 
 /// \brief Set the error message.
 ///
 /// \remarks The global error buffer is cleared.
-void set_error(const char* message);
+NOM_EXPORT void set_error(const char* message);
 
 /// \brief Set the error message.
 ///
 /// \remarks The global error buffer is cleared.
-void set_error(const std::string& message);
+NOM_EXPORT void set_error(const std::string& message);
 
 /// \brief Clears the global error buffer.
-void clear_error();
+NOM_EXPORT void clear_error();
 
 // Common error types
 
-const err OUT_OF_MEMORY_ERR =
+NOM_EXPORT const err OUT_OF_MEMORY_ERR =
   nom::make_error("Failed to allocate memory");
 
-const err NULL_ARGUMENT_ERR =
+NOM_EXPORT const err NULL_ARGUMENT_ERR =
   nom::make_error("Passed NULL argument");
 
 } // namespace nom

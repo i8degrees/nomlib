@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <functional>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/system/Joystick.hpp"
 

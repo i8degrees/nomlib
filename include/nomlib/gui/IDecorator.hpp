@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/gui/Drawables.hpp"
@@ -38,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Abstract class for Decorator objects.
-class IDecorator: public Transformable
+class NOM_EXPORT IDecorator: public Transformable
 {
   public:
     typedef IDecorator self_type;

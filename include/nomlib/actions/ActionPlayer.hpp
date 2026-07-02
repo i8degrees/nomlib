@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 #include <deque>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -46,7 +47,7 @@ class DispatchQueue;
 typedef std::function<void()> action_callback_func;
 
 /// \brief Interface for running and controlling action flow
-class ActionPlayer
+class NOM_EXPORT ActionPlayer
 {
   public:
     typedef ActionPlayer self_type;

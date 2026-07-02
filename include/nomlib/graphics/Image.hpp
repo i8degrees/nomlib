@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // TODO: Forward declare
 #include <SDL.h>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Point2.hpp"
@@ -44,7 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Bitmap storage container
-class Image
+class NOM_EXPORT Image
 {
   public:
     typedef Image* RawPtr;

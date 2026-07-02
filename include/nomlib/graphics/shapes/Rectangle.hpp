@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_GRAPHICS_SHAPES_RECTANGLE_HPP
 #define NOMLIB_GRAPHICS_SHAPES_RECTANGLE_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Rect.hpp"
@@ -45,7 +46,7 @@ class Texture;
 /// \todo Use SDL2's new multi-rectangle API; see SDL_RenderFillRects.
 ///
 /// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-03
-class Rectangle: public Shape
+class NOM_EXPORT Rectangle: public Shape
 {
   public:
     typedef Rectangle self_type;

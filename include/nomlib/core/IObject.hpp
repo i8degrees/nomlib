@@ -38,15 +38,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Root object hierarchy for object type identification (RTTI).
-class IObject
+class NOM_EXPORT IObject
 {
   public:
     typedef IObject self_type;
 
     typedef IObject* raw_ptr;
 
-    static uint64 total_alloc_bytes;
-    static uint64 total_dealloc_bytes;
+    NOM_EXPORT static uint64 total_alloc_bytes;
+    NOM_EXPORT static uint64 total_dealloc_bytes;
 
     /// \brief Default constructor.
     IObject( void );
@@ -111,18 +111,18 @@ class IObject
       return false;
     }
 
-    static void* operator new( nom::size_type mem );
-    static void operator delete( void* ptr );
+    NOM_EXPORT static void* operator new( nom::size_type mem );
+    NOM_EXPORT static void operator delete( void* ptr );
 };
 
 /// \brief Equality comparison operator.
-inline bool operator ==( const IObject& lhs, const IObject& rhs )
+NOM_EXPORT inline bool operator ==( const IObject& lhs, const IObject& rhs )
 {
   return( &lhs == &rhs );
 }
 
 /// \brief In-equality comparison operator.
-inline bool operator !=( const IObject& lhs, const IObject& rhs )
+NOM_EXPORT inline bool operator !=( const IObject& lhs, const IObject& rhs )
 {
   return ! ( &lhs == &rhs );
 }

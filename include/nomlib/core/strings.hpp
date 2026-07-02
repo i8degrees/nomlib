@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_CORE_STRINGS_HPP
 #define NOMLIB_CORE_STRINGS_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 #include <memory>
@@ -56,7 +57,7 @@ const nom::size_type MAX_STRING_LENGTH = 255;
 /// \remarks The string length must not exceed nom::MAX_STRING_LENGTH. A string
 /// that exceeds this number will be clamped to the length of
 /// nom::MAX_STRING_LENGTH.
-const char*
+NOM_EXPORT const char*
 create_string(const char* str, nom::size_type num_bytes);
 
 /// \brief Allocate memory for a string, using the existing string length as
@@ -72,7 +73,7 @@ create_string(const char* str, nom::size_type num_bytes);
 /// \remarks The string length must not exceed nom::MAX_STRING_LENGTH. A string
 /// that exceeds this number will be clamped to the length of
 /// nom::MAX_STRING_LENGTH.
-const char*
+NOM_EXPORT const char*
 create_string(const char* str);
 
 /// \brief Interpret an integer value from a string.
@@ -97,7 +98,7 @@ create_string(const char* str);
 ///
 /// A string prefix of '0x' or '0X' indicates hexadecimal base -- this applies
 /// when the input base is sixteen (16) or zero (0).
-int string_to_int(const char* str, int input_base);
+NOM_EXPORT int string_to_int(const char* str, int input_base);
 
 /// \brief Interpret an integer value from a string.
 ///
@@ -121,7 +122,7 @@ int string_to_int(const char* str, int input_base);
 ///
 /// A string prefix of '0x' or '0X' indicates hexadecimal base -- this applies
 /// when the input base is sixteen (16) or zero (0).
-uint string_to_uint(const char* str, int input_base);
+NOM_EXPORT uint string_to_uint(const char* str, int input_base);
 
 /// \brief Interpret an integer value from a string.
 ///
@@ -140,7 +141,7 @@ uint string_to_uint(const char* str, int input_base);
 ///
 /// A string prefix of '0x' or '0X' indicates hexadecimal base -- this applies
 /// when the input base is sixteen (16) or zero (0).
-int string_to_int(const char* str);
+NOM_EXPORT int string_to_int(const char* str);
 
 /// \brief Interpret an integer value from a string.
 ///
@@ -159,36 +160,40 @@ int string_to_int(const char* str);
 ///
 /// A string prefix of '0x' or '0X' indicates hexadecimal base -- this applies
 /// when the input base is sixteen (16) or zero (0).
-uint string_to_uint(const char* str);
+NOM_EXPORT uint string_to_uint(const char* str);
 
-const char* integer_to_cstr(int number);
-std::string integer_to_string(int number);
-
-nom::size_type string_length(const char* str);
+NOM_EXPORT const char* integer_to_cstr(int number);
+NOM_EXPORT std::string integer_to_string(int number);
+NOM_EXPORT nom::size_type string_length(const char* str);
+NOM_EXPORT
 nom::size_type string_length(const std::string& str);
 
-int
-compare_cstr_insensitive(const char* str1, const char* str2,
-                         nom::size_type len);
+NOM_EXPORT
+int compare_cstr_insensitive(const char* str1, const char* str2,
+                            nom::size_type len);
 
+NOM_EXPORT
 int compare_cstr_insensitive(const char* str1, const char* str2);
 
-int
-compare_cstr_sensitive(const char* str1, const char* str2,
-                       nom::size_type len);
+NOM_EXPORT
+int compare_cstr_sensitive(const char* str1, const char* str2,
+                            nom::size_type len);
 
-int compare_cstr_sensitive(const char* str1, const char* str2);
+NOM_EXPORT int compare_cstr_sensitive(const char* str1, const char* str2);
 
-int
+NOM_EXPORT int
 compare_string_insensitive(const std::string& str1, const std::string& str2,
                            nom::size_type len);
-int compare_string_insensitive(const std::string& str1, const std::string& str2);
+NOM_EXPORT int
+compare_string_insensitive(const std::string& str1, const std::string& str2);
 
-int
-compare_string_sensitive(const std::string& str1, const std::string& str2,
-                         nom::size_type len);
+NOM_EXPORT
+int compare_string_sensitive(const std::string& str1, const std::string& str2,
+                             nom::size_type len);
+NOM_EXPORT
 int compare_string_sensitive(const std::string& str1, const std::string& str2);
 
+NOM_EXPORT
 void copy_string(const char* source, char* dest);
 
 /// \brief Create a deep-copy instance a C style string.
@@ -198,23 +203,29 @@ void copy_string(const char* source, char* dest);
 /// \returns Null-terminated string up to MAX_STRING_LENGTH.
 ///
 /// \todo Remove this function; it is a duplicate of nom::create_string
+NOM_DEPRECATED_EXPORT
 const char* duplicate_string(const char* str, nom::size_type length);
 
+NOM_EXPORT
 const char* duplicate_string(const std::string& str, nom::size_type length);
 
-void free_string(const char* ptr);
+NOM_EXPORT void free_string(const char* ptr);
 
+NOM_EXPORT
 const char* to_lowercase_cstr(const char* str, nom::size_type len);
-const char* to_lowercase_cstr(const char* str);
+NOM_EXPORT const char* to_lowercase_cstr(const char* str);
 
+NOM_EXPORT
 std::string to_lowercase_string(const std::string& str, nom::size_type len);
-std::string to_lowercase_string(const std::string& str);
+NOM_EXPORT std::string to_lowercase_string(const std::string& str);
 
+NOM_EXPORT
 const char* to_uppercase_cstr(const char* str, nom::size_type len);
-const char* to_uppercase_cstr(const char* str);
+NOM_EXPORT const char* to_uppercase_cstr(const char* str);
 
+NOM_EXPORT
 std::string to_uppercase_string(const std::string& str, nom::size_type len);
-std::string to_uppercase_string(const std::string& str);
+NOM_EXPORT std::string to_uppercase_string(const std::string& str);
 
 } // namespace nom
 

@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sstream>
 #include <stdexcept>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/serializers/serializers_config.hpp"
 #include "nomlib/serializers/IValueSerializer.hpp"
@@ -65,7 +66,7 @@ namespace nom {
 
 /// \brief Saving of nom::Value objects to XML documents using the RapidXml
 /// library.
-class RapidXmlSerializer: public IValueSerializer
+class NOM_EXPORT RapidXmlSerializer: public IValueSerializer
 {
   public:
     typedef RapidXmlSerializer SelfType;

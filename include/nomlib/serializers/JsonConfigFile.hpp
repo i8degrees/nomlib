@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/serializers/IConfigFile.hpp"
 
@@ -41,7 +42,7 @@ class IValueDeserializer;
 class IValueSerializer;
 
 /// \brief JSON Configuration file interface
-class JsonConfigFile: public IConfigFile
+class NOM_EXPORT JsonConfigFile: public IConfigFile
 {
   public:
     typedef JsonConfigFile self_type;

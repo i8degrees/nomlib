@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/serializers/serializers_config.hpp"
 #include "nomlib/ptree/ptree_forwards.hpp"
@@ -38,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Abstract interface for saving nom::Value objects.
-class IValueSerializer
+class NOM_EXPORT IValueSerializer
 {
   public:
     typedef IValueSerializer self_type;

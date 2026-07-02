@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <SDL.h>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/math/Point2.hpp"
@@ -50,7 +51,7 @@ namespace nom {
 class Image;
 class RenderWindow;
 
-class Texture
+class NOM_EXPORT Texture
 {
   public:
     typedef Texture self_type;
@@ -222,7 +223,7 @@ class Texture
     /// context used at the time of creation of the nom::Texture -- in other
     /// words, whichever nom::RenderWindow was active at the time of the nom::Texture
     /// creation.
-    static const Point2i maximum_size ( void );
+    NOM_EXPORT static const Point2i maximum_size ( void );
 
     /// \brief Query lock status of texture
     bool locked() const;

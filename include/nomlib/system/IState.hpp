@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SYSTEM_ISTATE_HPP
 #define NOMLIB_SYSTEM_ISTATE_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -40,7 +41,7 @@ struct Event;
 /// \brief Abstract interface for game states
 ///
 /// \remarks See also nom::StateMachine, nom::SDLApp
-class IState
+class NOM_EXPORT IState
 {
   public:
     typedef std::unique_ptr<IState> unique_ptr;

@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -42,7 +43,7 @@ class ColorDatabase;
 ///
 /// \see  nom::ColorDatabase.
 /// \see Inspired by http://docs.wxwidgets.org/trunk/classwx_system_settings.html
-class SystemColors
+class NOM_EXPORT SystemColors
 {
   public:
     /// \brief Get the status of the global color database.
@@ -93,7 +94,7 @@ enum InitHints
 /// the execution.
 ///
 /// \todo Rename method to init_engine?
-bool init_third_party( uint32 flags );
+NOM_EXPORT bool init_third_party( uint32 flags );
 
 /// Initialize the engine.
 ///
@@ -106,7 +107,7 @@ bool init_third_party( uint32 flags );
 /// \note This should be called before calling any other library methods.
 ///
 /// \todo Rename to nom_init.
-bool init( int argc, char* argv[] );
+NOM_EXPORT bool init( int argc, char* argv[] );
 
 /// \brief Shutdown the engine.
 ///
@@ -122,7 +123,7 @@ bool init( int argc, char* argv[] );
 /// actual ref count within our custom deleter (see nom::priv::TTF_FreeFont).
 ///
 /// \todo Rename to nom_quit.
-void quit( void );
+NOM_EXPORT void quit( void );
 
 } // namespace nom
 

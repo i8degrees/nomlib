@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sstream>
 #include <vector>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/fonts/IFont.hpp"
 #include "nomlib/graphics/fonts/FontMetrics.hpp"
@@ -43,7 +44,7 @@ namespace nom {
 /// \brief The kerning information is used to adjust the distance between
 /// certain characters, e.g. some characters should be placed closer to
 /// each other than others.
-struct BMFontKerningPair
+struct NOM_EXPORT BMFontKerningPair
 {
   /// \brief The first glyph identifier.
   ///
@@ -60,9 +61,10 @@ struct BMFontKerningPair
   int x_offset = 0;
 };
 
+NOM_EXPORT
 std::ostream& operator <<(std::ostream& os, const BMFontKerningPair& k);
 
-struct BMFontPage
+struct NOM_EXPORT BMFontPage
 {
   /// \brief The page identifier.
   ///
@@ -77,7 +79,7 @@ struct BMFontPage
   std::string filename;
 };
 
-class BMFont: public IFont
+class NOM_EXPORT BMFont: public IFont
 {
   public:
     typedef BMFont self_type;

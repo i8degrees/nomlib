@@ -33,12 +33,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <cstring>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
 
 /// \brief Platform-agnostic handling of directory paths
-class Path
+class NOM_EXPORT Path
 {
   public:
     /// Platform-dependent data typedef used for defining the preferred file

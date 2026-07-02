@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_MATH_RECT_HEADERS
 #define NOMLIB_MATH_RECT_HEADERS
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point2.hpp"
 #include "nomlib/math/Size2.hpp"
@@ -43,7 +44,7 @@ const std::string RECT_DELIMITER = ", ";
 ///
 /// \remarks This class originated from the sf::Rect class of the SFML library.
 template<typename T>
-struct Rect
+struct NOM_EXPORT Rect
 {
   /// \brief Default constructor; initialize values to Rect<T>::null
   Rect ( void ) :
@@ -98,7 +99,7 @@ struct Rect
 
   /// Check to see if input coordinates X and Y are within the bounds
   /// of this object (think: colliding)
-  bool contains ( T x, T y ) const
+  NOM_EXPORT bool contains ( T x, T y ) const
   {
     return  (
               ( x >= this->x && x <= this->x + this->w  ) &&
@@ -108,13 +109,13 @@ struct Rect
 
   /// Check to see if an input Point2 container are within the bounds
   /// of this object (think: colliding)
-  bool contains ( const Point2<T>& pos ) const
+  NOM_EXPORT bool contains ( const Point2<T>& pos ) const
   {
     return this->contains ( pos.x, pos.y );
   }
 
   /// Checks to see if our rectangle overlaps with another
-  bool intersects ( const Rect<T>& rectangle ) const
+  NOM_EXPORT bool intersects ( const Rect<T>& rectangle ) const
   {
     T leftA, leftB = 0;
     T rightA, rightB = 0;
@@ -146,7 +147,7 @@ struct Rect
   /// \todo Return an Array instead of object?
   /// \todo Rename member key 'width' to 'w'
   /// \todo Rename member key 'h' to 'h'
-  const Object serialize( void ) const
+  NOM_EXPORT const Object serialize( void ) const
   {
     Object object;
 
@@ -159,38 +160,39 @@ struct Rect
   }
 
   /// \returns The positioning coordinates of the rectangle.
-  const Point2i position( void ) const
+  NOM_EXPORT const Point2i position( void ) const
   {
     return Point2i( NOM_SCAST( T, this->x ), NOM_SCAST( T, this->y ) );
   }
 
   /// \returns The width and height dimensions of the rectangle.
-  const Size2i size( void ) const
+  NOM_EXPORT const Size2i size( void ) const
   {
     return Size2i( NOM_SCAST( T, this->w ), NOM_SCAST( T, this->h ) );
   }
 
-  const T& left() const
+  NOM_EXPORT const T& left() const
   {
     return this->x;
   }
 
-  const T& top() const
+  NOM_EXPORT const T& top() const
   {
     return this->y;
   }
 
-  const T& right() const
+  NOM_EXPORT const T& right() const
   {
     return(this->x + this->w);
   }
 
-  const T& bottom() const
+  NOM_EXPORT const T& bottom() const
   {
     return(this->y + this->h);
   }
 
   template <typename U>
+  NOM_EXPORT
   void set_position(const Point2<U>& pos)
   {
     this->x = pos.x;
@@ -198,6 +200,7 @@ struct Rect
   }
 
   template <typename U>
+  NOM_EXPORT
   void set_size(const Size2<U>& dims)
   {
     this->w = dims.w;
@@ -207,10 +210,10 @@ struct Rect
   /// \brief Null value
   ///
   /// \remarks  Null value implementation depends on signed (negative) numbers.
-  static const Rect null;
+  NOM_EXPORT static const Rect null;
 
   /// \brief Zeroed values.
-  static const Rect zero;
+  NOM_EXPORT static const Rect zero;
 
   /// Left coordinate of the rectangle (X coordinate of Rectangle)
   T x;
@@ -241,6 +244,7 @@ struct Rect
 /// std::cout << my_rect << std::endl;
 /// \endcode
 template <typename T>
+NOM_EXPORT
 inline std::ostream& operator <<( std::ostream& os, const Rect<T>& rect )
 {
   os
@@ -263,6 +267,7 @@ inline std::ostream& operator <<( std::ostream& os, const Rect<T>& rect )
 ///
 /// \returns True if left operand is equal to the right operand.
 template <typename T>
+NOM_EXPORT
 inline bool operator == ( const Rect<T>& lhs, const Rect<T>& rhs )
 {
   return  ( lhs.x == rhs.x )  &&  ( lhs.w == rhs.w )
@@ -279,6 +284,7 @@ inline bool operator == ( const Rect<T>& lhs, const Rect<T>& rhs )
 ///
 /// \returns True if left operand is not equal to the right operand.
 template <typename T>
+NOM_EXPORT
 inline bool operator != ( const Rect<T>& lhs, const Rect<T>& rhs )
 {
   return ! ( lhs == rhs );
@@ -291,6 +297,7 @@ inline bool operator != ( const Rect<T>& lhs, const Rect<T>& rhs )
 ///
 /// \returns Addition of both objects.
 template <typename T>
+NOM_EXPORT
 inline Rect<T> operator + ( const Rect<T>& lhs, const Rect<T>& rhs )
 {
   return Rect<T>  ( lhs.x + rhs.x,
@@ -307,6 +314,7 @@ inline Rect<T> operator + ( const Rect<T>& lhs, const Rect<T>& rhs )
 ///
 /// \returns Addition of both objects.
 template <typename T>
+NOM_EXPORT
 inline Rect<T> operator +(int lhs, const Rect<T>& rhs)
 {
   return Rect<T>(lhs + rhs.x, lhs + rhs.y, lhs + rhs.w, lhs + rhs.h);
@@ -319,6 +327,7 @@ inline Rect<T> operator +(int lhs, const Rect<T>& rhs)
 ///
 /// \returns Addition of both objects.
 template <typename T>
+NOM_EXPORT
 inline Rect<T> operator +(const Rect<T>& lhs, int rhs)
 {
   return Rect<T>(lhs.x + rhs, lhs.y + rhs, lhs.w + rhs, lhs.h + rhs);
@@ -330,6 +339,7 @@ inline Rect<T> operator +(const Rect<T>& lhs, int rhs)
 ///
 /// \returns Addition of the right operand.
 template <typename T>
+NOM_EXPORT
 inline Rect<T> operator ++ ( const Rect<T>& rhs )
 {
   return Rect<T>  ( rhs.x + 1,
@@ -345,6 +355,7 @@ inline Rect<T> operator ++ ( const Rect<T>& rhs )
 ///
 /// \returns Opposite of the object.
 template <typename T>
+NOM_EXPORT
 inline Rect<T> operator -( const Rect<T>& rhs )
 {
   return Rect<T>  ( -rhs.x,
@@ -361,6 +372,7 @@ inline Rect<T> operator -( const Rect<T>& rhs )
 ///
 /// \returns Subtraction of both objects.
 template <typename T>
+NOM_EXPORT
 inline Rect<T> operator -( const Rect<T>& lhs, const Rect<T>& rhs )
 {
   return Rect<T>  ( lhs.x - rhs.x,
@@ -377,6 +389,7 @@ inline Rect<T> operator -( const Rect<T>& lhs, const Rect<T>& rhs )
 ///
 /// \returns Subtraction of both objects.
 template <typename T>
+NOM_EXPORT
 inline Rect<T> operator -(int lhs, const Rect<T>& rhs)
 {
   return Rect<T>(lhs - rhs.x, lhs - rhs.y, lhs - rhs.w, lhs - rhs.h);
@@ -389,6 +402,7 @@ inline Rect<T> operator -(int lhs, const Rect<T>& rhs)
 ///
 /// \returns Subtraction of both objects.
 template <typename T>
+NOM_EXPORT
 inline Rect<T> operator -(const Rect<T>& lhs, int rhs)
 {
   return Rect<T>(lhs.x - rhs, lhs.y - rhs, lhs.w - rhs, lhs.h - rhs);
@@ -400,6 +414,7 @@ inline Rect<T> operator -(const Rect<T>& lhs, int rhs)
 ///
 /// \returns Subtraction of the right operand.
 template <typename T>
+NOM_EXPORT
 inline Rect<T> operator -- ( const Rect<T>& rhs )
 {
   return Rect<T>  ( rhs.x - 1,
@@ -416,6 +431,7 @@ inline Rect<T> operator -- ( const Rect<T>& rhs )
 ///
 /// \returns Multiplication of the right operand.
 template <typename T>
+NOM_EXPORT
 inline Rect<T> operator * ( const Rect<T>& lhs, const Rect<T>& rhs )
 {
   return Rect<T>  ( lhs.x * rhs.x,
@@ -432,6 +448,7 @@ inline Rect<T> operator * ( const Rect<T>& lhs, const Rect<T>& rhs )
 ///
 /// \returns Multiplication of the right operand.
 template <typename T>
+NOM_EXPORT
 inline Rect<T> operator *(int lhs, const Rect<T>& rhs)
 {
   return Rect<T>(lhs * rhs.x, lhs * rhs.y, lhs * rhs.w, lhs * rhs.h);
@@ -444,6 +461,7 @@ inline Rect<T> operator *(int lhs, const Rect<T>& rhs)
 ///
 /// \returns Multiplication of the right operand.
 template <typename T>
+NOM_EXPORT
 inline Rect<T> operator *(const Rect<T>& lhs, int rhs)
 {
   return Rect<T>  ( lhs.x * rhs,
@@ -462,6 +480,7 @@ inline Rect<T> operator *(const Rect<T>& lhs, int rhs)
 ///
 /// \returns Reference to the left operand.
 template <typename T>
+NOM_EXPORT
 inline Rect<T> operator /( const Rect<T>& lhs, const Rect<T>& rhs )
 {
   return Rect<T>  ( lhs.x / rhs.x,
@@ -480,6 +499,7 @@ inline Rect<T> operator /( const Rect<T>& lhs, const Rect<T>& rhs )
 ///
 /// \returns Reference to the left operand.
 template <typename T>
+NOM_EXPORT
 inline Rect<T> operator /(int lhs, const Rect<T>& rhs)
 {
   return Rect<T>  ( lhs / rhs.x,
@@ -498,6 +518,7 @@ inline Rect<T> operator /(int lhs, const Rect<T>& rhs)
 ///
 /// \returns Reference to the left operand.
 template <typename T>
+NOM_EXPORT
 inline Rect<T> operator /(const Rect<T>& lhs, int rhs)
 {
   return Rect<T>  ( lhs.x / rhs,
@@ -517,6 +538,7 @@ inline Rect<T> operator /(const Rect<T>& lhs, int rhs)
 ///
 /// \returns Reference to left operand,
 template <typename T>
+NOM_EXPORT
 inline Rect<T>& operator +=( Rect<T>& lhs, const Rect<T>& rhs )
 {
   lhs.x += rhs.x;
@@ -537,6 +559,7 @@ inline Rect<T>& operator +=( Rect<T>& lhs, const Rect<T>& rhs )
 ///
 /// \returns Reference to left operand,
 template <typename T>
+NOM_EXPORT
 inline Rect<T>& operator +=(int lhs, const Rect<T>& rhs)
 {
   lhs += rhs.x;
@@ -557,6 +580,7 @@ inline Rect<T>& operator +=(int lhs, const Rect<T>& rhs)
 ///
 /// \returns Reference to left operand,
 template <typename T>
+NOM_EXPORT
 inline Rect<T>& operator +=(Rect<T>& lhs, int rhs)
 {
   lhs.x += rhs;
@@ -577,6 +601,7 @@ inline Rect<T>& operator +=(Rect<T>& lhs, int rhs)
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Rect<T>& operator -=( Rect<T>& lhs, const Rect<T>& rhs )
 {
   lhs.x -= rhs.x;
@@ -597,6 +622,7 @@ inline Rect<T>& operator -=( Rect<T>& lhs, const Rect<T>& rhs )
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Rect<T>& operator -=(int lhs, const Rect<T>& rhs)
 {
   lhs -= rhs.x;
@@ -617,6 +643,7 @@ inline Rect<T>& operator -=(int lhs, const Rect<T>& rhs)
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Rect<T>& operator -=(Rect<T>& lhs, int rhs)
 {
   lhs.x -= rhs;
@@ -637,6 +664,7 @@ inline Rect<T>& operator -=(Rect<T>& lhs, int rhs)
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Rect<T>& operator *=( Rect<T>& lhs, const Rect<T>& rhs )
 {
   lhs.x *= rhs.x;
@@ -657,6 +685,7 @@ inline Rect<T>& operator *=( Rect<T>& lhs, const Rect<T>& rhs )
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Rect<T>& operator *=(int lhs, const Rect<T>& rhs)
 {
   lhs *= rhs.x;
@@ -677,6 +706,7 @@ inline Rect<T>& operator *=(int lhs, const Rect<T>& rhs)
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Rect<T>& operator *=(Rect<T>& lhs, int rhs)
 {
   lhs.x *= rhs;
@@ -697,6 +727,7 @@ inline Rect<T>& operator *=(Rect<T>& lhs, int rhs)
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Rect<T>& operator /=( Rect<T>& lhs, const Rect<T>& rhs )
 {
   lhs.x /= rhs.x;
@@ -717,6 +748,7 @@ inline Rect<T>& operator /=( Rect<T>& lhs, const Rect<T>& rhs )
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Rect<T>& operator /=(int lhs, const Rect<T>& rhs)
 {
   lhs /= rhs.x;
@@ -737,6 +769,7 @@ inline Rect<T>& operator /=(int lhs, const Rect<T>& rhs)
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Rect<T>& operator /=(Rect<T>& lhs, int rhs)
 {
   lhs.x /= rhs;
@@ -752,6 +785,7 @@ inline Rect<T>& operator /=(Rect<T>& lhs, int rhs)
 /// \param lhs Left operand.
 /// \param rhs Right operand.
 template <typename T>
+NOM_EXPORT
 inline bool operator <( const Rect<T> lhs, const Rect<T>& rhs )
 {
   return  ( lhs.x < rhs.x ) &&  ( lhs.y < rhs.y )
@@ -764,6 +798,7 @@ inline bool operator <( const Rect<T> lhs, const Rect<T>& rhs )
 /// \param lhs Left operand.
 /// \param rhs Right operand.
 template <typename T>
+NOM_EXPORT
 inline bool operator >( const Rect<T>& lhs, const Rect<T>& rhs )
 {
   return  ( rhs.x < lhs.x )   &&  ( rhs.y < lhs.y )
@@ -776,6 +811,7 @@ inline bool operator >( const Rect<T>& lhs, const Rect<T>& rhs )
 /// \param lhs Left operand.
 /// \param rhs Right operand.
 template <typename T>
+NOM_EXPORT
 inline bool operator <=( const Rect<T>& lhs, const Rect<T>& rhs )
 {
   return  ( lhs.x <= rhs.x )  &&  ( lhs.y <= rhs.y )
@@ -788,6 +824,7 @@ inline bool operator <=( const Rect<T>& lhs, const Rect<T>& rhs )
 /// \param lhs Left operand.
 /// \param rhs Right operand.
 template <typename T>
+NOM_EXPORT
 inline bool operator >=( const Rect<T>& lhs, const Rect<T>& rhs )
 {
   return  ( rhs.x <= lhs.x )  &&  ( rhs.y <= lhs.y )
@@ -803,6 +840,24 @@ typedef Rect<float> FloatRect;
 
 /// Rect object defined using double precision floating point numbers
 typedef Rect<double> DoubleRect;
+
+/// Null value for a nom::Rect using signed integers
+template <> NOM_EXPORT const IntRect IntRect::null;
+
+/// Null value for a nom::Rect using floating point numbers
+template <> NOM_EXPORT const FloatRect FloatRect::null;
+
+/// Null value for a nom::Rect using double precision floating point numbers
+template <> NOM_EXPORT const DoubleRect DoubleRect::null;
+
+/// Zero value for a nom::Rect using signed integers
+template <> NOM_EXPORT const IntRect IntRect::zero;
+
+/// Zero value for a nom::Rect using floating point numbers
+template <> NOM_EXPORT const FloatRect FloatRect::zero;
+
+/// Zero value for a nom::Rect using double precision floating point numbers
+template <> NOM_EXPORT const DoubleRect DoubleRect::zero;
 
 } // namespace nom
 

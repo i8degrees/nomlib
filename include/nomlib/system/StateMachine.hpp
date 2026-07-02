@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <queue>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -57,7 +58,7 @@ struct DeferredState
 } // namespace priv
 
 /// \brief Finite State Machine manager class
-class StateMachine
+class NOM_EXPORT StateMachine
 {
   public:
     /// Default constructor

@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/math/Rect.hpp"
@@ -45,7 +46,7 @@ class RenderWindow;
 typedef const RenderWindow RenderTarget;
 
 /// \brief Base class for bitmap objects
-class Sprite: public Transformable
+class NOM_EXPORT Sprite: public Transformable
 {
   public:
     typedef Sprite self_type;
@@ -170,37 +171,37 @@ class Sprite: public Transformable
 /// \brief Construct a sprite from an existing texture source.
 ///
 /// \relates ::set_texture
-std::unique_ptr<Sprite>
+NOM_EXPORT std::unique_ptr<Sprite>
 make_unique_sprite(Texture& tex);
 
 /// \brief Construct a sprite from an existing texture source.
 ///
 /// \relates ::set_texture
-std::unique_ptr<Sprite>
+NOM_EXPORT std::unique_ptr<Sprite>
 make_unique_sprite(Texture* tex);
 
 /// \brief Construct a sprite from an existing texture source.
 ///
 /// \relates ::set_texture
-std::unique_ptr<Sprite>
+NOM_EXPORT std::unique_ptr<Sprite>
 make_unique_sprite(std::shared_ptr<Texture>& tex);
 
 /// \brief Construct a sprite from an existing texture source.
 ///
 /// \relates ::set_texture
-std::shared_ptr<Sprite>
+NOM_EXPORT std::shared_ptr<Sprite>
 make_shared_sprite(Texture& tex);
 
 /// \brief Construct a sprite from an existing texture source.
 ///
 /// \relates ::set_texture
-std::shared_ptr<Sprite>
+NOM_EXPORT std::shared_ptr<Sprite>
 make_shared_sprite(Texture* tex);
 
 /// \brief Construct a sprite from an existing texture source.
 ///
 /// \relates ::set_texture
-std::shared_ptr<Sprite>
+NOM_EXPORT std::shared_ptr<Sprite>
 make_shared_sprite(std::shared_ptr<Texture>& tex);
 
 } // namespace nom

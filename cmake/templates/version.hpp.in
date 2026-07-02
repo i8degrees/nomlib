@@ -35,12 +35,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <sstream>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
 
 /// \brief Container for x.x.x version schemes
-struct VersionInfo
+struct NOM_EXPORT VersionInfo
 {
   public:
     /// \brief Default constructor; initialize version fields to zero (0).
@@ -81,7 +82,7 @@ struct VersionInfo
     /// unsuccessful conversion, such as if the version string format is invalid.
     ///
     /// \remarks This implementation derives from [version.cpp](http://www.ncbi.nlm.nih.gov/viewvc/v1/trunk/c%2B%2B/src/corelib/version.cpp?revision=51801&content-type=text%2Fplain&view=co), part of the [NCBI C++ Toolkit](http://www.ncbi.nlm.nih.gov/toolkit/).
-    static bool convert_version_string( const std::string& ver_string,
+    NOM_EXPORT static bool convert_version_string( const std::string& ver_string,
                                         VersionInfo& info);
 
   private:
@@ -91,49 +92,49 @@ struct VersionInfo
 };
 
 /// \brief Output a formatted, full version string.
-std::ostream& operator <<(std::ostream& os, const VersionInfo& v);
+NOM_EXPORT std::ostream& operator <<(std::ostream& os, const VersionInfo& v);
 
-bool operator ==(const VersionInfo& lhs, const VersionInfo& rhs);
-bool operator !=(const VersionInfo& lhs, const VersionInfo& rhs);
+NOM_EXPORT bool operator ==(const VersionInfo& lhs, const VersionInfo& rhs);
+NOM_EXPORT bool operator !=(const VersionInfo& lhs, const VersionInfo& rhs);
 
 /// \brief Lesser than comparison operator.
 ///
 /// \param lhs Left operand.
 /// \param rhs Right operand.
-bool operator <(const VersionInfo& lhs, const VersionInfo& rhs);
+NOM_EXPORT bool operator <(const VersionInfo& lhs, const VersionInfo& rhs);
 
 /// \brief Lesser than or equal to comparison operator.
 ///
 /// \param lhs Left operand.
 /// \param rhs Right operand.
-bool operator <=(const VersionInfo& lhs, const VersionInfo& rhs);
+NOM_EXPORT bool operator <=(const VersionInfo& lhs, const VersionInfo& rhs);
 
 /// \brief Greater than or equal to comparison operator.
 ///
 /// \param lhs Left operand.
 /// \param rhs Right operand.
-bool operator >(const VersionInfo& lhs, const VersionInfo& rhs);
+NOM_EXPORT bool operator >(const VersionInfo& lhs, const VersionInfo& rhs);
 
 /// \brief Greater than or equal to comparison operator.
 ///
 /// \param lhs Left operand.
 /// \param rhs Right operand.
-bool operator >=(const VersionInfo& lhs, const VersionInfo& rhs);
+NOM_EXPORT bool operator >=(const VersionInfo& lhs, const VersionInfo& rhs);
 
 /// \brief nomlib's library version.
 ///
 /// \remarks This data is taken from from the project's root CMake build script.
 ///
 /// \see CMakeLists.txt
-const VersionInfo NOM_VERSION(@PROJECT_VERSION_MAJOR@, @PROJECT_VERSION_MINOR@, @PROJECT_VERSION_PATCH@);
+NOM_EXPORT const VersionInfo NOM_VERSION(@PROJECT_VERSION_MAJOR@, @PROJECT_VERSION_MINOR@, @PROJECT_VERSION_PATCH@);
 
 /// \brief Get the current revision number build of nomlib.
 ///
 /// \returns A std::string containing the top git commit ID (SHA).
-std::string revision();
+NOM_EXPORT std::string revision();
 
 /// \brief Track version info from project's CMake build script
-static const std::string GIT_REVISION = "@GIT_REVISION@";
+NOM_EXPORT static const std::string GIT_REVISION = "@GIT_REVISION@";
 
 } // namespace nom
 

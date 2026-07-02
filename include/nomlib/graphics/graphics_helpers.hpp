@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_GRAPHICS_GRAPHICS_HELPERS_HPP
 #define NOMLIB_GRAPHICS_GRAPHICS_HELPERS_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Size2.hpp"
 #include "nomlib/math/Point2.hpp"
@@ -48,6 +49,7 @@ class Texture;
 /// \param pos_offset Additional X, Y coordinates to offset the alignment by.
 /// \param align_bounds The total boundary dimensions of the object's alignment.
 /// \param align  One of the nom::Alignment or nom::Anchor enumeration types.
+NOM_EXPORT
 Point2i alignment_rect( const Size2i& obj_dims, const Point2i& pos_offset,
                         const Size2i& align_bounds, uint32 align );
 
@@ -57,6 +59,7 @@ Point2i alignment_rect( const Size2i& obj_dims, const Point2i& pos_offset,
 /// \param pos_offset Additional X, Y coordinates to offset the alignment by.
 /// \param align_bounds The total boundary dimensions of the object's alignment.
 /// \param align  One of the nom::Alignment or nom::Anchor enumeration types.
+NOM_EXPORT
 void set_alignment( Transformable* obj, const Point2i& pos_offset,
                     const Size2i& align_bounds, uint32 align );
 
@@ -67,6 +70,7 @@ void set_alignment( Transformable* obj, const Point2i& pos_offset,
 /// \param align_bounds The total boundary dimensions of the object's alignment.
 /// \param align      One of the nom::Alignment or nom::Anchor enumeration
 ///                   types.
+NOM_EXPORT
 void set_alignment( Texture* obj, const Point2i& pos_offset,
                     const Size2i& align_bounds, uint32 align );
 

@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SYSTEM_PTREE_VALUE_CONST_ITERATOR_HPP
 #define NOMLIB_SYSTEM_PTREE_VALUE_CONST_ITERATOR_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/ptree/ptree_config.hpp"
 #include "nomlib/ptree/ptree_forwards.hpp"
@@ -39,7 +40,7 @@ namespace nom {
 /// \brief Read-only iteration for nom::Value
 ///
 /// \todo Finish implementation.
-class ValueConstIterator: public ValueIteratorBase
+class NOM_EXPORT ValueConstIterator: public ValueIteratorBase
 {
   public:
     typedef ValueConstIterator SelfType;

@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <algorithm>
 
 #include "nomlib/config.hpp"
+#include "export.hpp"
 
 // FIXME: The following declaration is necessary in order to avoid a very
 // nasty compiling conflict that can happen under Windows anytime the
@@ -53,7 +54,7 @@ const std::string SIZE2_DELIMITER = ", ";
 
 /// \brief Size coordinates (width & height) container
 template <typename T>
-struct Size2
+struct NOM_EXPORT Size2
 {
   /// Default constructor; initialize values to Size2<T>::null
   Size2 ( void ) :
@@ -94,7 +95,7 @@ struct Size2
   /// \brief Compare two Size2 objects and return the larger width and height
   /// of the two objects.
   template <typename U>
-  Size2 max( const Size2<U>& rhs )
+  NOM_EXPORT Size2 max( const Size2<U>& rhs )
   {
     return Size2<T>( std::max( this->w, rhs.w ), std::max( this->h, rhs.h ) );
   }
@@ -102,13 +103,13 @@ struct Size2
   /// \brief Compare two Size2 objects and return the smaller width and height
   /// of the two objects.
   template <typename U>
-  Size2 min( const Size2<U>& rhs )
+  NOM_EXPORT Size2 min( const Size2<U>& rhs )
   {
     return Size2<T>( std::min( this->w, rhs.w ), std::min( this->h, rhs.h ) );
   }
 
   /// \brief Transpose width and height dimensions.
-  void swap( void )
+  NOM_EXPORT void swap( void )
   {
     std::swap( this->w, this->h );
   }
@@ -116,16 +117,16 @@ struct Size2
   /// \brief Null value
   ///
   /// \remarks  Null value implementation depends on signed (negative) numbers.
-  static const Size2 null;
+  NOM_EXPORT static const Size2 null;
 
   /// \brief Zero value constant.
-  static const Size2 zero;
+  NOM_EXPORT static const Size2 zero;
 
   /// Represents the width coordinate point
-  T w;
+  NOM_EXPORT T w;
 
   /// Represents the height coordinate point
-  T h;
+  NOM_EXPORT T h;
 };
 
 /// Pretty print a Size2 object using the following formatting:
@@ -136,6 +137,7 @@ struct Size2
 ///
 ///     128, 144
 template <typename T>
+NOM_EXPORT
 inline std::ostream& operator <<( std::ostream& os, const Size2<T>& pos )
 {
   os
@@ -147,12 +149,14 @@ inline std::ostream& operator <<( std::ostream& os, const Size2<T>& pos )
 }
 
 template <typename T>
+NOM_EXPORT
 inline bool operator ==( const Size2<T>& lhs, const Size2<T>& rhs )
 {
   return  ( lhs.w == rhs.w )  &&  ( lhs.h == rhs.h );
 }
 
 template <typename T>
+NOM_EXPORT
 inline bool operator !=( const Size2<T>& lhs, const Size2<T>& rhs )
 {
   return ! ( lhs == rhs );
@@ -165,6 +169,7 @@ inline bool operator !=( const Size2<T>& lhs, const Size2<T>& rhs )
 ///
 /// \returns Addition of both objects.
 template <typename T>
+NOM_EXPORT
 inline Size2<T> operator +( const Size2<T>& lhs, const Size2<T>& rhs )
 {
   return Size2<T> (
@@ -180,7 +185,7 @@ inline Size2<T> operator +( const Size2<T>& lhs, const Size2<T>& rhs )
 ///
 /// \returns Addition of both objects.
 template <typename T>
-inline Size2<T> operator +(int lhs, const Size2<T>& rhs)
+NOM_EXPORT inline Size2<T> operator +(int lhs, const Size2<T>& rhs)
 {
   return Size2<T>(lhs + rhs.w, lhs + rhs.h);
 }
@@ -192,7 +197,7 @@ inline Size2<T> operator +(int lhs, const Size2<T>& rhs)
 ///
 /// \returns Addition of both objects.
 template <typename T>
-inline Size2<T> operator +(const Size2<T>& lhs, int rhs)
+NOM_EXPORT inline Size2<T> operator +(const Size2<T>& lhs, int rhs)
 {
   return Size2<T>(lhs.w + rhs, lhs.h + rhs);
 }
@@ -203,7 +208,7 @@ inline Size2<T> operator +(const Size2<T>& lhs, int rhs)
 ///
 /// \returns Addition of the right operand.
 template <typename T>
-inline Size2<T> operator ++( const Size2<T>& rhs )
+NOM_EXPORT inline Size2<T> operator ++( const Size2<T>& rhs )
 {
   return Size2<T> (
                     ++rhs.w,
@@ -217,7 +222,7 @@ inline Size2<T> operator ++( const Size2<T>& rhs )
 ///
 /// \returns Opposite of the object.
 template <typename T>
-inline Size2<T> operator -( const Size2<T>& rhs )
+NOM_EXPORT inline Size2<T> operator -( const Size2<T>& rhs )
 {
   return Size2<T> (
                     -rhs.w
@@ -232,6 +237,7 @@ inline Size2<T> operator -( const Size2<T>& rhs )
 ///
 /// \returns Subtraction of both objects.
 template <typename T>
+NOM_EXPORT
 inline Size2<T> operator -( const Size2<T>& lhs, const Size2<T>& rhs )
 {
   return Size2<T> (
@@ -247,6 +253,7 @@ inline Size2<T> operator -( const Size2<T>& lhs, const Size2<T>& rhs )
 ///
 /// \returns Subtraction of both objects.
 template <typename T>
+NOM_EXPORT
 inline Size2<T> operator -(int lhs, const Size2<T>& rhs)
 {
   return Size2<T>(lhs - rhs.w, lhs - rhs.h);
@@ -259,7 +266,7 @@ inline Size2<T> operator -(int lhs, const Size2<T>& rhs)
 ///
 /// \returns Subtraction of both objects.
 template <typename T>
-inline Size2<T> operator -(const Size2<T>& lhs, int rhs)
+NOM_EXPORT inline Size2<T> operator -(const Size2<T>& lhs, int rhs)
 {
   return Size2<T>(lhs.w - rhs, lhs.h - rhs);
 }
@@ -270,7 +277,7 @@ inline Size2<T> operator -(const Size2<T>& lhs, int rhs)
 ///
 /// \returns Subtraction of the right operand.
 template <typename T>
-inline Size2<T> operator --( const Size2<T>& rhs )
+NOM_EXPORT inline Size2<T> operator --( const Size2<T>& rhs )
 {
   return Size2<T> (
                     --rhs.w,
@@ -285,6 +292,7 @@ inline Size2<T> operator --( const Size2<T>& rhs )
 ///
 /// \returns Multiplication of the right operand.
 template <typename T>
+NOM_EXPORT
 inline Size2<T> operator *( const Size2<T>& lhs, const Size2<T>& rhs )
 {
   return Size2<T> ( lhs.w * rhs.w,
@@ -299,7 +307,7 @@ inline Size2<T> operator *( const Size2<T>& lhs, const Size2<T>& rhs )
 ///
 /// \returns Multiplication of the right operand.
 template <typename T>
-inline Size2<T> operator *(int lhs, const Size2<T>& rhs)
+NOM_EXPORT inline Size2<T> operator *(int lhs, const Size2<T>& rhs)
 {
   return Size2<T>(lhs * rhs.w, lhs * rhs.h);
 }
@@ -311,7 +319,7 @@ inline Size2<T> operator *(int lhs, const Size2<T>& rhs)
 ///
 /// \returns Multiplication of the right operand.
 template <typename T>
-inline Size2<T> operator *(const Size2<T>& lhs, int rhs)
+NOM_EXPORT inline Size2<T> operator *(const Size2<T>& lhs, int rhs)
 {
   return Size2<T>(lhs.w * rhs, lhs.h * rhs);
 }
@@ -326,6 +334,7 @@ inline Size2<T> operator *(const Size2<T>& lhs, int rhs)
 ///
 /// \returns Reference to left operand,
 template <typename T>
+NOM_EXPORT
 inline Size2<T>& operator +=( Size2<T>& lhs, const Size2<T>& rhs )
 {
   lhs.w += rhs.w;
@@ -344,7 +353,7 @@ inline Size2<T>& operator +=( Size2<T>& lhs, const Size2<T>& rhs )
 ///
 /// \returns Reference to left operand,
 template <typename T>
-inline Size2<T>& operator +=(int lhs, const Size2<T>& rhs)
+NOM_EXPORT inline Size2<T>& operator +=(int lhs, const Size2<T>& rhs)
 {
   lhs += rhs.w;
   lhs += rhs.h;
@@ -362,7 +371,7 @@ inline Size2<T>& operator +=(int lhs, const Size2<T>& rhs)
 ///
 /// \returns Reference to left operand,
 template <typename T>
-inline Size2<T>& operator +=(Size2<T>& lhs, int rhs)
+NOM_EXPORT inline Size2<T>& operator +=(Size2<T>& lhs, int rhs)
 {
   lhs.w += rhs;
   lhs.h += rhs;
@@ -380,6 +389,7 @@ inline Size2<T>& operator +=(Size2<T>& lhs, int rhs)
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Size2<T>& operator -=( Size2<T>& lhs, const Size2<T>& rhs )
 {
   lhs.w -= rhs.w;
@@ -398,7 +408,7 @@ inline Size2<T>& operator -=( Size2<T>& lhs, const Size2<T>& rhs )
 ///
 /// \returns Reference to left operand.
 template <typename T>
-inline Size2<T>& operator -=(int lhs, const Size2<T>& rhs)
+NOM_EXPORT inline Size2<T>& operator -=(int lhs, const Size2<T>& rhs)
 {
   lhs -= rhs.w;
   lhs -= rhs.h;
@@ -416,7 +426,7 @@ inline Size2<T>& operator -=(int lhs, const Size2<T>& rhs)
 ///
 /// \returns Reference to left operand.
 template <typename T>
-inline Size2<T>& operator -=(Size2<T>& lhs, int rhs)
+NOM_EXPORT inline Size2<T>& operator -=(Size2<T>& lhs, int rhs)
 {
   lhs.w -= rhs;
   lhs.h -= rhs;
@@ -434,6 +444,7 @@ inline Size2<T>& operator -=(Size2<T>& lhs, int rhs)
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Size2<T>& operator *=( Size2<T>& lhs, const Size2<T>& rhs )
 {
   lhs.w *= rhs.w;
@@ -452,6 +463,7 @@ inline Size2<T>& operator *=( Size2<T>& lhs, const Size2<T>& rhs )
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Size2<T>& operator /=( Size2<T>& lhs, const Size2<T>& rhs )
 {
   lhs.w /= rhs.w;
@@ -470,7 +482,7 @@ inline Size2<T>& operator /=( Size2<T>& lhs, const Size2<T>& rhs )
 ///
 /// \returns Reference to left operand.
 template <typename T>
-inline Size2<T>& operator /=(int lhs, const Size2<T>& rhs)
+NOM_EXPORT inline Size2<T>& operator /=(int lhs, const Size2<T>& rhs)
 {
   lhs /= rhs.w;
   lhs /= rhs.h;
@@ -488,7 +500,7 @@ inline Size2<T>& operator /=(int lhs, const Size2<T>& rhs)
 ///
 /// \returns Reference to left operand.
 template <typename T>
-inline Size2<T>& operator /=(Size2<T>& lhs, int rhs)
+NOM_EXPORT inline Size2<T>& operator /=(Size2<T>& lhs, int rhs)
 {
   lhs.w /= rhs;
   lhs.h /= rhs;
@@ -503,6 +515,7 @@ inline Size2<T>& operator /=(Size2<T>& lhs, int rhs)
 ///
 /// \returns Size2 template type returned by value
 template <typename T>
+NOM_EXPORT
 inline Size2<T> operator /( const Size2<T>& lhs, const Size2<T>& rhs )
 {
   Size2<T> ret;
@@ -519,7 +532,7 @@ inline Size2<T> operator /( const Size2<T>& lhs, const Size2<T>& rhs )
 ///
 /// \returns Size2 template type returned by value
 template <typename T>
-inline Size2<T> operator /(int lhs, const Size2<T>& rhs)
+NOM_EXPORT inline Size2<T> operator /(int lhs, const Size2<T>& rhs)
 {
   Size2<T> ret;
   ret.w = lhs / rhs.w;
@@ -535,7 +548,7 @@ inline Size2<T> operator /(int lhs, const Size2<T>& rhs)
 ///
 /// \returns Size2 template type returned by value
 template <typename T>
-inline Size2<T> operator /(const Size2<T>& lhs, int rhs)
+NOM_EXPORT inline Size2<T> operator /(const Size2<T>& lhs, int rhs)
 {
   Size2<T> ret;
   ret.w = lhs.w / rhs;
@@ -549,6 +562,7 @@ inline Size2<T> operator /(const Size2<T>& lhs, int rhs)
 /// \param lhs Left operand.
 /// \param rhs Right operand.
 template <typename T>
+NOM_EXPORT
 inline bool operator <( const Size2<T> lhs, const Size2<T>& rhs )
 {
   return  ( lhs.w < rhs.w ) && ( lhs.h < rhs.h );
@@ -559,6 +573,7 @@ inline bool operator <( const Size2<T> lhs, const Size2<T>& rhs )
 /// \param lhs Left operand.
 /// \param rhs Right operand.
 template <typename T>
+NOM_EXPORT
 inline bool operator >( const Size2<T>& lhs, const Size2<T>& rhs )
 {
   return  ( rhs.w < lhs.w ) && ( rhs.h < lhs.h );
@@ -569,6 +584,7 @@ inline bool operator >( const Size2<T>& lhs, const Size2<T>& rhs )
 /// \param lhs Left operand.
 /// \param rhs Right operand.
 template <typename T>
+NOM_EXPORT
 inline bool operator <=( const Size2<T>& lhs, const Size2<T>& rhs )
 {
   return  ( lhs.w <= rhs.w ) && ( lhs.h <= rhs.h );
@@ -579,6 +595,7 @@ inline bool operator <=( const Size2<T>& lhs, const Size2<T>& rhs )
 /// \param lhs Left operand.
 /// \param rhs Right operand.
 template <typename T>
+NOM_EXPORT
 inline bool operator >=( const Size2<T>& lhs, const Size2<T>& rhs )
 {
   return  ( rhs.w <= lhs.w ) && ( rhs.h <= lhs.h );
@@ -592,6 +609,25 @@ typedef Size2<float> Size2f;
 
 /// Size2 object defined using double-precision floating point numbers
 typedef Size2<double> Size2d;
+
+/// Null value for a nom::Size using signed integers
+template <> NOM_EXPORT const Size2i Size2i::null;
+
+/// Null value for a nom::Size using floating point numbers
+template <> NOM_EXPORT const Size2f Size2f::null;
+
+/// Null value for a nom::Size using double-precision floating point numbers
+template <> NOM_EXPORT const Size2d Size2d::null;
+
+/// \brief Zero value for a nom::Size2 using signed integers
+template <> NOM_EXPORT const Size2i Size2i::zero;
+
+/// \brief Zero value for a nom::Size2 using floating point numbers.
+template <> NOM_EXPORT const Size2f Size2f::zero;
+
+/// \brief Zero value for a nom::Size2 using double precision floating point
+/// numbers.
+template <> NOM_EXPORT const Size2d Size2d::zero;
 
 } // namespace nom
 

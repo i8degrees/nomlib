@@ -31,11 +31,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Rocket/Core.h>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
 
-class DOM
+class NOM_EXPORT DOM
 {
   public:
     DOM( Rocket::Core::ElementDocument* model );

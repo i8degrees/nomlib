@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Rocket/Core/Decorator.h>
 
+#include "export.hpp"
 #include "nomlib/graphics/Texture.hpp"
 
 namespace nom {
@@ -38,7 +39,7 @@ namespace nom {
 /// \todo Rename class
 /// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Decorators
 /// \see http://librocket.com/wiki/documentation/RCSS/Decorators
-class DecoratorPhotograph : public Rocket::Core::Decorator
+class NOM_EXPORT DecoratorPhotograph : public Rocket::Core::Decorator
 {
   public:
     virtual ~DecoratorPhotograph();
@@ -78,7 +79,7 @@ namespace nom {
 
 /// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Decorators
 /// \see http://librocket.com/wiki/documentation/RCSS/Decorators
-class DecoratorInstancerPhotograph : public Rocket::Core::DecoratorInstancer
+class NOM_EXPORT DecoratorInstancerPhotograph : public Rocket::Core::DecoratorInstancer
 {
   public:
     DecoratorInstancerPhotograph();

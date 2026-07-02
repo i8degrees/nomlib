@@ -29,12 +29,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SYSTEM_HIGH_RESOLUTION_TIMER_HPP
 #define NOMLIB_SYSTEM_HIGH_RESOLUTION_TIMER_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
 
 /// \brief High-granularity time keeper
-class HighResolutionTimer
+class NOM_EXPORT HighResolutionTimer
 {
   public:
     /// \brief Default constructor.

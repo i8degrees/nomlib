@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/actions/IActionObject.hpp"
 #include "nomlib/math/Size2.hpp"
@@ -42,7 +43,7 @@ namespace nom {
 class Sprite;
 
 /// \brief Apply a relative scale factor to a sprite
-class ScaleByAction: public virtual IActionObject
+class NOM_EXPORT ScaleByAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.

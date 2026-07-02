@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/actions/IActionObject.hpp"
 #include "nomlib/math/Color4.hpp"
@@ -41,7 +42,7 @@ namespace nom {
 class Sprite;
 
 /// \brief Fade a sprite in to full opacity
-class FadeInAction: public virtual IActionObject
+class NOM_EXPORT FadeInAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.

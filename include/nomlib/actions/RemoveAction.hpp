@@ -31,13 +31,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/actions/IActionObject.hpp"
 
 namespace nom {
 
 /// \brief Free the external resources held by an action
-class RemoveAction: public virtual IActionObject
+class NOM_EXPORT RemoveAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.

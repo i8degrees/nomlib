@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <algorithm>
 #include <vector>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 // FIXME: The following declaration is necessary in order to avoid a very
@@ -56,7 +57,7 @@ const std::string COLOR_DELIMITER = ", ";
 /// \todo Implement specialized Color4<float> operators
 /// \todo Explicitly initialize alpha component of static colors to 255.
 template <typename T>
-struct Color4
+struct NOM_EXPORT Color4
 {
     /// Default constructor; initialize values to Color<T>::null
     Color4 ( void ) :
@@ -124,58 +125,59 @@ struct Color4
     }
 
     /// \brief 100% transparent alpha channel value
-    static const T ALPHA_TRANSPARENT;
+    NOM_EXPORT static const T ALPHA_TRANSPARENT;
 
     /// \brief 100% opaque alpha channel value
-    static const T ALPHA_OPAQUE;
+    NOM_EXPORT static const T ALPHA_OPAQUE;
 
     /// \brief Null value
     ///
     /// \remarks  Null value implementation depends on signed (negative) numbers.
-    static const Color4 null;
+    NOM_EXPORT static const Color4 null;
 
     /// \brief Primary colors
     ///
     /// \todo Consider using Color4::Transparent instead of Color4::null.
     /// \todo Rename constants to ALL UPPERCASE.
-    static const Color4 Transparent;
-    static const Color4 Black;
-    static const Color4 White;
-    static const Color4 Red;
-    static const Color4 Green;
-    static const Color4 Blue;
-    static const Color4 Yellow;
-    static const Color4 Magenta;
-    static const Color4 Cyan;
+    NOM_EXPORT static const Color4 Transparent;
+    NOM_EXPORT static const Color4 Black;
+    NOM_EXPORT static const Color4 White;
+    NOM_EXPORT static const Color4 Red;
+    NOM_EXPORT static const Color4 Green;
+    NOM_EXPORT static const Color4 Blue;
+    NOM_EXPORT static const Color4 Yellow;
+    NOM_EXPORT static const Color4 Magenta;
+    NOM_EXPORT static const Color4 Cyan;
 
     /// Additional colors
-    static const Color4 Silver;
-    static const Color4 Purple;
-    static const Color4 Orange;
-    static const Color4 LightGray;
-    static const Color4 Gray;
-    static const Color4 SkyBlue;
+    NOM_EXPORT static const Color4 Silver;
+    NOM_EXPORT static const Color4 Purple;
+    NOM_EXPORT static const Color4 Orange;
+    NOM_EXPORT static const Color4 LightGray;
+    NOM_EXPORT static const Color4 Gray;
+    NOM_EXPORT static const Color4 SkyBlue;
 
     // static const Color4 ButtonGradient;
 
     /// Red component
-    T r;
+    NOM_EXPORT T r;
 
     /// Green component
-    T g;
+    NOM_EXPORT T g;
 
     /// Blue component
-    T b;
+    NOM_EXPORT T b;
 
     /// Alpha component
-    T a;
+    NOM_EXPORT T a;
 };
 
 /// \brief Get the difference color blend of two colors.
 ///
 /// \remarks Implements the color blending of the "Difference" layer mode.
 template <typename T>
-inline Color4<T> difference_color_blend( const Color4<T>& lhs, const Color4<T>& rhs )
+NOM_EXPORT inline
+Color4<T> difference_color_blend( const Color4<T>& lhs, const Color4<T>& rhs )
 {
   Color4<T> c;
   c.r = abs( lhs.r - rhs.r );
@@ -195,7 +197,8 @@ inline Color4<T> difference_color_blend( const Color4<T>& lhs, const Color4<T>& 
 /// \note The color values are static casted to nom::sint before outputting the
 /// string in case a nom::Color4<uint8> object is used.
 template <typename T>
-inline std::ostream& operator << ( std::ostream& os, const Color4<T>& color )
+NOM_EXPORT inline
+std::ostream& operator << ( std::ostream& os, const Color4<T>& color )
 {
   os
   << static_cast<sint> ( color.r )
@@ -215,7 +218,8 @@ inline std::ostream& operator << ( std::ostream& os, const Color4<T>& color )
 /// \code
 /// <color.r>, <color.g>, <color.b>, <color.a>
 /// \endcode
-inline std::ostream& operator <<( std::ostream& os, const Color4<float>& color )
+NOM_EXPORT inline
+std::ostream& operator <<( std::ostream& os, const Color4<float>& color )
 {
   os
   << static_cast<float> ( color.r )
@@ -231,7 +235,8 @@ inline std::ostream& operator <<( std::ostream& os, const Color4<float>& color )
 
 /// \brief Equality comparison operator.
 template <typename T>
-inline bool operator == ( const Color4<T>& left, const Color4<T>& right )
+NOM_EXPORT inline
+bool operator == ( const Color4<T>& left, const Color4<T>& right )
 {
   return ( left.r == right.r ) &&
          ( left.g == right.g ) &&
@@ -241,14 +246,16 @@ inline bool operator == ( const Color4<T>& left, const Color4<T>& right )
 
 /// \brief In-equality comparison operator.
 template <typename T>
-inline bool operator != ( const Color4<T>& left, const Color4<T>& right )
+NOM_EXPORT inline
+bool operator != ( const Color4<T>& left, const Color4<T>& right )
 {
   return ! ( left == right );
 }
 
 /// Values that exceed 255 are clamped to 255
 template <typename T>
-inline Color4<T> operator + ( const Color4<T>& left, const Color4<T>& right )
+NOM_EXPORT inline
+Color4<T> operator + ( const Color4<T>& left, const Color4<T>& right )
 {
   return Color4<T> (  static_cast<T> ( std::min ( left.r + right.r, 255 ) ),
                     static_cast<T> ( std::min ( left.g + right.g, 255 ) ),
@@ -258,7 +265,8 @@ inline Color4<T> operator + ( const Color4<T>& left, const Color4<T>& right )
 }
 
 /// Values that exceed 255 are clamped to 255
-inline Color4<float> operator +( const Color4<float>& lhs, const Color4<float>& rhs )
+NOM_EXPORT inline
+Color4<float> operator +( const Color4<float>& lhs, const Color4<float>& rhs )
 {
   return Color4<float>  (
                           std::min( ( lhs.r + rhs.r / 255 ), 1.0f ),
@@ -270,7 +278,7 @@ inline Color4<float> operator +( const Color4<float>& lhs, const Color4<float>& 
 
 /// Values that exceed 255 are clamped to 255
 template <typename T>
-inline Color4<T> operator ++ ( Color4<T>& left )
+NOM_EXPORT inline Color4<T> operator ++ ( Color4<T>& left )
 {
   return Color4<T> (  static_cast<T> ( left.r-- ),
                     static_cast<T> ( left.g-- ),
@@ -281,7 +289,8 @@ inline Color4<T> operator ++ ( Color4<T>& left )
 
 template <typename T>
 /// Values that exceed 255 are clamped to 255
-inline Color4<T> operator - ( const Color4<T>& left, const Color4<T>& right )
+NOM_EXPORT inline
+Color4<T> operator - ( const Color4<T>& left, const Color4<T>& right )
 {
   return Color4<T>  (
                       static_cast<T> ( std::min( left.r - right.r, 255 ) ),
@@ -292,7 +301,8 @@ inline Color4<T> operator - ( const Color4<T>& left, const Color4<T>& right )
 }
 
 /// Values that exceed 255 are clamped to 255
-inline Color4<float> operator -( const Color4<float>& lhs, const Color4<float>& rhs )
+NOM_EXPORT inline
+Color4<float> operator -( const Color4<float>& lhs, const Color4<float>& rhs )
 {
   return Color4<float>  (
                           std::min( ( lhs.r - rhs.r ) / 255, 1.0f ),
@@ -304,7 +314,7 @@ inline Color4<float> operator -( const Color4<float>& lhs, const Color4<float>& 
 
 /// Values that exceed 255 are clamped to 255
 template <typename T>
-inline Color4<T> operator -- ( Color4<T>& left )
+NOM_EXPORT inline Color4<T> operator -- ( Color4<T>& left )
 {
   return Color4<T> ( static_cast<T> ( left.r-- ),
                     static_cast<T> ( left.g-- ),
@@ -315,7 +325,8 @@ inline Color4<T> operator -- ( Color4<T>& left )
 
 /// Values that exceed 255 are clamped to 255
 template <typename T>
-inline Color4<T> operator * ( const Color4<T>& left, const Color4<T>& right )
+NOM_EXPORT inline
+Color4<T> operator * ( const Color4<T>& left, const Color4<T>& right )
 {
   return Color4<T>  (
                       static_cast<T> ( left.r * right.r / 255 ),
@@ -326,19 +337,22 @@ inline Color4<T> operator * ( const Color4<T>& left, const Color4<T>& right )
 }
 
 template <typename T>
-inline Color4<T>& operator += ( Color4<T>& left, const Color4<T>& right )
+NOM_EXPORT inline
+Color4<T>& operator += ( Color4<T>& left, const Color4<T>& right )
 {
   return left = left + right;
 }
 
 template <typename T>
-inline Color4<T>& operator -= ( Color4<T>& left, const Color4<T>& right )
+NOM_EXPORT inline
+Color4<T>& operator -= ( Color4<T>& left, const Color4<T>& right )
 {
   return left = left - right;
 }
 
 template <typename T>
-inline Color4<T>& operator *= ( Color4<T>& left, const Color4<T>& right )
+NOM_EXPORT inline
+Color4<T>& operator *= ( Color4<T>& left, const Color4<T>& right )
 {
   return left = left * right;
 }
@@ -348,7 +362,8 @@ inline Color4<T>& operator *= ( Color4<T>& left, const Color4<T>& right )
 /// \param lhs Left operand.
 /// \param rhs Right operand.
 template <typename T>
-inline bool operator <(const Color4<T> lhs, const Color4<T>& rhs)
+NOM_EXPORT inline
+bool operator <(const Color4<T> lhs, const Color4<T>& rhs)
 {
   return  (lhs.r < rhs.r) && (lhs.r < rhs.r)  &&
           (lhs.g < rhs.g) && (lhs.g < rhs.g)  &&
@@ -361,7 +376,8 @@ inline bool operator <(const Color4<T> lhs, const Color4<T>& rhs)
 /// \param lhs Left operand.
 /// \param rhs Right operand.
 template <typename T>
-inline bool operator >(const Color4<T>& lhs, const Color4<T>& rhs)
+NOM_EXPORT inline
+bool operator >(const Color4<T>& lhs, const Color4<T>& rhs)
 {
   return  (rhs.r < lhs.r) && (rhs.r < lhs.r)  &&
           (rhs.g < lhs.g) && (rhs.g < lhs.g)  &&
@@ -374,7 +390,8 @@ inline bool operator >(const Color4<T>& lhs, const Color4<T>& rhs)
 /// \param lhs Left operand.
 /// \param rhs Right operand.
 template <typename T>
-inline bool operator <=(const Color4<T>& lhs, const Color4<T>& rhs)
+NOM_EXPORT inline
+bool operator <=(const Color4<T>& lhs, const Color4<T>& rhs)
 {
   return  (lhs.r <= rhs.r) && (lhs.r <= rhs.r)  &&
           (lhs.g <= rhs.g) && (lhs.g <= rhs.g)  &&
@@ -387,7 +404,8 @@ inline bool operator <=(const Color4<T>& lhs, const Color4<T>& rhs)
 /// \param lhs Left operand.
 /// \param rhs Right operand.
 template <typename T>
-inline bool operator >=(const Color4<T>& lhs, const Color4<T>& rhs)
+NOM_EXPORT inline
+bool operator >=(const Color4<T>& lhs, const Color4<T>& rhs)
 {
   return  (rhs.r <= lhs.r) && (rhs.r <= lhs.r)  &&
           (rhs.g <= lhs.g) && (rhs.g <= lhs.g)  &&
@@ -404,7 +422,8 @@ inline bool operator >=(const Color4<T>& lhs, const Color4<T>& rhs)
 ///
 /// \returns Reference to the left operand.
 template <typename T>
-inline Color4<T> operator /(const Color4<T>& lhs, const Color4<T>& rhs)
+NOM_EXPORT inline
+Color4<T> operator /(const Color4<T>& lhs, const Color4<T>& rhs)
 {
   return Color4<T>( lhs.r / rhs.r,
                     lhs.g / rhs.g,
@@ -423,6 +442,7 @@ inline Color4<T> operator /(const Color4<T>& lhs, const Color4<T>& rhs)
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Color4<T>& operator /=(Color4<T>& lhs, Color4<T>& rhs)
 {
   lhs.r /= rhs.r;
@@ -455,10 +475,45 @@ typedef std::vector<Color4f> Color4fColors;
 /// \brief A container of Color4u objects.
 typedef std::vector<Color4u> Color4uColors;
 
-Color4i
+template <> NOM_EXPORT const uint8 Color4u::ALPHA_TRANSPARENT;
+template <> NOM_EXPORT const uint8 Color4u::ALPHA_OPAQUE;
+template <> NOM_EXPORT const int16 Color4i::ALPHA_TRANSPARENT;
+template <> NOM_EXPORT const int16 Color4i::ALPHA_OPAQUE;
+template <> NOM_EXPORT const float Color4f::ALPHA_TRANSPARENT;
+template <> NOM_EXPORT const float Color4f::ALPHA_OPAQUE;
+template <> NOM_EXPORT const Color4i Color4i::null;
+/// Null value for a nom::Color4 using floating point numbers
+template <> NOM_EXPORT const Color4f Color4f::null;
+template <> NOM_EXPORT const Color4i Color4i::Transparent;
+template <> NOM_EXPORT const Color4i Color4i::Black;
+template <> NOM_EXPORT const Color4i Color4i::White;
+template <> NOM_EXPORT const Color4i Color4i::Red;
+template <> NOM_EXPORT const Color4i Color4i::Green;
+template <> NOM_EXPORT const Color4i Color4i::Blue;
+template <> NOM_EXPORT const Color4i Color4i::Yellow;
+template <> NOM_EXPORT const Color4i Color4i::Magenta;
+template <> NOM_EXPORT const Color4i Color4i::Cyan;
+template <> NOM_EXPORT const Color4i Color4i::Silver;
+template <> NOM_EXPORT const Color4i Color4i::Purple;
+template <> NOM_EXPORT const Color4i Color4i::Orange;
+template <> NOM_EXPORT const Color4i Color4i::LightGray;
+template <> NOM_EXPORT const Color4i Color4i::Gray;
+template <> NOM_EXPORT const Color4i Color4i::SkyBlue;
+
+template <> NOM_EXPORT const Color4f Color4f::Transparent;
+template <> NOM_EXPORT const Color4f Color4f::Black;
+template <> NOM_EXPORT const Color4f Color4f::White;
+template <> NOM_EXPORT const Color4f Color4f::Red;
+template <> NOM_EXPORT const Color4f Color4f::Green;
+template <> NOM_EXPORT const Color4f Color4f::Blue;
+template <> NOM_EXPORT const Color4f Color4f::Yellow;
+template <> NOM_EXPORT const Color4f Color4f::Magenta;
+template <> NOM_EXPORT const Color4f Color4f::Cyan;
+
+NOM_EXPORT Color4i
 make_color_from_hex_string(const std::string& hex_encoding);
 
-Color4i
+NOM_EXPORT Color4i
 make_color_from_string(const std::string& color);
 
 } // namespace nom

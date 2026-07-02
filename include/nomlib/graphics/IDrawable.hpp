@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/core/IObject.hpp"
 #include "nomlib/graphics/RenderWindow.hpp"
@@ -38,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Base interface class for grouping objects under a united front
-class IDrawable: public IObject
+class NOM_EXPORT IDrawable: public IObject
 {
   public:
     typedef IDrawable self_type;

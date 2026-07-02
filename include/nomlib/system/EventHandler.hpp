@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <deque>
 #include <vector>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/system/Event.hpp"
 
@@ -46,7 +47,7 @@ class JoystickEventHandler;
 class GameControllerEventHandler;
 
 /// \brief Event handling abstraction
-class EventHandler
+class NOM_EXPORT EventHandler
 {
   public:
     typedef EventHandler self_type;
@@ -171,22 +172,33 @@ class EventHandler
     JoystickHandlerType joystick_event_type_ = NO_EVENT_HANDLER;
 };
 
-Event create_key_press(int32 sym, uint16 mod, uint8 repeat);
-Event create_key_release(int32 sym, uint16 mod, uint8 repeat);
+NOM_EXPORT Event create_key_press(int32 sym, uint16 mod, uint8 repeat);
+NOM_EXPORT Event create_key_release(int32 sym, uint16 mod, uint8 repeat);
+
+NOM_EXPORT
 Event create_mouse_button_click(uint8 button, uint8 clicks, uint32 window_id);
+
+NOM_EXPORT
 Event create_mouse_button_release(uint8 button, uint8 clicks, uint32 window_id);
 
+NOM_EXPORT
 Event create_joystick_button_press(JoystickID id, uint8 button);
+
+NOM_EXPORT
 Event create_joystick_button_release(JoystickID id, uint8 button);
 
+NOM_EXPORT
 Event create_joystick_hat_motion(JoystickID id, uint8 hat, uint8 value);
 
+NOM_EXPORT
 Event create_game_controller_button_press(JoystickID id, uint8 button);
+NOM_EXPORT
 Event create_game_controller_button_release(JoystickID id, uint8 button);
 
+NOM_EXPORT
 Event create_user_event(int32 code, void* data1, void* data2, uint32 window_id);
 
-Event create_quit_event(void* data1, void* data2);
+NOM_EXPORT Event create_quit_event(void* data1, void* data2);
 
 } // namespace nom
 

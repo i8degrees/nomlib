@@ -29,13 +29,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_GUI_DECORATOR_INSTANCER_FINAL_FANTASY_FRAME_HPP
 #define NOMLIB_GUI_DECORATOR_INSTANCER_FINAL_FANTASY_FRAME_HPP
 
+#include "export.hpp"
 #include <Rocket/Core/DecoratorInstancer.h>
 
 namespace nom {
 
 /// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Decorators
 /// \see http://librocket.com/wiki/documentation/RCSS/Decorators
-class DecoratorInstancerFinalFantasyFrame: public Rocket::Core::DecoratorInstancer
+class NOM_EXPORT DecoratorInstancerFinalFantasyFrame: public Rocket::Core::DecoratorInstancer
 {
   public:
     DecoratorInstancerFinalFantasyFrame();

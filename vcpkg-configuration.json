@@ -8,8 +8,8 @@
     },
     {
       "kind": "git",
+      "baseline": "724c8349a6059504704c15126df454d0dd91bc31",
       "repository": "https://github.com/i8degrees/vcpkg",
-      "baseline": "cf634968cc122c1d5bae4e98bc396e59f4936fd7",
       "packages": [
         "librocket"
       ]

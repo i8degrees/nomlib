@@ -55,7 +55,7 @@
       "features": [
         "pipewire"
       ],
-      "platform": "(osx & x64), (linux & x64), (windows & x86 & static)"
+      "platform": "(linux & x64), (windows & x86 & static)"
     },
     "libsndfile",
     {

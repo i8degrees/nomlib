@@ -72,12 +72,17 @@ ImageTestSet::ImageTestSet  (
   this->set_directory( dir_path );
 
   // Auto-initialized variables
-  this->set_version( nom::revision() );
+  this->set_version( NOM_VERSION.version_string() + "-" + nom::revision() );
 }
 
 bool ImageTestSet::operator ==( const self_type& rhs )
 {
   if( this->resolution() != rhs.resolution() )
+  {
+    return false;
+  }
+
+  if( this->images_.size() != rhs.images_.size() )
   {
     return false;
   }

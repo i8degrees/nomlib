@@ -40,8 +40,8 @@ namespace nom {
 
 const File cwd;
 const Path p;
-const std::string RESOURCES_PATH =  cwd.currentPath() + p.native() + "Resources"
-                                    + p.native() + "ImageDiffTest" + p.native();
+const std::string RESOURCES_PATH =  "Resources"
+                                    + p.native() + "tests" + p.native() + "ImageDiffTest" + p.native();
 
 const std::string SIMPLE_EQUALITY_RESOURCES_PATH[2] = {
                                                         // First path

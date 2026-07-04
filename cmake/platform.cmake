@@ -61,9 +61,10 @@ if ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
     )
     set(CMAKE_OSX_SYSROOT ${DETECTED_SDK_PATH} CACHE PATH "macOS SDK Path" FORCE)
     set(NOM_MACOSX_SDK_VERSION ${DETECTED_SDK_VERSION} CACHE PATH "macOS SDK Version" FORCE)
-  endif(NOT CMAKE_OSX_SYSROOT)
 
-  message(STATUS "Using macOS SDK: ${CMAKE_OSX_SYSROOT}")
+    message(STATUS "Using macOS SDK at ${CMAKE_OSX_SYSROOT}")
+    message(STATUS "Using macOS SDK version ${NOM_MACOSX_SDK_VERSION}")
+  endif(NOT CMAKE_OSX_SYSROOT)
 
   # libc++ requires OSX v10.7+
   set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++" )

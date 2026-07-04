@@ -148,7 +148,8 @@ int TrueTypeFont::kerning( uint32 first_char, uint32 second_char, uint32 charact
   // Check for state consistency between SDL_TTF and us
   NOM_ASSERT(TTF_GetFontKerning( this->font() ) == this->use_kerning_);
 
-  kerning_offset = TTF_GetFontKerningSize(this->font(), first_char, second_char);
+  kerning_offset =
+    TTF_GetFontKerningSizeGlyphs(this->font(), first_char, second_char);
 
   if( kerning_offset == nom::NOM_INT_MIN ) {
     NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,

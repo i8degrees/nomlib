@@ -168,13 +168,14 @@ target_link_libraries(nomlib-graphics
   nomlib-serializers
   nomlib-system
   PRIVATE
-  #$<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+  $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
   $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
   $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
 )
 
-# MacOSX Framework bundle support
-set_target_properties(nomlib-graphics
+if(PLATFORM_OSX)
+  # MacOSX Framework bundle support
+  set_target_properties(nomlib-graphics
   PROPERTIES
     FRAMEWORK TRUE
     MACOSX_FRAMEWORK_INFO_PLIST
@@ -187,9 +188,23 @@ set_target_properties(nomlib-graphics
       "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
     MACOSX_FRAMEWORK_IDENTIFIER
       "net.i8degrees.nomlib-graphics"
-    # PUBLIC_HEADER
-    # "${headers}"
-)
+    XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY
+      ""
+    MACOSX_RPATH TRUE
+    #INSTALL_RPATH
+      #@executable_path/../Frameworks
+  )
+
+  install(TARGETS nomlib-graphics
+    EXPORT libframework
+    FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      COMPONENT Runtime
+    FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-graphics.framework/Headers"
+      COMPONENT Development
+    FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-graphics.framework/Headers/graphics"
+      COMPONENT Development
+  )
+endif(PLATFORM_OSX)
 
 install(TARGETS nomlib-graphics
   EXPORT libtarget
@@ -203,7 +218,8 @@ install(TARGETS nomlib-graphics
     COMPONENT Development
   FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/graphics"
     COMPONENT Development
-  # MacOSX framework bundle
-  LIBRARY FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX}
+  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT Runtime
 )
+
+

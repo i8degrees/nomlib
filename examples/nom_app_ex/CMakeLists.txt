@@ -99,7 +99,7 @@ if(TARGET SDL2_image::SDL2_image-static)
     $<TARGET_FILE_DIR:nom_app_ex>
   )
   # For distribution (SDL2_image):
-  install(FILES $<TARGET_FILE:SDL2_image-static::SDL2_image-static>
+  install(FILES $<TARGET_FILE:SDL2_image::SDL2_image-static>
     DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT Examples
   )

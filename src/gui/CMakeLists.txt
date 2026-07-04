@@ -126,13 +126,16 @@ target_link_libraries(nomlib-gui
   nomlib-graphics
   PRIVATE
   OpenGL::GL
+  $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+  $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
   $<IF:$<TARGET_EXISTS:RocketCore>,RocketCore,RocketCore-static>
   $<IF:$<TARGET_EXISTS:RocketControls>,RocketControls,RocketControls-static>
   $<IF:$<TARGET_EXISTS:RocketDebugger>,RocketDebugger,RocketDebugger-static>
 )
 
-# MacOSX Framework bundle support
-set_target_properties(nomlib-gui
+if(PLATFORM_OSX)
+  # MacOSX Framework bundle support
+  set_target_properties(nomlib-gui
   PROPERTIES
     FRAMEWORK TRUE
     MACOSX_FRAMEWORK_INFO_PLIST
@@ -145,9 +148,23 @@ set_target_properties(nomlib-gui
       "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
     MACOSX_FRAMEWORK_IDENTIFIER
       "net.i8degrees.nomlib-gui"
-    # PUBLIC_HEADER
-    # "${headers}"
-)
+    XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY
+      ""
+    MACOSX_RPATH TRUE
+    #INSTALL_RPATH
+      #@executable_path/../Frameworks
+  )
+
+  install(TARGETS nomlib-gui
+    EXPORT nomlibFrameworks
+    FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      COMPONENT Runtime
+    FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-gui.framework/Headers"
+      COMPONENT Development
+    FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-gui.framework/Headers/gui"
+      COMPONENT Development
+  )
+endif(PLATFORM_OSX)
 
 install(TARGETS nomlib-gui
   EXPORT libtarget
@@ -157,11 +174,10 @@ install(TARGETS nomlib-gui
     COMPONENT Runtime
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     COMPONENT Runtime
+  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT Runtime
   FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     COMPONENT Development
   FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/gui"
     COMPONENT Development
-  # MacOSX framework bundle
-  LIBRARY FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX}
-    COMPONENT Runtime
 )

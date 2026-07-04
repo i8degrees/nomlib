@@ -1,5 +1,6 @@
 add_executable(nom_ev
   WIN32 # Link SDL2main over WinMain
+  MACOSX_BUNDLE
   events.cpp
 )
 
@@ -16,13 +17,19 @@ target_include_directories(nom_ev
   ${SDL2_INCLUDE_DIR}
 )
 
+if(TARGET SDL2::SDL2main)
+  target_link_libraries(nom_ev
+    PRIVATE
+    $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+  )
+endif(TARGET SDL2::SDL2main)
+
 target_link_libraries(nom_ev
   PUBLIC
   nomlib-core
   nomlib-graphics
   nomlib-system
   PRIVATE
-  $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
   $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
   $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
   $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
@@ -33,3 +40,4 @@ install(TARGETS nom_ev
   DESTINATION ${CMAKE_INSTALL_BINDIR}
   COMPONENT Examples
 )
+

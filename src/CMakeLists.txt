@@ -42,21 +42,42 @@ if(SDL2_image_FOUND)
   set(NOM_USE_SDL2_IMAGE TRUE)
 endif(SDL2_image_FOUND)
 
-find_package(SDL2_TTF 2.0...2.22)
-if(SDL2_TTF_FOUND)
-  set(NOM_USE_SDL2_TTF TRUE)
-  set(NOM_USE_SDL_TTF_MAJOR_VERSION 2)
-  set(NOM_USE_SDL_TTF_MINOR_VERSION 0)
-  set(NOM_USE_SDL_TTF_PATCH_VERSION 12)
-endif(SDL2_TTF_FOUND)
+# !! We check to see what version of SDL2_ttf we have available so we can
+# !! later check for what specific typedef is employed in order to maintain
+# !! backwards compatibility with.
+if(SDL2_ttf_FOUND)
+  include(CheckCSourceCompiles)
+  set(CMAKE_REQUIRED_INCLUDES ${SDL2_INCLUDE_DIR}) # check_c_source_compile
+  set(NOM_USE_SDL2_TTF TRUE) # recorded in config.hpp
 
-find_package(SDL2_TTF 2.23...<3)
-if(SDL2_TTF_FOUND)
-  set(NOM_USE_SDL2_TTF TRUE)
-  set(NOM_USE_SDL_TTF_MAJOR_VERSION 2)
-  set(NOM_USE_SDL_TTF_MINOR_VERSION 23)
-  set(NOM_USE_SDL_TTF_PATCH_VERSION 0)
-endif(SDL2_TTF_FOUND)
+  # >> Introduced in SDL2_ttf v2.0.12
+  check_c_source_compiles("
+    #include <SDL_ttf.h>
+    typedef struct _TTF_Font TTF_Font;
+    int main(void) { return 0; }"
+  HAVE_SDL2_TTF_212)
+
+  # >> Modified in SDL2_ttf v2.23.0
+  check_c_source_compiles("
+    #include <SDL_ttf.h>
+    typedef struct TTF_Font TTF_Font;
+    int main(void) { return 0; }"
+  HAVE_SDL2_TTF_223)
+
+  # Recorded in config.hpp
+  if(HAVE_SDL2_TTF_212)
+    set(NOM_USE_SDL_TTF_MAJOR_VERSION 2)
+    set(NOM_USE_SDL_TTF_MINOR_VERSION 0)
+    set(NOM_USE_SDL_TTF_PATCH_VERSION 12)
+  endif(HAVE_SDL2_TTF_212)
+
+  # Recorded in config.hpp
+  if(HAVE_SDL2_TTF_223)
+    set(NOM_USE_SDL_TTF_MAJOR_VERSION 2)
+    set(NOM_USE_SDL_TTF_MINOR_VERSION 23)
+    set(NOM_USE_SDL_TTF_PATCH_VERSION 0)
+  endif(HAVE_SDL2_TTF_223)
+endif(SDL2_ttf_FOUND)
 
 if(NOM_BUILD_AUDIO_UNIT)
   # TODO(jeff): Consider setting NOM_USE_OPENAL when one of these three are

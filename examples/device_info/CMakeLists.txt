@@ -23,7 +23,7 @@ if(libRocket_FOUND)
   if(OPENGL_FOUND)
       target_link_libraries(nom_devinfo
         PRIVATE
-        OpenGL::OpenGL
+        OpenGL::GL
       )
   endif(OPENGL_FOUND)
 endif(libRocket_FOUND)
@@ -58,6 +58,6 @@ target_link_libraries(nom_devinfo
 
 install(TARGETS nom_devinfo
   # EXPORT examples
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  DESTINATION ${CMAKE_INSTALL_BINDIR}
   COMPONENT Examples
 )

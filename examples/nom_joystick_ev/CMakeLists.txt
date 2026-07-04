@@ -2,6 +2,7 @@
 
 add_executable(nom_joystick_ev
     WIN32 # Link SDL2main over WinMain
+    MACOSX_BUNDLE
     joystick_events.cpp
 )
 

@@ -4,6 +4,7 @@ set(STATIC_ASSETS ${PROJECT_SOURCE_DIR}/Resources/tests/graphics/TrueTypeFontTes
 
 add_executable(nom_font
   WIN32 # Link SDL2main over WinMain
+  MACOSX_BUNDLE
   renderfont.cpp
 )
 

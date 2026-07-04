@@ -116,13 +116,14 @@ target_link_libraries(nomlib-system
   nomlib-file
   nomlib-math
   PRIVATE
-  #$<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+  $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
   $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
   $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
 )
 
-# MacOSX Framework bundle support
-set_target_properties(nomlib-system
+if(PLATFORM_OSX)
+  # MacOSX Framework bundle support
+  set_target_properties(nomlib-system
   PROPERTIES
     FRAMEWORK TRUE
     MACOSX_FRAMEWORK_INFO_PLIST
@@ -135,9 +136,24 @@ set_target_properties(nomlib-system
       "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
     MACOSX_FRAMEWORK_IDENTIFIER
       "net.i8degrees.nomlib-system"
-    # PUBLIC_HEADER
-    # "${headers}"
-)
+    XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY
+      ""
+    MACOSX_RPATH TRUE
+    #INSTALL_RPATH
+      #@executable_path/../Frameworks
+  )
+
+  install(TARGETS nomlib-system
+    EXPORT libframework
+    FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      COMPONENT Runtime
+    FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-system.framework/Headers"
+      COMPONENT Development
+    FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-system.framework/Headers/system"
+      COMPONENT Development
+  )
+endif()
+#else(NOT PLATFORM_OSX)
 
 install(TARGETS nomlib-system
   EXPORT libtarget
@@ -151,7 +167,7 @@ install(TARGETS nomlib-system
     COMPONENT Development
   FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/system"
     COMPONENT Development
-  # MacOSX framework bundle
-  LIBRARY FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX}
+  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT Runtime
 )
+

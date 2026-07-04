@@ -4,6 +4,7 @@ set(STATIC_ASSETS ${PROJECT_SOURCE_DIR}/Resources/tests/serializers/json)
 
 add_executable(nom_jsonpp
   WIN32 # Link SDL2main over WinMain
+  MACOSX_BUNDLE
 )
 
 set_target_properties(nom_jsonpp

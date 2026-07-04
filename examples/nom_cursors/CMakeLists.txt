@@ -2,7 +2,14 @@
 
 add_executable(nom_cursors
   WIN32 # Link SDL2main over WinMain
+  MACOSX_BUNDLE
   cursors.cpp
+)
+
+set_target_properties(nom_cursors
+  PROPERTIES
+    INSTALL_RPATH "$ORIGIN/../lib"
+    INSTALL_RPATH_USE_LINK_PATH TRUE
 )
 
 if(TARGET SDL2::SDL2main)
@@ -29,3 +36,4 @@ target_link_libraries(nom_cursors
 
 install(  FILES "${NOMLIB_RESOURCES_DIR}/icon.png"
           DESTINATION "${EXAMPLES_INSTALL_DIR}/Resources" )
+

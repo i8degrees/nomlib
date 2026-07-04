@@ -399,17 +399,13 @@ bool JsonCppSerializer::write_array( const Value& object, Json::Value& dest ) co
         break;
       }
 
-      // TODO: verify that this works; (Resources/examples/json/inventory.json)
       case Value::ValueType::ArrayValues:
       {
-        NOM_LOG_ERR( NOM, "Could not serialize values; an array cannot exist within another array." );
-        return false;
-
-        // if( this->write_array( itr->ref(), dest ) == false )
-        // {
-        //   NOM_LOG_ERR( NOM, "Could not serialize values; invalid array???" );
-        //   return false;
-        // }
+        if( this->write_array( itr->ref(), dest ) == false )
+        {
+          NOM_LOG_ERR( NOM, "Could not serialize values; invalid array???" );
+          return false;
+        }
 
         break;
       }

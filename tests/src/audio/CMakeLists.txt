@@ -3,20 +3,48 @@
 set(NOM_BUILD_OPENAL_AUDIO_TESTS ON)
 
 if(NOM_BUILD_OPENAL_AUDIO_TESTS)
-  set(TEST_SRC "ALAudioTest.cpp")
-  add_executable(ALAudioTest ${TEST_SRC})
+  add_executable(ALAudioTest
+    WIN32
+    ALAudioTest.cpp
+  )
 
-  # FIXME: We only need init from nomlib-system
-  set(AUDIO_DEPS ${GTEST_LIBRARY} nomlib-core nomlib-math nomlib-audio
-      nomlib-system nomlib-serializers)
+  add_dependencies(ALAudioTest gtest)
 
-  if(PLATFORM_WINDOWS)
-    list(APPEND AUDIO_DEPS ${SDL2MAIN_LIBRARY})
-  endif(PLATFORM_WINDOWS)
+  if(TARGET SDL2::SDL2main)
+    target_link_libraries(ALAudioTest
+      PRIVATE
+      $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+    )
+  endif(TARGET SDL2::SDL2main)
 
-  target_link_libraries(ALAudioTest ${AUDIO_DEPS})
+  target_include_directories(ALAudioTest
+    PUBLIC
+    ${PROJECT_SOURCE_DIR}/include # include/nomlib
+    ${PROJECT_SOURCE_DIR}/tests/include
+    PRIVATE
+    ${GTEST_INCLUDE_DIR}
+    ${SDL2_INCLUDE_DIR}
+    ${OPENAL_INCLUDE_DIR}
+    #${LIBSNDFILE_INCLUDE_DIR}
+  )
 
-  GTEST_ADD_TESTS(${TESTS_INSTALL_DIR}/ALAudioTest "" ${TEST_SRC})
+  target_link_libraries(ALAudioTest
+    PUBLIC
+    nomlib-audio
+    nomlib-core
+    nomlib-math
+    nomlib-graphics
+    # FIXME: We only need init from nomlib-system
+    nomlib-system
+    #nomlib-serializers
+    PRIVATE
+    Threads::Threads
+    ${GTEST_LIBRARY}
+    $<IF:$<TARGET_EXISTS:SndFile::sndfile>,SndFile::sndfile,SndFile::sndfile-static>
+    $<IF:$<TARGET_EXISTS:OpenAL::OpenAL>,OpenAL::OpenAL,OpenAL::OpenAL-static>
+  )
+
+  GTEST_ADD_TESTS(${TESTS_INSTALL_DIR}/ALAudioTest "" ALAudioTest.cpp)
 
   # Copy resource files for the test
   install_resource_file("${NOM_TESTS_RESOURCES_DIR}/audio/ALAudioTest.json"

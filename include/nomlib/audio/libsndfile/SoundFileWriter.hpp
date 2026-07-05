@@ -36,8 +36,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/audio/ISoundFileWriter.hpp"
 
 // Forward declarations
-struct SNDFILE_tag;
-struct SF_INFO;
+typedef struct SF_INFO SF_INFO;
+typedef struct sf_private_tag SNDFILE_tag;
 
 namespace nom {
 namespace audio {

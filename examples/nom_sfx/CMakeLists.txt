@@ -4,6 +4,7 @@ set(STATIC_ASSET_CONFIG "${NOM_EXAMPLES_RESOURCES_DIR}/audio.json")
 
 add_executable(nom_sfx
   WIN32 # Link SDL2main over WinMain
+  MACOSX_BUNDLE
   audio.cpp
 )
 

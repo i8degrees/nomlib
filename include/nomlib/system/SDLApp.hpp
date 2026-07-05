@@ -213,11 +213,8 @@ class NOM_EXPORT SDLApp
     virtual void on_render_targets_reset(const Event& ev);
 
     /// \remarks This is applicable only to Direct3D renderers.
-
-// NOTE: Not available until the release of SDL 2.0.4
-#if 0
+    // NOTE: Not available until the release of SDL 2.0.4
     virtual void on_render_device_reset(const Event& ev);
-#endif
 
     // NOTE: Proposed naming scheme for iOS / Android event handlers
     // virtual void on_app_destroy(const Event& ev);

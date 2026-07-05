@@ -885,15 +885,14 @@ void EventHandler::process_event(const SDL_Event* ev)
       event.timestamp = nom::ticks();
     } break;
 
-// NOTE: Not available until the release of SDL 2.0.4
-#if 0
+    // NOTE: Not available until the release of SDL 2.0.4
     case SDL_RENDER_DEVICE_RESET:
     {
       Event event;
       event.type = Event::RENDER_DEVICE_RESET;
       event.timestamp = nom::ticks();
     } break;
-#endif
+
     case SDL_USEREVENT:
     {
       nom::Event event;

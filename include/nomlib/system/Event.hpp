@@ -505,11 +505,9 @@ struct Event
     TEXT_INPUT,
     TEXT_EDITING,
     RENDER_TARGETS_RESET,
-
-// NOTE: Not available until the release of SDL 2.0.4
-#if 0
+    // NOTE: Not available until the release of SDL 2.0.4
     RENDER_DEVICE_RESET,
-#endif
+
     USER_EVENT,
   };
 

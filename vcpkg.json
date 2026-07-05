@@ -80,6 +80,10 @@
     {
       "name": "sdl2-ttf",
       "version": "2.24.0"
+    },
+    {
+      "name": "openal-soft",
+      "version": "1.25.1#1"
     }
   ],
   "builtin-baseline": "60b28ad1da50454bfb4bb5a0e892847e3f50d82b"

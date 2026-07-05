@@ -37,8 +37,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/audio/AL/SoundSource.hpp"
 
 // Forward declarations
-struct ALCdevice_struct;
-struct ALCcontext_struct;
 
 namespace nom {
 namespace audio {

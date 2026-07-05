@@ -41,6 +41,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/audio/AL/ALAudioDevice.hpp"
 #include "nomlib/audio/SoundBuffer.hpp"
 
+#if defined(NOM_USE_OPENAL_SOFT)
+  typedef struct ALCcontext ALCcontext_struct;
+  typedef struct ALCdevice ALCdevice_struct;
+#elif defined(NOM_USE_APPLE_OPENAL)
+  typedef struct ALCcontext_struct ALCcontext;
+  typedef struct ALCdevice_struct ALCdevice;
+
+  typedef ALCcontext ALCcontext_struct;
+  typedef ALCdevice ALCdevice_struct;
+#endif
+
 namespace nom {
 namespace audio {
 

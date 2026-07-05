@@ -41,6 +41,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Forward declarations
 #include "nomlib/audio/AL/OpenAL.hpp"
 
+#if defined(NOM_USE_OPENAL_SOFT)
+  typedef struct ALCcontext ALCcontext_struct;
+  typedef struct ALCdevice ALCdevice_struct;
+#elif defined(NOM_USE_APPLE_OPENAL)
+  typedef struct ALCcontext_struct ALCcontext;
+  typedef struct ALCdevice_struct ALCdevice;
+
+  typedef ALCcontext ALCcontext_struct;
+  typedef ALCdevice ALCdevice_struct;
+#endif
+
 namespace nom {
 namespace audio {
 
@@ -101,7 +112,7 @@ ALCcontext_struct* current_context()
   return ctx;
 }
 
-void free_audio_device(ALCdevice* dev)
+void free_audio_device(ALCdevice_struct* dev)
 {
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_AUDIO, NOM_LOG_PRIORITY_DEBUG);
 
@@ -126,7 +137,7 @@ void free_audio_device(ALCdevice* dev)
   }
 }
 
-void free_audio_context(ALCcontext* ctx)
+void free_audio_context(ALCcontext_struct* ctx)
 {
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_AUDIO, NOM_LOG_PRIORITY_DEBUG);
 

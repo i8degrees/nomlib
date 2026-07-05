@@ -26,7 +26,7 @@ generate_export_header(nomlib-file
 )
 
 if(PLATFORM_OSX)
-  target_link_sources(nomlib-file
+  target_sources(nomlib-file
     PRIVATE
     ${CORE_SERVICES_LIBRARY}
     ${CORE_FOUNDATION_LIBRARY}
@@ -129,8 +129,19 @@ set_target_properties(nomlib-file
       "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
     MACOSX_FRAMEWORK_IDENTIFIER
       "net.i8degrees.nomlib-file"
-  # PUBLIC_HEADER
-  # "${headers}"
+    XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY
+      ""
+    MACOSX_RPATH TRUE
+)
+
+# MacOSX framework bundle
+install(TARGETS nomlib-file
+  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT Runtime
+  FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-file.framework/Headers"
+    COMPONENT Development
+  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-file.framework/Headers/file"
+    COMPONENT Development
 )
 
 install(TARGETS nomlib-file
@@ -146,6 +157,7 @@ install(TARGETS nomlib-file
   FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/file"
     COMPONENT Development
   # MacOSX framework bundle
-  LIBRARY FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX}
+  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT Runtime
 )
+

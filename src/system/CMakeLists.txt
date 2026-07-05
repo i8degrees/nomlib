@@ -121,9 +121,8 @@ target_link_libraries(nomlib-system
   $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
 )
 
-if(PLATFORM_OSX)
-  # MacOSX Framework bundle support
-  set_target_properties(nomlib-system
+# MacOSX Framework bundle support
+set_target_properties(nomlib-system
   PROPERTIES
     FRAMEWORK TRUE
     MACOSX_FRAMEWORK_INFO_PLIST
@@ -141,19 +140,16 @@ if(PLATFORM_OSX)
     MACOSX_RPATH TRUE
     #INSTALL_RPATH
       #@executable_path/../Frameworks
-  )
+)
 
-  install(TARGETS nomlib-system
-    EXPORT libframework
-    FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
-      COMPONENT Runtime
-    FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-system.framework/Headers"
-      COMPONENT Development
-    FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-system.framework/Headers/system"
-      COMPONENT Development
-  )
-endif()
-#else(NOT PLATFORM_OSX)
+install(TARGETS nomlib-system
+  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT Runtime
+  FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-system.framework/Headers"
+    COMPONENT Development
+  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-system.framework/Headers/system"
+    COMPONENT Development
+)
 
 install(TARGETS nomlib-system
   EXPORT libtarget

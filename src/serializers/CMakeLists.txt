@@ -108,8 +108,19 @@ set_target_properties(nomlib-serializers
       "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
     MACOSX_FRAMEWORK_IDENTIFIER
       "net.i8degrees.nomlib-serializers"
-    # PUBLIC_HEADER
-    # "${headers}"
+    XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY
+      ""
+    MACOSX_RPATH TRUE
+)
+
+# MacOSX framework bundle
+install(TARGETS nomlib-serializers
+  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT Runtime
+  FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-serializers.framework/Headers"
+    COMPONENT Development
+  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-serializers.framework/Headers/serializers"
+    COMPONENT Development
 )
 
 install(TARGETS nomlib-serializers
@@ -124,7 +135,7 @@ install(TARGETS nomlib-serializers
     COMPONENT Development
   FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/serializers"
     COMPONENT Development
-  # MacOSX framework bundle
-  LIBRARY FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX}
+  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT Runtime
 )
+

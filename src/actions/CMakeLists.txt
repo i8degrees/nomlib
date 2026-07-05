@@ -137,17 +137,15 @@ if(NOM_BUILD_AUDIO_UNIT)
     PUBLIC
       nomlib-audio
     PRIVATE
-      $<IF:$<TARGET_EXISTS:OpenAL::OpenAL>,OpenAL::OpenAL>
+    $<IF:$<TARGET_EXISTS:OpenAL::OpenAL>,OpenAL::OpenAL,OpenAL::OpenAL-static>
   )
 endif(NOM_BUILD_AUDIO_UNIT)
-
 
 # Common internal dependencies for actions
 target_link_libraries(nomlib-actions
   PUBLIC
   nomlib-core
   nomlib-math
-  #nomlib-system
 )
 
 # MacOSX Framework bundle support

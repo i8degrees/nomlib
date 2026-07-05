@@ -16,6 +16,9 @@ if(NOM_BUILD_AUDIO_UNIT)
   target_link_libraries(nom_devinfo
     PUBLIC
     nomlib-audio
+    PRIVATE
+    OpenAL::OpenAL
+    SndFile::sndfile
   )
 endif(NOM_BUILD_AUDIO_UNIT)
 

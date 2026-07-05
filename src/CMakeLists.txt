@@ -80,6 +80,27 @@ if(SDL2_ttf_FOUND)
 endif(SDL2_ttf_FOUND)
 
 if(NOM_BUILD_AUDIO_UNIT)
+  include(CheckIncludeFileCXX)
+
+  # Check for OpenAL Soft standard header style
+  check_include_file_cxx("AL/al.h" HAVE_AL_AL_H)
+
+  # Check for Apple style framework header
+  check_include_file_cxx("OpenAL/al.h" HAVE_OPENAL_AL_H)
+
+  if(HAVE_AL_AL_H)
+    message(STATUS "Found OpenAL Soft style headers")
+    #add_compile_definitions(USING_OPENAL_SOFT)
+    set(NOM_USE_OPENAL_SOFT TRUE)
+  elseif(HAVE_OPENAL_AL_H AND APPLE)
+    message(STATUS "Found Apple OpenAL.framework headers")
+    #add_compile_definitions(USING_APPLE_OPENAL)
+    set(NOM_USE_APPLE_OPENAL TRUE)
+  endif()
+
+  set(NOM_USE_CREATIVE_OPENAL FALSE)
+  set(NOM_USE_LIBSNDFILE TRUE)
+
   # TODO(jeff): Consider setting NOM_USE_OPENAL when one of these three are
   # set; it might also be good to add a check inside the OpenAL header file
   # ensuring that only one of these three options are toggled at any given
@@ -90,17 +111,6 @@ if(NOM_BUILD_AUDIO_UNIT)
   #
   # http://openal.996291.n3.nabble.com/Openal-S-PDIF-and-surround-td2410.html
   # http://steamcommunity.com/sharedfiles/filedetails/?id=230642515
-  set(NOM_USE_CREATIVE_OPENAL FALSE)
-  set(NOM_USE_OPENAL_SOFT FALSE)
-  set(NOM_USE_LIBSNDFILE TRUE)
-
-  if(PLATFORM_POSIX)
-    set(NOM_USE_OPENAL_SOFT TRUE)
-  endif(PLATFORM_POSIX)
-
-  if(PLATFORM_OSX)
-    set(NOM_USE_APPLE_OPENAL TRUE)
-  endif(PLATFORM_OSX)
 endif(NOM_BUILD_AUDIO_UNIT)
 
 #

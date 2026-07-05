@@ -195,10 +195,20 @@ if(NOM_BUILD_GUI_UNIT)
 endif()
 
 if(NOM_BUILD_AUDIO_UNIT) # required dependencies
-  find_package(OpenAL CONFIG REQUIRED)
+  if(PLATFORM_OSX)
+    find_package(OpenAL REQUIRED)
+  else(NOT PLATFORM_OSX)
+    find_package(OpenAL CONFIG REQUIRED)
+  endif(PLATFORM_OSX)
+
   find_package(SndFile CONFIG REQUIRED)
 else(NOT NOM_BUILD_AUDIO_UNIT) # optional dependencies
-  find_package(OpenAL CONFIG)
+  if(PLATFORM_OSX)
+    find_package(OpenAL)
+  else(NOT PLATFORM_OSX)
+    find_package(OpenAL CONFIG)
+  endif(PLATFORM_OSX)
+
   find_package(SndFile CONFIG)
 endif(NOM_BUILD_AUDIO_UNIT)
 

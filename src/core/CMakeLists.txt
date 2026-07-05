@@ -145,11 +145,18 @@ set_target_properties(nomlib-core
       "net.i8degrees.nomlib-core"
     XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY
       ""
+    MACOSX_RPATH TRUE
     #INSTALL_RPATH
       #@executable_path/../Frameworks
+)
 
-    # PUBLIC_HEADER
-    # "${headers}"
+install(TARGETS nomlib-core
+  FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-core.framework/Headers"
+    COMPONENT Development
+  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-core.framework/Headers/core"
+    COMPONENT Development
+  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT Runtime
 )
 
 install(TARGETS nomlib-core
@@ -164,7 +171,7 @@ install(TARGETS nomlib-core
     COMPONENT Development
   FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/core"
     COMPONENT Development
-  # MacOSX framework bundle
-  LIBRARY FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX}
+  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT Runtime
 )
+

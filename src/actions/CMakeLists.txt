@@ -162,8 +162,19 @@ set_target_properties(nomlib-actions
       "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
     MACOSX_FRAMEWORK_IDENTIFIER
       "net.i8degrees.nomlib-actions"
-    # PUBLIC_HEADER
-    # "${headers}"
+    XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY
+      ""
+    MACOSX_RPATH TRUE
+)
+
+# MacOSX framework bundle
+install(TARGETS nomlib-actions
+  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT Runtime
+  FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-actions.framework/Headers"
+    COMPONENT Development
+  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-actions.framework/Headers/actions"
+    COMPONENT Development
 )
 
 install(TARGETS nomlib-actions
@@ -179,6 +190,7 @@ install(TARGETS nomlib-actions
   FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/actions"
     COMPONENT Development
   # MacOSX framework bundle
-  LIBRARY FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX}
+  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT Runtime
 )
+

@@ -274,12 +274,10 @@ void SDLApp::on_render_targets_reset(const Event& ev)
 }
 
 // NOTE: Not available until the release of SDL 2.0.4
-#if 0
 void SDLApp::on_render_device_reset(const Event& ev)
 {
   // Default implementation
 }
-#endif
 
 // Private scope
 
@@ -396,13 +394,11 @@ void SDLApp::process_event(const Event& ev)
       this->on_render_targets_reset(ev);
     } break;
 
-// NOTE: Not available until the release of SDL 2.0.4
-#if 0
+    // NOTE: Not available until the release of SDL 2.0.4
     case Event::RENDER_DEVICE_RESET:
     {
       this->on_render_device_reset(ev);
     } break;
-#endif
 
     case Event::USER_EVENT:
     {

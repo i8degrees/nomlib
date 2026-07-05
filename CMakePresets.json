@@ -125,6 +125,7 @@
         "DEBUG_ASSERT": "ON",
         "BUILD_EXAMPLES": "ON",
         "BUILD_TESTS": "ON",
+        "NOM_BUILD_AUDIO_UNIT": "ON",
         "VCPKG_TARGET_TRIPLET": "x64-osx",
         "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library-d",
         "CMAKE_OSX_DEPLOYMENT_TARGET": "10.15"
@@ -149,7 +150,7 @@
         "NOM_BUILD_AUDIO_UNIT": "ON",
         "VCPKG_TARGET_TRIPLET": "x64-osx-dynamic",
         "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library-d",
-        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.9"
+        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.15"
       },
       "environment": {
         "CC": "/usr/bin/clang",

@@ -116,6 +116,49 @@
       }
     },
     {
+      "name": "debug-osx",
+      "displayName": "(macosx) Debug configuration for clang toolchain (static lib)",
+      "inherits": "common",
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "OFF",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "DEBUG_ASSERT": "ON",
+        "BUILD_EXAMPLES": "ON",
+        "BUILD_TESTS": "ON",
+        "VCPKG_TARGET_TRIPLET": "x64-osx",
+        "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library-d",
+        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.15"
+      },
+      "environment": {
+        "CC": "/usr/bin/clang",
+        "CXX": "/usr/bin/clang++",
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_OVERLAY_PORTS": "$env{VCPKG_ROOT}/ports/librocket"
+      }
+    },
+    {
+      "name": "debug-dyn-osx",
+      "displayName": "(macosx) Debug configuration for clang toolchain (shared lib)",
+      "inherits": "common",
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "ON",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "DEBUG_ASSERT": "ON",
+        "BUILD_EXAMPLES": "ON",
+        "BUILD_TESTS": "ON",
+        "NOM_BUILD_AUDIO_UNIT": "ON",
+        "VCPKG_TARGET_TRIPLET": "x64-osx-dynamic",
+        "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library-d",
+        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.9"
+      },
+      "environment": {
+        "CC": "/usr/bin/clang",
+        "CXX": "/usr/bin/clang++",
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_OVERLAY_PORTS": "$env{VCPKG_ROOT}/ports/librocket"
+      }
+    },
+    {
       "name": "debug-clang-cl",
       "displayName": "Debug configuration for clang-cl toolchain",
       "inherits": "common",

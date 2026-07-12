@@ -1,14 +1,9 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg-configuration.schema.json",
-  "default-registry": {
-    "kind": "git",
-    "repository": "https://github.com/Microsoft/vcpkg",
-    "baseline": "84a143e4caf6b70db57f28d04c41df4a85c480fa"
-  },
   "registries": [
     {
       "kind": "git",
-      "baseline": "e9c2cd727241dddac5bd568a6f82ae0f7692597f",
+      "baseline": "f456eb98c040398e050cd74b52480cd224c19718",
       "repository": "https://github.com/i8degrees/vcpkg-ports",
       "packages": [
         "librocket"

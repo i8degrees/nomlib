@@ -24,7 +24,7 @@ generate_export_header(nomlib-gui
 
 set_target_properties(nomlib-gui
   PROPERTIES
-    VERSION "${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
+    VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     DEBUG_POSTFIX "-d"
     CXX_STANDARD 14

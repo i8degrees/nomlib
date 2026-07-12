@@ -85,7 +85,7 @@ endif(NOM_BUILD_AUDIO_UNIT)
 # intended **not** to break the ABI version.
 set_target_properties(nomlib-audio
   PROPERTIES
-    VERSION "${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
+    VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     DEBUG_POSTFIX "-d"
     CXX_STANDARD 14

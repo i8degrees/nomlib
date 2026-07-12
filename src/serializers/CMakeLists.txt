@@ -17,7 +17,7 @@ generate_export_header(nomlib-serializers
 
 set_target_properties(nomlib-serializers
   PROPERTIES
-    VERSION "${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
+    VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     DEBUG_POSTFIX "-d"
     CXX_STANDARD 14

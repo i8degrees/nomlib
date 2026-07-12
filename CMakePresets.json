@@ -35,8 +35,7 @@
       "environment": {
         "CC": "/usr/bin/clang",
         "CXX": "/usr/bin/clang++",
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-        "VCPKG_OVERLAY_PORTS": "$env{VCPKG_ROOT}/ports/librocket"
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       }
     },
     {
@@ -56,8 +55,7 @@
       "environment": {
         "CC": "/usr/bin/clang",
         "CXX": "/usr/bin/clang++",
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-        "VCPKG_OVERLAY_PORTS": "$env{VCPKG_ROOT}/ports/librocket"
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       }
     },
     {
@@ -73,8 +71,7 @@
         "VCPKG_TARGET_TRIPLET": "x64-linux"
       },
       "environment": {
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-        "VCPKG_OVERLAY_PORTS": "$env{VCPKG_ROOT}/ports/librocket"
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       }
     },
     {
@@ -92,8 +89,7 @@
         "VCPKG_TARGET_TRIPLET": "x64-linux-dynamic"
       },
       "environment": {
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-        "VCPKG_OVERLAY_PORTS": "$env{VCPKG_ROOT}/ports/librocket"
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       }
     },
     {
@@ -111,8 +107,7 @@
         "VCPKG_TARGET_TRIPLET": "x64-linux-dynamic"
       },
       "environment": {
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-        "VCPKG_OVERLAY_PORTS": "$env{VCPKG_ROOT}/ports/librocket"
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       }
     },
     {
@@ -133,8 +128,7 @@
       "environment": {
         "CC": "/usr/bin/clang",
         "CXX": "/usr/bin/clang++",
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-        "VCPKG_OVERLAY_PORTS": "$env{VCPKG_ROOT}/ports/librocket"
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       }
     },
     {
@@ -155,8 +149,7 @@
       "environment": {
         "CC": "/usr/bin/clang",
         "CXX": "/usr/bin/clang++",
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-        "VCPKG_OVERLAY_PORTS": "$env{VCPKG_ROOT}/ports/librocket"
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       }
     },
     {

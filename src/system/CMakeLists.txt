@@ -142,14 +142,17 @@ set_target_properties(nomlib-system
       #@executable_path/../Frameworks
 )
 
-install(TARGETS nomlib-system
-  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    COMPONENT Runtime
-  FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-system.framework/Headers"
-    COMPONENT Development
-  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-system.framework/Headers/system"
-    COMPONENT Development
-)
+# MacOSX Framework bundle support - public header files
+if(PLATFORM_OSX)
+  install(TARGETS nomlib-system
+    FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      COMPONENT Runtime
+    FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-system.framework/Headers"
+      COMPONENT Development
+    FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-system.framework/Headers/system"
+      COMPONENT Development
+  )
+endif(PLATFORM_OSX)
 
 install(TARGETS nomlib-system
   EXPORT libtarget

@@ -167,15 +167,17 @@ set_target_properties(nomlib-actions
     MACOSX_RPATH TRUE
 )
 
-# MacOSX framework bundle
-install(TARGETS nomlib-actions
-  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    COMPONENT Runtime
-  FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-actions.framework/Headers"
-    COMPONENT Development
-  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-actions.framework/Headers/actions"
-    COMPONENT Development
-)
+# MacOSX framework bundle support - public header files
+if(PLATFORM_OSX)
+  install(TARGETS nomlib-actions
+    FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      COMPONENT Runtime
+    FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-actions.framework/Headers"
+      COMPONENT Development
+    FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-actions.framework/Headers/actions"
+      COMPONENT Development
+  )
+endif(PLATFORM_OSX)
 
 install(TARGETS nomlib-actions
   EXPORT libtarget

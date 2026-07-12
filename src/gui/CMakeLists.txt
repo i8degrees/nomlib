@@ -154,14 +154,17 @@ set_target_properties(nomlib-gui
       #@executable_path/../Frameworks
 )
 
-install(TARGETS nomlib-gui
-  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    COMPONENT Runtime
-  FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-gui.framework/Headers"
-    COMPONENT Development
-  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-gui.framework/Headers/gui"
-    COMPONENT Development
-)
+# MacOSX Framework bundle support - public header files
+if(PLATFORM_OSX)
+  install(TARGETS nomlib-gui
+    FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      COMPONENT Runtime
+    FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-gui.framework/Headers"
+      COMPONENT Development
+    FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-gui.framework/Headers/gui"
+      COMPONENT Development
+  )
+endif(PLATFORM_OSX)
 
 install(TARGETS nomlib-gui
   EXPORT libtarget

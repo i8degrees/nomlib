@@ -1,3 +1,4 @@
 [submodule "wiki.git"]
 	path = wiki.git
-	url = https://github.com/i8degrees/nomlib.wiki.git
+  url = https://github.com/i8degrees/nomlib.wiki.git
+  ignore = dirty

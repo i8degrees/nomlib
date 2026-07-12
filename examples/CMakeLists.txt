@@ -52,7 +52,7 @@ if(NOM_BUILD_EVENTS_EXAMPLE) # nom_ev
 endif(NOM_BUILD_EVENTS_EXAMPLE)
 
 if(NOM_BUILD_DEVICE_INFO_EXAMPLE) # nom_devinfo
-  add_subdirectory(device_info)
+  add_subdirectory(nom_devinfo)
 endif(NOM_BUILD_DEVICE_INFO_EXAMPLE)
 
 if(NOM_BUILD_FONTS_EXAMPLE) # nom_fontr

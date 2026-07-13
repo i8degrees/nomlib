@@ -99,7 +99,7 @@ if(NOM_BUILD_UNIT_TEST_UNIT)
 
   set_target_properties(nomlib-unit-test
     PROPERTIES
-      VERSION "${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
+      VERSION ${PROJECT_VERSION}
       SOVERSION ${PROJECT_VERSION_MAJOR}
       DEBUG_POSTFIX "-d"
       # >> nomlib requires C++14 but GTest 10.x requires min
@@ -107,7 +107,8 @@ if(NOM_BUILD_UNIT_TEST_UNIT)
       CXX_STANDARD 17
       CXX_STANDARD_REQUIRED ON
       CXX_EXTENSION_REQUIRED OFF
-      # >> No support for building test libraries as a shared library target on WIN32
+      # >> No support for building test libraries as a shared library target
+      # >> on WIN32
       CXX_VISIBILITY_PRESET default
       VISIBILITY_INLINES_HIDDEN FALSE
   )
@@ -193,7 +194,7 @@ if(NOM_BUILD_VISUAL_UNIT_TEST_UNIT)
 
   set_target_properties(nomlib-visual-unit-test
     PROPERTIES
-      VERSION "${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
+      VERSION ${PROJECT_VERSION}
       SOVERSION ${PROJECT_VERSION_MAJOR}
       DEBUG_POSTFIX "-d"
       # >> nomlib requires C++14 but GTest 10.x requires min
@@ -201,7 +202,8 @@ if(NOM_BUILD_VISUAL_UNIT_TEST_UNIT)
       CXX_STANDARD 17
       CXX_STANDARD_REQUIRED ON
       CXX_EXTENSION_REQUIRED OFF
-      # >> No support for building test libraries as a shared library target on WIN32
+      # >> No support for building test libraries as a shared library target
+      # >> on WIN32
       CXX_VISIBILITY_PRESET default
       VISIBILITY_INLINES_HIDDEN FALSE
   )

@@ -17,6 +17,29 @@ include("${CMAKE_SOURCE_DIR}/cmake/macros.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/uninstall.cmake")
 
 include("${CMAKE_SOURCE_DIR}/cmake/AppleBuild.cmake")
+#
+## vcpkg env
+#
+
+# !! this must be set *before* the project declaration
+# defaults to a static library target
+set(VCPKG_TARGET_TRIPLET "x64-linux" CACHE STRING "")
+
+if(LINUX AND DEFINED BUILD_SHARED_LIBS)
+  set(VCPKG_TARGET_TRIPLET "x64-linux-dynamic")
+endif()
+
+if(APPLE AND DEFINED BUILD_SHARED_LIBS)
+  set(VCPKG_TARGET_TRIPLET "x64-osx-dynamic")
+endif()
+
+if(WIN32 AND DEFINED BUILD_SHARED_LIBS)
+  set(VCPKG_TARGET_TRIPLET "x64-windows-dynamic")
+endif()
+
+##
+# Project Options
+##
 
 #
 ## architecture
@@ -212,4 +235,3 @@ endif()
 if(is_top_level)
   add_subdirectory(src/packages)
 endif(is_top_level)
-

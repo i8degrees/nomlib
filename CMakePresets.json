@@ -10,9 +10,27 @@
       "generator": "Unix Makefiles",
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
+        "CMAKE_INSTALL_PREFIX": "$env{HOME}/local",
         "CMAKE_C_COMPILER": "/usr/bin/clang",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
-        "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library"
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
+      },
+      "environment": {
+        "CC": "/usr/bin/clang",
+        "CXX": "/usr/bin/clang++"
+      }
+    },
+    {
+      "name": "vcpkg",
+      "hidden": true,
+      "displayName": "vcpkg managed dependencies",
+      "description": "use vcpkg for managing dependencies",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "CMAKE_INSTALL_PREFIX": "$env{HOME}/local",
+        "CMAKE_C_COMPILER": "/usr/bin/clang",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
       },
       "environment": {
         "CC": "/usr/bin/clang",
@@ -28,9 +46,7 @@
         "CMAKE_BUILD_TYPE": "Debug",
         "DEBUG_ASSERT": "ON",
         "BUILD_EXAMPLES": "ON",
-        "BUILD_TESTS": "ON",
-        "VCPKG_TARGET_TRIPLET": "x64-linux",
-        "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library-d"
+        "BUILD_TESTS": "ON"
       },
       "environment": {
         "CC": "/usr/bin/clang",
@@ -48,9 +64,7 @@
         "DEBUG_ASSERT": "ON",
         "BUILD_EXAMPLES": "ON",
         "BUILD_TESTS": "ON",
-        "HIDE_SYMBOL_VISIBILITY": "ON",
-        "VCPKG_TARGET_TRIPLET": "x64-linux-dynamic",
-        "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library-d"
+        "HIDE_SYMBOL_VISIBILITY": "ON"
       },
       "environment": {
         "CC": "/usr/bin/clang",
@@ -67,8 +81,7 @@
         "CMAKE_BUILD_TYPE": "Release",
         "DEBUG_ASSERT": "ON",
         "BUILD_EXAMPLES": "ON",
-        "BUILD_TESTS": "OFF",
-        "VCPKG_TARGET_TRIPLET": "x64-linux"
+        "BUILD_TESTS": "OFF"
       },
       "environment": {
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
@@ -82,11 +95,11 @@
         "BUILD_SHARED_LIBS": "ON",
         "CMAKE_BUILD_TYPE": "Release",
         "DEBUG_ASSERT": "ON",
-        "BUILD_EXAMPLES": "ON",
+        "BUILD_EXAMPLES": "OFF",
         "BUILD_TESTS": "OFF",
-        "HIDE_SYMBOL_VISIBILITY": "ON",
-        "CMAKE_VERBOSE_MAKEFILE": "OFF",
-        "VCPKG_TARGET_TRIPLET": "x64-linux-dynamic"
+        "NOM_BUILD_AUDIO_UNIT": "ON",
+        "HIDE_SYMBOL_VISIBILITY": "OFF",
+        "CMAKE_VERBOSE_MAKEFILE": "ON"
       },
       "environment": {
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
@@ -103,8 +116,7 @@
         "BUILD_EXAMPLES": "ON",
         "BUILD_TESTS": "ON",
         "HIDE_SYMBOL_VISIBILITY": "ON",
-        "CMAKE_VERBOSE_MAKEFILE": "ON",
-        "VCPKG_TARGET_TRIPLET": "x64-linux-dynamic"
+        "CMAKE_VERBOSE_MAKEFILE": "ON"
       },
       "environment": {
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
@@ -121,14 +133,18 @@
         "BUILD_EXAMPLES": "ON",
         "BUILD_TESTS": "ON",
         "NOM_BUILD_AUDIO_UNIT": "ON",
-        "VCPKG_TARGET_TRIPLET": "x64-osx",
-        "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library-d",
+        "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library/Frameworks",
         "CMAKE_OSX_DEPLOYMENT_TARGET": "10.15"
       },
       "environment": {
         "CC": "/usr/bin/clang",
         "CXX": "/usr/bin/clang++",
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
       }
     },
     {
@@ -142,14 +158,18 @@
         "BUILD_EXAMPLES": "ON",
         "BUILD_TESTS": "ON",
         "NOM_BUILD_AUDIO_UNIT": "ON",
-        "VCPKG_TARGET_TRIPLET": "x64-osx-dynamic",
-        "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library-d",
+        "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library/Frameworks",
         "CMAKE_OSX_DEPLOYMENT_TARGET": "10.15"
       },
       "environment": {
         "CC": "/usr/bin/clang",
         "CXX": "/usr/bin/clang++",
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
       }
     },
     {
@@ -264,6 +284,11 @@
         "LIBROCKET_CORE_INCLUDE_DIR": "${sourceDir}/third-party/osx/librocket/include",
         "LIBROCKET_CONTROLS_INCLUDE_DIR": "${sourceDir}/third-party/osx/librocket/include",
         "LIBROCKET_DEBUGGER_INCLUDE_DIR": " ${sourceDir}/third-party/osx/librocket/include"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
       }
     }
   ],

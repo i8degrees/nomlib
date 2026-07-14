@@ -4,7 +4,7 @@ include(CMakeFindDependencyMacro)
 find_dependency(SDL2 2.32.10)
 find_dependency(SDL2_image 2.8.12)
 find_dependency(SDL2_ttf 2.24.0)
-find_dependency(libRocket 1.3.0)
+find_dependency(libRocket 1.3.0.0)
 find_dependency(OpenAL 1.25.1)
 find_dependency(SndFile 1.2.2)
 

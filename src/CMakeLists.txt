@@ -22,9 +22,11 @@ set(SDL2_BUILDING_LIBRARY true) # Do not link SDL2main; we do this explicitly
 ### Environment variables we set that influence the settings in config.hpp
 #
 
-if(SDL2_FOUND)
+if(SDL2_FOUND) # config.hpp.in vars
+  # >> Define our internal assertion macros to use SDL2 assert facilities,
+  # >> as opposed to the standard C run-time assertions handler.
   set(NOM_USE_SDL2_ASSERT FALSE)
-  set(NOM_USE_SDL2 TRUE)         # TODO: add to config.hpp.in
+  set(NOM_USE_SDL2 TRUE)
 endif()
 
 if(NOM_BUILD_GUI_UNIT)

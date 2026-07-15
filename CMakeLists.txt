@@ -2,38 +2,71 @@
 #
 # nomlib
 #
+
 cmake_minimum_required(VERSION 3.23..3.3.0)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
 list(APPEND CMAKE_TEMPLATE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates")
 
+# !!! Platform detection; the PLATFORM macros (config.hpp.in) and the cmake
+# PLATFORM env is setup here and thus must be included as early as possible
+include("${CMAKE_SOURCE_DIR}/cmake/platform.cmake")
+include("${CMAKE_SOURCE_DIR}/cmake/project_version.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake/policy.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake/functions.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake/macros.cmake")
-# Uninstall make target support, i.e.: `make uninstall`
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/uninstall.cmake")
 
-##
-# Project Options
-##
+include("${CMAKE_SOURCE_DIR}/cmake/AppleBuild.cmake")
 
-include("version.cmake") # Project version
+#
+## architecture
+#
+
+option(ARCH_32 "Build target for 32-bit CPU" OFF)
+option(ARCH_64 "Build target for 64-bit CPU" ON)
+# Reserved for future implementation
+option(AARCH_32 "Build target ARM CPU" OFF)
+option(AARCH_64 "Build target ARM64 CPU" OFF)
+option(UNIVERSAL "Build multi-arch binaries - including lib targets" OFF)
 
 # Debugging
-# >> DEBUG option is DEPRECATED - use CMAKE_BUILD_TYPE
-option(DEBUG "Build debug library targets" OFF)
-option(DEBUG_ASSERT "Build with run-time assertions enabled" OFF)
+option(DEBUG_ASSERT "Build with run-time assertion enabled" OFF)
 option(HIDE_SYMBOL_VISIBILITY "Enforce symbol visibility - see NOM_EXPORT macros" OFF)
 # Engine build configuration
 option(BUILD_SHARED_LIBS "Build dynamic library targets" OFF)
 option(BUILD_EXAMPLES "Build usage examples" OFF)
 option(BUILD_TESTS "Build unit tests" OFF)
 option(BUILD_DOCS "Build engine documentation" ON)
-# !! DEPRECATED - This option will be removed in a future release; use BUILD_EXAMPLES
-option(EXAMPLES "Build nomlib usage examples" OFF)
-# !! DEPRECATED - This option will be removed in a future release; use BUILD_TESTS
-option(NOM_BUILD_TESTS "Build unit tests" OFF)
-# !! DEPRECATED - This option will be removed in a future release; use BUILD_DOCS
-option(NOM_BUILD_DOCS "Build engine documentation" ON)
+
+#
+## DEPRECATED options handling
+#
+
+if(DEFINED UNIVERSAL)
+  message(DEPRECATION "Option 'UNIVERSAL' is deprecated. Use 'BUILD_UNIVERSAL' instead.")
+  set(BUILD_UNIVERSAL ${UNIVERSAL} CACHE BOOL "Build multi-arch binaries - including lib targets" FORCE)
+endif(DEFINED UNIVERSAL)
+
+if(DEFINED DEBUG)
+  message(DEPRECATION "Option 'DEBUG' is deprecated. Use 'CMAKE_BUILD_TYPE' instead.")
+  set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE BOOL "Enable debugging features" FORCE)
+endif(DEFINED DEBUG)
+
+if(DEFINED EXAMPLES)
+  message(DEPRECATION "Option 'EXAMPLES' is deprecated. Use 'BUILD_EXAMPLES' instead.")
+  set(BUILD_EXAMPLES ${EXAMPLES} CACHE BOOL "Build usage examples" FORCE)
+endif(DEFINED EXAMPLES)
+
+if(DEFINED NOM_BUILD_TESTS)
+  message(DEPRECATION "Option 'NOM_BUILD_TESTS' is deprecated. Use 'BUILD_TESTS' instead.")
+  set(BUILD_TESTS ${NOM_BUILD_TESTS} CACHE BOOL "Build unit tests" FORCE)
+endif(DEFINED NOM_BUILD_TESTS)
+
+if(DEFINED NOM_BUILD_DOCS)
+  message(DEPRECATION "Option 'NOM_BUILD_DOCS' is deprecated. Use 'BUILD_DOCS' instead.")
+  set(BUILD_DOCS ${NOM_BUILD_DOCS} CACHE BOOL "Build engine documentation" FORCE)
+endif(DEFINED NOM_BUILD_DOCS)
+
 #
 ## Library units
 #
@@ -41,13 +74,14 @@ option( NOM_BUILD_ACTIONS_UNIT "Animations subsystem" ON)
 option( NOM_BUILD_CORE_UNIT "Engine core" ON)
 option( NOM_BUILD_MATH_UNIT "Math utilities" ON)
 option( NOM_BUILD_FILE_UNIT "Filesystem access" ON)
-option( NOM_BUILD_AUDIO_UNIT "Audio subsystem" OFF) # TODO(JEFF): Default to ON in future release
+option( NOM_BUILD_AUDIO_UNIT "Audio subsystem" OFF)
 option( NOM_BUILD_GRAPHICS_UNIT "Graphics core" ON)
 option( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT "Build with scale2x & hqx algorithms" ON)
 option( NOM_BUILD_SYSTEM_UNIT "System unit" ON)
 option( NOM_BUILD_PTREE_UNIT "Generic container for serialization" ON)
 option( NOM_BUILD_SERIALIZERS_UNIT "Serialization for JSON, XML, HTML" ON)
 option( NOM_BUILD_GUI_UNIT "GUI subsystem" ON)
+
 #
 ## install and packaging
 #
@@ -59,24 +93,6 @@ if(DEFINED nomlib_SHARED_LIBS)
   set(BUILD_SHARED_LIBS "${nomlib_SHARED_LIBS}")
 endif()
 
-if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-  message(STATUS "Setting build type to 'Release' as none was specified.")
-  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
-  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "RelWithDebInfo" "MinSizeRel")
-endif()
-
-if(EXAMPLES)
-  set(BUILD_EXAMPLES ${EXAMPLES} "option EXAMPLES is DEPRECATED")
-endif(EXAMPLES)
-
-if(NOM_BUILD_TESTS)
-  set(BUILD_TESTS ${NOM_BUILD_TESTS} "option NOM_BUILD_EXAMPLES is DEPRECATED")
-endif(NOM_BUILD_TESTS)
-
-if(NOM_BUILD_DOCS)
-  set(BUILD_DOCS ${NOM_BUILD_DOCS} "option NOM_BUILD_DOCS is DEPRECATED")
-endif(NOM_BUILD_DOCS)
-
 # IMPORTANT(JEFF): This initializes our engine versioning variables;
 # `PROJECT_VERSION_MAJOR` & friends at `include/nomlib/version.hpp.in`
 project(nomlib
@@ -87,84 +103,24 @@ project(nomlib
   LANGUAGES CXX
 )
 
+include("${CMAKE_SOURCE_DIR}/cmake/StandardProjectSettings.cmake")
+
 # Adhere to a common hierarchy acording to the chosen platform
 include(GNUInstallDirs)
 
-# nomlib.pc.in -> nomlib.pc
-include(PkgConfig)
-
-# Platform-specific implementations & dependencies
-#
-# See also: nomlib's third-party/README.md
-include("${CMAKE_SOURCE_DIR}/vendor/CMakeLists.txt")
-
-# !!! Platform detection; the PLATFORM_WINDOWS, PLATFORM_OSX, PLATFORM_LINUX
-# env are set here and thus the inclusion of this file must be carefully
-# managed, else risk breaking everything!
-#
-# !!! Additional build target options are found here
-include("${CMAKE_SOURCE_DIR}/cmake/platform.cmake")
+# Link this "library" to use the warnings specified in CompilerWarnings.cmake.
+add_library(project_warnings INTERFACE)
+include("${CMAKE_SOURCE_DIR}/cmake/CompilerWarnings.cmake")
+# Add cmake option WARNINGS_AS_ERRORS
+set_project_warnings(project_warnings)
 
 #
-## Project-wide build settings
+## Project-wide env
 #
-
-# >> We support building nomlib as a DLL shared library on MS Windows; the
-# >> following properties ensure that all library targets built will have the
-# >> right symbol visibility in conjunction with the use of the internal
-# >> NOM_EXPORT macros that wrap the necessary __declspec(dllexport) declarations.
-# >>
-# >> HIDE_SYMBOL_VISIBILITY is an option that lets us ensure that we have exported
-# >> the necessary functions, classes and global data from our engine when building
-# >> on other platforms. This option has no effect unless the library is built as
-# >> a shared library, i.e.: BUILD_SHARED_LIBS=ON.
-if(WIN32 OR HIDE_SYMBOL_VISIBILITY)
-  if(NOT DEFINED CMAKE_CXX_VISIBILITY_PRESET AND
-    NOT DEFINED CMAKE_VISIBILITY_INLINES_HIDDEN)
-    set(CMAKE_CXX_VISIBILITY_PRESET hidden)
-    set(CMAKE_VISIBILITY_INLINES_HIDDEN YES)
-  endif()
-endif(WIN32 OR HIDE_SYMBOL_VISIBILITY)
-
-if(CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
-  set(CMAKE_VERBOSE_MAKEFILE ON)
-  if(WIN32 AND MSVC)
-    add_definitions("/D NOM_DEBUG /W4 -Wunused") # -O0
-  else(NOT WIN32 AND MSVC)
-    add_definitions("-D NOM_DEBUG -Wall -Wextra -Wunused") # -O0
-    # TODO: Enable -Wsign-conversion, -Wextra
-    # TODO: Consider enabling some of these run-time checks that clang offers,
-  endif(WIN32 AND MSVC)
-endif()
-
-if(DEBUG_ASSERT)
-  # Enable NOM_ASSERT macros
-  if(WIN32 AND MSVC)
-    add_definitions("/D NOM_DEBUG_ASSERT") # clang-cl or cl.exe
-  else(NOT WIN32 AND MSVC)
-    add_definitions("-D NOM_DEBUG_ASSERT") # clang / g++
-  endif(WIN32 AND MSVC)
-else(NOT DEBUG_ASSERT)
-  # Disable NOM_ASSERT macros
-  if(WIN32 AND MSVC)
-    add_definitions("/D NDEBUG") # clang-cl or cl.exe
-  else(NOT WIN32 AND MSVC)
-    add_definitions("-D NDEBUG") # clang / g++
-  endif(WIN32 AND MSVC)
-endif()
-
-if(BUILD_SHARED_LIBS)
-  set(LIBRARY_OUTPUT_TYPE "SHARED")
-else(NOT BUILD_SHARED_LIBS)
-  set(LIBRARY_OUTPUT_TYPE "STATIC")
-endif(BUILD_SHARED_LIBS)
-
-message(STATUS "Building nomlib as ${LIBRARY_OUTPUT_TYPE} library targets")
 
 # Public API headers base
 set(HDR_BASE "${PROJECT_SOURCE_DIR}/include/nomlib")
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
-
 # Resources path for engine examples
 set(NOMLIB_RESOURCES_DIR "${PROJECT_SOURCE_DIR}/Resources")
 set(NOMLIB_SHARED_SUPPORT_DIR "${NOMLIB_RESOURCES_DIR}/SharedSupport")
@@ -173,6 +129,23 @@ set(NOM_EXAMPLES_RESOURCES_DIR "${NOMLIB_RESOURCES_DIR}/examples")
 set(NOM_TESTS_RESOURCES_DIR "${NOMLIB_RESOURCES_DIR}/tests")
 # Files used with documentation generation
 set(PROJECT_DOXYGEN_DIR "${NOMLIB_RESOURCES_DIR}/doxygen")
+
+# Platform-specific implementations & dependencies
+#
+# See also: nomlib's third-party/README.md
+include("${CMAKE_SOURCE_DIR}/vendor/CMakeLists.txt")
+
+#
+## Project-wide build settings
+#
+
+if(BUILD_SHARED_LIBS)
+  set(LIBRARY_OUTPUT_TYPE "SHARED")
+else(NOT BUILD_SHARED_LIBS)
+  set(LIBRARY_OUTPUT_TYPE "STATIC")
+endif(BUILD_SHARED_LIBS)
+
+message(STATUS "Building nomlib as ${LIBRARY_OUTPUT_TYPE} library targets")
 
 # CMAKE_SYSTEM_PREFIX_PATH is searched to find libraries when the find_package
 # command is used.
@@ -225,9 +198,8 @@ if(BUILD_EXAMPLES)
   add_subdirectory("examples")
 endif()
 
-# NOTE: we *MUST* enable testing from the top-level build script -- that's this
-# file -- or else 'make test' breaks. (Dated 2014-04-05)
 if(BUILD_TESTS)
+  # TODO(JEFF): CTest setup goes here
   enable_testing()
   add_subdirectory("tests")
 endif()
@@ -240,3 +212,4 @@ endif()
 if(is_top_level)
   add_subdirectory(src/packages)
 endif(is_top_level)
+

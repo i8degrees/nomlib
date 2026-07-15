@@ -47,6 +47,9 @@ if(NOM_INSTALL_CMAKE_PACKAGE)
 endif(NOM_INSTALL_CMAKE_PACKAGE)
 
 if(NOM_INSTALL_PKGCONFIG_SUPPORT)
+  # nomlib.pc.in -> nomlib.pc
+  include(PkgConfig)
+
   # Install nomlib's pkg-config module so others can find us
   install(FILES
     "${CMAKE_BINARY_DIR}/nomlib.pc"

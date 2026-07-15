@@ -62,7 +62,6 @@ option(NOLOG "Disable logging" OFF)
 if(NOLOG)
   # TODO(JEFF): This needs to be implemented in config.hpp.in;
   # rewrap our logging macros
-  add_compile_definitions("NOLOG")
 endif()
 
 # Support building nomlib as a DLL shared library on MS Windows; the

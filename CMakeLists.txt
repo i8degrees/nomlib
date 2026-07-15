@@ -14,6 +14,7 @@ include("${CMAKE_SOURCE_DIR}/cmake/macros.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/uninstall.cmake")
 
 include("${CMAKE_SOURCE_DIR}/cmake/AppleBuild.cmake")
+
 #
 ## vcpkg env
 #
@@ -129,6 +130,7 @@ project(nomlib
 
 include("${CMAKE_SOURCE_DIR}/cmake/StandardProjectSettings.cmake")
 
+# Adhere to a common hierarchy acording to the chosen platform
 include(GNUInstallDirs)
 
 # Link this "library" to use the warnings specified in CompilerWarnings.cmake.
@@ -233,3 +235,4 @@ endif()
 if(is_top_level)
   add_subdirectory(src/packages)
 endif(is_top_level)
+

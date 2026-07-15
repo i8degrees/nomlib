@@ -28,8 +28,9 @@ FetchContent_MakeAvailable(googletest)
 set(LIB_SUFFIX "")
 set(GTEST_INCLUDE_DIR "${CMAKE_BINARY_DIR}/_deps/googletest-src/googletest/include" CACHE PATH "GoogleTest headers dir")
 
-if(CMAKE_BUILD_TYPE MATCHES "Debug/i")
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
   set(LIB_SUFFIX "d")
+  message(STATUS "[googletest] LIB_SUFFIX is ${LIB_SUFFIX}")
 endif()
 
 if(BUILD_SHARED_LIBS)

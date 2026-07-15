@@ -20,7 +20,14 @@ File cwd;
 struct ProgramOpts {
   std::string root_path = cwd.currentPath();
   std::string self_path;
-  std::string filename;
+  std::string input_filename = "";
+  std::string output_filename = "";
+  bool input_diag_print = true;
+  // FIXME(JEFF):...
+  bool output_overwrite_filename = true;
+  nom::SerializerOptions output_options =
+    nom::SerializerOptions::HumanFriendly;
+    //nom::SerializerOptions::Compact;
 };
 
 // NOM_EXPORT
@@ -36,19 +43,6 @@ std::vector<std::string> init_cmdline(int argc, char** argv) {
 
   return args;
 }
-namespace nom {
-
-volatile uint64 rdtsc()
-{
-  uint32 a = 0.0f;
-  uint32 d = 0.0f;
-  asm volatile
-      (".byte 0x0f, 0x31 #rdtsc\n" // edx:eax
-       :"=a"(a), "=d"(d)::);
-  return( ( (uint64) d) << 32) | (uint64) a;
-}
-
-} // namespace
 
 int main(int argc, char** argv) {
   Value json;
@@ -68,18 +62,38 @@ int main(int argc, char** argv) {
   // }
 
   ProgramOpts opts;
-  std::vector<std::string> args = init_cmdline(argc, argv);
+  std::vector<std::string> args =
+    init_cmdline(argc, argv);
 
-  if(args.size() > 1) {
+  //if(args.size() == 3) {
+  //}
+
+  // required
+  if(args.size() > 0) {
     opts.self_path = args.at(0);
-    opts.filename = args.at(1);
-    std::cout << opts.filename << endl;
   } else {
-    NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION, "A valid file path is required to continue.");
+    NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION, "There should always be one argument.");
     return(ENOENT);
   }
 
-  fp = new JsonCppDeserializer();
+  // required
+  if(args.size() > 1) {
+    opts.input_filename = args.at(1);
+    // FIXME(JEFF):check for file existence?
+    std::cout << opts.input_filename << endl;
+  } else {
+    NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION, "A valid input file path is required for reading.");
+    return(ENOENT);
+  }
+
+  // optional
+  // FIXME(JEFF):never overwrite existing files! add check
+  if(args.size() > 2) {
+    opts.output_filename = args.at(2);
+    std::cout << opts.output_filename << endl;
+  }
+
+  fp = new JsonCppDeserializer(opts.output_options);
   if(!fp) {
     NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION, "Failed to initialize deserializer. Out of memory?");
     return(ENOMEM);
@@ -99,7 +113,7 @@ int main(int argc, char** argv) {
   std::cout << nom::timestamp() << "\n\t hires_ticks: " << hires_ticks() << endl;
   auto d00 = nom::timestamp();
   NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE);
-  res = fp->load(opts.filename, json);
+  res = fp->load(opts.input_filename, json);
   NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE);
   auto d01 = nom::timestamp();
   std::cout << "d1: " << d00 << " " << "d2: " << d01;
@@ -109,11 +123,21 @@ int main(int argc, char** argv) {
     return(EIO);
   }
 
-  std::cout << json;
+  if(opts.input_diag_print == true) {
+    std::cout << json;
+  }
 
   auto d10 = nom::timestamp();
   NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE);
-  res = fpout->save(json, "testme.json");
+  if(opts.output_overwrite_filename) {
+    if(opts.output_filename != "") {
+      res = fpout->save(json, opts.output_filename);
+    }
+  } else if(opts.output_overwrite_filename == false) {
+    // FIXME(JEFF):implement opt check here; we should never overwrite existing files
+    // FIXME(JEFF):by default!
+  }
+
   auto d11 = nom::timestamp();
   NOM_LOG_TRACE(NOM_LOG_CATEGORY_TRACE);
   std::cout << "d1: " << d10 << " " << "d2: " << d11;

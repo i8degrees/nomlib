@@ -15,7 +15,7 @@ set(BUILD_SHARED_LIBS OFF)
 set(BUILD_GMOCK OFF CACHE INTERNAL "prevent cache pollution")
 set(BUILD_GTEST ON CACHE INTERNAL "prevent cache pollution")
 set(INSTALL_GTEST OFF CACHE INTERNAL "prevent cache pollution")
-set(CMAKE_BUILD_TYPE "Release" CACHE INTERNAL "prevent cache pollution")
+#set(CMAKE_BUILD_TYPE "Release" CACHE INTERNAL "prevent cache pollution")
 
 if(NOT BUILD_SHARED_LIBS)
   if(NOT CMAKE_CXX_FLAGS MATCHES "/-fPIC/")

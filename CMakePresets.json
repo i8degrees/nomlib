@@ -12,11 +12,14 @@
       "cacheVariables": {
         "CMAKE_INSTALL_PREFIX": "$env{HOME}/local",
         "CMAKE_C_COMPILER": "/usr/bin/clang",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
+        "NOM_USE_CCACHE": "ON",
+        "NOM_USE_DISTCC": "ON"
       },
       "environment": {
         "CC": "/usr/bin/clang",
-        "CXX": "/usr/bin/clang++"
+        "CXX": "/usr/bin/clang++",
+        "DISTCC_VERBOSE": "1"
       }
     },
     {
@@ -30,11 +33,14 @@
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
         "CMAKE_INSTALL_PREFIX": "$env{HOME}/local",
         "CMAKE_C_COMPILER": "/usr/bin/clang",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang++"
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
+        "NOM_USE_CCACHE": "ON",
+        "NOM_USE_DISTCC": "ON"
       },
       "environment": {
         "CC": "/usr/bin/clang",
-        "CXX": "/usr/bin/clang++"
+        "CXX": "/usr/bin/clang++",
+        "DISTCC_VERBOSE": "1"
       }
     },
     {
@@ -64,7 +70,7 @@
         "DEBUG_ASSERT": "ON",
         "BUILD_EXAMPLES": "ON",
         "BUILD_TESTS": "ON",
-        "HIDE_SYMBOL_VISIBILITY": "ON"
+        "HIDE_SYMBOL_VISIBILITY": "OFF"
       },
       "environment": {
         "CC": "/usr/bin/clang",
@@ -79,7 +85,7 @@
       "cacheVariables": {
         "BUILD_SHARED_LIBS": "OFF",
         "CMAKE_BUILD_TYPE": "Release",
-        "DEBUG_ASSERT": "ON",
+        "DEBUG_ASSERT": "OFF",
         "BUILD_EXAMPLES": "ON",
         "BUILD_TESTS": "OFF"
       },
@@ -94,12 +100,11 @@
       "cacheVariables": {
         "BUILD_SHARED_LIBS": "ON",
         "CMAKE_BUILD_TYPE": "Release",
-        "DEBUG_ASSERT": "ON",
-        "BUILD_EXAMPLES": "OFF",
+        "DEBUG_ASSERT": "OFF",
+        "BUILD_EXAMPLES": "ON",
         "BUILD_TESTS": "OFF",
         "NOM_BUILD_AUDIO_UNIT": "ON",
-        "HIDE_SYMBOL_VISIBILITY": "OFF",
-        "CMAKE_VERBOSE_MAKEFILE": "ON"
+        "HIDE_SYMBOL_VISIBILITY": "ON"
       },
       "environment": {
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"

@@ -25,15 +25,15 @@ generate_export_header(nomlib-file
     export.hpp
 )
 
-if(PLATFORM_OSX)
+if(APPLE)
   target_sources(nomlib-file
     PRIVATE
     ${CORE_SERVICES_LIBRARY}
     ${CORE_FOUNDATION_LIBRARY}
   )
-endif()
+endif(APPLE)
 
-if(NOM_PLATFORM_POSIX)
+if(UNIX)
   target_sources(nomlib-file
     PRIVATE
     # TODO: Relocate to file sub-directory
@@ -44,9 +44,9 @@ if(NOM_PLATFORM_POSIX)
       FILES
       ${HDR_BASE}/system/unix/UnixFile.hpp
   )
-endif()
+endif(UNIX)
 
-if(PLATFORM_WINDOWS)
+if(WIN32)
   target_sources(nomlib-file
     PRIVATE
     # TODO: Relocate to file sub-directory
@@ -57,7 +57,7 @@ if(PLATFORM_WINDOWS)
       FILES
       ${HDR_BASE}/system/windows/WinFile.hpp
   )
-endif()
+endif(WIN32)
 
 set_target_properties(nomlib-file
   PROPERTIES

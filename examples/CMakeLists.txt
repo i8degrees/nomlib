@@ -76,7 +76,7 @@ if(NOM_BUILD_MACROS_EXAMPLE) # nom_macros
 endif(NOM_BUILD_MACROS_EXAMPLE)
 
 # Install library dependencies into binary output directory
-if( PLATFORM_WINDOWS )
+if(WIN32 AND USE_OLD_WINDOWS_CODE)
   install(  DIRECTORY
             ${SDL2_REDIST_DIR}
             ${SDL2_IMAGE_REDIST_DIR}
@@ -92,8 +92,7 @@ if( PLATFORM_WINDOWS )
             OPTIONAL # In case end-user overrides third-party dependencies
             FILES_MATCHING PATTERN "*.dll"
   )
-
-endif ( PLATFORM_WINDOWS )
+endif()
 
 install_resource_dir( "${NOM_EXAMPLES_RESOURCES_DIR}"
                       "${EXAMPLES_INSTALL_DIR}/Resources")

@@ -101,4 +101,5 @@ install_resource_dir( "${NOM_TESTS_RESOURCES_DIR}"
                       "${EXAMPLES_INSTALL_DIR}/Resources")
 
 add_subdirectory(nom_jsonpp)
+add_subdirectory(GameOfLife)
 

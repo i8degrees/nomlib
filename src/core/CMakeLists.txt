@@ -49,7 +49,7 @@ generate_export_header(nomlib-core
 # Platform-specific implementations & dependencies
 
 # BSD, OS X && Linux
-if(NOM_PLATFORM_POSIX)
+if(UNIX)
   target_sources(nomlib-core
     PRIVATE
       ${SRC_DIR}/core/UnixConsoleOutput.cpp
@@ -59,9 +59,9 @@ if(NOM_PLATFORM_POSIX)
       FILES
       ${HDR_BASE}/core/UnixConsoleOutput.hpp
   )
-endif(NOM_PLATFORM_POSIX)
+endif(UNIX)
 
-if(PLATFORM_WINDOWS)
+if(WIN32)
   target_sources(nomlib-core
     PRIVATE
       ${SRC_DIR}/core/WindowsConsoleOutput.cpp
@@ -71,7 +71,7 @@ if(PLATFORM_WINDOWS)
       FILES
       ${HDR_BASE}/core/WindowsConsoleOutput.hpp
   )
-endif(PLATFORM_WINDOWS)
+endif(WIN32)
 
 # base unit
 target_sources(nomlib-core
@@ -151,7 +151,7 @@ set_target_properties(nomlib-core
 )
 
 # MacOSX Framework bundle support - public header files
-if(PLATFORM_OSX)
+if(APPLE)
   install(TARGETS nomlib-core
     FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-core.framework/Headers"
       COMPONENT Development
@@ -160,7 +160,7 @@ if(PLATFORM_OSX)
     FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
       COMPONENT Runtime
   )
-endif(PLATFORM_OSX)
+endif(APPLE)
 
 install(TARGETS nomlib-core
   EXPORT libtarget

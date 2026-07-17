@@ -27,7 +27,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/opt")
 # and GTest across the supported CMake project generators -- Unix Makefiles,
 # Xcode and MSVCPP. The path **must** be prepended on every unit test
 # executable created using the add_test and GTEST_ADD_TESTS commands.
-set( TESTS_INSTALL_DIR "${CMAKE_INSTALL_DATAROOTDIR}" )
+
+#set(TESTS_INSTALL_DIR "${CMAKE_INSTALL_DATAROOTDIR}")
+set(TESTS_INSTALL_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 
 # TODO: Relocate me?
 set( NOM_BUILD_UNIT_TEST_UNIT ON )
@@ -282,7 +284,7 @@ endif( NOM_BUILD_SERIALIZERS_TESTS )
 
 # Install library dependencies into tests output directory so we can always
 # execute the binaries with the proper dependency versions.
-if ( PLATFORM_WINDOWS )
+if(WIN32 AND USE_OLD_WINDOWS_CODE)
 
   if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
     set( GTEST_LIBRARY_REDIST_DLL "${GTEST_ROOT}/lib/gtestd.dll" )
@@ -305,8 +307,9 @@ if ( PLATFORM_WINDOWS )
             ${TESTS_INSTALL_DIR}
             FILES_MATCHING PATTERN "*.dll"
           )
-endif( PLATFORM_WINDOWS )
+endif(WIN32 AND USE_OLD_WINDOWS_CODE)
 
 # Resources/tests -> <out>/tests/Resources
 install_resource_dir( "${NOM_TESTS_RESOURCES_DIR}"
                       "${TESTS_INSTALL_DIR}/Resources")
+

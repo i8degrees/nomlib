@@ -102,7 +102,7 @@ if(NOM_BUILD_DOCS)
   )
 endif(NOM_BUILD_DOCS)
 
-if(PLATFORM_OSX AND FRAMEWORK AND USE_OLD_OSX_CODE)
+if(APPLE AND USE_OLD_OSX_CODE)
   # Bundle libraries we depend on in the appropriate Framework bundles
 
   if( NOM_BUILD_CORE_UNIT )
@@ -173,4 +173,5 @@ if(PLATFORM_OSX AND FRAMEWORK AND USE_OLD_OSX_CODE)
             DESTINATION "${PROJECT_NAME}.framework/Resources/SharedSupport"
             OPTIONAL
             PATTERN ".*" EXCLUDE )
-endif(PLATFORM_OSX AND FRAMEWORK AND USE_OLD_OSX_CODE)
+endif(APPLE AND USE_OLD_OSX_CODE)
+

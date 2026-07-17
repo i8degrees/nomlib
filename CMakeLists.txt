@@ -7,9 +7,6 @@ cmake_minimum_required(VERSION 3.23..3.3.0)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
 list(APPEND CMAKE_TEMPLATE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates")
 
-# !!! Platform detection; the PLATFORM macros (config.hpp.in) and the cmake
-# PLATFORM env is setup here and thus must be included as early as possible
-include("${CMAKE_SOURCE_DIR}/cmake/platform.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake/project_version.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake/policy.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake/functions.cmake")
@@ -60,6 +57,10 @@ option(BUILD_SHARED_LIBS "Build dynamic library targets" OFF)
 option(BUILD_EXAMPLES "Build usage examples" OFF)
 option(BUILD_TESTS "Build unit tests" OFF)
 option(BUILD_DOCS "Build engine documentation" ON)
+option(NOM_USE_CCACHE "Use ccache - a compiler cache for C/C++" OFF)
+# EXPERIMENTAL(JEFF): This feature is a WIP and is not yet ready for general
+# consumption. Your milage may vary.
+option(NOM_USE_DISTCC "Use distcc - a free, fast distributed C/C++ compiler" OFF)
 
 #
 ## DEPRECATED options handling
@@ -128,7 +129,6 @@ project(nomlib
 
 include("${CMAKE_SOURCE_DIR}/cmake/StandardProjectSettings.cmake")
 
-# Adhere to a common hierarchy acording to the chosen platform
 include(GNUInstallDirs)
 
 # Link this "library" to use the warnings specified in CompilerWarnings.cmake.
@@ -191,20 +191,18 @@ if(NOM_BUILD_GUI_UNIT)
 endif()
 
 if(NOM_BUILD_AUDIO_UNIT) # required dependencies
-  if(PLATFORM_OSX)
+  if(APPLE)
     find_package(OpenAL REQUIRED)
-  else(NOT PLATFORM_OSX)
+  else(NOT APPLE)
     find_package(OpenAL CONFIG REQUIRED)
-  endif(PLATFORM_OSX)
-
+  endif(APPLE)
   find_package(SndFile CONFIG REQUIRED)
 else(NOT NOM_BUILD_AUDIO_UNIT) # optional dependencies
-  if(PLATFORM_OSX)
+  if(APPLE)
     find_package(OpenAL)
-  else(NOT PLATFORM_OSX)
+  else(NOT APPLE)
     find_package(OpenAL CONFIG)
-  endif(PLATFORM_OSX)
-
+  endif(APPLE)
   find_package(SndFile CONFIG)
 endif(NOM_BUILD_AUDIO_UNIT)
 

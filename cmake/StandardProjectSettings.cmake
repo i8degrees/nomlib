@@ -43,6 +43,11 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug" OR CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo"
   message(STATUS "[NOM_DEBUG] Debugging macros and logging activated.")
 endif()
 
+#option(DEBUG "Enable debug statements and asserts" OFF)
+#if(DEBUG OR CMAKE_BUILD_TYPE STREQUAL "Debug")
+#add_compile_definitions(DEBUG APP_PROFILE)
+#endif()
+
 if(DEBUG_ASSERT)
   # Enable NOM_ASSERT macros
   add_compile_definitions("NOM_DEBUG_ASSERT")

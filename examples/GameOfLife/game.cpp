@@ -41,9 +41,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <random> // FIXME
 
 // Pubic nomlib interface headers
-#include <nomlib/math.hpp>
-#include <nomlib/system.hpp>
-#include <nomlib/graphics.hpp>
+#include "nomlib/math.hpp"
+#include "nomlib/system.hpp"
+#include "nomlib/graphics.hpp"
+
+using namespace nom;
 
 #define GAMEOFLIFE_DEBUG 0
 
@@ -75,9 +77,9 @@ const nom::sint CELL_SIZE = 16;
 /// example.
 const nom::int32 MAXIMUM_WINDOWS = 1;
 
-const std::string IMG_CREEP = APP_RESOURCES_DIR + p.native() + "creep.png";
-const std::string BG_LIGHT = APP_RESOURCES_DIR + p.native() + "bglight.png";
-const std::string BG_DARK = APP_RESOURCES_DIR + p.native() + "bgdark.png";
+const std::string IMG_CREEP = APP_RESOURCES_DIR + p.native() + "GameOfLife" + p.native() + "creep.png";
+const std::string BG_LIGHT = APP_RESOURCES_DIR + p.native() + "GameOfLife" + p.native() + "bglight.png";
+const std::string BG_DARK = APP_RESOURCES_DIR + p.native() + "GameOfLife" + p.native() + "bgdark.png";
 
 /// \brief Usage example
 class App: public nom::SDLApp
@@ -103,13 +105,13 @@ class App: public nom::SDLApp
       NOM_LOG_TRACE( NOM );
     } // end ~App
 
-    bool on_init( void )
+    bool on_init( void ) override
     {
       nom::uint32 window_flags = SDL_WINDOW_RESIZABLE;
 
       for( auto idx = 0; idx < MAXIMUM_WINDOWS; ++idx )
       {
-        if ( this->window[idx].create( APP_NAME, BOARD_SIZE, BOARD_SIZE, window_flags ) == false )
+        if ( this->window[idx].create(APP_NAME, Point2i(0,0), idx, Size2i(BOARD_SIZE, BOARD_SIZE), window_flags ) == false )
         {
           return false;
         }
@@ -120,10 +122,11 @@ class App: public nom::SDLApp
           return false;
         }
 
-        this->window_size[idx] = this->window[idx].size();
-
+        auto window_size = this->window[idx].size();
+        auto window_width = window_size.w;
+        auto window_height = window_size.h;
         // Scale window contents up by the new width & height
-        this->window[idx].set_logical_size( this->window_size[idx].x, this->window_size[idx].y );
+        this->window[idx].set_logical_size(window_size);
       }
 
       if( this->creep.load( IMG_CREEP ) == false )
@@ -144,12 +147,14 @@ class App: public nom::SDLApp
         return false;
       }
 
+      SDLApp::set_event_handler(this->evt_handler);
+
       this->spawn();
 
       return true;
     } // end on_init
 
-    void on_update( float )
+    void on_update( float ) override
     {
       // Rules:
       // 1. Any live cell with fewer than two live neighbours dies, as if caused by under-population.
@@ -224,7 +229,26 @@ class App: public nom::SDLApp
       }
     }
 
-    nom::sint Run( void )
+    /// \brief The default event handler for input events.
+    void on_input_event(const nom::Event& ev) override
+    {
+      switch(ev.type)
+      {
+        default: break;
+
+        case nom::Event::KEY_PRESS:
+        {
+          // this->on_key_down(ev);
+        } break;
+
+        case nom::Event::MOUSE_WHEEL:
+        {
+          // this->on_mouse_wheel(ev);
+        } break;
+      } // end switch key
+    } // onKeyDown
+
+    nom::sint Run( void ) override
     {
       for( auto idx = 0; idx < MAXIMUM_WINDOWS; ++idx )
       {
@@ -232,15 +256,17 @@ class App: public nom::SDLApp
         this->fps[idx].start();
       }
 
+      //while( this->evt_handler.poll_event(evt) == true ) {}
+
       // 1. Events
       // 2. Logic
       // 3. Render
       while( this->running() == true )
       {
-        while( this->poll_event( &this->event ) )
-        {
-          this->on_event( &this->event );
-        }
+        // while( this->evt_handler.poll_event(evt) == true ) {
+          // NOTE: Pending events will be handled by the event listeners that
+          // were given an EventHandler object via ::set_event_handler.
+        // }
 
         for( auto idx = 0; idx < MAXIMUM_WINDOWS; ++idx )
         {
@@ -268,7 +294,7 @@ class App: public nom::SDLApp
         this->window[0].fill( nom::Color4i::Black );
         this->on_draw( this->window[0] );
 
-        nom::sleep( 500 ); // wait .5 seconds
+        // nom::sleep( 500 ); // wait .5 seconds
 
       } // end while SDLApp::running() is true
 
@@ -386,6 +412,8 @@ class App: public nom::SDLApp
     nom::Texture creep;
     nom::Texture bg_light;
     nom::Texture bg_dark;
+
+    nom::EventHandler evt_handler;
 }; // end class App
 
 nom::sint main( nom::int32 argc, char* argv[] )

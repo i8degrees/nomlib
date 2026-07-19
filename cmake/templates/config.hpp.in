@@ -47,7 +47,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOM_FILE \
   ( strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__ )
 
-/// \brief See also: cmake/platform.cmake
+/// \brief See src/CMakeLists.txt
+#cmakedefine NOM_USE_SDL2 @NOM_USE_SDL2@
+
+/// \brief See src/CMakeLists.txt
 #cmakedefine NOM_USE_SDL2_ASSERT @NOM_USE_SDL2_ASSERT@
 
 // Include SDL2's enhanced assert facility if enabled, otherwise fall-back to

@@ -68,7 +68,7 @@ const std::string APP_NAME = "GameOfLife";
 /// \brief Length and width for the square viewing area
 ///
 /// \remarks WINDOW_WIDTH & WINDOW_HEIGHT
-const nom::int32 BOARD_SIZE = 800;
+const nom::int32 BOARD_SIZE = 2048;
 
 /// \brief length and width (in pixels) for the square cells
 const nom::sint CELL_SIZE = 16;
@@ -109,25 +109,22 @@ class App: public nom::SDLApp
     {
       nom::uint32 window_flags = SDL_WINDOW_RESIZABLE;
 
-      for( auto idx = 0; idx < MAXIMUM_WINDOWS; ++idx )
-      {
-        if ( this->window[idx].create(APP_NAME, Point2i(0,0), idx, Size2i(BOARD_SIZE, BOARD_SIZE), window_flags ) == false )
-        {
-          return false;
-        }
-
-        if( this->window[idx].set_window_icon( RESOURCE_ICON ) == false )
-        {
-          nom::DialogMessageBox( APP_NAME, "ERROR: Could not load window icon: " + RESOURCE_ICON );
-          return false;
-        }
-
-        auto window_size = this->window[idx].size();
-        auto window_width = window_size.w;
-        auto window_height = window_size.h;
-        // Scale window contents up by the new width & height
-        this->window[idx].set_logical_size(window_size);
+      if(this->window.create(APP_NAME,
+        Point2i(0,0), 0, 
+        Size2i(BOARD_SIZE, BOARD_SIZE), window_flags) == false) {
+        return false;
       }
+
+      if(this->window.set_window_icon(RESOURCE_ICON) == false) {
+        nom::DialogMessageBox( APP_NAME, "ERROR: Could not load window icon: " + RESOURCE_ICON );
+        return false;
+      }
+
+      auto window_size = this->window.size();
+      auto window_width = window_size.w;
+      auto window_height = window_size.h;
+      // Scale window contents up by the new width & height
+      this->window.set_logical_size(window_size);
 
       if( this->creep.load( IMG_CREEP ) == false )
       {
@@ -238,23 +235,21 @@ class App: public nom::SDLApp
 
         case nom::Event::KEY_PRESS:
         {
-          // this->on_key_down(ev);
+          this->on_key_down(ev);
+          spawn();
         } break;
 
         case nom::Event::MOUSE_WHEEL:
         {
-          // this->on_mouse_wheel(ev);
+          this->on_mouse_wheel(ev);
         } break;
       } // end switch key
     } // onKeyDown
 
-    nom::sint Run( void ) override
+    nom::sint Run(void) override
     {
-      for( auto idx = 0; idx < MAXIMUM_WINDOWS; ++idx )
-      {
-        this->fps_update[idx].start();
-        this->fps[idx].start();
-      }
+      this->fps_update.start();
+      this->fps.start();
 
       //while( this->evt_handler.poll_event(evt) == true ) {}
 
@@ -263,36 +258,31 @@ class App: public nom::SDLApp
       // 3. Render
       while( this->running() == true )
       {
+        nom::Event evt;
+        while( this->evt_handler.poll_event(evt) == true ) {}
         // while( this->evt_handler.poll_event(evt) == true ) {
           // NOTE: Pending events will be handled by the event listeners that
           // were given an EventHandler object via ::set_event_handler.
         // }
 
-        for( auto idx = 0; idx < MAXIMUM_WINDOWS; ++idx )
-        {
-          this->window[idx].update();
-          this->fps[idx].update();
+        this->window.update();
+        this->fps.update();
 
-          // Refresh the frames per second at 1 second intervals
-          if ( this->fps_update[idx].ticks() > 1000 )
-          {
-            if ( this->show_fps() == true )
-            {
-              this->window[idx].set_window_title( APP_NAME + " - " + this->fps[idx].asString() + ' ' + "fps" );
-            }
-            else
-            {
-              this->window[idx].set_window_title( APP_NAME + " [" + std::to_string(this->window[idx].window_id()) + "]" + " - " + "Display" + ' ' + std::to_string ( this->window[idx].window_display_id() ) );
-            }
+        // Refresh the frames per second at 1 second intervals
+        if (this->fps_update.ticks() > 1000) {
+          if(this->show_fps() == true) {
+            this->window.set_window_title( APP_NAME + " - " + this->fps.asString() + ' ' + "fps" );
+          }
+          else {
+            this->window.set_window_title( APP_NAME + " [" + std::to_string(this->window.window_id()) + "]" + " - " + "Display" + ' ' + std::to_string ( this->window.window_display_id() ) );
+          }
 
-            this->fps_update[idx].restart();
-          } // end refresh cycle
-        } // end for MAXIMUM_WINDOWS update loop
+          this->fps_update.restart();
+        } // end refresh cycle
 
-        this->on_update( nom::ticks() );
-
-        this->window[0].fill( nom::Color4i::Black );
-        this->on_draw( this->window[0] );
+        this->on_update(nom::ticks());
+        this->window.fill(nom::Color4i::Black);
+        this->on_draw(this->window);
 
         // nom::sleep( 500 ); // wait .5 seconds
 
@@ -307,7 +297,7 @@ class App: public nom::SDLApp
     /// \remarks Implements nom::Input::on_key_down
     void on_key_down( const nom::Event& ev )
     {
-      switch( ev.key.sym )
+      switch(ev.key.sym)
       {
         default: break;
 
@@ -331,28 +321,27 @@ class App: public nom::SDLApp
 
         case SDLK_F1:
         {
-          if( this->window[ev.key.window_id - 1].window_id() == ev.key.window_id )
-          {
-            if( this->window[ev.key.window_id - 1].save_screenshot( OUTPUT_SCREENSHOT_FILENAME ) == false )
-            {
-              nom::DialogMessageBox( APP_NAME, "ERROR: Could not save screen-shot");
-              break;
-            } // end save_screenshot err check
-          } // end window_id check
-          break;
-        }
+          if( this->window.save_screenshot(OUTPUT_SCREENSHOT_FILENAME) == false) {
+            nom::DialogMessageBox( APP_NAME, "ERROR: Could not save screen-shot");
+          } // end save_screenshot err check
+        } break;
 
         // Toggle full-screen
         case SDLK_f:
         {
-          if ( this->window[ev.key.window_id - 1].window_id() == ev.key.window_id )
-          {
-            this->window[ev.key.window_id - 1].toggle_fullscreen();
-          } // end window_id match
-          break;
-        } // end SDLK_f
+          this->window.toggle_fullscreen();
+        } break; // end SDLK_f
       } // end switch key
     } // end on_key_down
+
+    void on_mouse_wheel(const nom::Event& ev)
+    {
+      if(ev.wheel.y > 0) {
+        // Up move
+      } else if(ev.wheel.y < 0) {
+        // Down move
+      }
+    }
 
     void spawn()
     {
@@ -399,15 +388,16 @@ class App: public nom::SDLApp
     /// \brief Window handles
     ///
     /// \TODO Use std::vector?
-    nom::RenderWindow window[MAXIMUM_WINDOWS];
+    //nom::RenderWindow window[MAXIMUM_WINDOWS];
+    nom::RenderWindow window;
 
-    nom::Point2i window_size[MAXIMUM_WINDOWS];
+    nom::Point2i window_size;
 
     /// \brief Interval at which we refresh the frames per second counter
-    nom::Timer fps_update[MAXIMUM_WINDOWS];
+    nom::Timer fps_update;
 
     /// \brief Timer for tracking frames per second
-    nom::FPS fps[MAXIMUM_WINDOWS];
+    nom::FPS fps;
 
     nom::Texture creep;
     nom::Texture bg_light;

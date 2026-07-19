@@ -128,5 +128,3 @@ endif ( PLATFORM_WINDOWS AND ARCH_32 )
 # nomlib.pc.in -> nomlib.pc
 include(PkgConfig)
 
-message ( STATUS "Platform Architecture: ${PLATFORM_ARCH}" )
-

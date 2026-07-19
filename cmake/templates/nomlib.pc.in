@@ -17,3 +17,4 @@ Libs.private: -lmp3lame
 
 Cflags: -I${includedir}
 Libs: -L${libdir} @PROJECT_LIBS@
+

@@ -38,7 +38,7 @@
       "name": "sdl2",
       "version>=": "2.0.4",
       "default-features": false,
-      "features": ["x11"],
+      "features": ["wayland"],
       "platform": "!osx & !windows"
     },
     {

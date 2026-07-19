@@ -65,7 +65,7 @@ if(NOM_BUILD_AUDIO_UNIT)
       ${HDR_BASE}/audio/libsndfile/SoundFileWriter.hpp
     )
     # ...Mac OS X specific OpenAL implementation details...
-    if(PLATFORM_OSX OR NOM_USE_APPLE_OPENAL)
+    if(APPLE OR DEFINED NOM_USE_APPLE_OPENAL)
       target_sources(nomlib-audio
         PRIVATE
         ${SRC_DIR}/audio/AL/osx/apple_extensions.cpp
@@ -75,7 +75,7 @@ if(NOM_BUILD_AUDIO_UNIT)
           FILES
           ${HDR_BASE}/audio/AL/osx/apple_extensions.hpp
       )
-    endif(PLATFORM_OSX OR NOM_USE_APPLE_OPENAL)
+    endif()
 endif(NOM_BUILD_AUDIO_UNIT)
 
 # This is embedded as the SONAME in the library's ELF header and determinnes
@@ -148,7 +148,7 @@ set_target_properties(nomlib-audio
 )
 
 # MacOSX Framework bundle support - public header files
-if(PLATFORM_OSX)
+if(APPLE)
   install(TARGETS nomlib-audio
     FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
       COMPONENT Runtime
@@ -157,7 +157,7 @@ if(PLATFORM_OSX)
     FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-audio.framework/Headers/audio"
       COMPONENT Development
   )
-endif(PLATFORM_OSX)
+endif(APPLE)
 
 install(TARGETS nomlib-audio
   EXPORT libtarget

@@ -67,11 +67,10 @@ add_custom_command(TARGET nom_sfx
 )
 
 # For distribution:
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/Resources/examples/audio
-  DESTINATION
-  ${CMAKE_INSTALL_DATADIR}/nomlib/Resources # <prefix/share>/nomlib/Resources
-  COMPONENT Examples
-)
+#install(DIRECTORY ${PROJECT_SOURCE_DIR}/Resources/tests/audio
+#DESTINATION
+#${CMAKE_INSTALL_DATADIR}/nomlib/Resources # <prefix/share>/nomlib/Resources
+#COMPONENT Examples
+#)
 
-# install_resource_file(${STATIC_ASSET_CONFIG}
-                      # "${EXAMPLES_INSTALL_DIR}")
+#install_resource_file("${STATIC_ASSET_CONFIG}" "${EXAMPLES_INSTALL_DIR}")

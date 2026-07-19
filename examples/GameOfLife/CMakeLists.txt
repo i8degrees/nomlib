@@ -17,6 +17,8 @@ set_target_properties(nom_GameOfLife
 target_include_directories(nom_GameOfLife
   PUBLIC
   ${PROJECT_SOURCE_DIR}/include # include/nomlib
+  PRIVATE
+  ${SDL2_INCLUDE_DIR}
 )
 
 target_sources(nom_GameOfLife

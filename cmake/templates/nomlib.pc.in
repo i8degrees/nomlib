@@ -11,17 +11,9 @@ includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
 Name: @PROJECT_NAME@
 Description: @PROJECT_DESC@
 Version: @PROJECT_VERSION@
-<<<<<<< HEAD
 Requires:
 Requires.private: @PROJECT_DEPS@
 Libs.private: -lmp3lame
 
 Cflags: -I${includedir}
 Libs: -L${libdir} @LIBS@
-=======
-Requires: @PROJECT_DEPS@
-Requires.private: @PROJECT_DEPS_PRIVATE@
-
-Cflags: -F/home/jeff/Projects/nomlib.git/third-party -I${includedir}
-Libs: -L${libdir} -l@PROJECT_NAME@-actions -l@PROJECT_NAME@-core -l@PROJECT_NAME@-file -l@PROJECT_NAME@-graphics -l@PROJECT_NAME@-gui -l@PROJECT_NAME@-math -l@PROJECT_NAME@-ptree -l@PROJECT_NAME@-serializers -l@PROJECT_NAME@-system
->>>>>>> 88b3d38b (project admin chores)

@@ -130,5 +130,6 @@ elseif ( PLATFORM_WINDOWS AND ARCH_64 )
   set ( PLATFORM_ARCH "x64" )
 endif ( PLATFORM_WINDOWS AND ARCH_32 )
 
-message(STATUS "Target architectures: ${PLATFORM_ARCH}")
-message(STATUS "Generating CMake project files with ${CMAKE_GENERATOR}")
+# nomlib.pc.in -> nomlib.pc
+include(PkgConfig)
+

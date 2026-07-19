@@ -2,7 +2,7 @@
 #
 # This file needs to be included before calling `project`.
 
-if(APPLE AND "${CMAKE_GENERATOR}" STREQUAL "Xcode")
+if(APPLE)
   # This variable influences the system header files version we build against,
   # which in turn determines the **minimum** version of OS X this build will
   # be binary compatible with (run on).
@@ -45,5 +45,8 @@ if(APPLE AND "${CMAKE_GENERATOR}" STREQUAL "Xcode")
     set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
   endif(BUILD_UNIVERSAL)
 
-endif(APPLE AND "${CMAKE_GENERATOR}" STREQUAL "Xcode")
+  if(APPLE AND "${CMAKE_GENERATOR}" STREQUAL "Xcode")
+    # TODO(JEFF): Reserved for future impl
+  endif()
+endif()
 

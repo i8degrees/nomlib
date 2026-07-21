@@ -18,9 +18,6 @@ set_target_properties(nomlib-system
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     DEBUG_POSTFIX "-d"
-    CXX_STANDARD 14
-    CXX_STANDARD_REQUIRED ON
-    CXX_EXTENSION_REQUIRED OFF
 )
 
 if(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
@@ -110,15 +107,21 @@ target_include_directories(nomlib-system
   #${TCLAP_INCLUDE_DIR}
 )
 
+target_compile_features(nomlib-system
+  PRIVATE
+    cxx_std_14
+)
+
 target_link_libraries(nomlib-system
   PUBLIC
-  nomlib-core
-  nomlib-file
-  nomlib-math
+    nomlib-core
+    nomlib-file
+    nomlib-math
   PRIVATE
-  $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
-  $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
-  $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
+    project_warnings
+    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+    $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
+    $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
 )
 
 # MacOSX Framework bundle support

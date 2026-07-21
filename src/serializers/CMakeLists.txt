@@ -20,9 +20,6 @@ set_target_properties(nomlib-serializers
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     DEBUG_POSTFIX "-d"
-    CXX_STANDARD 14
-    CXX_STANDARD_REQUIRED ON
-    CXX_EXTENSION_REQUIRED OFF
 )
 
 if(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
@@ -85,13 +82,20 @@ target_include_directories(nomlib-serializers
   ${RAPIDXML_INCLUDE_DIR} # RapidXML v1.x - headers only
 )
 
+target_compile_features(nomlib-serializers
+  PRIVATE
+    cxx_std_14
+)
+
 target_link_libraries(nomlib-serializers
   PUBLIC
-  nomlib-core
-  nomlib-file
-  nomlib-ptree
-  # FIXME: Once nomlib-file is a complete library target, we can remove this dep!
-  nomlib-system
+    nomlib-core
+    nomlib-file
+    nomlib-ptree
+    # FIXME: Once nomlib-file is a complete library target, we can remove this dep!
+    nomlib-system
+  PRIVATE
+    project_warnings
 )
 
 # MacOSX Framework bundle support

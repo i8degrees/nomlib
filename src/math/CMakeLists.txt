@@ -20,9 +20,6 @@ set_target_properties(nomlib-math
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     DEBUG_POSTFIX "-d"
-    CXX_STANDARD 14
-    CXX_STANDARD_REQUIRED ON
-    CXX_EXTENSION_REQUIRED OFF
 )
 
 if(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
@@ -70,9 +67,16 @@ target_include_directories(nomlib-math
   ${SDL2_INCLUDE_DIR} # FIXME
 )
 
+target_compile_features(nomlib-math
+  PRIVATE
+    cxx_std_14
+)
+
 target_link_libraries(nomlib-math
   PUBLIC
-  nomlib-core
+    nomlib-core
+  PRIVATE
+    project_warnings
 )
 
 # MacOSX Framework bundle support

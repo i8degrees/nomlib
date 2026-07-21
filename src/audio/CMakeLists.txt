@@ -88,9 +88,6 @@ set_target_properties(nomlib-audio
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     DEBUG_POSTFIX "-d"
-    CXX_STANDARD 14
-    CXX_STANDARD_REQUIRED ON
-    CXX_EXTENSION_REQUIRED OFF
 )
 
 if(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
@@ -115,6 +112,11 @@ target_include_directories(nomlib-audio
   ${LIBSNDFILE_INCLUDE_DIR}
 )
 
+target_compile_features(nomlib-audio
+  PRIVATE
+    cxx_std_14
+)
+
 # Common dependencies on all platforms
 target_link_libraries(nomlib-audio
   PUBLIC
@@ -122,8 +124,9 @@ target_link_libraries(nomlib-audio
   nomlib-math
   nomlib-system
   PRIVATE
-  OpenAL::OpenAL
-  SndFile::sndfile
+    project_warnings
+    OpenAL::OpenAL
+    SndFile::sndfile
 )
 
 # MacOSX Framework bundle support

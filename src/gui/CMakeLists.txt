@@ -27,9 +27,6 @@ set_target_properties(nomlib-gui
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     DEBUG_POSTFIX "-d"
-    CXX_STANDARD 14
-    CXX_STANDARD_REQUIRED ON
-    CXX_EXTENSION_REQUIRED OFF
 )
 
 if(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
@@ -121,16 +118,22 @@ target_include_directories(nomlib-gui
   ${OPENGL_INCLUDE_DIR}
 )
 
+target_compile_features(nomlib-gui
+  PRIVATE
+    cxx_std_14
+)
+
 target_link_libraries(nomlib-gui
   PUBLIC
-  nomlib-graphics
+    nomlib-graphics
   PRIVATE
-  OpenGL::GL
-  $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
-  $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
-  $<IF:$<TARGET_EXISTS:RocketCore>,RocketCore,RocketCore-static>
-  $<IF:$<TARGET_EXISTS:RocketControls>,RocketControls,RocketControls-static>
-  $<IF:$<TARGET_EXISTS:RocketDebugger>,RocketDebugger,RocketDebugger-static>
+    project_warnings
+    OpenGL::GL
+    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+    $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
+    $<IF:$<TARGET_EXISTS:RocketCore>,RocketCore,RocketCore-static>
+    $<IF:$<TARGET_EXISTS:RocketControls>,RocketControls,RocketControls-static>
+    $<IF:$<TARGET_EXISTS:RocketDebugger>,RocketDebugger,RocketDebugger-static>
 )
 
 # MacOSX Framework bundle support

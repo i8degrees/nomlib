@@ -1,7 +1,7 @@
 # cmake/StandardProjectSettings.cmake:jeff
 #
 
-if(DEFINED NOM_USE_CCACHE)
+if(NOM_USE_CCACHE)
   find_program(CCACHE ccache)
   if(CCACHE)
     message(STATUS "Using ccache")
@@ -12,7 +12,7 @@ if(DEFINED NOM_USE_CCACHE)
 endif()
 
 # EXPERIMENTAL(JEFF): This is a WIP and not ready for general consumption.
-if(DEFINED NOM_USE_DISTCC)
+if(NOM_USE_DISTCC)
   find_program(DISTCC distcc)
   if(DISTCC)
     message(STATUS "Using distcc")

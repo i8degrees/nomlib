@@ -4,13 +4,13 @@
 
 # Platform-specific implementations & dependencies
 
-if(PLATFORM_OSX)
+if(APPLE)
   find_library(CORE_SERVICES_LIBRARY CoreServices REQUIRED)
   mark_as_advanced(CORE_SERVICES_LIBRARY)
 
   find_library(CORE_FOUNDATION_LIBRARY CoreFoundation REQUIRED)
   mark_as_advanced(CORE_FOUNDATION_LIBRARY)
-endif(PLATFORM_OSX)
+endif(APPLE)
 
 # Add and link the library
 add_library(nomlib-file
@@ -135,7 +135,7 @@ set_target_properties(nomlib-file
 )
 
 # MacOSX framework bundle support - public header files
-if(PLATFORM_OSX)
+if(APPLE)
   install(TARGETS nomlib-file
     FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
       COMPONENT Runtime
@@ -144,7 +144,7 @@ if(PLATFORM_OSX)
     FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-file.framework/Headers/file"
       COMPONENT Development
   )
-endif(PLATFORM_OSX)
+endif(APPLE)
 
 install(TARGETS nomlib-file
   EXPORT libtarget

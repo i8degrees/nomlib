@@ -97,7 +97,7 @@ set_target_properties(nomlib-ptree
 )
 
 # MacOSX Framework bundle support - public header files
-if(PLATFORM_OSX)
+if(APPLE)
   install(TARGETS nomlib-ptree
     FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-ptree.framework/Headers"
       COMPONENT Development
@@ -106,7 +106,7 @@ if(PLATFORM_OSX)
     FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
       COMPONENT Runtime
   )
-endif(PLATFORM_OSX)
+endif(APPLE)
 
 install(TARGETS nomlib-ptree
   EXPORT libtarget

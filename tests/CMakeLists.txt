@@ -99,16 +99,16 @@ if(NOM_BUILD_UNIT_TEST_UNIT)
     ${TCLAP_INCLUDE_DIR}
   )
 
+  target_compile_features(nomlib-unit-test
+    PRIVATE
+      cxx_std_17
+  )
+
   set_target_properties(nomlib-unit-test
     PROPERTIES
       VERSION ${PROJECT_VERSION}
       SOVERSION ${PROJECT_VERSION_MAJOR}
       DEBUG_POSTFIX "-d"
-      # >> nomlib requires C++14 but GTest 10.x requires min
-      # >> of C++17
-      CXX_STANDARD 17
-      CXX_STANDARD_REQUIRED ON
-      CXX_EXTENSION_REQUIRED OFF
       # >> No support for building test libraries as a shared library target
       # >> on WIN32
       CXX_VISIBILITY_PRESET default
@@ -129,17 +129,24 @@ if(NOM_BUILD_UNIT_TEST_UNIT)
     )
   endif(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
 
+  # >> nomlib requires C++14 but GTest 10.x requires min of C++17
+  target_compile_features(nomlib-unit-test
+    PRIVATE
+      cxx_std_17
+  )
+
   # >> Link nomlib-unit-test to GTest
   target_link_libraries(nomlib-unit-test
     PUBLIC
-    nomlib-core
-    nomlib-file
-    # !! This library target can be removed once nomlib-file becomes a proper
-    # !! library target?
-    nomlib-system
+      nomlib-core
+      nomlib-file
+      # !! This library target can be removed once nomlib-file becomes a proper
+      # !! library target?
+      nomlib-system
     PRIVATE
-    Threads::Threads
-    ${GTEST_LIBRARY}
+      project_warnings
+      Threads::Threads
+      ${GTEST_LIBRARY}
   )
 endif(NOM_BUILD_UNIT_TEST_UNIT)
 
@@ -199,11 +206,6 @@ if(NOM_BUILD_VISUAL_UNIT_TEST_UNIT)
       VERSION ${PROJECT_VERSION}
       SOVERSION ${PROJECT_VERSION_MAJOR}
       DEBUG_POSTFIX "-d"
-      # >> nomlib requires C++14 but GTest 10.x requires min
-      # >> of C++17
-      CXX_STANDARD 17
-      CXX_STANDARD_REQUIRED ON
-      CXX_EXTENSION_REQUIRED OFF
       # >> No support for building test libraries as a shared library target
       # >> on WIN32
       CXX_VISIBILITY_PRESET default
@@ -224,17 +226,24 @@ if(NOM_BUILD_VISUAL_UNIT_TEST_UNIT)
     )
   endif(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
 
+  # >> nomlib requires C++14 but GTest 10.x requires min of C++17
+  target_compile_features(nomlib-visual-unit-test
+    PRIVATE
+      cxx_std_17
+  )
+
   target_link_libraries(nomlib-visual-unit-test
     PUBLIC
-    nomlib-core
-    nomlib-math
-    nomlib-graphics
-    nomlib-ptree
-    nomlib-serializers
-    nomlib-unit-test
+      nomlib-core
+      nomlib-math
+      nomlib-graphics
+      nomlib-ptree
+      nomlib-serializers
+      nomlib-unit-test
     PRIVATE
-    Threads::Threads
-    ${GTEST_LIBRARY}
+      project_warnings
+      Threads::Threads
+      ${GTEST_LIBRARY}
   )
 endif(NOM_BUILD_VISUAL_UNIT_TEST_UNIT)
 

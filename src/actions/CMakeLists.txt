@@ -18,9 +18,6 @@ set_target_properties(nomlib-actions
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     DEBUG_POSTFIX "-d"
-    CXX_STANDARD 14
-    CXX_STANDARD_REQUIRED ON
-    CXX_EXTENSION_REQUIRED OFF
 )
 
 # TODO(JEFF): Add debug compile flags when configuration uses debug flag
@@ -141,11 +138,18 @@ if(NOM_BUILD_AUDIO_UNIT)
   )
 endif(NOM_BUILD_AUDIO_UNIT)
 
+target_compile_features(nomlib-actions
+  PRIVATE
+    cxx_std_14
+)
+
 # Common internal dependencies for actions
 target_link_libraries(nomlib-actions
   PUBLIC
-  nomlib-core
-  nomlib-math
+    nomlib-core
+    nomlib-math
+  PRIVATE
+    project_warnings
 )
 
 # MacOSX Framework bundle support

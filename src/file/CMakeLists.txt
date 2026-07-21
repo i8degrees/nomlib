@@ -64,9 +64,6 @@ set_target_properties(nomlib-file
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     DEBUG_POSTFIX "-d"
-    CXX_STANDARD 14
-    CXX_STANDARD_REQUIRED ON
-    CXX_EXTENSION_REQUIRED OFF
 )
 
 if(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
@@ -110,9 +107,16 @@ target_include_directories(nomlib-file
   ${SDL2_INCLUDE_DIR}
 )
 
+target_compile_features(nomlib-file
+  PRIVATE
+    cxx_std_14
+)
+
 target_link_libraries(nomlib-file
   PUBLIC
-  nomlib-core
+    nomlib-core
+  PRIVATE
+    project_warnings
 )
 
 # MacOSX Framework bundle support

@@ -97,7 +97,7 @@ set_target_properties(nomlib-math
 )
 
 # MacOSX Framework bundle support - public header files
-if(PLATFORM_OSX)
+if(APPLE)
   install(TARGETS nomlib-math
     FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
       COMPONENT Runtime
@@ -106,7 +106,7 @@ if(PLATFORM_OSX)
     FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-math.framework/Headers/math"
       COMPONENT Development
   )
-endif(PLATFORM_OSX)
+endif(APPLE)
 
 install(TARGETS nomlib-math
   EXPORT libtarget

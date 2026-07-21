@@ -11,6 +11,10 @@ set_target_properties(nom_jsonpp
   PROPERTIES
     INSTALL_RPATH "$ORIGIN/../lib"
     INSTALL_RPATH_USE_LINK_PATH TRUE
+    XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO"
+    XCODE_ATTRIBUTE_CODE_SIGN_STYLE "Manual"
+    XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "Developer ID Application"
+    XCODE_ATTRIBUTE_DEVELOPMENT_TEAM "YOUR_TEAM_ID"
 )
 
 target_include_directories(nom_jsonpp

@@ -13,8 +13,8 @@
         "CMAKE_INSTALL_PREFIX": "$env{HOME}/local",
         "CMAKE_C_COMPILER": "/usr/bin/clang",
         "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
-        "NOM_USE_CCACHE": "ON",
-        "NOM_USE_DISTCC": "ON"
+        "NOM_USE_CCACHE": "OFF",
+        "NOM_USE_DISTCC": "OFF"
       },
       "environment": {
         "CC": "/usr/bin/clang",
@@ -34,8 +34,8 @@
         "CMAKE_INSTALL_PREFIX": "$env{HOME}/local",
         "CMAKE_C_COMPILER": "/usr/bin/clang",
         "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
-        "NOM_USE_CCACHE": "ON",
-        "NOM_USE_DISTCC": "ON"
+        "NOM_USE_CCACHE": "OFF",
+        "NOM_USE_DISTCC": "OFF"
       },
       "environment": {
         "CC": "/usr/bin/clang",

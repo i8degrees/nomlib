@@ -3,7 +3,10 @@
 # nomlib
 #
 
-cmake_minimum_required(VERSION 3.23..3.3.0)
+# WARNING(JEFF): CMake v4.4.x is known to break MacOSX builds -- the
+# framework bundles no longer accept our headers as they are specified. No
+# known workaround.
+cmake_minimum_required(VERSION 3.24...4.2.3)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
 list(APPEND CMAKE_TEMPLATE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates")
 

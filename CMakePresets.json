@@ -139,7 +139,8 @@
         "BUILD_TESTS": "ON",
         "NOM_BUILD_AUDIO_UNIT": "ON",
         "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library/Frameworks",
-        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.15"
+        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.15",
+        "CMAKE_OSX_ARCHITECTURES": "x86_64"
       },
       "environment": {
         "CC": "/usr/bin/clang",
@@ -164,7 +165,8 @@
         "BUILD_TESTS": "ON",
         "NOM_BUILD_AUDIO_UNIT": "ON",
         "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library/Frameworks",
-        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.15"
+        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.15",
+        "CMAKE_OSX_ARCHITECTURES": "x86_64"
       },
       "environment": {
         "CC": "/usr/bin/clang",
@@ -272,7 +274,8 @@
         "FRAMEWORK": "OFF",
         "BUILD_TESTS": "OFF",
         "NOMLIB_DEPS_DIR": "${sourceDir}/third-party/macos",
-        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.9"
+        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.9",
+        "CMAKE_OSX_ARCHITECTURES": "x86_64"
       },
       "environment": {
         "SDL2_LIBRARY": "${sourceDir}/third-party/osx/SDL2.framework/Versions/A/SDL2",

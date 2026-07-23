@@ -50,7 +50,6 @@ option(ARCH_64 "Build target for 64-bit CPU" ON)
 # Reserved for future implementation
 option(AARCH_32 "Build target ARM CPU" OFF)
 option(AARCH_64 "Build target ARM64 CPU" OFF)
-option(UNIVERSAL "Build multi-arch binaries - including lib targets" OFF)
 
 # Debugging
 option(DEBUG_ASSERT "Build with run-time assertion enabled" OFF)
@@ -70,8 +69,7 @@ option(NOM_USE_DISTCC "Use distcc - a free, fast distributed C/C++ compiler" OFF
 #
 
 if(DEFINED UNIVERSAL)
-  message(DEPRECATION "Option 'UNIVERSAL' is deprecated. Use 'BUILD_UNIVERSAL' instead.")
-  set(BUILD_UNIVERSAL ${UNIVERSAL} CACHE BOOL "Build multi-arch binaries - including lib targets" FORCE)
+  message(DEPRECATION "Option 'UNIVERSAL' is deprecated. Use 'CMAKE_OSX_ARCHITECTURES' instead.")
 endif(DEFINED UNIVERSAL)
 
 if(DEFINED DEBUG)

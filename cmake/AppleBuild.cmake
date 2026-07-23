@@ -41,10 +41,6 @@ if(APPLE)
   # Support older macOS versions.
   set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15 CACHE STRING "Minimum OS X deployment version")
 
-  if(BUILD_UNIVERSAL)
-    set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
-  endif(BUILD_UNIVERSAL)
-
   if(APPLE AND "${CMAKE_GENERATOR}" STREQUAL "Xcode")
     # TODO(JEFF): Reserved for future impl
   endif()

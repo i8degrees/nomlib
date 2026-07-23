@@ -140,6 +140,11 @@ include("${CMAKE_SOURCE_DIR}/cmake/CompilerWarnings.cmake")
 # Add cmake option WARNINGS_AS_ERRORS
 set_project_warnings(project_warnings)
 
+if(NOM_INSTALL_PKGCONFIG_SUPPORT)
+  # nomlib.pc.in -> nomlib.pc
+  include(PkgConfig)
+endif(NOM_INSTALL_PKGCONFIG_SUPPORT)
+
 #
 ## Project-wide env
 #
@@ -236,4 +241,3 @@ endif()
 if(is_top_level)
   add_subdirectory(src/packages)
 endif(is_top_level)
-

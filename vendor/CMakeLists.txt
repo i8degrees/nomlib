@@ -36,13 +36,11 @@ include(FetchContent)
 # (GoogleTest 1.8.x was the original vendor package used)
 set(GTEST_TAG "release-1.11.0")
 set(GTEST_URL "https://github.com/google/googletest/archive/refs/tags/${GTEST_TAG}.zip")
-set(GTEST_MD5 "52943a59cefce0ae0491d4d2412c120b")
 set(GTEST_SHA512 "20c2fad22a2ced6828955cc4fa0f540a61bbdcae74c0097529994a183c218589cbe6d2f9e57fc4d625ac01394849cba02e5c3fb6ba618775299f01d6b0737d26")
 FetchContent_Declare(
   googletest
   URL               "${GTEST_URL}"
   URL_HASH          "SHA512=${GTEST_SHA512}"
-  URL_MD5           "${GTEST_MD5}"
   #SOURCE_SUBDIR     "googletest"
   # FIND_PACKAGE_ARGS NAMES GTest
 )
@@ -50,12 +48,10 @@ FetchContent_Declare(
 # >> we use the amalgamated source tree (one cpp and header) without the install phase
 set(JSONCPP_TAG     "0.7.0")
 set(JSONCPP_URL     "https://github.com/open-source-parsers/jsoncpp/archive/refs/tags/${JSONCPP_TAG}.zip")
-set(JSONCPP_MD5     "48e1c0383d11bf894a1def195e3662ca")
 set(JSONCPP_SHA512  "e99d00ac65620163679bbf5f14fff66657cc540f456e650dfb6780016a42869636f9b09dfcb819277901fff7844db6f75a024e3232b32229d487438981a0b0c8")
 FetchContent_Declare(
   jsoncpp
   URL             "${JSONCPP_URL}"
-  URL_MD5         "${JSONCPP_MD5}"
   URL_HASH        "SHA512=${JSONCPP_SHA512}"
   PATCH_COMMAND   python3 <SOURCE_DIR>/amalgamate.py
   COMMAND         patch <SOURCE_DIR>/src/lib_json/CMakeLists.txt "${PATCHES_DIR}/jsoncpp_no-install.patch"
@@ -65,12 +61,10 @@ FetchContent_Declare(
 # >> headers only library
 set(TCLAP_TAG "tclap-1-2-1-release-final")
 set(TCLAP_URL "https://github.com/mirror/tclap/archive/refs/tags/${TCLAP_TAG}.zip")
-set(TCLAP_MD5 "90c1cc9a6dceef8fe89cf83f8b9b8460")
 set(TCLAP_SHA512 "9e771f4e4a0cd9426bc8754d77a26a2c84de0c1ee09b58bb3e9066fba81f19bfa113e5060d31f05999dfc0c47146d501658c4a35531f9a135152dc5b4275224b")
 FetchContent_Declare(
   tclap
   URL             "${TCLAP_URL}"
-  URL_MD5         "${TCLAP_MD5}"
   URL_HASH        "SHA512=${TCLAP_SHA512}"
 )
 
@@ -78,25 +72,20 @@ FetchContent_Declare(
 # >> headers-only library
 set(RAPIDXML_TAG "master")
 set(RAPIDXML_URL "https://github.com/discord/rapidxml/archive/refs/heads/${RAPIDXML_TAG}.zip")
-set(RAPIDXML_MD5 "8918b1903277a552669aa59e66cb5bc9")
 set(RAPIDXML_SHA512 "7a80a85349176c8b7b1b393b7a1512950067c7e7fd9495ade451878e0ee0adfa2c30843a371f2a4ce9edaa9da6f17ca310cdb98462fb9ab93fd2ef413fdd9966")
 FetchContent_Declare(
   rapidxml
   URL             "${RAPIDXML_URL}"
-  URL_MD5         "${RAPIDXML_MD5}"
   URL_HASH        "SHA512=${RAPIDXML_SHA512}"
   PATCH_COMMAND   patch -i "${PATCHES_DIR}/rapidxml_bug16.patch"
 )
 
 set(GCDB_TAG "master")
 set(GCDB_URL "https://github.com/mdqinc/SDL_GameControllerDB/archive/refs/heads/${GCDB_TAG}.zip")
-set(GCDB_MD5 "445e33046f12359d9566dd8fa89da60c")
-#set(GCDB_SHA512 "f2f7cc2b6e90977e31cb9754a70d730de24e7f2a1d242bbefb97adbe0feb378702ee76cfd0d33a7f4bbb6f1c4dc70e8d30cc84e2e2652a66fa82c173a7c09a97")
-set(GCDB_SHA512 948712f9b7f9fd13e82890d0a3f336d24be9d7438a095b5bb6b5d189f45322f144667314e560f63da4f4d4eb7c6f62e7658e41d1700615dd3b392550ed495af5)
+set(GCDB_SHA512 "e0fc4097f3753e13dd0307b0726e207c6957f06af5e737644cb36333d978a0282b9a3e616e8f1f5a822b60827687b13798fcaf6b920f3488e088a86ed1be12f5")
 FetchContent_Declare(
   gamecontroller_db
   URL             "${GCDB_URL}"
-  URL_MD5         "${GCDB_MD5}"
   URL_HASH        "SHA512=${GCDB_SHA512}"
 )
 

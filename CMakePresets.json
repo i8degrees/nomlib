@@ -180,6 +180,30 @@
       }
     },
     {
+      "name": "debug-dyn-xcode",
+      "displayName": "(macos-xcode) Debug configuration with shared library targets",
+      "inherits": "vcpkg",
+      "generator": "Xcode",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "ON",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "DEBUG_ASSERT": "ON",
+        "BUILD_EXAMPLES": "ON",
+        "BUILD_TESTS": "ON",
+        "NOM_BUILD_AUDIO_UNIT": "ON",
+        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.15",
+        "CMAKE_OSX_ARCHITECTURES": "x86_64",
+        "CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED": "NO",
+        "CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY": ""
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
+    },
+    {
       "name": "debug-clang-cl",
       "displayName": "Debug configuration for clang-cl toolchain",
       "inherits": "common",

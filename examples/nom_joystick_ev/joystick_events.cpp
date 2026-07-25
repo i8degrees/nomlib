@@ -453,8 +453,14 @@ class App: public nom::SDLApp
       nom::InputAction action;
 
       action =
-        nom::KeyboardAction(Event::KEY_PRESS, SDLK_ESCAPE);
+        nom::KeyboardAction(SDLK_ESCAPE);
       key.insert("quit_app", action, this->quit_app);
+      action =
+        nom::KeyboardAction(SDLK_q);
+      key.insert("quit_app", action, this->quit_app);
+
+      this->input_mapper.insert("keyboard", key, true);
+      // this->input_mapper.activate("keyboard");
 
       // ...Buttons...
 
@@ -536,12 +542,7 @@ class App: public nom::SDLApp
       result2 =
         this->input_mapper.insert("joystick_hats", jhat, true);
 
-      this->input_mapper.erase("keyboard");
-      result3 =
-        this->input_mapper.insert("keyboard", key, true);
-
-      return( result0 == true && result1 == true && result2 == true &&
-              result3 == true );
+      return(result0 == true && result1 == true && result2 == true);
     }
 }; // end class App
 

@@ -1,5 +1,7 @@
 # gamecontroller_ev example
 
+set(STATIC_ASSETS "${PROJECT_SOURCE_DIR}/Resources/SharedSupport")
+
 add_executable(nom_gamecontroller_ev
   WIN32 # Link SDL2main over WinMain
   MACOSX_BUNDLE
@@ -35,12 +37,22 @@ target_link_libraries(nom_gamecontroller_ev
   $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
 )
 
+# For development:
+add_custom_command(TARGET nom_gamecontroller_ev
+  POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
+  "${STATIC_ASSETS}/InputDevices.json"
+  "${gcdb_SOURCE_DIR}/gamecontrollerdb.txt"
+  $<TARGET_FILE_DIR:nom_gamecontroller_ev> # <build>/<type>/share
+)
+
+# For distribution
 install(TARGETS nom_gamecontroller_ev
   # EXPORT nomlib
   DESTINATION ${CMAKE_INSTALL_BINDIR}
   COMPONENT Examples
 )
 
+# For distribution
 install(FILES
   "${NOMLIB_SHARED_SUPPORT_DIR}/InputDevices.json"
   DESTINATION

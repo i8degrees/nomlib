@@ -31,9 +31,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system.hpp>
 #include <nomlib/serializers.hpp>
 #include <nomlib/graphics.hpp>
+#include <nomlib/system/GameControllerEventHandler.hpp>
 
 using namespace nom;
-/*
 /// \brief The file used for resource path lookups for this example.
 const std::string RES_FILE = "InputDevices.json";
 
@@ -47,14 +47,16 @@ class App: public nom::SDLApp
       // ...Initialize the input mapper callbacks...
 
       this->quit_app = nom::event_callback( [=](const nom::Event& evt) {
-        int32 numJoysticks = joystick_evt->num_joysticks();
+        int32 numJoysticks = joystick_evt.num_joysticks();
         NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, numJoysticks,
                       "remaining in pool");
         this->on_app_quit(evt);
       });
 
       this->init_db_bindings = nom::event_callback( [=](const nom::Event& evt) {
-        this->initialize_game_controller_db(this->db_filename);
+        if(this->initialize_game_controller_db(this->db_filename) == false) {
+          this->initialize_game_controller_db("gamecontrollerdb.txt");
+        }
       });
 
       this->x_axis_action = nom::event_callback( [=](const nom::Event& evt) {
@@ -83,8 +85,8 @@ class App: public nom::SDLApp
 
           if( rect_pos.x < 0 ) {
             rect_pos.x = 0;
-          } else if( rect_pos.x > WINDOW_RESOLUTION.w - AXIS_RECT_DIMS.w ) {
-            rect_pos.x = WINDOW_RESOLUTION.w - AXIS_RECT_DIMS.w;
+          } else if( rect_pos.x > WINDOW_RESOLUTION.w - AXIS_X_RECT_DIMS.w ) {
+            rect_pos.x = WINDOW_RESOLUTION.w - AXIS_X_RECT_DIMS.w;
           }
 
           if( axis < 2 ) {
@@ -96,10 +98,10 @@ class App: public nom::SDLApp
           // Resting position (we're in the dead zone)
           if( axis < 2 ) {
             this->axis_rectangle_pos[0].x =
-              (WINDOW_RESOLUTION.w - AXIS_RECT_DIMS.w) / 2;
+              (WINDOW_RESOLUTION.w - AXIS_X_RECT_DIMS.w) / 2;
           } else {
             this->axis_rectangle_pos[1].x =
-              (WINDOW_RESOLUTION.w - AXIS_RECT_DIMS.w) / 2;
+              (WINDOW_RESOLUTION.w - AXIS_X_RECT_DIMS.w) / 2;
           }
         }
       });
@@ -130,8 +132,8 @@ class App: public nom::SDLApp
 
           if( rect_pos.y < 0 ) {
             rect_pos.y = 0;
-          } else if( rect_pos.y > WINDOW_RESOLUTION.h - AXIS_RECT_DIMS.h ) {
-            rect_pos.y = WINDOW_RESOLUTION.h - AXIS_RECT_DIMS.h;
+          } else if( rect_pos.y > WINDOW_RESOLUTION.h - AXIS_Y_RECT_DIMS.h ) {
+            rect_pos.y = WINDOW_RESOLUTION.h - AXIS_Y_RECT_DIMS.h;
           }
 
           if( axis < 2 ) {
@@ -143,10 +145,10 @@ class App: public nom::SDLApp
           // Resting position (we're in the dead zone)
           if( axis < 2 ) {
             this->axis_rectangle_pos[0].y =
-              (WINDOW_RESOLUTION.h - AXIS_RECT_DIMS.h) / 2;
+              (WINDOW_RESOLUTION.h - AXIS_Y_RECT_DIMS.h) / 2;
           } else {
             this->axis_rectangle_pos[1].y =
-              (WINDOW_RESOLUTION.h - AXIS_RECT_DIMS.h) / 2;
+              (WINDOW_RESOLUTION.h - AXIS_Y_RECT_DIMS.h) / 2;
           }
         }
       });
@@ -215,7 +217,10 @@ class App: public nom::SDLApp
       NOM_ASSERT( this->evt_handler.joystick_event_type() ==
                   EventHandler::GAME_CONTROLLER_EVENT_HANDLER );
 
-      this->initialize_game_controller_db(this->db_filename);
+      // this->initialize_game_controller_db(this->db_filename);
+      if(this->initialize_game_controller_db(this->db_filename) == false) {
+        this->initialize_game_controller_db("gamecontrollerdb.txt");
+      }
 
       // NOTE: Ensure that closing the joystick device more than once does not
       // crash with a double-free memory violation from SDL_GameControllerClose
@@ -233,14 +238,20 @@ class App: public nom::SDLApp
         }
       }
 
-      // FIXME(jeff): Why are these actions not being executed?
       action =
-        nom::KeyboardAction(Event::KEY_PRESS, SDLK_ESCAPE);
+        nom::KeyboardAction(nom::KeyboardAction(SDLK_q));
       key.insert("quit_app", action, this->quit_app);
 
       action =
-        nom::KeyboardAction(Event::KEY_PRESS, SDLK_r);
+        nom::KeyboardAction(nom::KeyboardAction(SDLK_ESCAPE));
+      key.insert("quit_app", action, this->quit_app);
+
+      action =
+        nom::KeyboardAction(nom::KeyboardAction(SDLK_r));
       key.insert("reload_controller_mappings", action, this->init_db_bindings);
+
+      this->input_mapper.insert("keyboard", key, true);
+      //this->input_mapper.activate_only("keyboard");
 
       // ...Test remapping a couple game controller buttons...
 #if 0
@@ -313,7 +324,7 @@ class App: public nom::SDLApp
 
       for( auto axis_idx = 0; axis_idx != MAX_AXES; ++axis_idx ) {
         this->axis_rectangle_pos[axis_idx] =
-          nom::alignment_rect(  AXIS_RECT_DIMS, Point2i::zero,
+          nom::alignment_rect(  AXIS_Y_RECT_DIMS, Point2i::zero,
                                 WINDOW_RESOLUTION, Anchor::MiddleCenter );
       }
 
@@ -323,9 +334,19 @@ class App: public nom::SDLApp
         this->button_rectangle_pos[button_idx].y = -WINDOW_RESOLUTION.h;
       }
 
+      this->hat_rectangle_pos =
+        nom::alignment_rect(  HAT_RECT_DIMS, Point2i::zero,
+                              WINDOW_RESOLUTION, Anchor::MiddleCenter );
+
       SDLApp::set_event_handler(this->evt_handler);
 
       this->input_mapper.set_event_handler(this->evt_handler);
+
+      if(Joystick::num_joysticks() < 1) {
+        NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
+                      "No joystick devices are available!" );
+        this->window.set_window_title("Waiting on a gamecontroller to be connected...");
+      }
 
       return true;
     }
@@ -362,6 +383,8 @@ class App: public nom::SDLApp
               // IMPORTANT: We must have the actual hardware initialized before
               // simulating this event type!
               this->test_simulated_events();
+
+              this->window.set_window_title("Gamecontroller is connected");
             } break;
 
             case Event::GAME_CONTROLLER_REMOVED:
@@ -378,8 +401,10 @@ class App: public nom::SDLApp
                 this->on_game_controller_add(0);
               } else {
                 NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
-                              "No joystick devices are available; exiting!" );
-                this->on_app_quit(evt);
+                              "No joystick devices are available!" );
+
+                this->window.set_window_title("Waiting on a gamecontroller to be connected...");
+                // this->on_app_quit(evt);
               }
             } break;
           }
@@ -388,17 +413,28 @@ class App: public nom::SDLApp
         this->window.update();
 
         this->window.fill(nom::Color4i::SkyBlue);
+        if(Joystick::num_joysticks() > 0) {
+          for( auto axis_idx = 0; axis_idx != MAX_AXES; ++axis_idx ) {
+            if(axis_idx == 0) {
+              this->render_rectangle( this->axis_rectangle_pos[axis_idx],
+                                      AXIS_X_RECT_DIMS, Color4i::Green );
+            }
+            if(axis_idx != 0) {
+              this->render_rectangle( this->axis_rectangle_pos[axis_idx],
+                                      AXIS_Y_RECT_DIMS, Color4i::Orange );
+            }
+            if(axis_idx == 1) {
+            }
+          }
 
-        for( auto axis_idx = 0; axis_idx != MAX_AXES; ++axis_idx ) {
-          this->render_rectangle( this->axis_rectangle_pos[axis_idx],
-                                  AXIS_RECT_DIMS, Color4i::Green );
+          this->render_rectangle( this->hat_rectangle_pos, HAT_RECT_DIMS,
+                                  Color4i::Yellow );
+
+          for( auto button_idx = 0; button_idx != MAX_BUTTONS; ++button_idx ) {
+            this->render_rectangle( this->button_rectangle_pos[button_idx],
+                                    BUTTON_RECT_DIMS, Color4i::Blue );
+          }
         }
-
-        for( auto button_idx = 0; button_idx != MAX_BUTTONS; ++button_idx ) {
-          this->render_rectangle( this->button_rectangle_pos[button_idx],
-                                  BUTTON_RECT_DIMS, Color4i::Green );
-        }
-
       } // end outer while
 
       return NOM_EXIT_SUCCESS;
@@ -432,8 +468,15 @@ class App: public nom::SDLApp
 
     Point2i axis_rectangle_pos[MAX_AXES];
     Point2i button_rectangle_pos[MAX_BUTTONS];
-    const Size2i AXIS_RECT_DIMS = Size2i(16, 16);
+
+    const Size2i AXIS_X_RECT_DIMS = Size2i(16, 16);
+    const Size2i AXIS_Y_RECT_DIMS = Size2i(16, 16);
+    //const Size2i AXIS_Z_RECT_DIMS = Size2i(16, 16);
+
     const Size2i BUTTON_RECT_DIMS = Size2i(16, 16);
+
+    Point2i hat_rectangle_pos = Point2i::zero;
+    const Size2i HAT_RECT_DIMS = Size2i(4, 4);
 
     GameControllerEventHandler joystick_evt;
 
@@ -466,18 +509,21 @@ class App: public nom::SDLApp
     /// layout mapping.
     ///
     /// \see https://github.com/gabomdq/SDL_GameControllerDB
-    void initialize_game_controller_db(const std::string& filename)
+    bool initialize_game_controller_db(const std::string& filename)
     {
       int mappings_count = GameController::load_mapping_file(filename);
       if( mappings_count == -1 ) {
         NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
                       "Could not load the game controller database file:",
                       filename );
+        return false;
       } else {
         NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
                       "Added", mappings_count,
                       "game controller mappings from file:", filename );
       }
+
+      return true;
     }
 
     /// \brief Event Handler for device removal
@@ -521,7 +567,6 @@ class App: public nom::SDLApp
     {
       bool result0 = false;
       bool result1 = false;
-      bool result2 = false;
       InputActionMapper cbutton, caxis, key;
       nom::InputAction action;
 
@@ -603,14 +648,10 @@ class App: public nom::SDLApp
       result1 =
         this->input_mapper.insert("game_controller_axes", caxis, true);
 
-      this->input_mapper.erase("keyboard");
-      result2 =
-        this->input_mapper.insert("keyboard", key, true);
-
-      return( result0 == true && result1 == true && result2 == true);
+      return(result0 == true && result1 == true);
     }
 }; // end class App
-*/
+
 int main(nom::int32 argc, char* argv[])
 {
   // Fatal error; if we are not able to complete this step, it means that
@@ -628,7 +669,7 @@ int main(nom::int32 argc, char* argv[])
 
   // Enable event handler queue debugging statistics
   nom::set_hint(NOM_EVENT_QUEUE_STATISTICS, "1");
-/*
+
   App app;
 
   if( app.on_init() == false ) {
@@ -640,5 +681,4 @@ int main(nom::int32 argc, char* argv[])
   return app.Run();
 
   // ...Goodbye cruel world!
-*/
 }

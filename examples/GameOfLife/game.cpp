@@ -77,7 +77,7 @@ const nom::sint CELL_SIZE = 16;
 /// example.
 const nom::int32 MAXIMUM_WINDOWS = 1;
 
-const std::string IMG_CREEP = APP_RESOURCES_DIR + p.native() + "GameOfLife" + p.native() + "creep.png";
+const std::string IMG_CREEP = APP_RESOURCES_DIR + p.native() + "GameOfLife" + p.native() + "creep_16.png";
 const std::string BG_LIGHT = APP_RESOURCES_DIR + p.native() + "GameOfLife" + p.native() + "bglight.png";
 const std::string BG_DARK = APP_RESOURCES_DIR + p.native() + "GameOfLife" + p.native() + "bgdark.png";
 
@@ -110,7 +110,7 @@ class App: public nom::SDLApp
       nom::uint32 window_flags = SDL_WINDOW_RESIZABLE;
 
       if(this->window.create(APP_NAME,
-        Point2i(0,0), 0, 
+        Point2i(0,0), 0,
         Size2i(BOARD_SIZE, BOARD_SIZE), window_flags) == false) {
         return false;
       }
@@ -236,12 +236,17 @@ class App: public nom::SDLApp
         case nom::Event::KEY_PRESS:
         {
           this->on_key_down(ev);
-          spawn();
         } break;
 
         case nom::Event::MOUSE_WHEEL:
         {
           this->on_mouse_wheel(ev);
+        } break;
+        case nom::Event::MOUSE_BUTTON_CLICK:
+        {
+          std::cout << "mouse x = " << ev.mouse.x << " mouse y = " << ev.mouse.y << std::endl;
+          spawn(nom::Point2i(ev.mouse.x, ev.mouse.y));
+
         } break;
       } // end switch key
     } // onKeyDown
@@ -322,7 +327,7 @@ class App: public nom::SDLApp
         case SDLK_F1:
         {
           if( this->window.save_screenshot(OUTPUT_SCREENSHOT_FILENAME) == false) {
-            nom::DialogMessageBox( APP_NAME, "ERROR: Could not save screen-shot");
+            nom::DialogMessageBox( APP_NAME, "ERROR: Could not save screenshot");
           } // end save_screenshot err check
         } break;
 
@@ -343,8 +348,27 @@ class App: public nom::SDLApp
       }
     }
 
-    void spawn()
+    void spawn(const Point2i& init_pos, int32 board_width = BOARD_SIZE,
+      int32 board_height = BOARD_SIZE)
     {
+
+      // fill the array with random cells
+      int rando = 0;
+      srand( NOM_SCAST(uint, time( nullptr ) ) ); // FIXME
+
+      for ( int x = init_pos.x; x < board_width / CELL_SIZE; x++ )
+      {
+        for ( int y = init_pos.y; y < board_height / CELL_SIZE; y++ )
+        {
+          // rando = rand() % 2;
+          rando = rando + 1;
+          grid[x][y] = rando;
+          std::cout<<"Setting square at "<<x<<","<<y<<" to "<<grid[x][y]<<"\n";
+        }
+      }
+    }
+
+    void spawn() {
       // fill the array with random cells
       int rando = 0;
       srand( NOM_SCAST(uint, time( nullptr ) ) ); // FIXME

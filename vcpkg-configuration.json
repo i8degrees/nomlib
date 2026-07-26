@@ -3,7 +3,7 @@
   "registries": [
     {
       "kind": "git",
-      "baseline": "f456eb98c040398e050cd74b52480cd224c19718",
+      "baseline": "b65cb76e1cd4734b70acda17b3002a3d9899c23e",
       "repository": "https://github.com/i8degrees/vcpkg-ports",
       "packages": [
         "librocket"

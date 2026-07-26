@@ -82,7 +82,7 @@ FetchContent_Declare(
 
 set(GCDB_TAG "master")
 set(GCDB_URL "https://github.com/mdqinc/SDL_GameControllerDB/archive/refs/heads/${GCDB_TAG}.zip")
-set(GCDB_SHA512 "43a634b6022d42f2603e044886869096a1186cd9e62456a89e69c6bc09909ef58c75da38785cd8ac40b927fe192194719191d4ad6e1a3a22d558aca6140021e3")
+set(GCDB_SHA512 "7e27f876a81da458473d219d48eaa3616140b85b931219e2c4cc2180ac9ff495ce58f33c8cac510ed95407d0b1e50675eb79f0ef348ac24bc144b8ba560e9c6f")
 FetchContent_Declare(
   gamecontroller_db
   URL             "${GCDB_URL}"

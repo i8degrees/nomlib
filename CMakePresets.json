@@ -87,7 +87,8 @@
         "CMAKE_BUILD_TYPE": "Release",
         "DEBUG_ASSERT": "OFF",
         "BUILD_EXAMPLES": "ON",
-        "BUILD_TESTS": "OFF"
+        "BUILD_TESTS": "OFF",
+        "NOM_INSTALL_GCDB": "ON"
       },
       "environment": {
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
@@ -104,7 +105,8 @@
         "BUILD_EXAMPLES": "ON",
         "BUILD_TESTS": "OFF",
         "NOM_BUILD_AUDIO_UNIT": "ON",
-        "HIDE_SYMBOL_VISIBILITY": "ON"
+        "HIDE_SYMBOL_VISIBILITY": "ON",
+        "NOM_INSTALL_GCDB": "ON"
       },
       "environment": {
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
@@ -121,7 +123,8 @@
         "BUILD_EXAMPLES": "ON",
         "BUILD_TESTS": "ON",
         "HIDE_SYMBOL_VISIBILITY": "ON",
-        "CMAKE_VERBOSE_MAKEFILE": "ON"
+        "CMAKE_VERBOSE_MAKEFILE": "ON",
+        "NOM_INSTALL_GCDB": "ON"
       },
       "environment": {
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"

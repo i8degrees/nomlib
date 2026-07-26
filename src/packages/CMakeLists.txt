@@ -72,11 +72,18 @@ install(  FILES
 install(  FILES
           ${PROJECT_SOURCE_DIR}/README.md
           ${PROJECT_SOURCE_DIR}/LICENSE.md
-          # Install hardware definitions for input devices (game controllers)
-          "${gcdb_SOURCE_DIR}/gamecontrollerdb.txt"
           DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/nomlib"
           COMPONENT Core
         )
+
+# Install hardware definitions for input devices (game controllers)
+if(NOM_INSTALL_GCDB)
+  install(FILES
+    "${gcdb_SOURCE_DIR}/gamecontrollerdb.txt"
+    DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/nomlib"
+    COMPONENT Core
+  )
+endif()
 
 install(FILES
   "${CMAKE_CURRENT_BINARY_DIR}/nomlib.desktop"

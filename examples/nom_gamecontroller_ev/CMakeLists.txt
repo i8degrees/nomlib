@@ -41,9 +41,16 @@ target_link_libraries(nom_gamecontroller_ev
 add_custom_command(TARGET nom_gamecontroller_ev
   POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
   "${STATIC_ASSETS}/InputDevices.json"
-  "${gcdb_SOURCE_DIR}/gamecontrollerdb.txt"
   $<TARGET_FILE_DIR:nom_gamecontroller_ev> # <build>/<type>/share
 )
+
+if(NOM_INSTALL_GCDB)
+  add_custom_command(TARGET nom_gamecontroller_ev
+    POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${gcdb_SOURCE_DIR}/gamecontrollerdb.txt"
+    $<TARGET_FILE_DIR:nom_gamecontroller_ev> # <build>/<type>/share
+  )
+endif()
 
 # For distribution
 install(TARGETS nom_gamecontroller_ev
@@ -55,7 +62,9 @@ install(TARGETS nom_gamecontroller_ev
 # For distribution
 install(FILES
   "${NOMLIB_SHARED_SUPPORT_DIR}/InputDevices.json"
+  "${gcdb_SOURCE_DIR}/gamecontrollerdb.txt"
   DESTINATION
   "${EXAMPLES_INSTALL_DIR}"
+  OPTIONAL
   COMPONENT Examples
 )

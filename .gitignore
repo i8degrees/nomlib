@@ -45,3 +45,7 @@ inference/
 tmp/*
 !tmp/.placeholder
 
+# vim backup state
+.*
+*~*
+

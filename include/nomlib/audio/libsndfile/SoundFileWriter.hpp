@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/audio/SoundFile.hpp"
 #include "nomlib/audio/ISoundFileWriter.hpp"
@@ -43,7 +44,7 @@ namespace nom {
 namespace audio {
 
 // TODO(jeff): Rename to RawSoundFileWriter or so
-class SoundFileWriter: public ISoundFileWriter
+class NOM_EXPORT SoundFileWriter: public ISoundFileWriter
 {
   public:
     SoundFileWriter();
@@ -63,7 +64,7 @@ class SoundFileWriter: public ISoundFileWriter
 
   private:
     SoundInfo parse_header(SF_INFO& metadata);
-    static const char* parse_tags(SNDFILE_tag* fp, uint32 sound_tag);
+    NOM_EXPORT static const char* parse_tags(SNDFILE_tag* fp, uint32 sound_tag);
 
     /// \brief A third-party file descriptor whose owned by the end-user.
     ///

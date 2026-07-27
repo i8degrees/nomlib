@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/actions/IActionObject.hpp"
 
@@ -45,7 +46,7 @@ struct SoundBuffer;
 
 /// \brief [TODO: Description]
 // TODO: Update comments!
-class FadeAudioGainBy: public virtual IActionObject
+class NOM_EXPORT FadeAudioGainBy: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.
@@ -83,7 +84,7 @@ class FadeAudioGainBy: public virtual IActionObject
     virtual void release() override;
 
   private:
-    static const char* DEBUG_CLASS_NAME;
+    NOM_EXPORT static const char* DEBUG_CLASS_NAME;
 
     /// \brief Execute the alpha blending logic for the animation.
     IActionObject::FrameState update(real32 t, uint8 b, int16 c, real32 d);

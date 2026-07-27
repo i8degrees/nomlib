@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_AL_AUDIO_DEVICE_HEADERS
 #define NOMLIB_AL_AUDIO_DEVICE_HEADERS
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/core/IObject.hpp"
 #include "nomlib/math/Point3.hpp"
@@ -57,20 +58,20 @@ namespace audio {
 class IOAudioEngine;
 struct AudioSpec;
 
-ALCdevice_struct* current_device();
-ALCcontext_struct* current_context();
+NOM_EXPORT ALCdevice_struct* current_device();
+NOM_EXPORT ALCcontext_struct* current_context();
 
-void free_audio_device(ALCdevice_struct* dev);
-void free_audio_context(ALCcontext_struct* ctx);
+NOM_EXPORT void free_audio_device(ALCdevice_struct* dev);
+NOM_EXPORT void free_audio_context(ALCcontext_struct* ctx);
 
-void*
+NOM_EXPORT void*
 process_addr(const char* token);
 
 // TODO(jeff): Verify if we should be using alIsExtensionPresent or
 // alcIsExtensionPresent for querying extensions, etc.
 
 /// Obtain support info regarding a particular extension
-bool extension_available(const char* key);
+NOM_EXPORT bool extension_available(const char* key);
 
 /// Obtain support info regarding a particular extension
 // bool extension_available(const char* key, void* target);
@@ -79,44 +80,47 @@ bool extension_available(const char* key);
 // config_available..?
 // if err, return zero; if successful, return the key's value, a number greater
 // than zero.
-uint32 enum_available(const char* key);
+NOM_EXPORT uint32 enum_available(const char* key);
 
-bool
+NOM_EXPORT bool
 context_extension(const char* key, ALCdevice_struct* target);
 
 typedef std::vector<std::string> device_name_list;
 
+NOM_EXPORT
 const char* default_output_device_name(ALCdevice_struct* target);
+
+NOM_EXPORT
 const char* default_input_device_name(ALCdevice_struct* target);
 
 // TODO(jeff): Try to factor out the use of std::vector here
-device_name_list output_device_names(void* target);
+NOM_EXPORT device_name_list output_device_names(void* target);
 
 // TODO(jeff): Implement function
-device_name_list input_device_names(void* target);
+NOM_EXPORT device_name_list input_device_names(void* target);
 
-int refresh_rate(void* target);
-bool sync_context(void* target);
+NOM_EXPORT int refresh_rate(void* target);
+NOM_EXPORT bool sync_context(void* target);
 
 /// \brief Get the sampling rate of audio playback.
-int sample_rate(void* target);
+NOM_EXPORT int sample_rate(void* target);
 
 /// \brief Set the sampling rate of audio playback.
 // void set_sample_rate(int sample_rate, void* target);
 
-int max_mono_sources(void* target);
-int max_stereo_sources(void* target);
+NOM_EXPORT int max_mono_sources(void* target);
+NOM_EXPORT int max_stereo_sources(void* target);
 
 /// \brief Get the maximum number of simultaneous playing audio buffers.
-int max_sources(void* target);
+NOM_EXPORT int max_sources(void* target);
 
 /// \brief Set the maximum number of simultaneous playing audio buffers.
 // void set_max_sources(int num_sources, void* target);
 
-bool cap(uint32 caps, uint32 key);
-void set_cap(uint32* caps, uint32 format);
+NOM_EXPORT bool cap(uint32 caps, uint32 key);
+NOM_EXPORT void set_cap(uint32* caps, uint32 format);
 
-struct AudioDevice
+struct NOM_EXPORT AudioDevice
 {
   // ALAudioDevice
   void* impl = nullptr;
@@ -124,7 +128,7 @@ struct AudioDevice
 
 /// \see http://www.opensource.apple.com/source/OpenAL/OpenAL-54/Source/OpenAL/
 // TODO(jeff): Private header..?
-struct ALAudioDevice
+struct NOM_EXPORT ALAudioDevice
 {
   /// Audio device handle
   ALCdevice_struct* dev = nullptr;
@@ -149,18 +153,18 @@ struct ALAudioDevice
   // input_devs_func enumerate_input_devices;
 };
 
-IOAudioEngine*
+NOM_EXPORT IOAudioEngine*
 init_audio(const audio::AudioSpec* request, audio::AudioSpec* spec);
 
 // void shutdown_openal(ALAudioDevice* impl);
-void shutdown_audio(IOAudioEngine* impl);
+NOM_EXPORT void shutdown_audio(IOAudioEngine* impl);
 
 // const char* audio_device_name(IOAudioEngine* target);
 
 /// \brief Get the number of audio input/output ports that are available.
 ///
 /// \returns ...
-int num_audio_devices();
+NOM_EXPORT int num_audio_devices();
 
 /// \brief
 ///

@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -41,7 +42,7 @@ class IOAudioEngine;
 struct AudioSpec;
 
 /// \brief Abstract audio device interface
-class IAudioDevice
+class NOM_EXPORT IAudioDevice
 {
   public:
     virtual ~IAudioDevice()

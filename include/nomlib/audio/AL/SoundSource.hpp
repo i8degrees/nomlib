@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <algorithm>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point3.hpp"
 
@@ -45,7 +46,7 @@ class ISoundFileReader;
 struct SoundInfo;
 
 /// Sound source is one of the three states: stopped, paused or playing
-enum AudioState
+enum NOM_EXPORT AudioState
 {
   AUDIO_STATE_INITIAL = 0,
   AUDIO_STATE_STOPPED,
@@ -57,7 +58,7 @@ enum AudioState
   AUDIO_STATE_LOOPING
 };
 
-enum AudioSourceType
+enum NOM_EXPORT AudioSourceType
 {
   AUDIO_TYPE_UNKNOWN = 0,
   AUDIO_TYPE_STATIC,
@@ -66,97 +67,99 @@ enum AudioSourceType
 
 // buffer creation
 
+NOM_EXPORT
 uint32 channel_format(uint32 num_channels, uint32 channel_format,
                       IOAudioEngine* target);
-
+NOM_EXPORT
 bool write_info(SoundBuffer* buffer, const SoundInfo& metadata);
 
+NOM_EXPORT
 void* create_samples(nom::size_type alloc_bytes, uint32 num_channels,
                      uint32 channel_format);
 
-void free_samples(uint32 channel_format, void* data);
+NOM_EXPORT void free_samples(uint32 channel_format, void* data);
 
-SoundBuffer* create_buffer_memory();
+NOM_EXPORT SoundBuffer* create_buffer_memory();
 
-SoundBuffer*
+NOM_EXPORT SoundBuffer*
 create_buffer_memory(nom::size_type total_sample_bytes, uint32 num_channels,
                      uint32 channel_format);
 
-SoundBuffer*
+NOM_EXPORT SoundBuffer*
 create_buffer(void* samples, const SoundInfo& metadata, IOAudioEngine* target);
 
 // TODO(jeff): Restructure this function..? Perhaps split it up.
-SoundBuffer*
+NOM_EXPORT SoundBuffer*
 create_buffer(const std::string& filename, ISoundFileReader* fp,
                     IOAudioEngine* target);
 
-SoundBuffer*
+NOM_EXPORT SoundBuffer*
 create_buffer(const std::string& filename, IOAudioEngine* target);
 
-bool valid_buffer(SoundBuffer* buffer, IOAudioEngine* target);
-bool valid_source(SoundBuffer* buffer, IOAudioEngine* target);
+NOM_EXPORT bool valid_buffer(SoundBuffer* buffer, IOAudioEngine* target);
+NOM_EXPORT bool valid_source(SoundBuffer* buffer, IOAudioEngine* target);
 
-SoundInfo info(SoundBuffer* buffer);
+NOM_EXPORT SoundInfo info(SoundBuffer* buffer);
 
-void free_buffer(SoundBuffer* buffer, IOAudioEngine* target);
+NOM_EXPORT void free_buffer(SoundBuffer* buffer, IOAudioEngine* target);
 
 // audio control
 
 // void queue(SoundBuffer* buffer, IOAudioEngine* target);
 
-void play(SoundBuffer* buffer, IOAudioEngine* target);
+NOM_EXPORT void play(SoundBuffer* buffer, IOAudioEngine* target);
 
-void stop(SoundBuffer* buffer, IOAudioEngine* target);
+NOM_EXPORT void stop(SoundBuffer* buffer, IOAudioEngine* target);
 
-void pause(SoundBuffer* buffer, IOAudioEngine* target);
+NOM_EXPORT void pause(SoundBuffer* buffer, IOAudioEngine* target);
 
-void resume(SoundBuffer* buffer, IOAudioEngine* target);
+NOM_EXPORT void resume(SoundBuffer* buffer, IOAudioEngine* target);
 
-uint32 state(SoundBuffer* buffer, IOAudioEngine* target);
+NOM_EXPORT uint32 state(SoundBuffer* buffer, IOAudioEngine* target);
 
-real32 pitch(SoundBuffer* buffer, IOAudioEngine* target);
+NOM_EXPORT real32 pitch(SoundBuffer* buffer, IOAudioEngine* target);
 
-Point3f
+NOM_EXPORT Point3f
 position(SoundBuffer* buffer, IOAudioEngine* target);
 
-Point3f
+NOM_EXPORT Point3f
 velocity(SoundBuffer* buffer, IOAudioEngine* target);
 
 /// \brief Get the volume level of an audio device.
 ///
 /// \returns A number between 0..100 (min/max).
-real32
+NOM_EXPORT real32
 volume(IOAudioEngine* target);
 
-Point3f
+NOM_EXPORT Point3f
 position(IOAudioEngine* target);
 
 /// \brief Get the volume level of an audio buffer.
 ///
 /// \returns A number between 0..100 (min/max).
-real32
+NOM_EXPORT real32
 volume(SoundBuffer* buffer, IOAudioEngine* target);
 
 /// \brief Get the minimum volume level of an audio buffer.
 ///
 /// \returns A number between 0..100 (min/max).
-real32
+NOM_EXPORT real32
 min_volume(SoundBuffer* buffer, IOAudioEngine* target);
 
 /// \brief Get the maximum volume level of an audio buffer.
 ///
 /// \returns A number between 0..100 (min/max).
-real32
+NOM_EXPORT real32
 max_volume(SoundBuffer* buffer, IOAudioEngine* target);
 
-real32
+NOM_EXPORT real32
 playback_position(SoundBuffer* buffer, IOAudioEngine* target);
 
-real32
+NOM_EXPORT real32
 playback_samples(SoundBuffer* buffer, IOAudioEngine* target);
 
 // TODO(jeff): Update me
-SoundBuffer* clone_buffer(const SoundBuffer* rhs);
+NOM_EXPORT SoundBuffer* clone_buffer(const SoundBuffer* rhs);
 
 // void
 // set_state(SoundBuffer* buffer, IOAudioEngine* target, uint32 state);
@@ -167,35 +170,38 @@ SoundBuffer* clone_buffer(const SoundBuffer* rhs);
 /// representing the volume level.
 ///
 /// \remarks This overrides an audio buffer's local volume level.
-void set_volume(real32 gain, IOAudioEngine* target);
+NOM_EXPORT void set_volume(real32 gain, IOAudioEngine* target);
 
-void
+NOM_EXPORT void
 set_volume(SoundBuffer* buffer, IOAudioEngine* target, real32 gain);
 
 /// \brief Set the minimum volume level for an audio buffer.
 ///
 /// \param gain A 32-bit floating-point number between 0..100 (min/max).
+NOM_EXPORT
 void set_min_volume(SoundBuffer* buffer, IOAudioEngine* target, real32 gain);
 
 /// \brief Set the maximum volume level for an audio buffer.
 ///
 /// \param gain A 32-bit floating-point number between 0..100 (min/max).
+NOM_EXPORT
 void set_max_volume(SoundBuffer* buffer, IOAudioEngine* target, real32 gain);
 
+NOM_EXPORT
 void set_pitch(SoundBuffer* buffer, IOAudioEngine* target, real32 pitch);
 
-void
+NOM_EXPORT void
 set_velocity(SoundBuffer* buffer, IOAudioEngine* target, const Point3f& v);
 
-void
+NOM_EXPORT void
 set_position(SoundBuffer* buffer, IOAudioEngine* target, const Point3f& pos);
 
-void
+NOM_EXPORT void
 set_playback_position(SoundBuffer* buffer, IOAudioEngine* target,
                             real32 offset_seconds);
 
-void suspend(IOAudioEngine* target);
-void resume(IOAudioEngine* target);
+NOM_EXPORT void suspend(IOAudioEngine* target);
+NOM_EXPORT void resume(IOAudioEngine* target);
 
 } // namespace audio
 } // namespace nom

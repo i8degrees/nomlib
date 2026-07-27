@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_AUDIO_AUDIO_DEVICE_LOCATOR_HPP
 #define NOMLIB_AUDIO_AUDIO_DEVICE_LOCATOR_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/audio/NullAudioDevice.hpp"
 
@@ -37,18 +38,18 @@ namespace nom {
 // Forward declarations
 class IAudioDevice;
 
-class AudioDeviceLocator
+class NOM_EXPORT AudioDeviceLocator
 {
   public:
     ~AudioDeviceLocator( void );
 
-    static void initialize( void );
-    static IAudioDevice& audio_device( void );
-    static void set_provider( IAudioDevice* service );
+    NOM_EXPORT static void initialize( void );
+    NOM_EXPORT static IAudioDevice& audio_device( void );
+    NOM_EXPORT static void set_provider( IAudioDevice* service );
 
   private:
-    static IAudioDevice* audio_;
-    static NullAudioDevice null_audio_;
+    NOM_EXPORT static IAudioDevice* audio_;
+    NOM_EXPORT static NullAudioDevice null_audio_;
 };
 
 } // namespace nom

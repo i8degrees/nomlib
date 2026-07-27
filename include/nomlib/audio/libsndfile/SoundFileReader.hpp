@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/audio/ISoundFileReader.hpp"
 
@@ -41,11 +42,11 @@ typedef struct sf_private_tag SNDFILE_tag;
 namespace nom {
 namespace audio {
 
-std::string libsndfile_version();
+NOM_EXPORT std::string libsndfile_version();
 
 // TODO(jeff): Error checking
 // TODO(jeff): Use nom::err
-class SoundFileReader: public ISoundFileReader
+class NOM_EXPORT SoundFileReader: public ISoundFileReader
 {
   public:
     SoundFileReader();
@@ -66,7 +67,7 @@ class SoundFileReader: public ISoundFileReader
 
   private:
     SoundInfo parse_header(SF_INFO& metadata);
-    static const char* parse_tags(SNDFILE_tag* fp, uint32 sound_tag);
+    NOM_EXPORT static const char* parse_tags(SNDFILE_tag* fp, uint32 sound_tag);
 
     /// \brief A third-party file descriptor whose owned by the end-user.
     ///

@@ -31,12 +31,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
 namespace audio {
 
-enum AudioTags
+enum NOM_EXPORT AudioTags
 {
   SOUND_TAG_UNDEFINED = 0,
   SOUND_TAG_TITLE,
@@ -51,7 +52,7 @@ enum AudioTags
   SOUND_TAG_GENRE,
 };
 
-enum AudioFormat
+enum NOM_EXPORT AudioFormat
 {
   AUDIO_FORMAT_UNKNOWN = 0,
 
@@ -90,14 +91,14 @@ enum AudioChannels
 };
 #endif
 
-enum SoundSeek
+enum NOM_EXPORT SoundSeek
 {
   SOUND_SEEK_SET = 0,
   SOUND_SEEK_CUR,
   SOUND_SEEK_END
 };
 
-struct SoundInfo
+struct NOM_EXPORT SoundInfo
 {
   /// \brief The total number of frames.
   ///

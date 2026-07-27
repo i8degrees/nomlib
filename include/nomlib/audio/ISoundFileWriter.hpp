@@ -31,13 +31,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/audio/SoundFile.hpp"
 
 namespace nom {
 namespace audio {
 
-class ISoundFileWriter
+class NOM_EXPORT ISoundFileWriter
 {
   public:
     ISoundFileWriter()

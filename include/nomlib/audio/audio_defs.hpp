@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_AUDIO_DEFINITIONS_HPP
 #define NOMLIB_AUDIO_DEFINITIONS_HPP
 
+#include "export.hpp"
 #include <nomlib/types.hpp>
 
 namespace nom {
@@ -52,7 +53,7 @@ const nom::size_type TOTAL_NUM_SOURCES =
   TOTAL_NUM_MONO_SOURCES + TOTAL_NUM_STEREO_SOURCES;
 
 // TODO(jeff): Collapse with nom::audio::AudioFormat..?
-enum AudioCaps
+enum NOM_EXPORT AudioCaps
 {
   CAPS_UNDEFINED = 0x0000,
 
@@ -106,7 +107,7 @@ enum AudioCaps
   // CAPS_XRAM,
 };
 
-enum AudioSpecFlags: uint32
+enum NOM_EXPORT AudioSpecFlags: uint32
 {
   AUDIO_SPEC_UNDEFINED = 0x00000,
 
@@ -118,7 +119,7 @@ enum AudioSpecFlags: uint32
   // AUDIO_SPEC_SOURCE_NOTIFICATION,
 };
 
-struct AudioSpec
+struct NOM_EXPORT AudioSpec
 {
   // audio front-end
   // IAudioDevice* dev = nullptr;

@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_AUDIO_NULL_DEVICE_CAPS_HPP
 #define NOMLIB_AUDIO_NULL_DEVICE_CAPS_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point3.hpp"
 #include "nomlib/audio/IOAudioEngine.hpp"
@@ -40,7 +41,7 @@ namespace audio {
 struct SoundBuffer;
 
 // TODO(jeff): Add const to getters!
-class NullAudioEngineCaps: public IOAudioEngine
+class NOM_EXPORT NullAudioEngineCaps: public IOAudioEngine
 {
   public:
     NullAudioEngineCaps();

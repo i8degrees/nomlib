@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/audio/IAudioDevice.hpp"
 
@@ -44,7 +45,7 @@ namespace audio {
 
 // void null_set_audio_volume(SoundBuffer* target, real32 gain);
 
-class NullAudioDevice: public IAudioDevice
+class NOM_EXPORT NullAudioDevice: public IAudioDevice
 {
   public:
     NullAudioDevice();
@@ -68,7 +69,7 @@ class NullAudioDevice: public IAudioDevice
     std::string device_name_;
 };
 
-IOAudioEngine* create_null_audio_device(const audio::AudioSpec* spec);
+NOM_EXPORT IOAudioEngine* create_null_audio_device(const audio::AudioSpec* spec);
 
 } // namespace audio
 } // namespace nom

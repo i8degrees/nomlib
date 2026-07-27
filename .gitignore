@@ -44,3 +44,7 @@ report.yaml
 tmp/*
 !tmp/.placeholder
 
+# vim backup state
+.*
+*~*
+

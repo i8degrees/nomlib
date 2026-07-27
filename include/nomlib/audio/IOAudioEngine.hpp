@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_AUDIO_IO_AUDIO_ENGINE_HPP
 #define NOMLIB_AUDIO_IO_AUDIO_ENGINE_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point3.hpp"
 
@@ -48,7 +49,7 @@ struct SoundBuffer;
 /// doesn't fall into an inconsistent state.
 
 // TODO(jeff): Add const to getters!
-class IOAudioEngine
+class NOM_EXPORT IOAudioEngine
 {
   protected:
     IOAudioEngine()

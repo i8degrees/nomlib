@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_AL_OSX_APPLE_EXTENSIONS_HPP
 #define NOMLIB_AL_OSX_APPLE_EXTENSIONS_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 // Forward declarations
@@ -42,7 +43,7 @@ namespace audio {
 /// \brief Get the sampling rate of audio playback.
 ///
 /// \see http://www.opensource.apple.com/source/OpenAL/OpenAL-54/Source/OpenAL/READ_ME
-real64 osx_sample_rate();
+NOM_EXPORT real64 osx_sample_rate();
 
 /// \brief Set the sampling rate of audio playback.
 ///
@@ -50,17 +51,17 @@ real64 osx_sample_rate();
 /// the sampling rate of its audio assets.
 ///
 /// \see http://www.opensource.apple.com/source/OpenAL/OpenAL-54/Source/OpenAL/READ_ME
-void osx_set_sample_rate(real64 sample_rate);
+NOM_EXPORT void osx_set_sample_rate(real64 sample_rate);
 
 /// \brief Get the maximum number of simultaneous playing audio buffers.
 ///
 /// \see http://www.opensource.apple.com/source/OpenAL/OpenAL-54/Source/OpenAL/READ_ME
-int osx_max_sources();
+NOM_EXPORT int osx_max_sources();
 
 /// \brief Set the maximum number of simultaneous playing audio buffers.
 ///
 /// \see http://www.opensource.apple.com/source/OpenAL/OpenAL-54/Source/OpenAL/READ_ME
-void osx_set_max_sources(int num_sources);
+NOM_EXPORT void osx_set_max_sources(int num_sources);
 
 } // namespace audio
 } // namespace nom

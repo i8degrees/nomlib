@@ -72,6 +72,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 namespace priv {
 
+NOM_EXPORT
 void al_err(const std::string& func, const std::string& file, uint32 line);
 
 } // namespace priv

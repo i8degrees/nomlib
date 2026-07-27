@@ -29,13 +29,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_AUDIO_SOUND_BUFFER_HPP
 #define NOMLIB_AUDIO_SOUND_BUFFER_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
 namespace audio {
 
 // TODO(jeff): Verify that these fields match nom::SoundInfo data types!
-struct SoundBuffer
+struct NOM_EXPORT SoundBuffer
 {
   /// \brief The unique identifier for the buffer.
   ///

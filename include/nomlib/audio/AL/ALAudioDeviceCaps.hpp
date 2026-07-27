@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_AUDIO_AL_DEVICE_CAPS_HPP
 #define NOMLIB_AUDIO_AL_DEVICE_CAPS_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point3.hpp"
 #include "nomlib/audio/IOAudioEngine.hpp"
@@ -48,11 +49,11 @@ struct ALAudioDevice;
 
 // Function declarations
 
-void free_buffer(uint32 buffer_id);
-void free_source(uint32 buffer_id);
+NOM_EXPORT void free_buffer(uint32 buffer_id);
+NOM_EXPORT void free_source(uint32 buffer_id);
 
-uint32 buffer_id(const SoundBuffer* target);
-uint32 source_id(const SoundBuffer* target);
+NOM_EXPORT uint32 buffer_id(const SoundBuffer* target);
+NOM_EXPORT uint32 source_id(const SoundBuffer* target);
 
 /// \brief Register a buffer with the audio subsystem.
 ///
@@ -60,7 +61,7 @@ uint32 source_id(const SoundBuffer* target);
 /// underlying audio system.
 ///
 /// \see nom::audio::create_buffer
-uint32 next_buffer_id();
+NOM_EXPORT uint32 next_buffer_id();
 
 /// \brief Register an array of buffers with the audio subsystem.
 ///
@@ -70,7 +71,7 @@ uint32 next_buffer_id();
 /// returned.
 ///
 /// \see nom::audio::create_buffer
-uint32* next_buffer_id(uint32 num_buffers);
+NOM_EXPORT uint32* next_buffer_id(uint32 num_buffers);
 
 /// \brief Register a buffer with the audio subsystem.
 ///
@@ -78,7 +79,7 @@ uint32* next_buffer_id(uint32 num_buffers);
 /// underlying audio system.
 ///
 /// \see nom::audio::fill_audio_buffer
-uint32 next_source_id();
+NOM_EXPORT uint32 next_source_id();
 
 /// \brief Register an array of sound sources with the audio subsystem.
 ///
@@ -88,10 +89,10 @@ uint32 next_source_id();
 /// returned.
 ///
 /// \see nom::audio::create_buffer
-uint32* next_source_id(uint32 num_sources);
+NOM_EXPORT uint32* next_source_id(uint32 num_sources);
 
 // TODO(jeff): Add const to getters!
-class ALAudioEngine: public IOAudioEngine
+class NOM_EXPORT ALAudioEngine: public IOAudioEngine
 {
   public:
     ALAudioEngine();

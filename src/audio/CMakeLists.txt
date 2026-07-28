@@ -120,9 +120,9 @@ target_compile_features(nomlib-audio
 # Common dependencies on all platforms
 target_link_libraries(nomlib-audio
   PUBLIC
-  nomlib-core
-  nomlib-math
-  nomlib-system
+    nomlib-core
+    nomlib-math
+    nomlib-system
   PRIVATE
     project_warnings
     OpenAL::OpenAL
@@ -178,4 +178,3 @@ install(TARGETS nomlib-audio
   FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT Runtime
 )
-

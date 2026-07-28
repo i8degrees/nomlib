@@ -151,6 +151,7 @@ set_target_properties(nomlib-core
 # MacOSX Framework bundle support - public header files
 if(APPLE)
   install(TARGETS nomlib-core
+    project_warnings
     FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-core.framework/Headers"
       COMPONENT Development
     FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-core.framework/Headers/core"
@@ -161,6 +162,8 @@ if(APPLE)
 endif(APPLE)
 
 install(TARGETS nomlib-core
+  # !! Do not copy this onto other INSTALL targets
+  project_warnings
   EXPORT libtarget
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT Runtime
@@ -175,4 +178,3 @@ install(TARGETS nomlib-core
   FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT Runtime
 )
-

@@ -110,6 +110,8 @@ if(NOM_BUILD_GRAPHICS_UNIT)
   target_link_libraries(nomlib-actions
     PUBLIC
       nomlib-graphics
+    PRIVATE
+      project_warnings
     #PRIVATE
       #$<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
   )
@@ -134,7 +136,8 @@ if(NOM_BUILD_AUDIO_UNIT)
     PUBLIC
       nomlib-audio
     PRIVATE
-    $<IF:$<TARGET_EXISTS:OpenAL::OpenAL>,OpenAL::OpenAL,OpenAL::OpenAL-static>
+      project_warnings
+      $<IF:$<TARGET_EXISTS:OpenAL::OpenAL>,OpenAL::OpenAL,OpenAL::OpenAL-static>
   )
 endif(NOM_BUILD_AUDIO_UNIT)
 
@@ -199,4 +202,3 @@ install(TARGETS nomlib-actions
   FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT Runtime
 )
-

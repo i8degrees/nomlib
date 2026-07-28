@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/actions/IActionObject.hpp"
 
@@ -46,7 +47,7 @@ class ISoundFileReader;
 
 /// \brief [TODO: Description]
 // TODO: Update comments!
-class PlayAudioSource: public virtual IActionObject
+class NOM_EXPORT PlayAudioSource: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.
@@ -82,7 +83,7 @@ class PlayAudioSource: public virtual IActionObject
     virtual void release() override;
 
   private:
-    static const char* DEBUG_CLASS_NAME;
+    NOM_EXPORT static const char* DEBUG_CLASS_NAME;
 
     /// \brief Execute the alpha blending logic for the animation.
     IActionObject::FrameState update(real32 t, uint8 b, int16 c, real32 d);
@@ -103,7 +104,7 @@ class PlayAudioSource: public virtual IActionObject
     audio::ISoundFileReader* fp_ = nullptr;
 
     typedef std::vector<audio::SoundBuffer*> audio_buffers;
-    audio_buffers::iterator current_buffer_;
+    // audio_buffers::iterator current_buffer_;
     audio_buffers audible_;
 
     uint32 input_pos_ = 0;

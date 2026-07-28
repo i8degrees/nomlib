@@ -1,9 +1,11 @@
 <tags>
+	<tag name="Software" value="Lavf62.3.100"/>
+	<tag name="COMMENTS" value="sound-theme-freedesktop"/>
 	<tag name="ALBUM" value="Debug Samples"/>
-	<tag name="TITLE" value="Sine Wave at 900 Hz"/>
-	<tag name="COMMENTS" value="Data format is encoded in 32-bit floating-point"/>
+	<tag name="TITLE" value="Audio Channel Testing - Left, Center, Right"/>
 	<tag name="TRACKNUMBER" value="04"/>
 	<tag name="ARTIST" value="Jeffrey Carpenter"/>
 	<tag name="YEAR" value="2016"/>
 	<tag name="GENRE" value="gamedev"/>
 </tags>
+

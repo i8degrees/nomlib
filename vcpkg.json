@@ -23,9 +23,7 @@
     {
       "name": "openal-soft",
       "version>=": "1.17.2",
-      "features": [
-        "pipewire"
-      ],
+      "features": [],
       "platform": "!osx & !windows"
     },
     {

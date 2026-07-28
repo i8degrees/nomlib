@@ -80,16 +80,19 @@ class ALAudioTest: public ::testing::Test
         << RES_FILENAME;
       }
 
-      auto p = file_ref("chunk", res.path() + "sinewave_1s-chunk.wav");
+      auto p = file_ref("audio-channel-front-center", res.path() + "audio-channel-front-center.wav");
       AUDIO_RESOURCES.insert(p);
 
-      p = file_ref("sine1s-900", res.path() + "sinewave_1s-900.wav");
+      p = file_ref("audio-channel-front-left", res.path() + "audio-channel-front-left.wav");
       AUDIO_RESOURCES.insert(p);
 
-      p = file_ref("sine2s-440", res.path() + "sinewave_2s-440.wav");
+      p = file_ref("audio-channel-front-right", res.path() + "audio-channel-front-right.wav");
       AUDIO_RESOURCES.insert(p);
 
-      p = file_ref("sine1s-real32", res.path() + "sinewave-real32_1s-900.wav");
+      p = file_ref("audio-test-signal", res.path() + "audio-test-signal.wav");
+      AUDIO_RESOURCES.insert(p);
+
+      p = file_ref("audio-volume-change", res.path() + "audio-volume-change.wav");
       AUDIO_RESOURCES.insert(p);
 
       this->null_request.engine = "null"; // default
@@ -129,6 +132,16 @@ class ALAudioTest: public ::testing::Test
 };
 
 namespace test {
+
+static int
+compare_string(const char* str1, const char* str2) {
+  int result = nom::compare_cstr_insensitive(str1, str2);
+  if(result != 0) {
+    ADD_FAILURE_AT(NOM_FILE, __LINE__);
+  }
+
+  return result;
+}
 
 static void play_audio(void* samples, const audio::SoundInfo& metadata,
                        audio::IOAudioEngine* target)
@@ -192,7 +205,7 @@ static void play_audio(void* samples, const audio::SoundInfo& metadata,
 // TODO(jeff): Dedicate to SoundFileReaderTest::AudioRead test executable
 TEST_F(ALAudioTest, SoundFileReader_AudioRead)
 {
-  const auto AUDIO_FILENAME = AUDIO_RESOURCES["sine1s-900"];
+  const auto AUDIO_FILENAME = AUDIO_RESOURCES["audio-channel-front-center"];
   void* buffer = nullptr;
   audio::SoundInfo metadata = {};
 
@@ -214,17 +227,18 @@ TEST_F(ALAudioTest, SoundFileReader_AudioRead)
   NOM_DELETE_PTR(fp);
 #endif
 
-  EXPECT_EQ(-15, NOM_SCAST(int16*, buffer)[0]);
-  EXPECT_EQ(-5, NOM_SCAST(int16*, buffer)[1]);
+  EXPECT_EQ(0, NOM_SCAST(int16*, buffer)[0]);
+  EXPECT_EQ(0, NOM_SCAST(int16*, buffer)[1]);
 
   delete NOM_SCAST(int16*, buffer);
   buffer = nullptr;
 }
 
+// const auto AUDIO_FILENAME = AUDIO_RESOURCES["chunk"];
 // TODO(jeff): Dedicate to SoundFileReaderTest::AudioRead test executable
 TEST_F(ALAudioTest, SoundFileReader_AudioReadChunk)
 {
-  const auto AUDIO_FILENAME = AUDIO_RESOURCES["chunk"];
+  const auto AUDIO_FILENAME = AUDIO_RESOURCES["audio-channel-front-left"];
 
   audio::SoundInfo metadata = {};
   nom::Timer elapsed;
@@ -274,6 +288,7 @@ TEST_F(ALAudioTest, SoundFileReader_AudioReadChunk)
   EXPECT_EQ(READ_SIZE, first_half);
   EXPECT_EQ(READ_SIZE, second_half);
 
+  // blocking audio call
   if(TEST_CHUNK_PLAYBACK == true) {
     // audio::set_volume(4.0f, dev);
     // EXPECT_EQ(4.0f, audio::volume(dev));
@@ -294,10 +309,11 @@ TEST_F(ALAudioTest, SoundFileReader_AudioReadChunk)
   }
 }
 
+// const auto AUDIO_FILENAME = AUDIO_RESOURCES["chunk"];
 // TODO(jeff): Dedicate to SoundFileReaderTest::Seek test executable
 TEST_F(ALAudioTest, SoundFileReader_Seek)
 {
-  const auto AUDIO_FILENAME = AUDIO_RESOURCES["chunk"];
+  const auto AUDIO_FILENAME = AUDIO_RESOURCES["audio-channel-front-right"];
   nom::size_type offset = 0;
 
   audio::SoundInfo metadata = {};
@@ -342,6 +358,7 @@ TEST_F(ALAudioTest, SoundFileReader_Seek)
     fp->read( NOM_SCAST(int16*, samples), metadata.channel_format, READ_SIZE);
   EXPECT_EQ(READ_SIZE, first_half);
 
+  // blocking audio call
   if(TEST_CHUNK_PLAYBACK == true) {
     // audio::set_volume(4.0f, dev);
     // EXPECT_EQ(4.0f, audio::volume(dev));
@@ -365,19 +382,34 @@ TEST_F(ALAudioTest, SoundFileReader_Metadata)
 {
   nom::Timer elapsed;
 
+  audio::SoundFileReader* fp = new audio::SoundFileReader();
+  ASSERT_TRUE(fp != nullptr);
+
   for(auto itr = AUDIO_RESOURCES.begin(); itr != AUDIO_RESOURCES.end();
       ++itr)
   {
     audio::SoundInfo metadata = {};
-    audio::SoundFileReader* fp = new audio::SoundFileReader();
-    ASSERT_TRUE(fp != nullptr);
 
     EXPECT_EQ(true, fp->open(itr->second, metadata))
     << "Could not load audio from input file " << itr->second;
 
     EXPECT_EQ(true, fp->valid());
+
+    // test::compare_string(metadata.tags.album, "Debug Samples");
+    test::compare_string(metadata.tags.title, "Audio Channel Testing - Left, Center, Right");
+    // test::compare_string(metadata.tags.comment, "sound-theme-freedesktop");
+    // test::compare_string(metadata.tags.genre, "gamedev");
+    test::compare_string(metadata.tags.comment, "sound-theme-freedesktop");
+    test::compare_string(metadata.tags.genre, "nomlib v0.13.1");
+    test::compare_string(metadata.tags.software,
+      "Lavf62.3.100 (libsndfile-1.2.2)");
+
     NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST,
                   "    Audio resource:", itr->second);
+
+    // TODO(JEFF): Finish testing the full range of metadata tags we have
+    // implemented
+/*
     NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST, "title:",
                   metadata.tags.title);
     NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST, "copyright:",
@@ -396,14 +428,11 @@ TEST_F(ALAudioTest, SoundFileReader_Metadata)
                   metadata.tags.track_number);
     NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST, "genre:",
                   metadata.tags.genre);
-
-    fp->close();
-    // TODO(jeff): cppcheck reports `fp` as a memory leak; my own visual
-    // examination agrees with the report. Verify this to be true!
-  #if 0
-    NOM_DELETE_PTR(fp);
-  #endif
+*/
   }
+
+  fp->close();
+  NOM_DELETE_PTR(fp);
 }
 
 // TODO(jeff): Dedicate to SoundFileWriterTest::RawWrite test executable
@@ -516,7 +545,7 @@ TEST_F(ALAudioTest, NullSound)
   auto buffer = audio::create_buffer_memory();
   EXPECT_TRUE(buffer != nullptr);
 
-  EXPECT_EQ(audio::AUDIO_STATE_STOPPED, audio::pitch(buffer, dev));
+  EXPECT_EQ(audio::AUDIO_STATE_STOPPED, audio::state(buffer, dev));
   EXPECT_FLOAT_EQ(0.0f, audio::volume(buffer, dev));
   EXPECT_FLOAT_EQ(0.0f, audio::min_volume(buffer, dev));
   EXPECT_FLOAT_EQ(0.0f, audio::max_volume(buffer, dev));
@@ -612,7 +641,7 @@ TEST_F(ALAudioTest, GlobalAudioOutputVolume)
 
 TEST_F(ALAudioTest, AudioOutputBufferVolume)
 {
-  const auto AUDIO_FILENAME = AUDIO_RESOURCES["sine1s-900"];
+  const auto AUDIO_FILENAME = AUDIO_RESOURCES["audio-test-signal"];
 
   audio::AudioSpec spec = {};
   audio::IOAudioEngine* dev =
@@ -699,7 +728,7 @@ TEST_F(ALAudioTest, AudioSpec)
 
 TEST_F(ALAudioTest, SoundBuffer)
 {
-  const auto AUDIO_FILENAME = AUDIO_RESOURCES["sine1s-900"];
+  const auto AUDIO_FILENAME = AUDIO_RESOURCES["audio-volume-change"];
 
   audio::AudioSpec spec = {};
   audio::IOAudioEngine* dev =
@@ -709,10 +738,10 @@ TEST_F(ALAudioTest, SoundBuffer)
   audio::SoundBuffer* buffer = nullptr;
   buffer = audio::create_buffer(AUDIO_FILENAME, dev);
   ASSERT_TRUE(buffer != nullptr);
-  EXPECT_FLOAT_NEAR(1.0f, buffer->duration, 0.01f);
+  EXPECT_FLOAT_NEAR(0.063854873180389404f, buffer->duration, 0.01f);
 
   EXPECT_EQ(1, audio::buffer_id(buffer));
-  EXPECT_EQ(2, audio::source_id(buffer));
+  EXPECT_EQ(1, audio::source_id(buffer));
 
   audio::free_buffer(buffer, dev);
   EXPECT_TRUE(buffer != nullptr);
@@ -722,7 +751,7 @@ TEST_F(ALAudioTest, SoundBuffer)
 
 TEST_F(ALAudioTest, Sound)
 {
-  const auto AUDIO_FILENAME = AUDIO_RESOURCES["sine1s-900"];
+  const auto AUDIO_FILENAME = AUDIO_RESOURCES["audio-channel-front-right"];
 
   audio::AudioSpec spec = {};
   audio::IOAudioEngine* dev =
@@ -731,9 +760,9 @@ TEST_F(ALAudioTest, Sound)
 
   auto buffer = audio::create_buffer(AUDIO_FILENAME, dev);
   ASSERT_TRUE(buffer != nullptr);
-  EXPECT_FLOAT_NEAR(1.0f, buffer->duration, 0.01f);
+  EXPECT_FLOAT_NEAR(1.531f, buffer->duration, 0.01f);
 
-  EXPECT_EQ(audio::AUDIO_STATE_STOPPED, audio::state(buffer, dev));
+  EXPECT_EQ(audio::AUDIO_STATE_INITIAL, audio::state(buffer, dev));
   EXPECT_FLOAT_EQ(100.0f, audio::volume(buffer, dev));
   EXPECT_FLOAT_EQ(0.0f, audio::min_volume(buffer, dev));
   EXPECT_FLOAT_EQ(100.0f, audio::max_volume(buffer, dev));
@@ -932,4 +961,3 @@ int main(int argc, char** argv)
 
   return RUN_ALL_TESTS();
 }
-

@@ -62,6 +62,7 @@ struct AppFlags
   bool use_music_interface = false;
 
   real32 audio_volume = 100.0f;
+  uint32 audio_loops = 1;
 };
 
 int parse_cmdline(int argument_count, char* arguments[], AppFlags& opts)
@@ -86,6 +87,11 @@ int parse_cmdline(int argument_count, char* arguments[], AppFlags& opts)
     SwitchArg use_music_interface_arg("", "use-music", music_interface_desc,
                                       cmd, false);
 
+    ValueArg<real32> audio_loops_arg("l", "loop",
+                                         "The number of times to loop the audio",
+                                         false, opts.audio_loops,
+                                         "A number between 0..99",
+                                         cmd);
     ValueArg<real32> audio_volume_arg("v", "volume",
                                          "Gain level of audio playback",
                                          false, opts.audio_volume,
@@ -102,6 +108,7 @@ int parse_cmdline(int argument_count, char* arguments[], AppFlags& opts)
     opts.use_music_interface = use_music_interface_arg.getValue();
     opts.audio_input = audio_file_arg.getValue();
     opts.audio_volume = audio_volume_arg.getValue();
+    opts.audio_loops = audio_loops_arg.getValue();
   }
   catch(TCLAP::ArgException &e)
   {
@@ -126,7 +133,7 @@ int main(int argc, char* argv[])
   audio::SoundBuffer* buffer = nullptr;
 
   const char* RES_FILENAME = "audio.json";
-  real32 master_gain = 100.0f;
+  real32 master_gain = 75.0f;
   const real32 pitch = 1.0f;
   const Point3f audio_pos = {0.0f, 0.0f, 0.0f};
   const Point3f audio_velocity = {0.0f, 0.0f, 0.0f};
@@ -162,7 +169,7 @@ NOM_IGNORED_VARS_ENDL();
     NOM_LOG_CRIT(NOM_LOG_CATEGORY_APPLICATION,
                  "Could not resolve the resources path from given input:",
                  RES_FILENAME);
-    exit(NOM_EXIT_FAILURE);
+    //exit(NOM_EXIT_FAILURE);
   }
 
   if(parse_cmdline(argc, argv, args) != 0) {
@@ -170,16 +177,16 @@ NOM_IGNORED_VARS_ENDL();
   }
 
   if(args.audio_input.length() < 1) {
-    args.audio_input = res.path() + "sinewave_1s-900.wav";
+    args.audio_input = res.path() + "audio-channel-front-center.wav";
   }
 
   // Fatal error; if we are not able to complete this step, it means that
   // we probably cannot rely on our resource paths!
-  if(nom::init(argc, argv) == false) {
-    NOM_LOG_CRIT(NOM_LOG_CATEGORY_APPLICATION,
-                 "Could not initialize nomlib.");
-    exit(NOM_EXIT_FAILURE);
-  }
+  // if(nom::init(argc, argv) == false) {
+  //   NOM_LOG_CRIT(NOM_LOG_CATEGORY_APPLICATION,
+  //                "Could not initialize nomlib.");
+  //   exit(NOM_EXIT_FAILURE);
+  // }
   atexit(nom::quit);
 
   // Quick and dirty method of testing the use of nomlib's audio subsystem
@@ -187,12 +194,7 @@ NOM_IGNORED_VARS_ENDL();
 
   // Initialize audio subsystem...
   request.engine = "openal";
-  // TEST CODE: REMOVE ME
-#if 1
-  request.sample_rate = 48000;
-  request.num_mono_sources = 32;
-  request.num_stereo_sources = 16;
-#endif
+
   if(args.use_null_interface == false) {
     audio::AudioSpec spec = {};
     dev = audio::init_audio(&request, &spec);
@@ -226,7 +228,14 @@ NOM_IGNORED_VARS_ENDL();
   audio::set_pitch(buffer, dev, pitch);
   audio::set_position(buffer, dev, audio_pos);
   audio::set_velocity(buffer, dev, audio_velocity);
-  // audio::set_state(buffer, dev, audio::AUDIO_STATE_LOOPING);
+
+  // FIXME(JEFF): lookup the function to use to set looping state
+#if 0
+  if(args.audio_loops > 0) {
+    audio::set_state(buffer, audio::AUDIO_STATE_LOOPING);
+  }
+#endif
+
 #if 1
   auto playback_action =
     nom::create_action<PlayAudioSource>(dev, args.audio_input.c_str());
@@ -243,6 +252,8 @@ NOM_IGNORED_VARS_ENDL();
   playback_action->set_speed(ACTION_SPEED);
   playback_action->set_name("audio_playback");
   audio_player.run_action(playback_action);
+  uint32 last_delta = elapsed.ticks();
+  uint32 playback_state = audio::AUDIO_STATE_PLAYING;
 
 #if 0
   if(args.use_music_interface == true) {
@@ -265,40 +276,6 @@ NOM_IGNORED_VARS_ENDL();
         // NOM_DUMP(elapsed_delta);
 
         audio_player.update(elapsed_delta);
-      }
-#else
-      // sound state should be set to audio::AUDIO_STATE_PLAYING after issuing
-      // the play command
-      uint32 playback_state = audio::state(buffer, dev);
-      while(elapsed.to_seconds() < 20.0f) {
-
-        nom::Event evt;
-        while(evt_handler.poll_event(evt) == true) {
-
-          switch(evt.type) {
-            default: break;
-
-            case Event::QUIT_EVENT: {
-              NOM_DUMP_VAR(NOM, "goodbye!\n");
-              audio::free_buffer(buffer, dev);
-              audio::shutdown_audio(dev);
-              exit(NOM_EXIT_SUCCESS);
-            } break;
-          } // end switch
-        } // end event polling loop
-
-        auto dev_connected = dev->connected();
-        if(dev_connected == 1) {
-          // NOM_DUMP_VAR(NOM, "audio connected");
-        } else {
-          NOM_DUMP_VAR(NOM, "audio disconnected");
-          break;
-        }
-
-        playback_state = audio::state(buffer, dev);
-        if(playback_state == audio::AUDIO_STATE_STOPPED) {
-          // break;
-        }
       }
 #endif
       NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION,
@@ -331,44 +308,19 @@ NOM_IGNORED_VARS_ENDL();
 #endif
 
   elapsed.start();
-  uint32 last_delta = elapsed.ticks();
-  uint32 playback_state = audio::AUDIO_STATE_PLAYING;
-
+  audio::play(buffer, dev);
   bool playback_eof = false;
   while(playback_eof == false) {
     playback_state = audio::state(buffer, dev);
 
-    nom::Event evt;
-    while(evt_handler.poll_event(evt) == true) {
-
-      switch(evt.type) {
-        default: break;
-
-        case Event::KEY_PRESS: {
-          switch(evt.key.sym) {
-            default: {
-            } break;
-
-            case SDLK_ESCAPE:
-            case SDLK_q: {
-              audio::stop(buffer, dev);
-              playback_eof = true;
-            } break;
-          }
-        } break;
-
-        case Event::QUIT_EVENT: {
-          audio::stop(buffer, dev);
-          playback_eof = true;
-        } break;
-      } // end switch
-    } // end event polling loop
-
     uint32 end_delta = elapsed.ticks();
     uint32 elapsed_delta = end_delta - last_delta;
     last_delta = end_delta;
-    audio_player.update(elapsed_delta);
 
+    // FIXME
+/*
+    audio_player.update(elapsed_delta);
+*/
     auto elapsed_seconds = elapsed.to_seconds(end_delta);
     if(elapsed_seconds >= buffer->duration &&
        playback_state != audio::AUDIO_STATE_PLAYING)
@@ -376,14 +328,13 @@ NOM_IGNORED_VARS_ENDL();
       audio::stop(buffer, dev);
       playback_eof = true;
     }
-
-    nom::sleep(17); // Emulate 60 FPS
   }
 
   NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION,
                "Elapsed duration (seconds):", elapsed.to_seconds());
-  // audio::free_buffer(buffer, dev);
-  playback_action->release();
+  audio::free_buffer(buffer, dev);
+  // FIXME
+  //playback_action->release();
   audio::shutdown_audio(dev);
 
   return NOM_EXIT_SUCCESS;

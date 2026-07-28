@@ -44,8 +44,9 @@ class App: public nom::SDLApp
     {
       NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
 
-      // ...Initialize the input mapper callbacks...
+      // ...Initialize the input mapper callbacks for keyboard and gamecontroller...
 
+      // quit_app
       this->quit_app = nom::event_callback( [=](const nom::Event& evt) {
         int32 numJoysticks = joystick_evt.num_joysticks();
         NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, numJoysticks,
@@ -53,12 +54,13 @@ class App: public nom::SDLApp
         this->on_app_quit(evt);
       });
 
+      // reload_controller_mappings
       this->init_db_bindings = nom::event_callback( [=](const nom::Event& evt) {
         if(this->initialize_game_controller_db(this->db_filename) == false) {
           this->initialize_game_controller_db("gamecontrollerdb.txt");
         }
       });
-
+      // left_thumb_left
       this->x_axis_action = nom::event_callback( [=](const nom::Event& evt) {
 
         int32 axis = evt.caxis.axis;
@@ -105,7 +107,7 @@ class App: public nom::SDLApp
           }
         }
       });
-
+      // left_thumb_up
       this->y_axis_action = nom::event_callback( [=](const nom::Event& evt) {
 
         int32 axis = evt.caxis.axis;
@@ -152,7 +154,7 @@ class App: public nom::SDLApp
           }
         }
       });
-
+      // gamecontroller_buttons
       this->button_action = nom::event_callback( [=](const nom::Event& evt) {
 
         int32 button = evt.cbutton.button;
@@ -217,7 +219,6 @@ class App: public nom::SDLApp
       NOM_ASSERT( this->evt_handler.joystick_event_type() ==
                   EventHandler::GAME_CONTROLLER_EVENT_HANDLER );
 
-      // this->initialize_game_controller_db(this->db_filename);
       if(this->initialize_game_controller_db(this->db_filename) == false) {
         this->initialize_game_controller_db("gamecontrollerdb.txt");
       }

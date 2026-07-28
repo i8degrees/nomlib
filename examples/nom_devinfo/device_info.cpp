@@ -43,6 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #if defined(NOM_USE_CREATIVE_OPENAL) || defined(NOM_USE_APPLE_OPENAL) || defined(NOM_USE_OPENAL_SOFT)
+  #include "nomlib/audio.hpp"
   #include "nomlib/audio/AL/OpenAL.hpp"
 #endif
 
@@ -59,6 +60,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/system.hpp"
 
 namespace nom {
+
+struct OpenALVersionInfo {
+  std::string version = "N/A (engine was not built with NOM_BUILD_AUDIO_UNIT)";
+  std::string renderer = "N/A (engine was not built with NOM_BUILD_AUDIO_UNIT)";
+  std::string vendor = "N/A (engine was not built with NOM_BUILD_AUDIO_UNIT)";
+  std::string extensions = "N/A (engine was not built with NOM_BUILD_AUDIO_UNIT)";
+};
 
 void nomlib_version_info( void )
 {
@@ -168,24 +176,16 @@ void SDL2_ttf_version_info( void )
                   );
   #endif
 }
-struct OpenALVersionInfo {
-  std::string version = "N/A (engine was not built with NOM_BUILD_AUDIO_UNIT)";
-  std::string renderer = "N/A (engine was not built with NOM_BUILD_AUDIO_UNIT)";
-  std::string vendor = "N/A (engine was not built with NOM_BUILD_AUDIO_UNIT)";
-  std::string extensions = "N/A (engine was not built with NOM_BUILD_AUDIO_UNIT)";
-};
-
-//OpenALVersionInfo info;
 
 OpenALVersionInfo OpenAL_version() {
-  OpenALVersionInfo res_al;
-#if defined(NOM_USE_CREATIVE_OPENAL) || defined(NOM_USE_APPLE_OPENAL) //|| defined(NOM_USE_OPENAL_SOFT)
-  AL_CHECK_ERR( res_al.version = alGetString( AL_VERSION ) );
-  AL_CHECK_ERR( res_al.renderer = alGetString( AL_RENDERER ) );
-  AL_CHECK_ERR( res_al.vendor = alGetString( AL_VENDOR ) );
-  AL_CHECK_ERR( res_al.extensions = alGetString( AL_EXTENSIONS ) );
+  OpenALVersionInfo info;
+#if defined(NOM_USE_CREATIVE_OPENAL) || defined(NOM_USE_APPLE_OPENAL) || defined(NOM_USE_OPENAL_SOFT)
+  AL_CHECK_ERR( info.version = alGetString(AL_VERSION ) );
+  AL_CHECK_ERR( info.renderer = alGetString(AL_RENDERER ) );
+  AL_CHECK_ERR( info.vendor = alGetString(AL_VENDOR ) );
+  AL_CHECK_ERR( info.extensions = alGetString(AL_EXTENSIONS ) );
 #endif // end if NOM_USE_OPENAL
-  return res_al;
+  return info;
 }
 
 void libsndfile_version_info( void )
@@ -199,9 +199,8 @@ void libsndfile_version_info( void )
   #endif // defined(NOM_USE_LIBSNDFILE)
 }
 
-void libs_version_info( void )
+void libs_version_info()
 {
-  auto res_al = OpenAL_version();
   std::string librocket_ver = "N/A (engine was not built with NOM_BUILD_GUI_UNIT)";
 
   std::cout << std::endl;
@@ -214,13 +213,15 @@ void libs_version_info( void )
   SDL2_ttf_version_info();
   std::cout << std::endl;
 
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL version: ", res_al.version );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL renderer: ", res_al.renderer );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL vendor: ", res_al.vendor );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL extensions: ", res_al.extensions );
-
-  std::cout << std::endl;
   libsndfile_version_info();
+  std::cout << std::endl;
+
+  auto audio_info = OpenAL_version();
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL version: ", audio_info.version );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL renderer: ", audio_info.renderer );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL vendor: ", audio_info.vendor );
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL extensions: ", audio_info.extensions );
+
   std::cout << std::endl;
 
   #if defined( NOM_USE_LIBROCKET )
@@ -239,6 +240,17 @@ int main ( int argc, char* argv[] )
   nom::Size2i window_size( nom::Size2i::zero );
   nom::RendererInfo renderer_info;
   uint32 window_flags = SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL;
+
+
+#if defined(NOM_USE_CREATIVE_OPENAL) || defined(NOM_USE_APPLE_OPENAL) || defined(NOM_USE_OPENAL_SOFT)
+  // Initialize audio subsystem...
+  audio::AudioSpec audio_spec = {};
+  audio::AudioSpec request = {};
+  audio::IOAudioEngine* dev = nullptr;
+  request.engine = "openal";
+
+  dev = nom::audio::init_audio(&request, &audio_spec);
+#endif
 
   // We need SDL2 video initialization so we can obtain the available rendering
   // caps
@@ -259,21 +271,23 @@ int main ( int argc, char* argv[] )
   NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION, "System RAM (bytes):",
                spec.total_ram);
 
+  // Output the versions used of nomlib and its dependencies.
+  libs_version_info();
+
   // Fix for getting incorrect OpenGL version of 2.1 on my MacBook Air
   // (Mid 2011) -- when in reality, it is v3.3. We must request a core
   // profile.
   //
   // Source: http://stackoverflow.com/questions/19865463/opengl-4-1-under-mavericks
   // SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-
-  // Output the versions used of nomlib and its dependencies.
-  libs_version_info();
-
   if( window.create("device_info", window_size, window_flags) == false ) {
     NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION,
                   "Could not create a window." );
     exit(NOM_EXIT_FAILURE);
   }
+
+  // OpenGL version
+  std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
   renderer_info = window.caps();
 
@@ -295,8 +309,6 @@ int main ( int argc, char* argv[] )
     NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, nom::PIXEL_FORMAT_NAME( *itr ), index == 0 ? " (optimal)" : "" );
     ++index;
   }
-
-  std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
   return NOM_EXIT_SUCCESS;
 }

@@ -50,13 +50,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define NOM_DASHED_ENDL(reserved) ( std::cout << "---" << std::endl )
 
 #define NOM_DELETE_PTR(var) \
-  if( var != nullptr ) delete var; var = nullptr;
+  if(var != nullptr) { \
+    delete var; \
+    var = nullptr; \
+  }
 
 #define NOM_DELETE_SMART_PTR(var) \
-  if( var != nullptr ) var.reset();
+  if(var != nullptr) var.reset();
 
 #define NOM_DELETE_VOID_PTR(var) \
-  if( var != nullptr ) free(var); var = nullptr;
+  if(var != nullptr) { \
+    free(var); \
+    var = nullptr; \
+  }
 
 // A macro declaration from gtest_prod.h for allowing internal access into
 // private parts of a class. (I prefer not to include the framework's header

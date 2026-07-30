@@ -5,14 +5,6 @@ add_library(nomlib-audio
   ${LIBRARY_OUTPUT_TYPE} # STATIC || SHARED
 )
 
-# CMake generates our NOM_EXPORT macros, i.e.: __declspec(dllexport)
-generate_export_header(nomlib-audio
-  BASE_NAME
-    NOM
-  EXPORT_FILE_NAME
-    export.hpp
-)
-
 # Default implementation sources (always built)
 target_sources(nomlib-audio
   PRIVATE
@@ -34,10 +26,6 @@ target_sources(nomlib-audio
     # ${HDR_BASE}/audio/AudioDeviceLocator.hpp
     # ${HDR_BASE}/audio/NullAudioDevice.hpp
     # ${HDR_BASE}/audio/NullAudioDeviceCaps.hpp
-    FILE_SET generated_headers
-    TYPE HEADERS
-    BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/export.hpp
 )
 
 # Common dependencies on all platforms
@@ -157,8 +145,6 @@ if(APPLE)
       COMPONENT Runtime
     FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-audio.framework/Headers"
       COMPONENT Development
-    FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-audio.framework/Headers/audio"
-      COMPONENT Development
   )
 endif(APPLE)
 
@@ -171,8 +157,6 @@ install(TARGETS nomlib-audio
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     COMPONENT Runtime
   FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-    COMPONENT Development
-  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/audio"
     COMPONENT Development
   # MacOSX framework bundle
   FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}

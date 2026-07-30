@@ -67,14 +67,6 @@ add_library(nomlib-graphics
   ${LIBRARY_OUTPUT_TYPE} # STATIC || SHARED
 )
 
-# CMake generates our NOM_EXPORT macros, i.e.: __declspec(dllexport)
-generate_export_header(nomlib-graphics
-  BASE_NAME
-    NOM
-  EXPORT_FILE_NAME
-    export.hpp
-)
-
 # Base unit files
 target_sources(nomlib-graphics
   PRIVATE
@@ -84,10 +76,6 @@ target_sources(nomlib-graphics
     BASE_DIRS ${HDR_BASE}
     FILES
     ${GRAPHICS_HDR}
-    FILE_SET generated_headers
-    TYPE HEADERS
-    BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/export.hpp
 )
 
 if( NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT )
@@ -204,8 +192,6 @@ if(APPLE)
       COMPONENT Runtime
     FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-graphics.framework/Headers"
       COMPONENT Development
-    FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-graphics.framework/Headers/graphics"
-      COMPONENT Development
   )
 endif(APPLE)
 
@@ -219,9 +205,6 @@ install(TARGETS nomlib-graphics
     COMPONENT Runtime
   FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     COMPONENT Development
-  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/graphics"
-    COMPONENT Development
   FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT Runtime
 )
-

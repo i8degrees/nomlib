@@ -5,14 +5,6 @@ add_library(nomlib-system
   ${LIBRARY_OUTPUT_TYPE} # STATIC || SHARED
 )
 
-# CMake generates our NOM_EXPORT macros, i.e.: __declspec(dllexport)
-generate_export_header(nomlib-system
-  BASE_NAME
-    NOM
-  EXPORT_FILE_NAME
-    export.hpp
-)
-
 set_target_properties(nomlib-system
   PROPERTIES
     VERSION ${PROJECT_VERSION}
@@ -90,10 +82,6 @@ target_sources(nomlib-system
     ${HDR_BASE}/system/InputMapper/InputAction.hpp
     ${HDR_BASE}/system/InputMapper/InputActionMapper.hpp
     ${HDR_BASE}/system/InputMapper/InputStateMapper.hpp
-    FILE_SET generated_headers
-    TYPE HEADERS
-    BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/export.hpp
 )
 
 target_include_directories(nomlib-system
@@ -152,8 +140,6 @@ if(APPLE)
       COMPONENT Runtime
     FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-system.framework/Headers"
       COMPONENT Development
-    FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-system.framework/Headers/system"
-      COMPONENT Development
   )
 endif(APPLE)
 
@@ -167,9 +153,6 @@ install(TARGETS nomlib-system
     COMPONENT Runtime
   FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     COMPONENT Development
-  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/system"
-    COMPONENT Development
   FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT Runtime
 )
-

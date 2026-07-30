@@ -5,14 +5,6 @@ add_library(nomlib-ptree
   ${LIBRARY_OUTPUT_TYPE} # SHARED || STATIC
 )
 
-# CMake generates our NOM_EXPORT macros, i.e.: __declspec(dllexport)
-generate_export_header(nomlib-ptree
-  BASE_NAME
-    NOM
-  EXPORT_FILE_NAME
-    export.hpp
-)
-
 set_target_properties(nomlib-ptree
   PROPERTIES
     VERSION ${PROJECT_VERSION}
@@ -55,10 +47,6 @@ target_sources(nomlib-ptree
     ${HDR_BASE}/ptree/ptree_config.hpp
     ${HDR_BASE}/ptree/ptree_forwards.hpp
     ${HDR_BASE}/ptree/ptree_types.hpp
-    FILE_SET generated_headers
-    TYPE HEADERS
-    BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/export.hpp
 )
 
 target_include_directories(nomlib-ptree
@@ -105,8 +93,6 @@ if(APPLE)
   install(TARGETS nomlib-ptree
     FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-ptree.framework/Headers"
       COMPONENT Development
-    FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-ptree.framework/Headers/ptree"
-      COMPONENT Development
     FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
       COMPONENT Runtime
   )
@@ -122,10 +108,6 @@ install(TARGETS nomlib-ptree
     COMPONENT Runtime
   FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     COMPONENT Development
-  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/ptree"
-    COMPONENT Development
   FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT Runtime
 )
-
-

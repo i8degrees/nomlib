@@ -17,14 +17,6 @@ add_library(nomlib-file
   ${LIBRARY_OUTPUT_TYPE} # STATIC || SHARED
 )
 
-# CMake generates our NOM_EXPORT macros, i.e.: __declspec(dllexport)
-generate_export_header(nomlib-file
-  BASE_NAME
-    NOM
-  EXPORT_FILE_NAME
-    export.hpp
-)
-
 if(APPLE)
   target_sources(nomlib-file
     PRIVATE
@@ -94,10 +86,6 @@ target_sources(nomlib-file
     ${HDR_BASE}/system/Path.hpp
     ${HDR_BASE}/system/File.hpp
     ${HDR_BASE}/system/IFile.hpp
-    FILE_SET generated_headers
-    TYPE HEADERS
-    BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/export.hpp
 )
 
 target_include_directories(nomlib-file
@@ -145,8 +133,6 @@ if(APPLE)
       COMPONENT Runtime
     FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-file.framework/Headers"
       COMPONENT Development
-    FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-file.framework/Headers/file"
-      COMPONENT Development
   )
 endif(APPLE)
 
@@ -160,10 +146,7 @@ install(TARGETS nomlib-file
     COMPONENT Runtime
   FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     COMPONENT Development
-  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/file"
-    COMPONENT Development
   # MacOSX framework bundle
   FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT Runtime
 )
-

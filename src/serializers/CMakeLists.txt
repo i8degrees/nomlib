@@ -7,14 +7,6 @@ add_library(nomlib-serializers
   ${LIBRARY_OUTPUT_TYPE}
 )
 
-# CMake generates our NOM_EXPORT macros, i.e.: __declspec(dllexport)
-generate_export_header(nomlib-serializers
-  BASE_NAME
-    NOM
-  EXPORT_FILE_NAME
-    export.hpp
-)
-
 set_target_properties(nomlib-serializers
   PROPERTIES
     VERSION ${PROJECT_VERSION}
@@ -68,10 +60,6 @@ target_sources(nomlib-serializers
     ${HDR_BASE}/serializers/RapidXmlSerializer.hpp
     ${HDR_BASE}/serializers/SearchPath.hpp
     ${HDR_BASE}/serializers/serializers_config.hpp
-    FILE_SET generated_headers
-    TYPE HEADERS
-    BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/export.hpp
 )
 
 target_include_directories(nomlib-serializers
@@ -124,8 +112,6 @@ if(APPLE)
       COMPONENT Runtime
     FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-serializers.framework/Headers"
       COMPONENT Development
-    FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-serializers.framework/Headers/serializers"
-      COMPONENT Development
   )
 endif(APPLE)
 
@@ -139,9 +125,6 @@ install(TARGETS nomlib-serializers
     COMPONENT Runtime
   FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     COMPONENT Development
-  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/serializers"
-    COMPONENT Development
   FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT Runtime
 )
-

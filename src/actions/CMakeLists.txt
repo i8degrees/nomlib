@@ -5,14 +5,6 @@ add_library(nomlib-actions
   ${LIBRARY_OUTPUT_TYPE}
 )
 
-# CMake generates our NOM_EXPORT macros, i.e.: __declspec(dllexport)
-generate_export_header(nomlib-actions
-  BASE_NAME
-    NOM
-  EXPORT_FILE_NAME
-    export.hpp
-)
-
 set_target_properties(nomlib-actions
   PROPERTIES
     VERSION ${PROJECT_VERSION}
@@ -69,10 +61,6 @@ target_sources(nomlib-actions
     ${HDR_BASE}/actions/ReversedAction.hpp
     ${HDR_BASE}/actions/SequenceAction.hpp
     ${HDR_BASE}/actions/WaitForDurationAction.hpp
-    FILE_SET generated_headers
-    TYPE HEADERS
-    BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/export.hpp
 )
 
 target_include_directories(nomlib-actions
@@ -181,8 +169,6 @@ if(APPLE)
       COMPONENT Runtime
     FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-actions.framework/Headers"
       COMPONENT Development
-    FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-actions.framework/Headers/actions"
-      COMPONENT Development
   )
 endif(APPLE)
 
@@ -195,8 +181,6 @@ install(TARGETS nomlib-actions
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     COMPONENT Runtime
   FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-    COMPONENT Development
-  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/actions"
     COMPONENT Development
   # MacOSX framework bundle
   FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}

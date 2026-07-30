@@ -14,14 +14,6 @@ add_library(nomlib-gui
   ${LIBRARY_OUTPUT_TYPE} # STATIC || SHARED
 )
 
-# CMake generates our NOM_EXPORT macros, i.e.: __declspec(dllexport)
-generate_export_header(nomlib-gui
-  BASE_NAME
-    NOM
-  EXPORT_FILE_NAME
-    export.hpp
-)
-
 set_target_properties(nomlib-gui
   PROPERTIES
     VERSION ${PROJECT_VERSION}
@@ -99,10 +91,6 @@ target_sources(nomlib-gui
     ${HDR_BASE}/gui/IDecorator.hpp
     ${HDR_BASE}/gui/Decorator.hpp
     ${HDR_BASE}/gui/MinimalDecorator.hpp
-    FILE_SET generated_headers
-    TYPE HEADERS
-    BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/export.hpp
 )
 
 target_include_directories(nomlib-gui
@@ -164,8 +152,6 @@ if(APPLE)
       COMPONENT Runtime
     FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-gui.framework/Headers"
       COMPONENT Development
-    FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-gui.framework/Headers/gui"
-      COMPONENT Development
   )
 endif(APPLE)
 
@@ -178,8 +164,6 @@ install(TARGETS nomlib-gui
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     COMPONENT Runtime
   FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-    COMPONENT Development
-  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/gui"
     COMPONENT Development
   FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT Runtime

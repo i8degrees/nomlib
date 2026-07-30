@@ -38,7 +38,14 @@ add_library(nomlib-core
   ${LIBRARY_OUTPUT_TYPE} # STATIC || SHARED
 )
 
-# CMake generates our NOM_EXPORT macros, i.e.: __declspec(dllexport)
+# Let CMake generate our NOM_EXPORT macros, i.e.: __declspec(dllexport) for
+# symbol visibility on WIN32 (to build a shared, AKA DLL library).
+#
+# We need only to do this once per project, as opposed to once per library
+# target as previously implemented. One of the nasty side effects of doing it
+# once per library target was that clang had to pass two include paths
+# *per target*; the regular plus the special path of where export.hpp is
+# located at build time, making a mess of things.
 generate_export_header(nomlib-core
   BASE_NAME
     NOM
@@ -118,7 +125,6 @@ target_include_directories(nomlib-core
   PRIVATE
   ${PROJECT_SOURCE_DIR}/include # include/nomlib
   ${SDL2_INCLUDE_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}/export.hpp
 )
 
 target_link_libraries(nomlib-core
@@ -154,7 +160,7 @@ if(APPLE)
     project_warnings
     FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-core.framework/Headers"
       COMPONENT Development
-    FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-core.framework/Headers/core"
+    FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-core.framework/Headers"
       COMPONENT Development
     FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
       COMPONENT Runtime
@@ -173,7 +179,7 @@ install(TARGETS nomlib-core
     COMPONENT Runtime
   FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     COMPONENT Development
-  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/core"
+  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     COMPONENT Development
   FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT Runtime

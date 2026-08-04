@@ -222,8 +222,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #define NOM_ASSERT(expression)  // NO-OP
 #endif // defined( NOM_DEBUG_ASSERT )
 
+// "!! Invalid execution path assertion triggered !!"
 #define NOM_ASSERT_INVALID_PATH(reserved) \
-  NOM_ASSERT(!"Invalid execution path assertion triggered")
+  ( assert(0 == 1 && "!! Invalid execution path triggered !!") )
 
 #if defined(NOM_COMPILER_CLANG)
   // SOURCE: http://clang.llvm.org/docs/UsersManual.html#controlling-diagnostics-via-pragmas

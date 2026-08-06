@@ -47,7 +47,7 @@ class NOM_EXPORT ISoundFileReader
                          NOM_LOG_PRIORITY_VERBOSE);
     }
 
-    ~ISoundFileReader()
+    virtual ~ISoundFileReader()
     {
       NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_AUDIO,
                          NOM_LOG_PRIORITY_VERBOSE);
@@ -58,7 +58,7 @@ class NOM_EXPORT ISoundFileReader
     virtual bool open(const std::string& filename, SoundInfo& info) = 0;
 
     virtual int64
-    read(void* data, uint32 format, nom::size_type chunk_size) = 0;
+    read(void* data, uint32 format, nom::size_type frames) = 0;
 
     virtual int64 seek(int64 offset, SoundSeek dir) = 0;
 

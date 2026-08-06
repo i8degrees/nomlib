@@ -171,7 +171,7 @@ bool SoundFileReader::open(const std::string& filename, SoundInfo& info)
 
 int64
 SoundFileReader::read(void* data, uint32 channel_format,
-                      nom::size_type chunk_size)
+                      nom::size_type frames)
 {
   sf_count_t sample_frames_read = 0;
 

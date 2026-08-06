@@ -51,14 +51,18 @@ class NOM_EXPORT SoundFileReader: public ISoundFileReader
   public:
     SoundFileReader();
 
-    virtual ~SoundFileReader();
+    ~SoundFileReader();
 
     virtual bool valid() const override;
 
     virtual bool open(const std::string& filename, SoundInfo& info) override;
 
+    // The channel format is XXX -- see audio::ChannelFormat for the options
+    // of this enumeration.
+    // One frame is equal to one sample whereas on multi-channel formats, one
+    // frame is equal to one sample of each channel.
     virtual int64
-    read(void* data, uint32 channel_format, nom::size_type chunk_size) override;
+    read(void* data, uint32 channel_format, nom::size_type frames) override;
 
     /// \param offset The cursor offset position, depicted in audio frames.
     virtual int64 seek(int64 offset, SoundSeek dir) override;

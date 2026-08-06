@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 namespace audio {
 
+// This enumeration is filled in by libsndfile
 enum NOM_EXPORT AudioTags
 {
   SOUND_TAG_UNDEFINED = 0,
@@ -52,6 +53,7 @@ enum NOM_EXPORT AudioTags
   SOUND_TAG_GENRE,
 };
 
+// This enumeration is filled in by libsndfile
 enum NOM_EXPORT AudioFormat
 {
   AUDIO_FORMAT_UNKNOWN = 0,
@@ -91,6 +93,7 @@ enum AudioChannels
 };
 #endif
 
+// ISoundFileReader
 enum NOM_EXPORT SoundSeek
 {
   SOUND_SEEK_SET = 0,
@@ -98,6 +101,8 @@ enum NOM_EXPORT SoundSeek
   SOUND_SEEK_END
 };
 
+// This struct is filled in by libsndfile
+// TODO(JEFF): Rename struct to SoundFile?
 struct NOM_EXPORT SoundInfo
 {
   /// \brief The total number of frames.
@@ -125,6 +130,8 @@ struct NOM_EXPORT SoundInfo
 
   bool seekable = false;
 
+  // TODO(JEFF): Rename struct to SoundFileMetadata and relocate outside of the main
+  // struct?
   struct Metadata
   {
     const char* title = "\0";

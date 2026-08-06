@@ -42,40 +42,26 @@ struct NOM_EXPORT SoundBuffer
   ///
   /// \remarks This is the internal referencing system used by OpenAL.
   uint32 buffer_id = 0;
-
   /// \brief The unique identifier for the sound source.
   uint32 source_id = 0;
-
-  /// \brief The audio buffer.
+  /// \brief The buffer samples contained there-in - must initialize
   void* samples = nullptr;
-
   /// \brief The total number of frames in this sample instance
   nom::size_type frame_count = 0;
-
   uint32 channel_count = 0;
-
   uint32 channel_format = 0;
-
   uint32 sample_rate = 0;
-
   int64 sample_count = 0;
-
   /// \brief The total time, in seconds, of the audio buffer.
   real32 duration = 0.0f;
-
   nom::size_type total_bytes = 0;
-
   bool seekable = false;
-
   /// \see nom::audio::ALAudioDeviceCaps
   /// \todo Consider using the AudioSourceType enumeration instead
   bool stream_source = false;
-
   nom::size_type samples_read = 0;
   // nom::size_type samples_output = 0;
-
   nom::size_type elapsed_seconds = 0;
-
   // TODO(jeff): Implement..? See API docs for alcGetContextsDevice(ctx)
   void* context = nullptr;
 };

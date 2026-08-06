@@ -153,7 +153,10 @@ struct NOM_EXPORT AudioSpec
 
   /// \brief One or more bit-masked enumeration values from
   /// audio::AudioSpecFlags.
-  uint32 flags = 0;
+  /// audio::AudioFormat
+  uint32 fmt_flags = 0;
+  uint32 ctx_flags = 0;
+  uint32 ext_flags = 0;
 
   // uint32 channel_format = 0;
 };

@@ -67,4 +67,38 @@ friend class test_case_name##_##test_name##_Test
 #define NOM_ARRAY_COUNT(arr) \
   ( sizeof(arr) / sizeof((arr)[0]) )
 
+// This allows us to set explicit breakpoints in our code, for use with
+// debuggers, such as gdb. This should be sparingly used, and should never
+// be left in the code base once we are finished debugging.
+#if defined(NOM_DEBUG)
+  #if defined(_MSC_VER)
+    // Microsoft Visual C++
+    #define DEBUG_BREAK() __debugbreak()
+  #elif defined(__clang__)
+    // Clang (Check this before GCC because Clang also defines __GNUC__)
+    #if __has_builtin(__builtin_debugtrap)
+      #define DEBUG_BREAK() __builtin_debugtrap()
+    #else
+      #define DEBUG_BREAK() __builtin_trap()
+    #endif
+  #elif defined(__GNUC__) || defined(__GNUG__)
+    // GNU Compiler Collection (GCC)
+    #if defined(__i386__) || defined(__x86_64__)
+        #define DEBUG_BREAK() __asm__ volatile("int3")
+    #elif defined(__arm__) || defined(__aarch64__)
+        #define DEBUG_BREAK() __asm__ volatile("brk #0")
+    #else
+        #define DEBUG_BREAK() __builtin_trap()
+    #endif
+  #else
+    // Fallback for unknown compilers
+    #include <signal.h>
+    #if defined(SIGTRAP)
+        #define DEBUG_BREAK() raise(SIGTRAP)
+    #else
+        #define DEBUG_BREAK() raise(SIGABRT)
+    #endif
+#endif
+#endif // NOM_DEBUG
+
 #endif // include guard defined

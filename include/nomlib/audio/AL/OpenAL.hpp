@@ -47,33 +47,35 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #include <alext.h>
 #endif
 
-#if defined(NOM_DEBUG)
-  // IMPORTANT: This macro is DEPRECATED, in favor of AL_CHECK_ERR_VOID.
-  // The rationale for this decision is readability (clarity); the argument,
-  // "function", serves no purpose and therefore can be misleading in its use.
-  #define AL_CHECK_ERR(Function) \
-    ( (Function), nom::priv::al_err(NOM_FUNC, __FILE__, __LINE__) )
+// OpenAL error checking macro for all but the audio context error handling
+// The OpenAL function call is wrapped inside of this macro that needs
+// checking.
+#define AL_CHECK_ERR(Function) \
+  ( (Function), nom::priv::al_err(NOM_FUNC, __FILE__, __LINE__) )
 
-  // TODO: Rename this macro to AL_CHECK_ERR after we have phased AL_CHECK_ERR
-  // out of the code base
-  #define AL_CHECK_ERR_VOID() \
-    ( nom::priv::al_err(NOM_FUNC, __FILE__, __LINE__) )
-#else
-  #define AL_CHECK_ERR(Function) (Function)
-  #define AL_CHECK_ERR_VOID()
-#endif
+// OpenAL error checking macro for audio context error handling
+// The OpenAL function call is wrapped inside of this macro that needs
+// checking. This macro additionally requires the OpenAL device handle to be
+// given.
+#define ALC_CHECK_ERR(Function, device) \
+  ( (Function), nom::priv::alc_err(NOM_FUNC, __FILE__, __LINE__, device) )
 
-// Clear the error state of OpenAL
-//
-// TODO: Clear the error state before calling functions that we check err state
-// on -- the err messages we see are potentially out of sync otherwise!
+// Clear the error state of OpenAL -- this must be done right before a
+// AL_CHECK_ERR macro is used.
 #define AL_CLEAR_ERR() alGetError();
+
+// Clear the error state of OpenAL (context specific) -- this must be done
+// right before a ALC_CHECK_ERR macro is used.
+#define ALC_CLEAR_ERR(device) alcGetError(device);
 
 namespace nom {
 namespace priv {
 
 NOM_EXPORT
 void al_err(const std::string& func, const std::string& file, uint32 line);
+NOM_EXPORT
+void alc_err(const std::string& func, const std::string& file, uint32 line,
+  ALCdevice* dev = nullptr);
 
 } // namespace priv
 } // namespace nom

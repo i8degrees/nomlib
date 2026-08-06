@@ -57,6 +57,7 @@ namespace audio {
 
 class IOAudioEngine;
 struct AudioSpec;
+struct ALAudioDevice;
 
 NOM_EXPORT ALCdevice_struct* current_device();
 NOM_EXPORT ALCcontext_struct* current_context();
@@ -80,7 +81,7 @@ NOM_EXPORT bool extension_available(const char* key);
 // config_available..?
 // if err, return zero; if successful, return the key's value, a number greater
 // than zero.
-NOM_EXPORT uint32 enum_available(const char* key);
+NOM_EXPORT int enum_available(const char* key);
 
 NOM_EXPORT bool
 context_extension(const char* key, ALCdevice_struct* target);
@@ -119,11 +120,16 @@ NOM_EXPORT int max_sources(void* target);
 
 NOM_EXPORT bool cap(uint32 caps, uint32 key);
 NOM_EXPORT void set_cap(uint32* caps, uint32 format);
+void clear_caps(uint32* cap);
 
+// OALAudioDevice: OpenAL AudioDevice (caps, init & shutdown, owns)
+// OALContext: OpenAL context (state mgmt)
 struct NOM_EXPORT AudioDevice
 {
-  // ALAudioDevice
+  // OpenAL device (ALAudioDevice)
   void* impl = nullptr;
+  // OpenAL context
+  void* ctx = nullptr;
 };
 
 /// \see http://www.opensource.apple.com/source/OpenAL/OpenAL-54/Source/OpenAL/

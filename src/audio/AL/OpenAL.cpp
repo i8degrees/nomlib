@@ -82,6 +82,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // } // namespace audio
 // } // namespace nom
 
+#if defined(NOM_USE_OPENAL_SOFT)
+  typedef struct ALCcontext ALCcontext_struct;
+  typedef struct ALCdevice ALCdevice_struct;
+#elif defined(NOM_USE_APPLE_OPENAL)
+  typedef struct ALCcontext_struct ALCcontext;
+  typedef struct ALCdevice_struct ALCdevice;
+
+  typedef ALCcontext ALCcontext_struct;
+  typedef ALCdevice ALCdevice_struct;
+#endif
+
 namespace nom {
 namespace priv {
 
@@ -95,33 +106,33 @@ al_err(const std::string& func, const std::string& file, uint32 line)
 
     switch(error_code) {
       default: {
-        err_cstr = "Unknown err";
+        err_cstr = "!! There is an undocumented error case !!";
       } break;
 
       case AL_NO_ERROR: {
-        err_cstr = "No error";
+        err_cstr = "AL_NO_ERROR: There is not currently an error";
       } break;
 
       case AL_INVALID_NAME: {
-        err_cstr = "AL_INVALID_NAME; Invalid name (identifier).";
+        err_cstr = "AL_INVALID_NAME: A bad name (ID) was passed";
       } break;
 
       case AL_INVALID_ENUM: {
-        err_cstr = "AL_INVALID_ENUM; Invalid enumeration (attribute)";
+        err_cstr = "AL_INVALID_ENUM: An unknown enum value was passed";
       } break;
 
       case AL_INVALID_VALUE: {
-        err_cstr = "AL_INVALID_VALUE; Invalid value.";
+        err_cstr = "AL_INVALID_VALUE: An invalid value was passed";
       } break;
 
       case AL_INVALID_OPERATION: {
         err_cstr =
-          "AL_INVALID_OPERATION; Requested operation is not valid.";
+          "AL_INVALID_OPERATION: The requested operation is not valid";
       } break;
 
       case AL_OUT_OF_MEMORY: {
         err_cstr =
-          "AL_OUT_OF_MEMORY; Out of memory.";
+          "AL_OUT_OF_MEMORY: The requested operation resulted in OpenAL running out of memory";
       } break;
     } // end switch
 
@@ -129,6 +140,52 @@ al_err(const std::string& func, const std::string& file, uint32 line)
                 "in", func);
     nom::set_error(err_cstr);
   } // end if AL_NO_ERROR
+}
+
+void
+alc_err(const std::string& func, const std::string& file, uint32 line,
+  ALCdevice* dev)
+{
+  ALenum error_code = alcGetError(dev);
+
+  if(error_code != ALC_NO_ERROR) {
+    const char* err_cstr = nullptr;
+
+    switch(error_code) {
+      default: {
+        err_cstr = "!! There is an undocumented error case !!";
+      } break;
+
+      case ALC_NO_ERROR: {
+        err_cstr = "AL_NO_ERROR: There is not currently an error";
+      } break;
+
+      case ALC_INVALID_DEVICE: {
+        err_cstr = "ALC_INVALID_DEVICE: A bad device was given";
+      } break;
+
+      case ALC_INVALID_CONTEXT: {
+        err_cstr = "ALC_INVALID_CONTEXT: A bad context was given";
+      } break;
+
+      case ALC_INVALID_ENUM: {
+        err_cstr = "ALC_INVALID_ENUM: An unknown enum value was passed";
+      } break;
+
+      case ALC_INVALID_VALUE: {
+        err_cstr = "ALC_INVALID_VALUE: An invalid value was passed";
+      } break;
+
+      case ALC_OUT_OF_MEMORY: {
+        err_cstr =
+          "ALC_OUT_OF_MEMORY: The requested operation resulted in OpenAL running out of memory";
+      } break;
+    } // end switch
+
+    NOM_LOG_ERR(NOM_LOG_CATEGORY_AUDIO, err_cstr, "at", file, ":", line,
+                "in", func);
+    nom::set_error(err_cstr);
+  } // end if ALC_NO_ERROR
 }
 
 } // namespace priv

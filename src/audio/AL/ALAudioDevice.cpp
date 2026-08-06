@@ -26,6 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
+#include <map>
+
 #include "nomlib/audio/AL/ALAudioDevice.hpp"
 
 // Private headers
@@ -117,7 +119,8 @@ void free_audio_device(ALCdevice_struct* dev)
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_AUDIO, NOM_LOG_PRIORITY_DEBUG);
 
   if(dev != nullptr) {
-    alcCloseDevice(dev);
+    ALC_CLEAR_ERR(dev);
+    ALC_CHECK_ERR(alcCloseDevice(dev), dev);
 #if 0
     // TODO(jeff): Verify that this enumeration is available on Windows
     // Availability verified: Apple's OpenAL SDK and OpenAL-Soft.
@@ -142,6 +145,9 @@ void free_audio_context(ALCcontext_struct* ctx)
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_AUDIO, NOM_LOG_PRIORITY_DEBUG);
 
   if(ctx != nullptr) {
+    // FIXME? We probably won't get an accurate error message w/o
+    // passing the actual device, as opposed to the nullptr in place.
+    ALC_CLEAR_ERR(nullptr);
     // Disable context; we must not free a current context as per OpenAL v1.1
     // API docs
     if(alcMakeContextCurrent(nullptr) == false) {
@@ -151,14 +157,10 @@ void free_audio_context(ALCcontext_struct* ctx)
     }
 
     // Release context
-    AL_CLEAR_ERR();
-    alcDestroyContext(ctx);
-    ALenum error = alGetError();
-    if(error != AL_NO_ERROR) {
-      // TODO(jeff): Use nom::set_error
-      NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION, "Failed to destroy context.");
-    }
-
+    // FIXME? We probably won't get an accurate error message w/o
+    // passing the actual device, as opposed to the nullptr in place.
+    ALC_CLEAR_ERR(nullptr);
+    ALC_CHECK_ERR(alcDestroyContext(ctx), nullptr);
     ctx = nullptr;
   }
 }
@@ -185,6 +187,10 @@ bool cap(uint32 caps, uint32 key)
 void set_cap(uint32* caps, uint32 format)
 {
   *caps |= format;
+}
+
+void clear_caps(uint32* caps) {
+  *caps = CAPS_UNDEFINED;
 }
 
 static
@@ -239,9 +245,9 @@ bool context_extension(const char* key, ALCdevice_struct* target)
   return result;
 }
 
-uint32 enum_available(const char* key)
+int enum_available(const char* key)
 {
-  uint32 result = 0;
+  int result = 0;
   ALenum enum_avail = AL_NONE;
 
   if(key != nullptr) {
@@ -449,6 +455,9 @@ create_openal_attributes(ALCdevice_struct* dev)
     spec.sync_context = audio::sync_context(dev);
     spec.num_mono_sources = audio::max_mono_sources(dev);
     spec.num_stereo_sources = audio::max_stereo_sources(dev);
+    spec.fmt_flags = 0;
+    spec.ctx_flags = 0;
+    spec.ext_flags = 0;
   }
 
   return spec;
@@ -460,7 +469,6 @@ create_openal_attributes(ALCdevice_struct* dev)
 static ALCcontext_struct*
 init_openal_context(const audio::AudioSpec* request, void* driver)
 {
-  ALenum error_code = AL_NO_ERROR;
   int* attributes = nullptr;
 
   // FIXME(jeff): Implement polymorphism here
@@ -476,30 +484,29 @@ init_openal_context(const audio::AudioSpec* request, void* driver)
   }
 
   // NOTE: attach a context state to the audio device
-  AL_CLEAR_ERR();
-  ctx = alcCreateContext(dev, attributes);
+  ALC_CLEAR_ERR(dev);
+  ALC_CHECK_ERR(ctx = alcCreateContext(dev, attributes), dev);
   if(ctx == nullptr) {
-    error_code = alGetError();
     NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION,
-                "Failed to create the audio context.",
-                "See OpenAL error code", error_code);
+                "Failed to create the audio context.");
     return ctx;
   }
 
-  if(alcMakeContextCurrent(ctx) == false) {
+  ALC_CLEAR_ERR(dev);
+  auto res = alcMakeContextCurrent(ctx);
+  if(res == false) {
     // TODO(jeff): Use nom::set_error
     NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION,
                 "Failed to make the context current.");
     return ctx;
   }
 
-  AL_CLEAR_ERR();
-  alcProcessContext(ctx);
-  error_code = alGetError();
-  if(error_code != AL_NO_ERROR) {
+  ALC_CLEAR_ERR(dev);
+  ALC_CHECK_ERR(alcProcessContext(ctx), dev);
+  if(ctx == nullptr) {
     NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION,
-                "Failed to make the context current.",
-                "See OpenAL error code", error_code);
+                "Failed to begin processing the active context - ",
+                "ALC_INVALID_CONTEXT");
     return ctx;
   }
 
@@ -745,238 +752,118 @@ init_openal_output(const audio::AudioSpec* request, audio::AudioSpec* spec)
     }
   }
 
+
   // create the audio device handle
-  AL_CLEAR_ERR();
-  dev = alcOpenDevice(req_audio_dev_name);
+  ALC_CLEAR_ERR(dev);
+  ALC_CHECK_ERR(dev = alcOpenDevice(req_audio_dev_name), dev);
   if(dev == nullptr) {
-    std::string al_err_str;
-
-    ALenum error = alGetError();
-    if(error != AL_NO_ERROR) {
-      al_err_str = nom::integer_to_string(error);
-    }
-
-    std::string err_str = "Failed to open the audio device; " +
-      std::string("OpenAL error code" + al_err_str);
-    // Err; memory allocation failure?
-    nom::set_error(err_str);
+    NOM_LOG_ERR(NOM_LOG_CATEGORY_AUDIO, "Failed to open the audio device ",
+      req_audio_dev_name);
     return impl;
   }
 
   ctx = audio::init_openal_context(request, dev);
 
-  // IAudioDevice* testme = new AudioDevice();
-  // if(NOM_ISA(AudioDevice*, testme) == true) {
-    // NOM_DUMP("!");
-  // }
-
   // NOTE(jeff): Enumerate the audio hardware capabilities available to us via
   // the OpenAL API -- these are subject to change upon state jumps between
-  // audio contexts.
-  ALCint res_num_mono = 0;
-  ALCint res_num_stereo = 0;
-  // alcGetIntegerv(dev, ALC_FREQUENCY, sizeof(ALCint), &res_frequency);
-  alcGetIntegerv(dev, ALC_MONO_SOURCES, sizeof(ALCint), &res_num_mono);
-  alcGetIntegerv(dev, ALC_STEREO_SOURCES, sizeof(ALCint), &res_num_stereo);
-  // NOM_DUMP(res_frequency);
-  NOM_DUMP(res_num_mono);
-  NOM_DUMP(res_num_stereo);
-#if 0
-  ALCint size;
-  alcGetIntegerv(dev, ALC_ATTRIBUTES_SIZE, sizeof(ALCint), &size);
-  NOM_DUMP(size);
+  // audio contexts. The following properties should be stored in the
+  // resulting spec flags.
 
-  int attrs[size];
-  alcGetIntegerv(dev, ALC_ALL_ATTRIBUTES, size, attrs);
-  for(auto attr_index = 0; attr_index != size; ++attr_index) {
-
-     if(attrs[attr_index] == ALC_FREQUENCY) {
-       if(attr_index + 1 < size) {
-        NOM_DUMP_VAR(NOM, "frequency:", attrs[attr_index+1]);
-      }
-    } else if(attrs[attr_index] == ALC_REFRESH) {
-      if(attr_index + 1 < size) {
-        NOM_DUMP_VAR(NOM, "refresh:", attrs[attr_index+1]);
-      }
-    } else if(attrs[attr_index] == ALC_SYNC) {
-      if(attr_index + 1 < size) {
-        NOM_DUMP_VAR(NOM, "sync:", attrs[attr_index+1]);
-      }
-    } else if(attrs[attr_index] == ALC_MONO_SOURCES) {
-      if(attr_index + 1 < size) {
-        NOM_DUMP_VAR(NOM, "max mono sources:", attrs[attr_index+1]);
-      }
-    } else if(attrs[attr_index] == ALC_STEREO_SOURCES) {
-      if(attr_index + 1 < size) {
-        NOM_DUMP_VAR(NOM, "max stereo sources:", attrs[attr_index+1]);
-      }
-    } else {
-      // NOM_DUMP(attrs[attr_index]);
-    }
-  }
-#endif
-
-  std::vector<const char*> enum_extensions = {
-    // 8-bit integers
-    "AL_FORMAT_MONO8",
-    "AL_FORMAT_STEREO8",
-    "AL_FORMAT_QUAD8",
-    "AL_FORMAT_51CHN8",
-    "AL_FORMAT_61CHN8",
-    "AL_FORMAT_71CHN8",
-    // 16-bit integers
-    "AL_FORMAT_MONO16",
-    "AL_FORMAT_STEREO16",
-    "AL_FORMAT_QUAD16",
-    "AL_FORMAT_51CHN16",
-    "AL_FORMAT_61CHN16",
-    "AL_FORMAT_71CHN16",
+  std::map<const char*, uint32> format_extensions = {
+    // 8-bit integers (signed)
+    {"AL_FORMAT_MONO8", CAPS_FORMAT_MONO_S8},
+    {"AL_FORMAT_STEREO8", CAPS_FORMAT_STEREO_S8},
+    {"AL_FORMAT_QUAD8", CAPS_FORMAT_QUAD_S8},
+    {"AL_FORMAT_51CHN8", CAPS_FORMAT_51CHN_S8},
+    {"AL_FORMAT_61CHN8", CAPS_FORMAT_61CHN_S8},
+    {"AL_FORMAT_71CHN8", CAPS_FORMAT_71CHN_S8},
+    // 16-bit integers (signed)
+    {"AL_FORMAT_MONO16", CAPS_FORMAT_MONO_S16},
+    {"AL_FORMAT_STEREO16", CAPS_FORMAT_STEREO_S16},
+    {"AL_FORMAT_QUAD16", CAPS_FORMAT_QUAD_S16},
+    {"AL_FORMAT_51CHN16", CAPS_FORMAT_51CHN_S16},
+    {"AL_FORMAT_61CHN16", CAPS_FORMAT_61CHN_S16},
+    {"AL_FORMAT_71CHN16", CAPS_FORMAT_71CHN_S16},
     // 32-bit floating-point
-    "AL_FORMAT_MONO_FLOAT32",
-    "AL_FORMAT_STEREO_FLOAT32",
-    "AL_FORMAT_MONO_DOUBLE_EXT",
-    "AL_FORMAT_STEREO_DOUBLE_EXT",
-    // 32-bit integer
-    "AL_FORMAT_QUAD32",
-    "AL_FORMAT_51CHN32",
-    "AL_FORMAT_61CHN32",
-    "AL_FORMAT_71CHN32"
+    {"AL_FORMAT_MONO_FLOAT32", CAPS_FORMAT_MONO_FLOAT32},
+    {"AL_FORMAT_STEREO_FLOAT32", CAPS_FORMAT_STEREO_FLOAT32},
+    // 64-bit floating-point
+    {"AL_FORMAT_MONO_DOUBLE_EXT", CAPS_FORMAT_MONO_FLOAT64},
+    {"AL_FORMAT_STEREO_DOUBLE_EXT", CAPS_FORMAT_STEREO_FLOAT64},
+    // 32-bit integer (signed)
+    {"AL_FORMAT_QUAD32", CAPS_FORMAT_QUAD_S32},
+    {"AL_FORMAT_51CHN32", CAPS_FORMAT_51CHN_S32},
+    {"AL_FORMAT_61CHN32", CAPS_FORMAT_61CHN_S32},
+    {"AL_FORMAT_71CHN32", CAPS_FORMAT_71CHN_S32},
+    // Same enumeration type
+    // {"ALC_CONNECTED", 0},
   };
 
+  for(auto itr = format_extensions.begin(); itr != format_extensions.end();
+      ++itr)
   {
-    // bool enum_available = false;
-    for(auto itr = enum_extensions.begin();
-        itr != enum_extensions.end();
-        ++itr)
-    {
-      if(audio::enum_available(*itr) != 0) {
-        NOM_DUMP_VAR(NOM, "available extension:", *itr);
-      } else {
-        NOM_DUMP_VAR(NOM, "unavailable extension:", *itr);
+    auto extension = itr->first;
+    auto cap = itr->second;
+
+    if(audio::enum_available(extension) != 0) {
+      audio::set_cap(&driver->capabilities, cap);
+      if(spec != nullptr) {
+        spec->fmt_flags |= cap;
       }
-    } // end for loop
-  }
+      NOM_DUMP_VAR(NOM, "available format extension:", extension);
+    } else {
+      NOM_DUMP_VAR(NOM, "unavailable format extension:", extension);
+    }
+  } // end for loop
 
+  std::map<const char*, uint32> extensions = {
+    {"AL_EXT_float32", 0x0},
+    {"AL_EXT_DOUBLE", 0x02},
+    {"AL_EXT_MCFORMATS", 0x04},
+    {"AL_LOKI_quadriphonic", 0x06},
+    {"EAX2.0", 0x8},
+  };
+
+  for(auto itr = extensions.begin(); itr != extensions.end();
+      ++itr)
   {
-    if(audio::enum_available("AL_FORMAT_MONO8") != 0) {
-      driver->capabilities |= CAPS_FORMAT_MONO_S8;
-    }
+    auto extension = itr->first;
+    auto cap = itr->second;
 
-    if(audio::enum_available("AL_FORMAT_STEREO8") != 0) {
-      driver->capabilities |= CAPS_FORMAT_STEREO_S8;
-    }
-
-    if(audio::enum_available("AL_FORMAT_QUAD8") != 0) {
-      driver->capabilities |= CAPS_FORMAT_QUAD_S8;
-    }
-
-    if(audio::enum_available("AL_FORMAT_51CHN_S8") != 0) {
-      driver->capabilities |= CAPS_FORMAT_51CHN_S8;
-    }
-
-    if(audio::enum_available("AL_FORMAT_61CHN_S8") != 0) {
-      driver->capabilities |= CAPS_FORMAT_61CHN_S8;
-    }
-
-    if(audio::enum_available("AL_FORMAT_71CHN_S8") != 0) {
-      driver->capabilities |= CAPS_FORMAT_71CHN_S8;
-    }
-
-    if(audio::enum_available("AL_FORMAT_MONO16") != 0) {
-      // driver->capabilities |= CAPS_FORMAT_MONO_S16;
-      audio::set_cap(&driver->capabilities, CAPS_FORMAT_MONO_S16);
-    }
-
-    if(audio::enum_available("AL_FORMAT_STEREO16") != 0) {
-      // driver->capabilities |= CAPS_FORMAT_STEREO_S16;
-      audio::set_cap(&driver->capabilities, CAPS_FORMAT_STEREO_S16);
-    }
-
-    if(audio::enum_available("AL_FORMAT_QUAD16") != 0) {
-      driver->capabilities |= CAPS_FORMAT_QUAD_S16;
-    }
-
-    if(audio::enum_available("AL_FORMAT_51CHN16") != 0) {
-      driver->capabilities |= CAPS_FORMAT_51CHN_S16;
-    }
-
-    if(audio::enum_available("AL_FORMAT_61CHN16") != 0) {
-      driver->capabilities |= CAPS_FORMAT_61CHN_S16;
-    }
-
-    if(audio::enum_available("AL_FORMAT_71CHN16") != 0) {
-      driver->capabilities |= CAPS_FORMAT_71CHN_S16;
-    }
-
-// #if defined(NOM_USE_LIBSNDFILE)
-//     driver->capabilities &= ~CAPS_FORMAT_MONO_S8;
-//     driver->capabilities &= ~CAPS_FORMAT_STEREO_S8;
-//     driver->capabilities &= ~CAPS_FORMAT_QUAD_S8;
-//     driver->capabilities &= ~CAPS_FORMAT_51CHN_S8;
-//     driver->capabilities &= ~CAPS_FORMAT_61CHN_S8;
-//     driver->capabilities &= ~CAPS_FORMAT_71CHN_S8;
-
-//     driver->capabilities &= ~CAPS_FORMAT_MONO_U8;
-//     driver->capabilities &= ~CAPS_FORMAT_STEREO_U8;
-//     driver->capabilities &= ~CAPS_FORMAT_QUAD_U8;
-//     driver->capabilities &= ~CAPS_FORMAT_51CHN_U8;
-//     driver->capabilities &= ~CAPS_FORMAT_61CHN_U8;
-//     driver->capabilities &= ~CAPS_FORMAT_71CHN_U8;
-// #endif
-  }
-
-  {
-    bool ext = audio::extension("AL_EXT_float32");
-    NOM_DUMP_VAR(NOM, "AL_EXT_float32 extension:", ext);
-    {
-      auto format = audio::enum_available("AL_FORMAT_MONO_FLOAT32");
-      NOM_DUMP_VAR(NOM, "AL_FORMAT_MONO_FLOAT32:", format);
-      if(format != 0) {
-        driver->capabilities |= CAPS_FORMAT_MONO_FLOAT32;
+    if(audio::extension(extension) != 0) {
+      // audio::set_cap(&driver->capabilities, cap);
+      if(spec != nullptr) {
+        spec->ext_flags |= cap;
       }
+      NOM_DUMP_VAR(NOM, "available extension:", extension);
+    } else {
+      NOM_DUMP_VAR(NOM, "unavailable extension:", extension);
     }
+  } // end for loop
 
-    {
-      auto format = audio::enum_available("AL_FORMAT_STEREO_FLOAT32");
-      NOM_DUMP_VAR(NOM, "AL_FORMAT_STEREO_FLOAT32:", format);
-      if(format != 0) {
-        driver->capabilities |= CAPS_FORMAT_STEREO_FLOAT32;
-      }
-    }
-  }
+  std::map<const char*, uint32> ctx_extensions = {
+    {"ALC_EXT_EFX", 0x0},
+    {"ALC_EXT_MAC_OSX", 0x2},
+    {"ALC_enumeration_EXT", 0x4},
+    {"ALC_enumerate_all_EXT", 0x6},
+  };
 
+  for(auto itr = ctx_extensions.begin(); itr != ctx_extensions.end();
+      ++itr)
   {
-    bool ext = audio::extension("AL_EXT_DOUBLE");
-    NOM_DUMP_VAR(NOM, "AL_EXT_DOUBLE extension:", ext);
+    auto extension = itr->first;
+    auto cap = itr->second;
 
-    {
-      auto format = audio::enum_available("AL_FORMAT_MONO_DOUBLE_EXT");
-      NOM_DUMP_VAR(NOM, "AL_FORMAT_MONO_DOUBLE_EXT:", format);
-      if(format != 0) {
-        driver->capabilities |= CAPS_FORMAT_MONO_FLOAT64;
+    if(audio::extension(extension) != 0) {
+      // audio::set_cap(&driver->capabilities, cap);
+      if(spec != nullptr) {
+        spec->ctx_flags |= cap;
       }
+      NOM_DUMP_VAR(NOM, "available extension:", extension);
+    } else {
+      NOM_DUMP_VAR(NOM, "unavailable extension:", extension);
     }
-
-    {
-      auto format = audio::enum_available("AL_FORMAT_STEREO_DOUBLE_EXT");
-      NOM_DUMP_VAR(NOM, "AL_FORMAT_STEREO_DOUBLE_EXT:", format);
-      if(format != 0) {
-        driver->capabilities |= CAPS_FORMAT_STEREO_FLOAT64;
-      }
-    }
-  }
-
-  NOM_DUMP_VAR(NOM, "caps:", driver->capabilities);
-
-  {
-    bool ext = audio::extension("AL_EXT_MCFORMATS");
-    NOM_DUMP_VAR(NOM, "AL_EXT_MCFORMATS extension:", ext);
-  }
-
-  {
-    bool ext = audio::extension("AL_LOKI_quadriphonic");
-    NOM_DUMP_VAR(NOM, "AL_LOKI_quadriphonic extension:", ext);
-  }
+  } // end for loop
 
   // TODO(jeff): Verify that this enumeration is available on Windows
   // Availability verified: Apple's OpenAL SDK and OpenAL-Soft.
@@ -1009,50 +896,15 @@ init_openal_output(const audio::AudioSpec* request, audio::AudioSpec* spec)
 
 
   // Check for EAX 2.0 support
-  {
-    bool ext = alIsExtensionPresent("EAX2.0");
-    NOM_DUMP_VAR(NOM, "EAX2.0 extension:", ext);
-  }
-    // if(ext == AL_TRUE) {
-      // auto eax_fn = (eax_extension)audio::process_addr("EAXSet");
-      // if(eax_fn == NULL) {
-        // ext = false;
-      // }
-    // }
-  // }
-
-  {
-    bool ext = audio::context_extension("ALC_EXT_EFX", dev);
-    NOM_DUMP_VAR(NOM, "ALC_EXT_EFX extension:", ext);
-  }
-
-  {
-    bool ext = audio::context_extension("ALC_EXT_MAC_OSX", dev);
-    NOM_DUMP_VAR(NOM, "ALC_EXT_MAC_OSX extension:", ext);
-  }
-
-  {
-    int sample_rate = 0;
-    int max_mono_sources = 0;
-    int max_stereo_sources = 0;
-    int max_sources = 0;
-
-    sample_rate = audio::sample_rate(dev);
-    NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST,
-                  "frequency:", sample_rate);
-
-    max_mono_sources = audio::max_mono_sources(dev);
-    NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST,
-                  "max_mono_sources:", max_mono_sources);
-
-    max_stereo_sources = audio::max_stereo_sources(dev);
-    NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST,
-                  "max_stereo_sources:", max_stereo_sources);
-
-    max_sources = audio::max_sources(dev);
-    NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST,
-                  "max_sources:", max_sources);
-  }
+/*
+    bool ext = audio::extension("EAX2.0");
+    if(ext == AL_TRUE) {
+      auto eax_fn = (eax_extension)audio::process_addr("EAXSet");
+      if(eax_fn == NULL) {
+        ext = false;
+      }
+    }
+*/
 
   // device_name_list output_devs =
     // audio::output_device_names(dev);
@@ -1077,6 +929,8 @@ init_openal_output(const audio::AudioSpec* request, audio::AudioSpec* spec)
   driver->name = spec->name;
   driver->dev = dev;
   driver->ctx = ctx;
+  // FIXME(JEFF): Should ALAudioEngine be the one to initialize the audio subsystem,
+  // thus owning the pointer, unlike how we have it now?
   impl = new ALAudioEngine(driver);
 
   if(impl == nullptr) {

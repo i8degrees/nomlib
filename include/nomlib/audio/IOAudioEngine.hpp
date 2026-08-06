@@ -79,7 +79,7 @@ class NOM_EXPORT IOAudioEngine
     virtual bool connected() const = 0;
 
     virtual
-    uint32 channel_format(uint32 num_channels, uint32 channel_format) = 0;
+    int channel_format(uint32 num_channels, uint32 channel_format) = 0;
 
     virtual bool valid_buffer(SoundBuffer* buffer) = 0;
     virtual bool valid_source(SoundBuffer* buffer) = 0;

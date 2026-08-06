@@ -212,18 +212,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   // Use SDL2's enhanced assert macro if available, otherwise fall-back to
   // standard C assert.
   #if defined( NOM_USE_SDL2_ASSERT )
-    #define NOM_ASSERT(expression) SDL_assert(expression)
+    #define NOM_ASSERT(expr) SDL_assert(expr)
   #else
-    #define NOM_ASSERT(expression) \
-      ( assert (expression) )
+    #define NOM_ASSERT(expr) \
+      ( assert(expr) )
   #endif // defined( NOM_USE_SDL2_ASSERT )
+#endif
 
-#else // Do not add any overhead
-  #define NOM_ASSERT(expression)  // NO-OP
-#endif // defined( NOM_DEBUG_ASSERT )
+#define NOM_ASSERT_BREAK(expr) \
+  if(!(expr)) DEBUG_BREAK
+
+#ifdef NDEBUG // -DNDEBUG or DEBUG_ASSERT=off
+  #define NOM_ASSERT(expr)  // NO-OP
+  #define NOM_ASSERT_BREAK(expr)
+#endif // defined(NDEBUG)
 
 // "!! Invalid execution path assertion triggered !!"
-#define NOM_ASSERT_INVALID_PATH(reserved) \
+#define NOM_ASSERT_INVALID_PATH(expr) \
   ( assert(0 == 1 && "!! Invalid execution path triggered !!") )
 
 #if defined(NOM_COMPILER_CLANG)

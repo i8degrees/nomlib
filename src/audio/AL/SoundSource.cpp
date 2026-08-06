@@ -38,6 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/audio/SoundBuffer.hpp"
 #include "nomlib/audio/IOAudioEngine.hpp"
 
+#include "nomlib/audio/AL/ALAudioDeviceCaps.hpp"
 namespace nom {
 namespace audio {
 
@@ -65,43 +66,57 @@ bool write_info(SoundBuffer* buffer, const SoundInfo& metadata)
   buffer->duration = metadata.duration;
   buffer->total_bytes = metadata.total_bytes;
   buffer->seekable = metadata.seekable;
+  // buffer->source_id = audio::next_source_id();
 
   return true;
 }
 
-void*
-create_samples(nom::size_type alloc_bytes, uint32 num_channels,
-               uint32 channel_format)
+void alloc_samples(void* data, nom::size_type bytes, int num_channels,
+  uint32 fmt)
 {
-  void* samples_buffer = nullptr;
+  data = create_samples(bytes, num_channels, fmt);
+}
 
-  switch(channel_format) {
+// audio::AudioFormat fmt
+void*
+create_samples(nom::size_type bytes, int num_channels,
+  uint32 fmt)
+{
+  void* samples = nullptr;
+
+  switch(fmt) {
     default:
     case AUDIO_FORMAT_UNKNOWN: {
       // ...Err state...
-      samples_buffer = nullptr;
     } break;
 
-    case AUDIO_FORMAT_S8:
-    case AUDIO_FORMAT_U8:
     case AUDIO_FORMAT_S16: {
-      // FIXME(jeff): I'm not sure we need this large of a buffer here; verify!
-      samples_buffer = new int16[alloc_bytes * num_channels];
+      samples = new int16[bytes * num_channels * sizeof(int16)];
     } break;
 
-    case AUDIO_FORMAT_S24: {
-      NOM_ASSERT_INVALID_PATH("Not implemented");
+    case AUDIO_FORMAT_S8: {
+      samples = new int16[bytes * num_channels * sizeof(int16)];
     } break;
 
-    case AUDIO_FORMAT_S32:
-    case AUDIO_FORMAT_R32:
+    case AUDIO_FORMAT_U8: {
+      samples = new int16[bytes * num_channels * sizeof(int16)];
+    } break;
+
+    case AUDIO_FORMAT_S24:
+    case AUDIO_FORMAT_S32: {
+      samples = new int32[bytes * num_channels * sizeof(int32)];
+    } break;
+
+    case AUDIO_FORMAT_R32: {
+      samples = new real32[bytes * num_channels * sizeof(real32)];
+    } break;
+
     case AUDIO_FORMAT_R64: {
-      // FIXME(jeff): I'm not sure we need this large of a buffer here; verify!
-      samples_buffer = new real32[alloc_bytes * num_channels];
+      samples = new real64[bytes * num_channels * sizeof(real64)];
     } break;
   }
 
-  return samples_buffer;
+  return samples;
 }
 
 void free_samples(uint32 channel_format, void* data)
@@ -110,30 +125,7 @@ void free_samples(uint32 channel_format, void* data)
 
   // Goodbye buffer!
   if(data != nullptr) {
-    switch(channel_format) {
-
-      default:
-      case AUDIO_FORMAT_UNKNOWN: {
-        // Err state; do nothing
-      } break;
-
-      case AUDIO_FORMAT_S8:
-      case AUDIO_FORMAT_U8:
-      case AUDIO_FORMAT_S16: {
-        delete NOM_SCAST(int16*, data);
-      } break;
-
-      case AUDIO_FORMAT_S24: {
-        NOM_ASSERT_INVALID_PATH("Not implemented");
-      } break;
-
-      case AUDIO_FORMAT_S32:
-      case AUDIO_FORMAT_R32:
-      case AUDIO_FORMAT_R64: {
-        delete NOM_SCAST(real32*, data);
-      } break;
-    }
-
+    NOM_DELETE_VOID_PTR(data);
     data = nullptr;
   }
 }

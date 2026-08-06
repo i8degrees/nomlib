@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point3.hpp"
-
+#include "nomlib/audio/SoundFile.hpp"
 namespace nom {
 namespace audio {
 
@@ -73,9 +73,13 @@ uint32 channel_format(uint32 num_channels, uint32 channel_format,
 NOM_EXPORT
 bool write_info(SoundBuffer* buffer, const SoundInfo& metadata);
 
+// alias of create_samples
+NOM_EXPORT void alloc_samples(void* data, nom::size_type bytes,
+  int num_channels, uint32 fmt);
+
 NOM_EXPORT
-void* create_samples(nom::size_type alloc_bytes, uint32 num_channels,
-                     uint32 channel_format);
+void* create_samples(nom::size_type frames, int num_channels,
+  uint32 channel_format);
 
 NOM_EXPORT void free_samples(uint32 channel_format, void* data);
 

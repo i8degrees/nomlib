@@ -33,7 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point3.hpp"
 #include "nomlib/audio/IOAudioEngine.hpp"
-
+// enums
+#include "nomlib/audio/AL/SoundSource.hpp"
 namespace nom {
 namespace audio {
 
@@ -68,7 +69,7 @@ class NOM_EXPORT NullAudioEngineCaps: public IOAudioEngine
     virtual real32 playback_position(SoundBuffer* buffer) override;
     virtual real32 playback_samples(SoundBuffer* buffer) override;
 
-    virtual void set_state(SoundBuffer* target, uint32 state) override;
+    virtual void set_state(SoundBuffer* target, AudioState state) override;
 
     virtual void set_volume(real32 gain) override;
     virtual void set_position(const Point3f& p) override;

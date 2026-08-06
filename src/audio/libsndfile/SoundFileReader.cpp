@@ -69,20 +69,29 @@ static uint64 sample_bytes(uint32 channel_format, int64 sample_count)
       // Err; do nothing and the total bytes calculation zero out
     } break;
 
-    case AUDIO_FORMAT_S8:
-    case AUDIO_FORMAT_U8:
+    case AUDIO_FORMAT_S8: {
+      bit_size = sizeof(int8);
+    } break;
+
+    case AUDIO_FORMAT_U8: {
+      bit_size = sizeof(uint8);
+    } break;
+
     case AUDIO_FORMAT_S16: {
       bit_size = sizeof(int16);
     } break;
 
-    case AUDIO_FORMAT_S24: {
-      NOM_ASSERT_INVALID_PATH("Not implemented");
+    case AUDIO_FORMAT_S24:
+    case AUDIO_FORMAT_S32: {
+      bit_size = sizeof(int32);
     } break;
 
-    case AUDIO_FORMAT_S32:
-    case AUDIO_FORMAT_R32:
-    case AUDIO_FORMAT_R64: {
+    case AUDIO_FORMAT_R32: {
       bit_size = sizeof(real32);
+    } break;
+
+    case AUDIO_FORMAT_R64: {
+      bit_size = sizeof(real64);
     } break;
   }
 
@@ -105,7 +114,7 @@ static real32 duration_seconds(SF_INFO& metadata)
   // sample_rate, it must be seen as a fractional value, or else when we
   // divide by it, we get a value of zero!
   duration =
-    ( (real32)sample_count / sample_rate) / channel_count;
+    ( (real32)sample_count / (sample_rate) / channel_count);
 
   return duration;
 }
@@ -180,26 +189,31 @@ SoundFileReader::read(void* data, uint32 channel_format,
     return sample_frames_read;
   }
 
-  switch(channel_format)
-  {
+  switch(channel_format) {
     default:
     case AUDIO_FORMAT_UNKNOWN: {
       return sample_frames_read;
     } break;
 
-    // TODO(jeff): sample conversion to uint8 with this equation:
-    //
-    // (int16_val)/(uint8_val)
-    // (32767+1)/(255+1)
-    case AUDIO_FORMAT_U8:
-    case AUDIO_FORMAT_S8:
-    case AUDIO_FORMAT_S16: {
+    case AUDIO_FORMAT_U8: {
       auto samples = NOM_SCAST(int16*, data);
-      sample_frames_read = sf_readf_short(this->fp_, samples, chunk_size);
+      sample_frames_read = sf_readf_short(this->fp_, samples, frames);
     } break;
 
-    case AUDIO_FORMAT_S24: {
-      NOM_ASSERT_INVALID_PATH("Not implemented");
+    case AUDIO_FORMAT_S8: {
+      auto samples = NOM_SCAST(int16*, data);
+      sample_frames_read = sf_readf_short(this->fp_, samples, frames);
+    } break;
+
+    case AUDIO_FORMAT_S16: {
+      auto samples = NOM_SCAST(int16*, data);
+      sample_frames_read = sf_readf_short(this->fp_, samples, frames);
+    } break;
+
+    case AUDIO_FORMAT_S24:
+    case AUDIO_FORMAT_S32: {
+      auto samples = NOM_SCAST(int32*, data);
+      sample_frames_read = sf_readf_int(this->fp_, samples, frames);
     } break;
 
     // IMPORTANT(jeff): We must convert 32-bit integer PCM data to normalized
@@ -211,11 +225,15 @@ SoundFileReader::read(void* data, uint32 channel_format,
 
     // TODO(jeff): Implement a method of toggling a quirks mode for OpenAL
     // instead of doing it here, for sake of a generic codebase.
-    case AUDIO_FORMAT_S32:
-    case AUDIO_FORMAT_R32:
-    case AUDIO_FORMAT_R64: {
+
+    case AUDIO_FORMAT_R32: {
       auto samples = NOM_SCAST(real32*, data);
-      sample_frames_read = sf_readf_float(this->fp_, samples, chunk_size);
+      sample_frames_read = sf_readf_float(this->fp_, samples, frames);
+    } break;
+
+    case AUDIO_FORMAT_R64: {
+      auto samples = NOM_SCAST(real64*, data);
+      sample_frames_read = sf_readf_double(this->fp_, samples, frames);
     } break;
   }
 

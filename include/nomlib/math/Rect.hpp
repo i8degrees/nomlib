@@ -99,7 +99,7 @@ struct NOM_EXPORT Rect
 
   /// Check to see if input coordinates X and Y are within the bounds
   /// of this object (think: colliding)
-  NOM_EXPORT bool contains ( T x, T y ) const
+  bool contains ( T x, T y ) const
   {
     return  (
               ( x >= this->x && x <= this->x + this->w  ) &&
@@ -109,13 +109,13 @@ struct NOM_EXPORT Rect
 
   /// Check to see if an input Point2 container are within the bounds
   /// of this object (think: colliding)
-  NOM_EXPORT bool contains ( const Point2<T>& pos ) const
+  bool contains ( const Point2<T>& pos ) const
   {
     return this->contains ( pos.x, pos.y );
   }
 
   /// Checks to see if our rectangle overlaps with another
-  NOM_EXPORT bool intersects ( const Rect<T>& rectangle ) const
+  bool intersects ( const Rect<T>& rectangle ) const
   {
     T leftA, leftB = 0;
     T rightA, rightB = 0;
@@ -147,7 +147,7 @@ struct NOM_EXPORT Rect
   /// \todo Return an Array instead of object?
   /// \todo Rename member key 'width' to 'w'
   /// \todo Rename member key 'h' to 'h'
-  NOM_EXPORT const Object serialize( void ) const
+  const Object serialize( void ) const
   {
     Object object;
 
@@ -160,39 +160,38 @@ struct NOM_EXPORT Rect
   }
 
   /// \returns The positioning coordinates of the rectangle.
-  NOM_EXPORT const Point2i position( void ) const
+  const Point2i position( void ) const
   {
     return Point2i( NOM_SCAST( T, this->x ), NOM_SCAST( T, this->y ) );
   }
 
   /// \returns The width and height dimensions of the rectangle.
-  NOM_EXPORT const Size2i size( void ) const
+  const Size2i size( void ) const
   {
     return Size2i( NOM_SCAST( T, this->w ), NOM_SCAST( T, this->h ) );
   }
 
-  NOM_EXPORT const T& left() const
+  const T& left() const
   {
     return this->x;
   }
 
-  NOM_EXPORT const T& top() const
+  const T& top() const
   {
     return this->y;
   }
 
-  NOM_EXPORT const T& right() const
+  const T& right() const
   {
     return(this->x + this->w);
   }
 
-  NOM_EXPORT const T& bottom() const
+  const T& bottom() const
   {
     return(this->y + this->h);
   }
 
   template <typename U>
-  NOM_EXPORT
   void set_position(const Point2<U>& pos)
   {
     this->x = pos.x;
@@ -200,7 +199,6 @@ struct NOM_EXPORT Rect
   }
 
   template <typename U>
-  NOM_EXPORT
   void set_size(const Size2<U>& dims)
   {
     this->w = dims.w;

@@ -66,15 +66,7 @@ void attach_buffer(uint32 source_id, uint32 buffer_id)
 {
   // NOTE(jeff): Attach a single buffer to the sound source
   AL_CLEAR_ERR();
-  alSourcei(source_id, AL_BUFFER, buffer_id);
-
-  ALenum error = alGetError();
-  if(error != AL_NO_ERROR) {
-    auto al_err_str = nom::integer_to_string(error);
-    // TODO(jeff): Improve err handling
-    std::string err_str = "OpenAL error code: " + al_err_str;
-    nom::set_error(err_str);
-  }
+  AL_CHECK_ERR(alSourcei(source_id, AL_BUFFER, buffer_id));
 }
 
 static
@@ -93,8 +85,7 @@ nom::size_type processed_buffers(SoundBuffer* target)
 
   if(target != nullptr) {
     AL_CLEAR_ERR();
-    alGetSourcei(target->source_id, AL_BUFFERS_PROCESSED, &result);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alGetSourcei(target->source_id, AL_BUFFERS_PROCESSED, &result));
   }
 
   return result;
@@ -108,8 +99,7 @@ nom::size_type queued_buffers(SoundBuffer* target)
 
   if(target != nullptr) {
     AL_CLEAR_ERR();
-    alGetSourcei(target->source_id, AL_BUFFERS_QUEUED, &result);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alGetSourcei(target->source_id, AL_BUFFERS_QUEUED, &result));
   }
 
   return result;
@@ -123,8 +113,7 @@ void free_stream(SoundBuffer* target)
 
   if(target != nullptr) {
     AL_CLEAR_ERR();
-    alSourceUnqueueBuffers(target->source_id, num_sources, &target->buffer_id);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alSourceUnqueueBuffers(target->source_id, num_sources, &target->buffer_id));
   }
 }
 
@@ -136,8 +125,7 @@ void free_source(SoundBuffer* target)
 
   if(target != nullptr) {
     AL_CLEAR_ERR();
-    alDeleteSources(num_sources, &target->source_id);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alDeleteSources(num_sources, &target->source_id));
   }
 }
 
@@ -147,8 +135,7 @@ void free_buffer(uint32 buffer_id)
 
   // NOTE(jeff): Free the audio buffer from our scope
   AL_CLEAR_ERR();
-  alDeleteBuffers(num_sources, &buffer_id);
-  AL_CHECK_ERR_VOID();
+  AL_CHECK_ERR(alDeleteBuffers(num_sources, &buffer_id));
 }
 
 void free_source(uint32 source_id)
@@ -157,8 +144,7 @@ void free_source(uint32 source_id)
 
   // NOTE(jeff): Free the audio buffer from our scope
   AL_CLEAR_ERR();
-  alDeleteBuffers(num_sources, &source_id);
-  AL_CHECK_ERR_VOID();
+  AL_CHECK_ERR(alDeleteBuffers(num_sources, &source_id));
 }
 
 uint32 buffer_id(const SoundBuffer* target)
@@ -189,14 +175,7 @@ uint32 next_buffer_id()
   uint32 num_buffers = 1;
 
   AL_CLEAR_ERR();
-  alGenBuffers(num_buffers, &id);
-  ALenum error_code = alGetError();
-  if(error_code != AL_NO_ERROR) {
-    // TODO(jeff): Handle errors here; not sure how we ought to do this
-    // just yet -- OpenAL error handling value range is between
-    // 40961..40965
-    // id = 0;
-  }
+  AL_CHECK_ERR(alGenBuffers(num_buffers, &id));
 
   return id;
 }
@@ -206,16 +185,13 @@ uint32* next_buffer_id(uint32 num_buffers)
   uint32* buffers = nullptr;
 
   buffers = new uint32[num_buffers];
+  if(buffers == nullptr) {
+    // !! Likely to be running out of memory
+    return buffers;
+  }
 
   AL_CLEAR_ERR();
-  alGenBuffers(num_buffers, buffers);
-  ALenum error_code = alGetError();
-  if(error_code != AL_NO_ERROR) {
-    // TODO(jeff): Handle errors here; not sure how we ought to do this
-    // just yet -- OpenAL error handling value range is between
-    // 40961..40965
-    // id = 0;
-  }
+  AL_CHECK_ERR(alGenBuffers(num_buffers, buffers));
 
   return buffers;
 }
@@ -226,33 +202,21 @@ uint32 next_source_id()
   uint32 num_sources = 1;
 
   AL_CLEAR_ERR();
-  alGenSources(num_sources, &id);
-  ALenum error_code = alGetError();
-  if(error_code != AL_NO_ERROR) {
-    // TODO(jeff): Handle errors here; not sure how we ought to do this
-    // just yet -- OpenAL error handling value range is between
-    // 40961..40965
-    // id = 0;
-  }
+  AL_CHECK_ERR(alGenSources(num_sources, &id));
 
   return id;
 }
 
 uint32* next_source_id(uint32 num_sources)
 {
-  uint32* sources = nullptr;
-
-  sources = new uint32[num_sources];
+  uint32* sources = new uint32[num_sources];
+  if(sources == nullptr) {
+    // !! Likely to be running out of memory
+    return sources;
+  }
 
   AL_CLEAR_ERR();
-  alGenBuffers(num_sources, sources);
-  ALenum error_code = alGetError();
-  if(error_code != AL_NO_ERROR) {
-    // TODO(jeff): Handle errors here; not sure how we ought to do this
-    // just yet -- OpenAL error handling value range is between
-    // 40961..40965
-    // id = 0;
-  }
+  AL_CHECK_ERR(alGenBuffers(num_sources, sources));
 
   return sources;
 }
@@ -695,7 +659,8 @@ int32 ALAudioEngine::channel_format(uint32 num_channels, uint32 channel_format)
   // This is a last ditch efforts to offer a valid channel format for OpenAL
   // processing
   if(format == AL_INVALID || format == AL_NONE) {
-    format = audio::enum_available("AL_FORMAT_STEREO16");
+    // PCM 16-bit (1 channel)
+    format = audio::enum_available("AL_FORMAT_MONO16");
   }
 
   return format;
@@ -731,12 +696,10 @@ uint32 ALAudioEngine::state(SoundBuffer* target)
 
   if(target != nullptr && this->valid_source(target) == true) {
     AL_CLEAR_ERR();
-    alGetSourcei(target->source_id, AL_SOURCE_STATE, &audio_state);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alGetSourcei(target->source_id, AL_SOURCE_STATE, &audio_state));
 
     AL_CLEAR_ERR();
-    alGetSourcei(target->source_id, AL_LOOPING, &loop_state);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alGetSourcei(target->source_id, AL_LOOPING, &loop_state));
   }
 
   switch(audio_state) {
@@ -775,8 +738,7 @@ real32 ALAudioEngine::pitch(SoundBuffer* target)
 
   if(target != nullptr) {
     AL_CLEAR_ERR();
-    alGetSourcef(target->source_id, AL_PITCH, &pitch);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alGetSourcef(target->source_id, AL_PITCH, &pitch));
   }
 
   return pitch;
@@ -787,8 +749,7 @@ real32 ALAudioEngine::volume() const
   auto gain_level = nom::audio::MIN_VOLUME;
 
   AL_CLEAR_ERR();
-  alGetListenerf(AL_GAIN, &gain_level);
-  AL_CHECK_ERR_VOID();
+  AL_CHECK_ERR(alGetListenerf(AL_GAIN, &gain_level));
 
   // De-normalized gain level; 0..1 -> 0..100
   return(gain_level * 100.0f);
@@ -800,8 +761,7 @@ Point3f ALAudioEngine::position() const
   Point3f p(0.0f, 0.0f, 0.0f);
 
   AL_CLEAR_ERR();
-  alGetListener3f(AL_POSITION, &p.x, &p.y, &p.z);
-  AL_CHECK_ERR_VOID();
+  AL_CHECK_ERR(alGetListener3f(AL_POSITION, &p.x, &p.y, &p.z));
 
   return p;
 }
@@ -814,8 +774,7 @@ real32 ALAudioEngine::volume(SoundBuffer* target) const
     auto sound_id = target->source_id;
 
     AL_CLEAR_ERR();
-    alGetSourcef(sound_id, AL_GAIN, &gain_level);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alGetSourcef(sound_id, AL_GAIN, &gain_level));
   }
 
   // De-normalize; 0..1 -> 0..100
@@ -830,8 +789,7 @@ real32 ALAudioEngine::min_volume(SoundBuffer* target)
 
   if(target != nullptr) {
     AL_CLEAR_ERR();
-    alGetSourcef(target->source_id, AL_MIN_GAIN, &min_gain);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alGetSourcef(target->source_id, AL_MIN_GAIN, &min_gain));
   }
 
   // De-normalize; 0..1 -> 0..100
@@ -846,8 +804,7 @@ real32 ALAudioEngine::max_volume(SoundBuffer* target)
 
   if(target != nullptr) {
     AL_CLEAR_ERR();
-    alGetSourcef(target->source_id, AL_MAX_GAIN, &max_gain);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alGetSourcef(target->source_id, AL_MAX_GAIN, &max_gain));
   }
 
   // De-normalize; 0..1 -> 0..100
@@ -862,8 +819,7 @@ Point3f ALAudioEngine::velocity(SoundBuffer* target)
 
   if(target != nullptr) {
     AL_CLEAR_ERR();
-    alGetSource3f(target->source_id, AL_VELOCITY, &v.x, &v.y, &v.z);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alGetSource3f(target->source_id, AL_VELOCITY, &v.x, &v.y, &v.z));
   }
 
   return v;
@@ -875,8 +831,7 @@ Point3f ALAudioEngine::position(SoundBuffer* target)
 
   if(target != nullptr) {
     AL_CLEAR_ERR();
-    alGetSource3f(target->source_id, AL_POSITION, &p.x, &p.y, &p.z);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alGetSource3f(target->source_id, AL_POSITION, &p.x, &p.y, &p.z));
   }
 
   return p;
@@ -888,8 +843,7 @@ real32 ALAudioEngine::playback_position(SoundBuffer* target)
 
   if(target != nullptr) {
     AL_CLEAR_ERR();
-    alGetSourcef(target->source_id, AL_SEC_OFFSET, &pos);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alGetSourcef(target->source_id, AL_SEC_OFFSET, &pos));
   }
 
   return pos;
@@ -901,8 +855,7 @@ real32 ALAudioEngine::playback_samples(SoundBuffer* target)
 
   if(target != nullptr) {
     AL_CLEAR_ERR();
-    alGetSourcef(target->source_id, AL_SAMPLE_OFFSET, &samples);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alGetSourcef(target->source_id, AL_SAMPLE_OFFSET, &samples));
   }
 
   return samples;
@@ -943,12 +896,10 @@ void ALAudioEngine::set_state(SoundBuffer* target, uint32 state)
 
     if(state == AUDIO_STATE_LOOPING) {
       AL_CLEAR_ERR();
-      alSourcei(target->source_id, AL_LOOPING, true);
-      AL_CHECK_ERR_VOID();
+      AL_CHECK_ERR(alSourcei(target->source_id, AL_LOOPING, true));
     } else {
       AL_CLEAR_ERR();
-      alSourcei(target->source_id, AL_SOURCE_STATE, state);
-      AL_CHECK_ERR_VOID();
+      AL_CHECK_ERR(alSourcei(target->source_id, AL_SOURCE_STATE, al_state));
     }
   }
 }
@@ -960,16 +911,14 @@ void ALAudioEngine::set_volume(real32 gain)
     auto normalized_gain = gain * 0.01f;
 
     AL_CLEAR_ERR();
-    alListenerf(AL_GAIN, normalized_gain);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alListenerf(AL_GAIN, normalized_gain));
   }
 }
 
 void ALAudioEngine::set_position(const Point3f& p)
 {
   AL_CLEAR_ERR();
-  alListener3f(AL_POSITION, p.x, p.y, p.z);
-  AL_CHECK_ERR_VOID();
+  AL_CHECK_ERR(alListener3f(AL_POSITION, p.x, p.y, p.z));
 }
 
 void ALAudioEngine::set_volume(SoundBuffer* target, real32 gain)
@@ -980,8 +929,7 @@ void ALAudioEngine::set_volume(SoundBuffer* target, real32 gain)
 
     if(target != nullptr) {
       AL_CLEAR_ERR();
-      alSourcef(target->source_id, AL_GAIN, gain);
-      AL_CHECK_ERR_VOID();
+      AL_CHECK_ERR(alSourcef(target->source_id, AL_GAIN, gain));
     }
   }
 }
@@ -995,8 +943,7 @@ void ALAudioEngine::set_min_volume(SoundBuffer* target, real32 gain)
 
   if(target != nullptr) {
     AL_CLEAR_ERR();
-    alSourcef(target->source_id, AL_MIN_GAIN, gain);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alSourcef(target->source_id, AL_MIN_GAIN, gain));
   }
 }
 
@@ -1009,8 +956,7 @@ void ALAudioEngine::set_max_volume(SoundBuffer* target, real32 gain)
 
   if(target != nullptr && this->valid() == true) {
     AL_CLEAR_ERR();
-    alSourcef(target->source_id, AL_MAX_GAIN, gain);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alSourcef(target->source_id, AL_MAX_GAIN, gain));
   }
 }
 
@@ -1018,8 +964,7 @@ void ALAudioEngine::set_velocity(SoundBuffer* target, const Point3f& v)
 {
   if(target != nullptr && this->valid() == true) {
     AL_CLEAR_ERR();
-    alSource3f(target->source_id, AL_VELOCITY, v.x, v.y, v.z);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alSource3f(target->source_id, AL_VELOCITY, v.x, v.y, v.z));
   }
 }
 
@@ -1027,8 +972,7 @@ void ALAudioEngine::set_position(SoundBuffer* target, const Point3f& p)
 {
   if(target != nullptr && this->valid() == true) {
     AL_CLEAR_ERR();
-    alSource3f(target->source_id, AL_POSITION, p.x, p.y, p.z);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alSource3f(target->source_id, AL_POSITION, p.x, p.y, p.z));
   }
 }
 
@@ -1036,8 +980,7 @@ void ALAudioEngine::set_pitch(SoundBuffer* target, real32 pitch)
 {
   if(target != nullptr && this->valid() == true) {
     AL_CLEAR_ERR();
-    alSourcef(target->source_id, AL_PITCH, pitch);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alSourcef(target->source_id, AL_PITCH, pitch));
   }
 }
 
@@ -1046,8 +989,7 @@ void ALAudioEngine::set_playback_position(SoundBuffer* target,
 {
   if(target != nullptr && this->valid() == true) {
     AL_CLEAR_ERR();
-    alSourcef(target->source_id, AL_SEC_OFFSET, offset_seconds);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alSourcef(target->source_id, AL_SEC_OFFSET, offset_seconds));
   }
 }
 
@@ -1055,8 +997,7 @@ void ALAudioEngine::play(SoundBuffer* target)
 {
   if(target != nullptr && this->valid() == true) {
     AL_CLEAR_ERR();
-    alSourcePlay(target->source_id);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alSourcePlay(target->source_id));
   }
 }
 
@@ -1065,8 +1006,7 @@ void ALAudioEngine::stop(SoundBuffer* target)
   if(target != nullptr && this->valid() == true) {
     if(this->state(target) != AUDIO_STATE_STOPPED) {
       AL_CLEAR_ERR();
-      alSourceStop(target->source_id);
-      AL_CHECK_ERR_VOID();
+      AL_CHECK_ERR(alSourceStop(target->source_id));
     }
   }
 }
@@ -1075,8 +1015,7 @@ void ALAudioEngine::pause(SoundBuffer* target)
 {
   if(target != nullptr && this->valid() == true) {
     AL_CLEAR_ERR();
-    alSourcePause(target->source_id);
-    AL_CHECK_ERR_VOID();
+    AL_CHECK_ERR(alSourcePause(target->source_id));
   }
 }
 
@@ -1110,16 +1049,11 @@ bool ALAudioEngine::queue_buffer(SoundBuffer* target)
 
   // NOTE(jeff): Push the buffer to the sound source queue
   AL_CLEAR_ERR();
-  alSourceQueueBuffers(target->source_id, 1, &target->buffer_id);
-  ALenum error = alGetError();
-  if(error != AL_NO_ERROR) {
-    auto al_err_str = nom::integer_to_string(error);
-    std::string err_str = "OpenAL error code: " + al_err_str;
-    nom::set_error(err_str);
-  }
+  AL_CHECK_ERR(alSourceQueueBuffers(target->source_id, 1, &target->buffer_id));
 
   ALenum streaming_source = AL_UNDETERMINED;
-  alGetSourcei(target->source_id, AL_SOURCE_TYPE, &streaming_source);
+  AL_CLEAR_ERR();
+  AL_CHECK_ERR(alGetSourcei(target->source_id, AL_SOURCE_TYPE, &streaming_source));
   if(streaming_source == AL_STREAMING) {
     target->stream_source = true;
   }
@@ -1145,14 +1079,14 @@ void ALAudioEngine::suspend()
   auto impl = NOM_SCAST(ALAudioDevice*, this->impl_);
   auto ctx = NOM_SCAST(ALCcontext*, impl->ctx);
   NOM_ASSERT(ctx != nullptr);
+  NOM_ASSERT(impl != nullptr);
+  auto dev = this->impl_->dev; // ALCdevice*
 
-  AL_CLEAR_ERR();
-  alcSuspendContext(ctx);
-  AL_CHECK_ERR_VOID();
+  ALC_CLEAR_ERR(dev);
+  ALC_CHECK_ERR(alcSuspendContext(ctx), dev);
 
-  AL_CLEAR_ERR();
-  alcMakeContextCurrent(ctx);
-  AL_CHECK_ERR_VOID();
+  ALC_CLEAR_ERR(dev);
+  ALC_CHECK_ERR(alcMakeContextCurrent(ctx), dev);
 }
 
 void ALAudioEngine::resume()
@@ -1161,14 +1095,14 @@ void ALAudioEngine::resume()
   auto impl = NOM_SCAST(ALAudioDevice*, this->impl_);
   auto ctx = NOM_SCAST(ALCcontext*, impl->ctx);
   NOM_ASSERT(ctx != nullptr);
+  NOM_ASSERT(impl != nullptr);
+  auto dev = this->impl_->dev; // ALCdevice*
 
-  AL_CLEAR_ERR();
-  alcMakeContextCurrent(ctx);
-  AL_CHECK_ERR_VOID();
+  ALC_CLEAR_ERR(dev);
+  ALC_CHECK_ERR(alcMakeContextCurrent(ctx), dev);
 
-  AL_CLEAR_ERR();
-  alcProcessContext(ctx);
-  AL_CHECK_ERR_VOID();
+  ALC_CLEAR_ERR(dev);
+  ALC_CHECK_ERR(alcProcessContext(ctx), dev);
 }
 
 void ALAudioEngine::close()
@@ -1212,8 +1146,7 @@ void ALAudioEngine::free_buffer(SoundBuffer* target)
     // NOTE(jeff): Free the audio buffer from our scope
     if(this->valid_buffer(target) == true) {
       AL_CLEAR_ERR();
-      alDeleteBuffers(num_sources, &target->buffer_id);
-      AL_CHECK_ERR_VOID();
+      AL_CHECK_ERR(alDeleteBuffers(num_sources, &target->buffer_id));
     }
 
     if(target->samples) {
@@ -1274,10 +1207,11 @@ bool ALAudioEngine::fill_buffer(SoundBuffer* target)
   // I think we need to add an API for handling the attachment of one or more
   // sound sources per buffer by letting the end-user explicitly set it up.
   auto format = this->channel_format(channel_count, channel_format);
-  AL_CLEAR_ERR();
-  alBufferData(buffer_id, format, samples, bytes, frequency);
-  AL_CHECK_ERR_VOID();
   NOM_LOG_INFO(NOM_LOG_CATEGORY_TEST, "format:", format);
+  AL_CLEAR_ERR();
+  AL_CHECK_ERR(alBufferData(buffer_id, format, samples, bytes, frequency));
+
+
 
   // TODO(jeff): Check for success before freeing the buffer!
   // audio::free_samples(format, samples);

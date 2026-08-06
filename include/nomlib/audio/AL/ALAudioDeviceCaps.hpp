@@ -89,7 +89,9 @@ NOM_EXPORT uint32 next_source_id();
 /// returned.
 ///
 /// \see nom::audio::create_buffer
-NOM_EXPORT uint32* next_source_id(uint32 num_sources);
+NOM_EXPORT uint32* next_source_id(int num_sources);
+
+NOM_EXPORT void attach_buffer(uint32 source_id, uint32 buffer_id);
 
 // TODO(jeff): Add const to getters!
 class NOM_EXPORT ALAudioEngine: public IOAudioEngine
@@ -110,7 +112,7 @@ class NOM_EXPORT ALAudioEngine: public IOAudioEngine
 
     /// \brief Find a suitable data format for OpenAL.
     virtual
-    uint32 channel_format(uint32 num_channels, uint32 channel_format) override;
+    int channel_format(uint32 num_channels, uint32 channel_format) override;
 
     virtual bool valid_buffer(SoundBuffer* target) override;
     virtual bool valid_source(SoundBuffer* target) override;
@@ -130,7 +132,7 @@ class NOM_EXPORT ALAudioEngine: public IOAudioEngine
     virtual real32 playback_position(SoundBuffer* target) override;
     virtual real32 playback_samples(SoundBuffer* target) override;
 
-    // virtual void set_state(SoundBuffer* target, uint32 state) override;
+    virtual void set_state(SoundBuffer* target, AudioState state) override;
 
     virtual void set_volume(real32 gain) override;
     virtual void set_position(const Point3f& p) override;

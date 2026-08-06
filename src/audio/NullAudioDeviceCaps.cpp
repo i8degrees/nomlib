@@ -132,7 +132,7 @@ real32 NullAudioEngineCaps::playback_samples(SoundBuffer* buffer)
   return samples;
 }
 
-void NullAudioEngineCaps::set_state(SoundBuffer* target, uint32 state)
+void NullAudioEngineCaps::set_state(SoundBuffer* target, AudioState state)
 {
 
 }

@@ -71,7 +71,7 @@ bool valid_source(uint32 source_id)
   return result;
 }
 
-static
+// static
 void attach_buffer(uint32 source_id, uint32 buffer_id)
 {
   // NOTE(jeff): Attach a single buffer to the sound source
@@ -418,12 +418,7 @@ bool ALAudioEngine::connected() const
   return false;
 }
 
-// auto dev = NOM_SCAST(ALCdevice_struct*, target->device());
-// uint32 value = alcGetEnumValue(dev, "AL_FORMAT_STEREO_FLOAT32");
-// NOM_DUMP(value);
-// uint32 error_code = alcGetError(dev);
-// NOM_DUMP(error_code);
-uint32 ALAudioEngine::channel_format(uint32 num_channels, uint32 channel_format)
+int ALAudioEngine::channel_format(uint32 num_channels, uint32 channel_format)
 {
   ALenum format = 0;
   auto channel_count = num_channels;
@@ -917,8 +912,8 @@ real32 ALAudioEngine::playback_samples(SoundBuffer* target)
 
   return samples;
 }
-#if 0
-void ALAudioEngine::set_state(SoundBuffer* target, uint32 state)
+#if 1
+void ALAudioEngine::set_state(SoundBuffer* target, AudioState state)
 {
   ALint al_state = AL_STOPPED;
 
@@ -944,11 +939,10 @@ void ALAudioEngine::set_state(SoundBuffer* target, uint32 state)
       case AUDIO_STATE_STREAMING: {
         al_state = AL_STREAMING;
       } break;
-    }
 
-    // TODO(jeff): Handle OpenAL source loop state
-    if(state == AUDIO_STATE_LOOPING) {
-      al_state = AL_LOOPING;
+      case AUDIO_STATE_LOOPING: {
+        al_state = AL_LOOPING;
+      } break;
     }
 
     if(state == AUDIO_STATE_LOOPING) {

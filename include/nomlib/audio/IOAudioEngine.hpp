@@ -32,6 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point3.hpp"
+// AudioState enum
+#include "nomlib/audio/AL/SoundSource.hpp"
 
 namespace nom {
 namespace audio {
@@ -99,7 +101,7 @@ class NOM_EXPORT IOAudioEngine
     virtual real32 playback_position(SoundBuffer* buffer) = 0;
     virtual real32 playback_samples(SoundBuffer* buffer) = 0;
 
-    // virtual void set_state(SoundBuffer* target, uint32 state) = 0;
+    virtual void set_state(SoundBuffer* target, AudioState state) = 0;
 
     virtual void set_volume(real32 gain) = 0;
     virtual void set_position(const Point3f& p) = 0;

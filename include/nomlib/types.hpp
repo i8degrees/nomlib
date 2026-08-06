@@ -43,7 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         known as stdint.h. MSVCPP2013 & llvm-clang are fine with it).
 */
 
-// IMPORTANT(JEFF): These declarations, too, will integrate into our (CMake) 
+// IMPORTANT(JEFF): These declarations, too, will integrate into our (CMake)
 // platform detection routines some day.
 #if defined(__GNUC__)
   #include <cstdint>
@@ -237,7 +237,7 @@ enum Anchor: uint32
 static_assert(sizeof(nom::uint8) == 1, "nom::uint8");
 static_assert(sizeof(nom::int8) == 1, "nom::int8");
 
-const nom::size_type NOM_BYTE = sizeof(uint8); // 1024;
+static const nom::size_type NOM_BYTE = sizeof(uint8); // 1024;
 
 inline
 nom::size_type kilobyte(nom::size_type bytes)

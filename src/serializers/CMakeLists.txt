@@ -55,6 +55,7 @@ target_sources(nomlib-serializers
     ${HDR_BASE}/serializers/JsonCppDeserializer.hpp
     ${HDR_BASE}/serializers/JsonCppSerializer.hpp
     ${HDR_BASE}/serializers/IValueSerializer.hpp
+    ${HDR_BASE}/serializers/IValueDeserializer.hpp
     ${HDR_BASE}/serializers/MiniHTML.hpp
     ${HDR_BASE}/serializers/RapidXmlDeserializer.hpp
     ${HDR_BASE}/serializers/RapidXmlSerializer.hpp

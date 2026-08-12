@@ -86,6 +86,7 @@ target_sources(nomlib-gui
     ${HDR_BASE}/gui/init_librocket.hpp
     ${HDR_BASE}/gui/UIContextEventHandler.hpp
     # Decorator helpers
+    ${HDR_BASE}/gui/FinalFantasyDecorator.hpp
     ${HDR_BASE}/gui/FinalFantasyFrame.hpp
     ${HDR_BASE}/gui/Drawables.hpp
     ${HDR_BASE}/gui/IDecorator.hpp
@@ -119,6 +120,7 @@ target_link_libraries(nomlib-gui
     OpenGL::GL
     $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
     $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
+    $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
     $<IF:$<TARGET_EXISTS:RocketCore>,RocketCore,RocketCore-static>
     $<IF:$<TARGET_EXISTS:RocketControls>,RocketControls,RocketControls-static>
     $<IF:$<TARGET_EXISTS:RocketDebugger>,RocketDebugger,RocketDebugger-static>

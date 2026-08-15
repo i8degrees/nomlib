@@ -210,7 +210,7 @@ class NOM_EXPORT Image
     const Color4i colorkey ( void ) const;
 
     /// Obtain the blend mode used for blitting
-    const SDL_BlendMode blend_mode ( void ) const;
+    SDL_BlendMode blend_mode ( void ) const;
 
     /// \brief  Obtain the additional color value multiplied into render copy
     ///         operations.

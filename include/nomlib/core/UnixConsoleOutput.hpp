@@ -65,7 +65,7 @@ class NOM_EXPORT UnixConsoleOutput: public ConsoleOutput
     bool tty() const;
 
     /// \brief Reset colors
-    const std::string COLOR_ENDL = "\e[0m";
+    const std::string COLOR_ENDL = "\033[0m";
 
     const std::string COLOR_FG_RED = "\033[31m";
 
@@ -77,8 +77,8 @@ class NOM_EXPORT UnixConsoleOutput: public ConsoleOutput
     const std::string COLOR_FG_ORANGE = "\033[0;33m";
     const std::string COLOR_FG_PURPLE = "\033[0;35m";
 
-    const std::string COLOR_STYLE_BOLD = "\e[1;1m";
-    const std::string COLOR_STYLE_UNDERLINED = "\e[1;4m";
+    const std::string COLOR_STYLE_BOLD = "\033[1;1m";
+    const std::string COLOR_STYLE_UNDERLINED = "\033[1;4m";
 };
 
 } // namespace nom

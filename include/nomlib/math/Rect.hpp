@@ -99,11 +99,11 @@ struct NOM_EXPORT Rect
 
   /// Check to see if input coordinates X and Y are within the bounds
   /// of this object (think: colliding)
-  bool contains ( T x, T y ) const
+  bool contains(T xx, T yy) const
   {
     return  (
-              ( x >= this->x && x <= this->x + this->w  ) &&
-              ( y >= this->y && y <= this->y + this->h )
+              ( xx >= this->x && xx <= this->x + this->w  ) &&
+              ( yy >= this->y && yy <= this->y + this->h )
             );
   }
 
@@ -219,7 +219,6 @@ struct NOM_EXPORT Rect
 
   T y;
   /// Width of the rectangle (right side of Rectangle)
-
   T w;
 
   /// Height of the rectangle (bottom side of Rectangle)

@@ -193,7 +193,7 @@ class NOM_EXPORT Texture
     uint8 bits_per_pixel ( void ) const;
 
     /// Obtain the blending mode used for texture copies
-    const SDL_BlendMode blend_mode ( void ) const;
+    SDL_BlendMode blend_mode ( void ) const;
 
     /// Obtain the set color key for this image
     ///

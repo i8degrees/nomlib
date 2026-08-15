@@ -69,7 +69,7 @@ class NOM_EXPORT ValueConstIterator: public ValueIteratorBase
     /// \brief Obtain a pointer to the iterator's object.
     ///
     /// \returns A pointer to the nom::Value object.
-    const Value::RawPtr operator ->() const;
+    Value::RawPtr operator ->() const;
 
     /// \brief Obtain a reference to the iterator's object.
     ///

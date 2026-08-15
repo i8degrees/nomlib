@@ -100,7 +100,7 @@ class NOM_EXPORT Renderer
     const IntRect viewport ( void ) const;
 
     /// Obtain the blending mode used for drawing
-    const SDL_BlendMode blend_mode ( void ) const;
+    SDL_BlendMode blend_mode ( void ) const;
 
     /// \brief Get the renderer's output size dimensions.
     ///

@@ -12,9 +12,11 @@ C++11 2D game framework using SDL2
 
 First, ensure that you have the following core dependencies installed:
 
-* [cmake v2.8.12+](http://www.cmake.org/)
+* [cmake v3.24 to cmake v4.2.3](http://www.cmake.org/)
+    - `cmake v4.4.x` is **not supported** when building on Mac OSX
 * [git](http://git-scm.com/download/)
 * [doxygen v1.8.x](http://www.stack.nl/~dimitri/doxygen/) and [graphviz](http://www.graphviz.org/) only if you want to generate developer documentation.
+* [vcpkg](https://github.com/microsoft/vcpkg.git)
 
 Next, you should visit the dependencies section for your platform. After these mundane chores are complete, you should be ready to start the building process for your platform!
 
@@ -142,11 +144,26 @@ Required version: Microsoft Windows Vista
 
 See **third-party/README.md** for where to obtain pre-packaged libraries and how to install them.
 
-* [Microsoft Visual Studio Express 2013 for Windows](http://www.microsoft.com/visualstudio/eng#downloads)
+1. [Download and install the Microsoft Visual Studio Build Tools 2022][101].
+The [direct download link][100].
+
+2. In the installer that appears, select the **Desktop Environment with C++**
+workload, and under the *Installation Details* to the right, select
+**C++ Clang Tools for Windows**.
+
+3. Proceed with the install; a restart may be necessary.
+4. From the Start menu, open the **Developer PowerShell for VS 2022**. This sets up the environment variables for you.
+5. Verify that `clang-cl.exe --version` is installed.
 
   - Required software tools in your system PATH
     * MSVSCPP -- **\<MSVSCPP_INSTALL_PATH\>\bin**
     * CMake -- **\<CMAKE_INSTALL_PATH\>\bin**
     * Git -- **\<GIT_INSTALL_PATH\>\bin**
+    * `vcpkg` - [Install & use packages with CMake][102]
+        * `%VCPKG_ROOT%`
 
 If this is your first time installing the tools, you might be happy to know that the official installers can do this task for you automatically.
+
+[100]: https://aka.ms/vs/17/releases/vs_buildtools.exe)
+[101]: https://learn.microsoft.com/en-us/visualstudio/releases/2022/
+[102]: https://learn.microsoft.com/en-us/vcpkg/get_started/get-started?pivots=shell-powershell

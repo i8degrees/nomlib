@@ -68,3 +68,56 @@ Both the 64-bit and 32-bit official development binaries versions of:
 ## Licensing ##
 
 Licensing files for each library can be found at the project root of your nomlib directory under LICENSE_**\<LIBRARY_NAME\>**.
+
+## Additional Tools
+
+### BMFont
+
+- [BMFont - BitmapFont Generator](https://www.angelcode.com/products/bmfont/)
+    - `nomlib-graphics` implements *most* of the BMFont file specification;
+    ASCII file format, version 3. Refer to the public header file for the
+    BMFont class for details on what is implemented.
+
+    - Building nomlib with tests enabled will build the test executable
+    `BMFontTest`.
+
+    - Building nomlib with the examples enabled will build the example
+    executable `nom_font`. This command line utility can render the BMFont
+    ASCII file format, commonly with the `.fnt` file extension.
+
+#### Compatible Tools (cross-platform)
+
+- [BMFont - BitmapFont Generator](https://www.angelcode.com/products/bmfont/)
+  - An OSS 32-bit and 64-bit windows app (also usable under WINE)
+
+- [bmGlyph: bitmap font generator for Mac OSX](https://www.bmglyph.com/)
+  - This is the tool I used to generate the fonts used in [Triple Triad][0]
+  and can also be found in nomlib's `BMFontTest` executable when tests are
+  enabled.
+
+##### alternatives
+
+- [snowb-bmf - web app](https://github.com/SilenceLeo/snowb-bmf)
+  - This application has not yet been fully verified to be compatible, but
+  appears to be a lovely web application that is 100% client-side.
+
+- [fontbm - cli](https://github.com/vladimirgamalyan/fontbm)
+
+### TexturePacker
+
+- [TexturePacker](https://www.codeandweb.com/texturepacker)
+    - `nomlib-graphics` implements the [custom TexturePacker exporter][10]
+    spec as part of the SpriteSheet interface.
+
+    - See also
+      - [exporter.xml][11]
+      - [spritesheet.json][12]
+
+    - Building nomlib with tests enabled will build the test executable
+    `SpriteTest`. The `SpriteBatchInterface` test uses the SpriteSheet
+    interface.
+
+[0]: https://github.com/i8degrees/ttcards.git
+[10]: https://www.codeandweb.com/texturepacker/documentation/custom-exporter
+[11]: Resources/SharedSupport/TexturePacker/nomlib/exporter.xml
+[12]: Resources/SharedSupport/TexturePacker/nomlib/spritesheet.json

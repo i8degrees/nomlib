@@ -107,7 +107,7 @@ const IntRect Renderer::viewport ( void ) const
   return IntRect ( v.x, v.y, v.w, v.h );
 }
 
-const SDL_BlendMode Renderer::blend_mode ( void ) const
+SDL_BlendMode Renderer::blend_mode ( void ) const
 {
   SDL_BlendMode blend;
 

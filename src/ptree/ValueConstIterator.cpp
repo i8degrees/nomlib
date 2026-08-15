@@ -66,8 +66,7 @@ ValueConstIterator::ConstReference ValueConstIterator::operator *() const
   return this->dereference(); // const nom::Value&
 }
 
-const ValueConstIterator::ValueTypePointer
-ValueConstIterator::operator ->() const
+ValueConstIterator::ValueTypePointer ValueConstIterator::operator ->() const
 {
   return this->pointer();
 }

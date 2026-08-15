@@ -183,7 +183,7 @@ Size2i RenderWindow::size( void ) const
   return size;
 }
 
-const uint8 RenderWindow::bits_per_pixel ( void ) const
+uint8 RenderWindow::bits_per_pixel ( void ) const
 {
   return SDL_BITSPERPIXEL ( this->pixel_format() );
 }

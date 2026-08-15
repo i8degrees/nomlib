@@ -59,7 +59,7 @@ class NOM_EXPORT File
     ~File();
 
     /// Re-implements nom::IFile::extension
-    std::string extension(const std::string& file) const;
+    std::string extension(const std::string& filename) const;
 
     /// Re-implements nom::IFile::size
     int32 size(const std::string& file_path) const;

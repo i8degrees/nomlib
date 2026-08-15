@@ -49,7 +49,7 @@ class NOM_EXPORT IFile
     /// Returns the file extension of the input file path
     ///
     /// \returns a null terminated string on err
-    virtual const std::string extension ( const std::string& file ) = 0;
+    virtual const std::string extension ( const std::string& filename ) = 0;
 
     /// Uses stat(2) to determine input file size (in bytes)
     ///

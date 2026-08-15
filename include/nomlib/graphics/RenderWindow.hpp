@@ -133,7 +133,7 @@ class NOM_EXPORT RenderWindow: public Renderer
     Size2i size( void ) const;
 
     /// Obtain the BPP (bits per pixel) of this window
-    const uint8 bits_per_pixel ( void ) const;
+    uint8 bits_per_pixel ( void ) const;
 
     uint32 window_flags ( void ) const;
 

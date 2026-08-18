@@ -44,7 +44,6 @@ if( NOM_BUILD_RENDERWINDOW_TESTS )
     "${PROJECT_SOURCE_DIR}/Resources/icon.png"
     $<TARGET_FILE_DIR:RenderWindowTest>
   )
-
 endif( NOM_BUILD_RENDERWINDOW_TESTS )
 
 if( NOM_BUILD_GRADIENT_TESTS )

@@ -110,7 +110,7 @@ class NOM_EXPORT ALAudioEngine: public IOAudioEngine
 
     /// \brief Find a suitable data format for OpenAL.
     virtual
-    uint32 channel_format(uint32 num_channels, uint32 channel_format) override;
+    int32 channel_format(uint32 num_channels, uint32 channel_format) override;
 
     virtual bool valid_buffer(SoundBuffer* target) override;
     virtual bool valid_source(SoundBuffer* target) override;

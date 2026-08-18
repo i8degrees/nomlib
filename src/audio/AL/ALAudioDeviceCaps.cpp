@@ -423,7 +423,7 @@ bool ALAudioEngine::connected() const
 // NOM_DUMP(value);
 // uint32 error_code = alcGetError(dev);
 // NOM_DUMP(error_code);
-uint32 ALAudioEngine::channel_format(uint32 num_channels, uint32 channel_format)
+int32 ALAudioEngine::channel_format(uint32 num_channels, uint32 channel_format)
 {
   ALenum format = 0;
   auto channel_count = num_channels;

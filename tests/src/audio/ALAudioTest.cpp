@@ -317,9 +317,9 @@ TEST_F(ALAudioTest, SoundFileReader_Seek)
   << "Could not load audio from input file " << AUDIO_FILENAME;
   EXPECT_EQ(true, fp->valid());
 
-  offset = fp->seek(0, audio::SOUND_SEEK_CUR);
+  offset = fp->seek(0, SEEK_CUR);
   EXPECT_EQ(0, offset);
-  EXPECT_EQ(metadata.frame_count, fp->seek(0, audio::SOUND_SEEK_END));
+  EXPECT_EQ(metadata.frame_count, fp->seek(0, SEEK_END));
 
   const nom::size_type CHUNK_SIZE = metadata.total_bytes / 2; // 44100
   EXPECT_TRUE(CHUNK_SIZE == metadata.sample_rate)
@@ -335,7 +335,7 @@ TEST_F(ALAudioTest, SoundFileReader_Seek)
   ASSERT_TRUE(samples != nullptr);
 
   // Seek to halfway through the audio sample
-  offset = fp->seek(READ_SIZE, audio::SOUND_SEEK_SET);
+  offset = fp->seek(READ_SIZE, SEEK_SET);
   EXPECT_EQ(READ_SIZE, offset);
 
   auto first_half =

@@ -121,15 +121,29 @@ target_link_libraries(nomlib-gui
     $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
     $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
     $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
-    # libRocket requires OpenGL
-    #OpenGL::GL
-    # FIXME(JEFF): We are unable to build ttcards without changing this dep
-    # to the one below this line. This may not be OK on macos builds!
-    GL
     $<IF:$<TARGET_EXISTS:RocketCore>,RocketCore,RocketCore-static>
     $<IF:$<TARGET_EXISTS:RocketControls>,RocketControls,RocketControls-static>
     $<IF:$<TARGET_EXISTS:RocketDebugger>,RocketDebugger,RocketDebugger-static>
 )
+
+# libRocket requires OpenGL
+if(APPLE)
+  target_link_libraries(nomlib-gui
+    PRIVATE
+      OpenGL::GL
+  )
+else()
+  # FIXME(JEFF): We are unable to build ttcards without changing the
+  # OpenGL::GL line to GL (when an external project references nomlib's
+  # cmake configuration file and tries to import the INTERFACE dependencies).
+  #
+  # An alternative may be to modify the selection returned from within the
+  # external project on a need by basis, but I strongly dislike this option.
+  target_link_libraries(nomlib-gui
+    PRIVATE
+      GL
+  )
+endif()
 
 # MacOSX Framework bundle support
 set_target_properties(nomlib-gui

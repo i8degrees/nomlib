@@ -1,7 +1,7 @@
 # nom_app_ex example
 
 # Search paths file to use in finding the resources path
-set(STATIC_ASSET_CONFIG "${NOM_EXAMPLES_RESOURCES_DIR}/app.json")
+set(STATIC_ASSET_CONFIG "${PROJECT_SOURCE_DIR}/Resources/examples/app.json")
 
 add_executable(nom_app_ex
   WIN32 # Link SDL2main over WinMain

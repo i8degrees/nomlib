@@ -60,8 +60,8 @@ endif(NOM_INSTALL_PKGCONFIG_SUPPORT)
 
 # Install nomlib's icon files
 install(  FILES
-          "${NOMLIB_RESOURCES_DIR}/nomlib.icns"
-          "${NOMLIB_RESOURCES_DIR}/icon.png"
+          "${PROJECT_SOURCE_DIR}/Resources/nomlib.icns"
+          "${PROJECT_SOURCE_DIR}/Resources/icon.png"
           DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/nomlib"
           OPTIONAL
           COMPONENT Core
@@ -108,77 +108,3 @@ if(NOM_BUILD_DOCS)
             PATTERN ".*" EXCLUDE # .DS_Store dotfiles
   )
 endif(NOM_BUILD_DOCS)
-
-if(APPLE AND USE_OLD_OSX_CODE)
-  # Bundle libraries we depend on in the appropriate Framework bundles
-
-  if( NOM_BUILD_CORE_UNIT )
-    install(  DIRECTORY ${SDL2_LIBRARY}
-              DESTINATION "${PROJECT_NAME}-core.framework/Frameworks"
-              PATTERN ".*" EXCLUDE
-    )
-  endif( NOM_BUILD_CORE_UNIT )
-
-  if( NOM_BUILD_SYSTEM_UNIT )
-    install(  DIRECTORY ${SDL2_IMAGE_LIBRARY} ${SDL2_TTF_LIBRARY}
-              DESTINATION "${PROJECT_NAME}-system.framework/Frameworks"
-              PATTERN ".*" EXCLUDE
-    )
-  endif( NOM_BUILD_SYSTEM_UNIT )
-
-  if( NOM_BUILD_AUDIO_UNIT )
-    install(  DIRECTORY ${LIBSNDFILE_LIBRARY}
-              DESTINATION "${PROJECT_NAME}-audio.framework/Frameworks"
-              PATTERN ".*" EXCLUDE
-    )
-  endif( NOM_BUILD_AUDIO_UNIT )
-
-  if( NOM_BUILD_GUI_UNIT )
-    # dylibs
-    install(  FILES ${LIBROCKET_CORE_LIBRARY} ${LIBROCKET_CONTROLS_LIBRARY}
-              ${LIBROCKET_DEBUGGER_LIBRARY}
-              DESTINATION "${PROJECT_NAME}-gui.framework/Libraries"
-    )
-  endif( NOM_BUILD_GUI_UNIT )
-
-  # nomlib's icon
-  install(  FILES
-            "${NOMLIB_RESOURCES_DIR}/nomlib.icns"
-            DESTINATION "${PROJECT_NAME}.framework/Resources"
-            OPTIONAL
-  )
-
-  # Install nomlib's CMake find module; this should end up in a spot that is
-  # automatically searched by find_package.
-  install(  DIRECTORY
-            "${NOMLIB_RESOURCES_DIR}/CMake"
-            DESTINATION "${PROJECT_NAME}.framework/Resources"
-            PATTERN ".*" EXCLUDE
-  )
-
-  # Install nomlib's pkg-config module so third-party software can find us
-  install(  FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc"
-            DESTINATION "${PROJECT_NAME}.framework/Resources")
-
-  # Install software license & general project information
-  install(  FILES
-            ${PROJECT_SOURCE_DIR}/README.md
-            ${PROJECT_SOURCE_DIR}/LICENSE.md
-            DESTINATION "${PROJECT_NAME}.framework/Resources"
-  )
-
-  # Install the generated documentation files
-  # if( NOM_BUILD_DOCS )
-  #   install(  DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
-  #             DESTINATION "${PROJECT_NAME}.framework/Resources/Documentation"
-  #             PATTERN ".*" EXCLUDE
-  #   )
-  # endif( NOM_BUILD_DOCS )
-
-  # Install hardware definitions for input devices (game controllers)
-  install(  DIRECTORY "${NOMLIB_SHARED_SUPPORT_DIR}/InputDevices"
-            DESTINATION "${PROJECT_NAME}.framework/Resources/SharedSupport"
-            OPTIONAL
-            PATTERN ".*" EXCLUDE )
-endif(APPLE AND USE_OLD_OSX_CODE)
-

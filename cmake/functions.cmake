@@ -2,22 +2,6 @@
 #
 # Helper functions for CMake build scripts
 #
-
-# Copy resource files for engine examples and tests.
-# nom_install_resources(spath, dpath, options)
-function(install_resource_file spath dpath)
-  install(
-    FILES "${spath}"
-    DESTINATION "${dpath}")
-endfunction()
-
-function(install_resource_dir spath dpath)
-  install(
-    DIRECTORY "${spath}"
-    DESTINATION "${dpath}"
-    PATTERN ".*" EXCLUDE )
-endfunction()
-
 #
 # target parameter is not implemented; reserved for future implementation.
 #

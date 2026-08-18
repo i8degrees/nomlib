@@ -61,10 +61,9 @@ install(TARGETS nom_gamecontroller_ev
 
 # For distribution
 install(FILES
-  "${NOMLIB_SHARED_SUPPORT_DIR}/InputDevices.json"
+  "${PROJECT_SOURCE_DIR}/Resources/SharedSupport/InputDevices.json"
   "${gcdb_SOURCE_DIR}/gamecontrollerdb.txt"
-  DESTINATION
-  "${EXAMPLES_INSTALL_DIR}"
+  DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/nomlib/Resources"
   OPTIONAL
   COMPONENT Examples
 )

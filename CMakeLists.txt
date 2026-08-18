@@ -18,26 +18,6 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/uninstall.cmake")
 
 include("${CMAKE_SOURCE_DIR}/cmake/AppleBuild.cmake")
 
-#
-## vcpkg env
-#
-
-# !! this must be set *before* the project declaration
-# defaults to a static library target
-set(VCPKG_TARGET_TRIPLET "x64-linux" CACHE STRING "")
-
-if(LINUX AND DEFINED BUILD_SHARED_LIBS)
-  set(VCPKG_TARGET_TRIPLET "x64-linux-dynamic")
-endif()
-
-if(APPLE AND DEFINED BUILD_SHARED_LIBS)
-  set(VCPKG_TARGET_TRIPLET "x64-osx-dynamic")
-endif()
-
-if(WIN32 AND DEFINED BUILD_SHARED_LIBS)
-  set(VCPKG_TARGET_TRIPLET "x64-windows-dynamic")
-endif()
-
 ##
 # Project Options
 ##
@@ -130,6 +110,7 @@ project(nomlib
   LANGUAGES CXX
 )
 
+
 include("${CMAKE_SOURCE_DIR}/cmake/StandardProjectSettings.cmake")
 
 # Adhere to a common hierarchy acording to the chosen platform
@@ -153,12 +134,9 @@ endif(NOM_INSTALL_PKGCONFIG_SUPPORT)
 # Public API headers base
 set(HDR_BASE "${PROJECT_SOURCE_DIR}/include/nomlib")
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
-# Resources path for engine examples
-set(NOMLIB_RESOURCES_DIR "${PROJECT_SOURCE_DIR}/Resources")
-set(NOMLIB_SHARED_SUPPORT_DIR "${NOMLIB_RESOURCES_DIR}/SharedSupport")
-set(NOM_EXAMPLES_RESOURCES_DIR "${NOMLIB_RESOURCES_DIR}/examples")
+
 # Unit testing resources path
-set(NOM_TESTS_RESOURCES_DIR "${NOMLIB_RESOURCES_DIR}/tests")
+set(NOM_TESTS_RESOURCES_DIR "${PROJECT_SOURCE_DIR}/Resources/tests")
 # Files used with documentation generation
 set(PROJECT_DOXYGEN_DIR "${NOMLIB_RESOURCES_DIR}/doxygen")
 
@@ -221,7 +199,7 @@ if(BUILD_DOCS)
 endif(BUILD_DOCS)
 
 # >> src/<component>/CMakeLists.txt contains our NOM_BUILD_<component> options
-add_subdirectory(src)
+add_subdirectory("src")
 
 # nomlib examples configuration
 if(BUILD_EXAMPLES)
@@ -240,5 +218,5 @@ endif()
 # >> mechanism. If so, we should try not to assume that the end-user wants anything
 # >> to be packaged (installed), and let them decide what they want to do themselves.
 if(is_top_level)
-  add_subdirectory(src/packages)
+  add_subdirectory("src/packages")
 endif(is_top_level)

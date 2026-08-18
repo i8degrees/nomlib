@@ -117,10 +117,15 @@ target_link_libraries(nomlib-gui
     nomlib-graphics
   PRIVATE
     project_warnings
-    OpenGL::GL
+    #
     $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
     $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
     $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
+    # libRocket requires OpenGL
+    #OpenGL::GL
+    # FIXME(JEFF): We are unable to build ttcards without changing this dep
+    # to the one below this line. This may not be OK on macos builds!
+    GL
     $<IF:$<TARGET_EXISTS:RocketCore>,RocketCore,RocketCore-static>
     $<IF:$<TARGET_EXISTS:RocketControls>,RocketControls,RocketControls-static>
     $<IF:$<TARGET_EXISTS:RocketDebugger>,RocketDebugger,RocketDebugger-static>

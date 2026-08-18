@@ -39,6 +39,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 typedef struct SF_INFO SF_INFO;
 typedef struct sf_private_tag SNDFILE_tag;
 
+// #define SNDFILE_CHECK_ERR(Function) \
+  ( priv::libsndfile_check_error(NOM_FUNC, __FILE__, __LINE__, Function) )
+// ( (Function), nom::priv::al_err(NOM_FUNC, __FILE__, __LINE__) )
+
 namespace nom {
 namespace audio {
 
@@ -61,11 +65,37 @@ class NOM_EXPORT SoundFileReader: public ISoundFileReader
     // of this enumeration.
     // One frame is equal to one sample whereas on multi-channel formats, one
     // frame is equal to one sample of each channel.
-    virtual int64
-    read(void* data, uint32 channel_format, nom::size_type frames) override;
+    virtual int64 read(void* data, uint32 channel_format,
+      int64 frames) override;
 
-    /// \param offset The cursor offset position, depicted in audio frames.
-    virtual int64 seek(int64 offset, SoundSeek dir) override;
+    /// \brief Read from an open file at a specific offset (frame).
+    ///
+    /// \extra Non-audio data is ignored, thus the cursor position only moves
+    /// within the audio data section of the file.
+    ///
+    /// \param offset The file cursor position, depicted as one or more audio
+    /// frames. Note that this value can be negative and should, in fact be
+    /// when the `dir` parameter is set to SEEK_END.
+    ///
+    /// \param dir One of the following enumerations (integers):
+    ///
+    /// SEEK_SET (0)
+    ///   The offset is set to the start of the audio data plus the offset
+    ///   (multichannel) frames. This is also the default for when an unknown
+    ///   enumeration is given.
+    /// SEEK_CUR (1)
+    ///   The offset is set to its current location plus offset (multichannel
+    ///   frames).
+    /// SEEK_END (2)
+    ///   The offset is set to the end of the data plus offset (multichannel
+    ///   frames).
+    ///
+    /// \returns The offset in (multichannel) frames from the start of the
+    /// audio data, or -1 if an error occured, such as when an attempt is made
+    /// to seek beyond the beginning or the end of the file.
+    ///
+    /// \extra The underlying design is similar to `lseek` in `unistd.h`.
+    virtual int64 seek(int64 offset, int dir) override;
 
     virtual void close() override;
 

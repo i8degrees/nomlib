@@ -93,14 +93,6 @@ enum AudioChannels
 };
 #endif
 
-// ISoundFileReader
-enum NOM_EXPORT SoundSeek
-{
-  SOUND_SEEK_SET = 0,
-  SOUND_SEEK_CUR,
-  SOUND_SEEK_END
-};
-
 // This struct is filled in by libsndfile
 // TODO(JEFF): Rename struct to SoundFile?
 struct NOM_EXPORT SoundInfo
@@ -117,13 +109,13 @@ struct NOM_EXPORT SoundInfo
   uint32 sample_rate = 0;
 
   /// \brief The number of audio channels.
-  uint32 channel_count = 0;
+  int channel_count = 0;
 
   /// \brief The total time, in seconds, of the audio samples.
   real32 duration = 0.0f;
 
   /// \brief The total number of bytes represented by the audio samples.
-  nom::size_type total_bytes = 0;
+  nom::int64 total_bytes = 0;
 
   /// \see nom::audio::AudioFormat
   uint32 channel_format = 0;

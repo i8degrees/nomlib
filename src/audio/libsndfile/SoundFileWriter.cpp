@@ -41,7 +41,7 @@ namespace nom {
 //   return sf_version_string();
 // }
 
-static uint64 sample_bytes(SoundFormat channel_format, int64 sample_count)
+static uint64 sample_bytes(uint32 channel_format, int64 sample_count)
 {
   uint64 total_bytes = 0;
 
@@ -51,13 +51,17 @@ static uint64 sample_bytes(SoundFormat channel_format, int64 sample_count)
 
   if(channel_format == FORMAT_PCM_S8) {
     bit_size = sizeof(int8);
+  } else if(channel_format == FORMAT_PCM_U8) {
+    bit_size = sizeof(uint8);
   } else if(channel_format == FORMAT_PCM_S16) {
     bit_size = sizeof(int16);
+  } else if(channel_format == FORMAT_PCM_S24) {
+    bit_size = sizeof(int32);
   } else if(channel_format == FORMAT_PCM_S32) {
     bit_size = sizeof(int32);
   } else if(channel_format == FORMAT_PCM_R32) {
     bit_size = sizeof(real32);
-  } else if(channel_format == FORMAT_PCM_R32) {
+  } else if(channel_format == FORMAT_PCM_R64) {
     bit_size = sizeof(real64);
   }
 
@@ -135,7 +139,12 @@ bool SoundFileWriter::open(const std::string& filename, SoundInfo& info)
   // 1. http://www.mega-nerd.com/libsndfile/api.html#open
   metadata.format = 0;
 
-  this->fp_ = sf_open(filename.c_str(), SFM_READ, &metadata);
+  if(sf_format_check(&metadata) != 1) {
+    // TODO(JEFF): error handling
+    return false;
+  }
+
+  this->fp_ = sf_open(filename.c_str(), SFM_WRITE, &metadata);
 
   if(libsndfile_check_error(this->fp_) == false) {
     return false;
@@ -146,16 +155,55 @@ bool SoundFileWriter::open(const std::string& filename, SoundInfo& info)
   return true;
 }
 
-int64 SoundFileWriter::write(void* data, nom::size_type byte_size)
+// sf_count_t
+int64 SoundFileWriter::write(void* data, uint32 channel_format, int64 frames)
 {
-  sf_count_t samples_written = 0;
+  sf_count_t samples_frames = 0;
 
   NOM_ASSERT(this->fp_ != nullptr);
   if(this->fp_ == nullptr) {
-    return samples_written;
+    return samples_frames;
   }
 
-  samples_written = sf_write_short(this->fp_, (int16*)data, byte_size);
+  NOM_ASSERT(data != nullptr);
+
+  switch(channel_format) {
+    default:
+    case AUDIO_FORMAT_UNKNOWN: {
+      return samples_frames;
+    } break;
+
+    case AUDIO_FORMAT_U8: {
+      auto samples = NOM_SCAST(int16*, data);
+      sample_frames = sf_writef_short(this->fp_, samples, frames);
+    } break;
+
+    case AUDIO_FORMAT_S8: {
+      auto samples = NOM_SCAST(int16*, data);
+      sample_frames = sf_writef_short(this->fp_, samples, frames);
+    } break;
+
+    case AUDIO_FORMAT_S16: {
+      auto samples = NOM_SCAST(int16*, data);
+      sample_frames = sf_writef_short(this->fp_, samples, frames);
+    } break;
+
+    case AUDIO_FORMAT_S24:
+    case AUDIO_FORMAT_S32: {
+      auto samples = NOM_SCAST(int32*, data);
+      sample_frames = sf_writef_int(this->fp_, samples, frames);
+    } break;
+
+    case AUDIO_FORMAT_R32: {
+      auto samples = NOM_SCAST(real32*, data);
+      sample_frames = sf_writef_float(this->fp_, samples, frames);
+    } break;
+
+    case AUDIO_FORMAT_R64: {
+      auto samples = NOM_SCAST(real64*, data);
+      sample_frames = sf_writef_double(this->fp_, samples, frames);
+    } break;
+  }
 
   if(libsndfile_check_error(this->fp_) == false) {
     return samples_written;
@@ -164,30 +212,9 @@ int64 SoundFileWriter::write(void* data, nom::size_type byte_size)
   return(samples_written);
 }
 
-int64 SoundFileWriter::seek(int64 offset, SoundSeek dir)
+int64 SoundFileWriter::seek(int64 offset, int whence)
 {
-  sf_count_t cursor_pos = 0;
-  int whence = 0;
-
-  switch(dir)
-  {
-    default:
-    case SOUND_SEEK_SET: {
-      whence = SEEK_SET;
-    } break;
-
-    case SOUND_SEEK_CUR: {
-      whence = SEEK_CUR;
-    } break;
-
-    case SOUND_SEEK_END: {
-      whence = SEEK_END;
-    } break;
-  }
-
-  cursor_pos = sf_seek(this->fp_, offset, whence);
-
-  return cursor_pos;
+  return sf_seek(this->fp_, offset, whence);
 }
 
 void SoundFileWriter::close()
@@ -201,14 +228,17 @@ void SoundFileWriter::close()
 
 SoundInfo SoundFileWriter::parse_header(SF_INFO& metadata)
 {
-  SoundInfo info;
+  SoundInfo info; // out
 
   // IMPORTANT(jeff): Take heed that these may be order-dependent!
   info.frame_count = metadata.frames;
   info.sample_count = metadata.frames * metadata.channels;
   info.sample_rate = metadata.samplerate;
   info.channel_count = metadata.channels;
-  info.total_bytes = nom::sample_bytes(AUDIO_FORMAT_S16, info.sample_count);
+  info.channel_format = metadata.format;
+  // FIXME(JEFF): we cannot assume the channel format here!
+  // info.total_bytes = nom::sample_bytes(AUDIO_FORMAT_S16, info.sample_count);
+  info.total_bytes = nom::sample_bytes(info.channel_format, info.sample_count);
   info.duration = nom::duration_seconds(metadata);
   info.seekable = metadata.seekable;
 

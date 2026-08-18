@@ -56,9 +56,9 @@ class NOM_EXPORT SoundFileWriter: public ISoundFileWriter
     virtual bool open(const std::string& filename, SoundInfo& info) override;
 
     virtual
-    int64 write(void* data, nom::size_type byte_size) override;
+    nom::int64 write(void* data, nom::uint32 format, nom::int64 frames) override;
 
-    virtual int64 seek(int64 offset, SoundSeek dir) override;
+    virtual nom::int64 seek(nom::int64 offset, int whence) override;
 
     virtual void close() override;
 

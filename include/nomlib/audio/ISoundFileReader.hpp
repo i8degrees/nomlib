@@ -57,10 +57,9 @@ class NOM_EXPORT ISoundFileReader
 
     virtual bool open(const std::string& filename, SoundInfo& info) = 0;
 
-    virtual int64
-    read(void* data, uint32 format, nom::size_type frames) = 0;
+    virtual int64 read(void* data, uint32 format, int64 frames) = 0;
 
-    virtual int64 seek(int64 offset, SoundSeek dir) = 0;
+    virtual int64 seek(int64 offset, int whence) = 0;
 
     virtual void close() = 0;
 };

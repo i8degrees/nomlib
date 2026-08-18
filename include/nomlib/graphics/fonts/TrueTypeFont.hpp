@@ -75,6 +75,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     // Forward declarations for SDL2_TTF v2.0.12
     typedef struct _TTF_Font TTF_Font;
   #endif
+#else // Assume latest API when no version info is available
+      // Forward declarations for SDL2 TTF v2.23.0 and greater
+  typedef struct TTF_Font TTF_Font;
 #endif
 
 namespace nom {

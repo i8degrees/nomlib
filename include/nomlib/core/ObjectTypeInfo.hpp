@@ -141,7 +141,7 @@ struct NOM_EXPORT RTTIObject
 /// all platforms support RTII, nor do the supported platforms implement
 /// specifics the same (i.e.: name strings).
 template<class T>
-NOM_EXPORT static ObjectTypeInfo ObjectType()
+static ObjectTypeInfo ObjectType()
 {
   return ObjectTypeInfo( typeid( RTTIObject<T> ) );
 }

@@ -3,7 +3,7 @@
 set(STATIC_ASSETS ${PROJECT_SOURCE_DIR}/Resources/tests/serializers/json)
 
 add_executable(nom_jsonpp
-  WIN32 # Link SDL2main over WinMain
+  #WIN32 # Link SDL2main over WinMain for console apps
   MACOSX_BUNDLE
 )
 
@@ -26,17 +26,23 @@ target_sources(nom_jsonpp
     ${STATIC_ASSETS}/omnom.json
 )
 
+if(TARGET SDL2::SDL2main)
+  target_link_libraries(nom_jsonpp
+    PRIVATE
+      $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+  )
+endif(TARGET SDL2::SDL2main)
+
 target_link_libraries(nom_jsonpp
   PRIVATE
-  $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
-  $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
-  $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
-  $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
+    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+    $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
+    $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
   PUBLIC
-  nomlib-core
-  nomlib-ptree
-  nomlib-serializers
-  nomlib-system
+    nomlib-core
+    nomlib-ptree
+    nomlib-serializers
+    nomlib-system
 )
 
 install(TARGETS nom_jsonpp

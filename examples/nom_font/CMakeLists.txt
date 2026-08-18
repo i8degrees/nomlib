@@ -3,7 +3,7 @@
 set(STATIC_ASSETS ${PROJECT_SOURCE_DIR}/Resources/tests/graphics/TrueTypeFontTest)
 
 add_executable(nom_font
-  WIN32 # Link SDL2main over WinMain
+  #WIN32 # Link SDL2main over WinMain for console apps
   MACOSX_BUNDLE
   renderfont.cpp
 )
@@ -16,35 +16,35 @@ set_target_properties(nom_font
 
 target_sources(nom_font
   PRIVATE
-  ${STATIC_ASSETS}/OpenSans-Bold.ttf
-  ${STATIC_ASSETS}/OpenSans-Regular.ttf
+    ${STATIC_ASSETS}/OpenSans-Bold.ttf
+    ${STATIC_ASSETS}/OpenSans-Regular.ttf
 )
 
+# console app
 if(TARGET SDL2::SDL2main)
   target_link_libraries(nom_font
     PRIVATE
-    $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+      $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
   )
 endif(TARGET SDL2::SDL2main)
 
 target_include_directories(nom_font
   PUBLIC
-  ${PROJECT_SOURCE_DIR}/include # include/nomlib
+    ${PROJECT_SOURCE_DIR}/include # include/nomlib
   PRIVATE
-  ${TCLAP_INCLUDE_DIR}
+    ${TCLAP_INCLUDE_DIR}
 )
 
 target_link_libraries(nom_font
   PUBLIC
-  nomlib-core
-  nomlib-graphics
-  nomlib-math
-  nomlib-system
+    nomlib-core
+    nomlib-graphics
+    nomlib-math
+    nomlib-system
   PRIVATE
-  #$<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
-  $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
-  $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
-  $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
+    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+    $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
+    $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
 )
 
 install(TARGETS nom_font

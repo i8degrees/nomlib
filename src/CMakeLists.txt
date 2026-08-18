@@ -31,8 +31,14 @@ endif()
 
 if(NOM_BUILD_GUI_UNIT)
   set(NOM_USE_LIBROCKET TRUE)
-  # set(NOM_USE_LIBROCKET_LUA FALSE)
-  # set(NOM_USE_LIBROCKET_PYTHON FALSE)
+  set(NOM_USE_LIBROCKET_LUA FALSE) # libRocket <= 1.3.0 (ish)
+  set(NOM_USE_LIBROCKET_PYTHON FALSE) # libRocket >= 1.3.0.0 (ish)
+
+  if(NOM_USE_LIBROCKET_PYTHON)
+    # libRocket provides a scripting component that requires the use of Python
+    # v2 bindings
+    find_package(Python2 COMPONENTS Interpreter Development REQUIRED)
+  endif()
 endif(NOM_BUILD_GUI_UNIT)
 
 if(NOM_BUILD_EXTRA_RESCALE_ALGO_UNIT)

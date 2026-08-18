@@ -29,6 +29,18 @@ set(PATCHES_DIR "${PROJECT_SOURCE_DIR}/vendor/patches")
 
 include(FetchContent)
 
+#
+## Pre-requisite for vendor dependencies
+#
+
+# jsoncpp && rapidxml sources require patching
+# (this is necessary for the vcpkg nomlib package)
+find_package(Patch REQUIRED) # VARS Patch_EXECUTABLE
+
+# IMPORTANT(JEFF): This is required for the jsoncpp vendor dependency
+# (this is necessary for the vcpkg nomlib package)
+find_package(Python3 COMPONENTS Interpreter REQUIRED)
+
 # Build flags
 
 # >> GoogleTest v1.11.0 is our vendor package target due to compiler issues
@@ -54,7 +66,10 @@ FetchContent_Declare(
   URL             "${JSONCPP_URL}"
   URL_HASH        "SHA512=${JSONCPP_SHA512}"
   PATCH_COMMAND   python3 <SOURCE_DIR>/amalgamate.py
-  COMMAND         patch <SOURCE_DIR>/src/lib_json/CMakeLists.txt "${PATCHES_DIR}/jsoncpp_no-install.patch"
+  COMMAND         ${Patch_EXECUTABLE} <SOURCE_DIR>/src/lib_json/CMakeLists.txt "${PATCHES_DIR}/jsoncpp_no-install.patch"
+  #COMMAND         patch <SOURCE_DIR>/src/lib_json/CMakeLists.txt "${PATCHES_DIR}/jsoncpp_no-install.patch"
+  #COMMAND         "${CMAKE_COMMAND}" -E patch <SOURCE_DIR>/src/lib_json/CMakeLists.txt "${PATCHES_DIR}/jsoncpp_no-install.patch"
+  #COMMAND         git apply --directory=src/lib_json "${PATCHES_DIR}/jsoncpp_no-install.patch"
 )
 
 # >> tclap v1.2.1 by ...
@@ -83,7 +98,7 @@ FetchContent_Declare(
 if(NOM_INSTALL_GCDB)
   set(GCDB_TAG "master")
   set(GCDB_URL "https://github.com/mdqinc/SDL_GameControllerDB/archive/refs/heads/${GCDB_TAG}.zip")
-  set(GCDB_SHA512 "b3e27d972ad9ed115def8d1aaa9dabd2195558a4b5ab9a9cb027dc5d4ce0974cf94c3a9aa3fb9a9bd792e44137dcc8e17ffddbc24ff5fd93c632928fed824b60")
+  set(GCDB_SHA512 "f78882866d9cda5505cc789d8f3ec03b0927a75ae87f43e8b4f60c02785a850972ef3ce537966fba984188c06e85c8efadc3d5cafa191619d6ffedfb1014a9d7")
   FetchContent_Declare(
     gamecontroller_db
     URL             "${GCDB_URL}"
@@ -97,7 +112,7 @@ endif()
 ## build settings
 #
 
-# jsoncpp settings
+# jsoncpp env
 set(CMAKE_POLICY_VERSION_MINIMUM 3.5 CACHE INTERNAL "prevent cache pollution")
 set(JSONCPP_LIB_BUILD_SHARED OFF CACHE INTERNAL "prevent cache pollution")
 set(JSONCPP_WITH_TESTS OFF CACHE INTERNAL "prevent cache pollution")

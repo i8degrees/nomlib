@@ -1,6 +1,6 @@
 # nom_sfx example
 
-set(STATIC_ASSET_CONFIG "${NOM_EXAMPLES_RESOURCES_DIR}/audio.json")
+set(STATIC_ASSET_CONFIG "${PROJECT_SOURCE_DIR}/Resources/examples/audio.json")
 
 add_executable(nom_sfx
   WIN32 # Link SDL2main over WinMain
@@ -72,5 +72,3 @@ add_custom_command(TARGET nom_sfx
 #${CMAKE_INSTALL_DATADIR}/nomlib/Resources # <prefix/share>/nomlib/Resources
 #COMPONENT Examples
 #)
-
-#install_resource_file("${STATIC_ASSET_CONFIG}" "${EXAMPLES_INSTALL_DIR}")

@@ -39,12 +39,11 @@ if( NOM_BUILD_RENDERWINDOW_TESTS )
                     "RenderWindowTest.cpp" )
 
   # Copy nomlib's window icon resource.
-  install (
-            FILES
-            "${NOMLIB_RESOURCES_DIR}/icon.png"
-            DESTINATION
-            "${TESTS_INSTALL_DIR}"
-          )
+  install(FILES
+          "${PROJECT_SOURCE_DIR}/Resources/icon.png"
+          DESTINATION
+          "${TESTS_INSTALL_DIR}"
+  )
 
 endif( NOM_BUILD_RENDERWINDOW_TESTS )
 

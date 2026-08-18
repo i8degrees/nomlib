@@ -29,15 +29,14 @@ set( NOM_BUILD_GAME_CONTROLLER_EXAMPLE ON )
 set( NOM_BUILD_FONTS_EXAMPLE ON )
 set( NOM_BUILD_MOUSE_CURSORS_EXAMPLE ON )
 set( NOM_BUILD_MACROS_EXAMPLE ON )
+set(NOM_BUILD_GOL_EXAMPLE ON)
 
 # Use common build output directories for MSVCPP && Xcode project files
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin")
 
-# This path is used for the local installation of required dependencies for
-# running examples, such as dependent resource files. Additionally, when
-# building on Windows, this will be the path that dependent DLLs are copied to.
-set( EXAMPLES_INSTALL_DIR "${CMAKE_INSTALL_DATAROOTDIR}" )
+# Always built
+add_subdirectory(nom_jsonpp)
 
 if(NOM_BUILD_APP_EXAMPLE) # nom_app_ex
   add_subdirectory(nom_app_ex)
@@ -75,31 +74,19 @@ if(NOM_BUILD_MACROS_EXAMPLE) # nom_macros
   add_subdirectory(nom_macros)
 endif(NOM_BUILD_MACROS_EXAMPLE)
 
-# Install library dependencies into binary output directory
-if(WIN32 AND USE_OLD_WINDOWS_CODE)
-  install(  DIRECTORY
-            ${SDL2_REDIST_DIR}
-            ${SDL2_IMAGE_REDIST_DIR}
-            ${SDL2_TTF_REDIST_DIR}
-            ${OPENAL_REDIST_DIR}
-            ${LIBSNDFILE_REDIST_DIR}
-            ${MSVCPP_REDIST_DIR}
-            ${GLEW_REDIST_DIR}
-            ${LIBROCKET_REDIST_DIR}
-            ${LIBROCKET_EXT_REDIST_DIR}
-            DESTINATION
-            ${EXAMPLES_INSTALL_DIR}
-            OPTIONAL # In case end-user overrides third-party dependencies
-            FILES_MATCHING PATTERN "*.dll"
-  )
+if(NOM_BUILD_GOL_EXAMPLE)
+  add_subdirectory(GameOfLife)
 endif()
 
-install_resource_dir( "${NOM_EXAMPLES_RESOURCES_DIR}"
-                      "${EXAMPLES_INSTALL_DIR}/Resources")
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/Resources/examples"
+  DESTINATION  "${CMAKE_INSTALL_DATAROOTDIR}/nomlib/Resources"
+  COMPONENT Examples
+  PATTERN ".*" EXCLUDE # dot files
+)
+
 # FIXME(JEFF): The app example requires the tests resources path
-install_resource_dir( "${NOM_TESTS_RESOURCES_DIR}"
-                      "${EXAMPLES_INSTALL_DIR}/Resources")
-
-add_subdirectory(nom_jsonpp)
-add_subdirectory(GameOfLife)
-
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/Resources/tests"
+  DESTINATION  "${CMAKE_INSTALL_DATAROOTDIR}/nomlib/Resources"
+  COMPONENT Examples
+  PATTERN ".*" EXCLUDE # dot files
+)

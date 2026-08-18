@@ -217,13 +217,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     #define NOM_ASSERT(expression) \
       ( assert (expression) )
   #endif // defined( NOM_USE_SDL2_ASSERT )
+#elif defined(NDEBUG) // -DNDEBUG or DEBUG_ASSERT=off
+  #define NOM_ASSERT(expr)  // NO-OP
+#endif
 
-#else // Do not add any overhead
-  #define NOM_ASSERT(expression)  // NO-OP
-#endif // defined( NOM_DEBUG_ASSERT )
-
-#define NOM_ASSERT_INVALID_PATH(reserved) \
-  NOM_ASSERT(!"Invalid execution path assertion triggered")
+// "!! Invalid execution path assertion triggered !!"
+#define NOM_ASSERT_INVALID_PATH(expr) \
+  ( assert(0 == 1 && "!! Invalid execution path triggered !!") )
 
 #if defined(NOM_COMPILER_CLANG)
   // SOURCE: http://clang.llvm.org/docs/UsersManual.html#controlling-diagnostics-via-pragmas

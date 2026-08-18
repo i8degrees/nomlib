@@ -47,8 +47,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // platform detection routines some day.
 #if defined(__GNUC__)
   #include <cstdint>
-#elif defined(__llvm__)
+#elif defined(__llvm__) && defined(__clang__)
   #include <sys/types.h>
+  #include <cstdint>
+#elif defined(_MSC_VER) // Microsoft Visual C++
+                        // STUB
 #endif
 
 // FIXME: The following declaration is necessary in order to avoid a very

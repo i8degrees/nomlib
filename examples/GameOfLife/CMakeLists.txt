@@ -16,26 +16,32 @@ set_target_properties(nom_GameOfLife
 
 target_include_directories(nom_GameOfLife
   PUBLIC
-  ${PROJECT_SOURCE_DIR}/include # include/nomlib
+    ${PROJECT_SOURCE_DIR}/include # include/nomlib
   PRIVATE
-  ${SDL2_INCLUDE_DIR}
+    ${SDL2_INCLUDE_DIR}
 )
 
 target_sources(nom_GameOfLife
   PRIVATE
-  "${STATIC_ASSETS}/assets/img/bgdark.png"
-  "${STATIC_ASSETS}/assets/img/bglight.png"
-  "${STATIC_ASSETS}/assets/img/pink.png"
-  #"${STATIC_ASSETS}/icon.png"
+    "${STATIC_ASSETS}/assets/img/bgdark.png"
+    "${STATIC_ASSETS}/assets/img/bglight.png"
+    "${STATIC_ASSETS}/assets/img/pink.png"
+    #"${STATIC_ASSETS}/icon.png"
 )
 
+if(TARGET SDL2::SDL2main)
+  target_link_libraries(nom_GameOfLife
+    PRIVATE
+      $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+  )
+endif(TARGET SDL2::SDL2main)
 
 target_link_libraries(nom_GameOfLife
   PUBLIC
-  nomlib-core
-  nomlib-graphics
-  nomlib-serializers
-  nomlib-system
+    nomlib-core
+    nomlib-graphics
+    nomlib-serializers
+    nomlib-system
 )
 
 install(TARGETS nom_GameOfLife
@@ -50,7 +56,7 @@ add_custom_command(TARGET nom_GameOfLife
   "${STATIC_ASSETS}/assets/img/bglight.png"
   "${STATIC_ASSETS}/assets/img/pink.png"
   #"${STATIC_ASSETS}/icon.png"
-  $<TARGET_FILE_DIR:nom_GameOfLife> # <build>/<type>/share
+  $<TARGET_FILE_DIR:nom_GameOfLife/Resources> # <build>/<type>/share
 )
 
 # For distribution:

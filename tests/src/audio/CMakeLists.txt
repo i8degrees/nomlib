@@ -47,7 +47,10 @@ if(NOM_BUILD_OPENAL_AUDIO_TESTS)
   GTEST_ADD_TESTS(${TESTS_INSTALL_DIR}/ALAudioTest "" ALAudioTest.cpp)
 
   # Copy resource files for the test
-  install_resource_file("${NOM_TESTS_RESOURCES_DIR}/audio/ALAudioTest.json"
-                        "${TESTS_INSTALL_DIR}")
+  install(FILES
+    "${NOM_TESTS_RESOURCES_DIR}/audio/ALAudioTest.json"
+    DESTINATION
+    "${TESTS_INSTALL_DIR}"
+  )
 
 endif(NOM_BUILD_OPENAL_AUDIO_TESTS)

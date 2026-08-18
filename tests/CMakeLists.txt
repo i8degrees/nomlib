@@ -319,6 +319,8 @@ if(WIN32 AND USE_OLD_WINDOWS_CODE)
 endif(WIN32 AND USE_OLD_WINDOWS_CODE)
 
 # Resources/tests -> <out>/tests/Resources
-install_resource_dir( "${NOM_TESTS_RESOURCES_DIR}"
-                      "${TESTS_INSTALL_DIR}/Resources")
-
+install(DIRECTORY
+  "${NOM_TESTS_RESOURCES_DIR}"
+  DESTINATION
+  "${TESTS_INSTALL_DIR}/Resources"
+)

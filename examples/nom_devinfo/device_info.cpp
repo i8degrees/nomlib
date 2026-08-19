@@ -62,17 +62,25 @@ namespace nom {
 
 void nomlib_version_info( void )
 {
-  NOM_LOG_INFO  (
-                  NOM_LOG_CATEGORY_APPLICATION,
-                  "nomlib version: ",
-                  nom::NOM_VERSION.version_string()
-                );
+  std::string build_type = "DYNAMIC";
+  std::string postfix = "RELEASE";
 
-  NOM_LOG_INFO  (
-                  NOM_LOG_CATEGORY_APPLICATION,
-                  "nomlib source revision: ",
-                  nom::revision()
-                );
+#if !defined(NDEBUG)
+  postfix = "DEBUG";
+#endif
+
+// See `src/core/CMakeLists.txt` for origin of this definition
+#if defined(NOM_STATIC_DEFINE)
+  build_type = "STATIC";
+#endif
+
+  NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION,
+    "nomlib version: ",
+    nom::NOM_VERSION.version_string(),
+    nom::revision(), "(vcs)",
+    "\n",
+    postfix, "|", build_type
+  );
 }
 
 void SDL2_version_info( void )

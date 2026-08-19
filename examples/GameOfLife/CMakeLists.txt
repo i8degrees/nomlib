@@ -8,11 +8,14 @@ add_executable(nom_GameOfLife
   game.cpp
 )
 
-set_target_properties(nom_GameOfLife
-  PROPERTIES
-    INSTALL_RPATH "$ORIGIN/../lib"
-    INSTALL_RPATH_USE_LINK_PATH TRUE
-)
+# TODO(JEFF): This should be a cmake option that can be modified by the
+# end-user for sake of packaging and what not.
+if(APPLE)
+  set_rpath(nom_GameOfLife "@loader_path/../Frameworks;@loader_path/../lib;@loader_path")
+else()
+  # Use standard Unix file hier layout for run path
+  set_rpath(nom_GameOfLife "@origin/../lib")
+endif()
 
 target_include_directories(nom_GameOfLife
   PUBLIC
@@ -40,7 +43,6 @@ target_link_libraries(nom_GameOfLife
   PUBLIC
     nomlib-core
     nomlib-graphics
-    nomlib-serializers
     nomlib-system
 )
 
@@ -65,3 +67,11 @@ install(DIRECTORY ${STATIC_ASSETS}
   ${CMAKE_INSTALL_DATADIR}/nomlib/Resources # <prefix/share>/nomlib/Resources
   COMPONENT Examples
 )
+
+copy_framework_dep(nom_GameOfLife
+  nomlib-core
+  #nomlib-file
+  nomlib-graphics
+  nomlib-system
+)
+

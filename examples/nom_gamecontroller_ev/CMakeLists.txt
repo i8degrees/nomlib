@@ -8,33 +8,36 @@ add_executable(nom_gamecontroller_ev
   gamecontroller_events.cpp
 )
 
-set_target_properties(nom_gamecontroller_ev
-  PROPERTIES
-    INSTALL_RPATH "$ORIGIN/../lib"
-    INSTALL_RPATH_USE_LINK_PATH TRUE
-)
+# TODO(JEFF): This should be a cmake option that can be modified by the
+# end-user for sake of packaging and what not.
+if(APPLE)
+  set_rpath(nom_gamecontroller_ev "@loader_path/../Frameworks;@loader_path/../lib;@loader_path")
+else()
+  # Use standard Unix file hier layout for run path
+  set_rpath(nom_gamecontroller_ev "@origin/../lib")
+endif()
 
 if(TARGET SDL2::SDL2main)
   target_link_libraries(nom_gamecontroller_ev
     PRIVATE
-    $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+      $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
   )
 endif(TARGET SDL2::SDL2main)
 
 target_include_directories(nom_gamecontroller_ev
   PUBLIC
-  ${PROJECT_SOURCE_DIR}/include # include/nomlib
+    ${PROJECT_SOURCE_DIR}/include # include/nomlib
 )
 
 target_link_libraries(nom_gamecontroller_ev
   PUBLIC
-  nomlib-graphics
-  nomlib-system
+    nomlib-graphics
+    nomlib-system
   PRIVATE
-  # $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
-  $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
-  $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
-  $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
+    # $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+    $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
+    $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
 )
 
 # For development:
@@ -67,3 +70,14 @@ install(FILES
   OPTIONAL
   COMPONENT Examples
 )
+
+copy_framework_dep(nom_gamecontroller_ev
+  nomlib-core
+  nomlib-file
+  nomlib-graphics
+  nomlib-math
+  nomlib-ptree
+  nomlib-serializers
+  nomlib-system
+)
+

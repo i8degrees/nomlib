@@ -3,16 +3,19 @@ add_executable(nom_macros
   macros.cpp
 )
 
-set_target_properties(nom_macros
-  PROPERTIES
-    INSTALL_RPATH "$ORIGIN/../lib"
-    INSTALL_RPATH_USE_LINK_PATH TRUE
-)
+# TODO(JEFF): This should be a cmake option that can be modified by the
+# end-user for sake of packaging and what not.
+if(APPLE)
+  set_rpath(nom_macros "@loader_path/../Frameworks;@loader_path/../lib;@loader_path")
+else()
+  # Use standard Unix file hier layout for run path
+  set_rpath(nom_macros "@origin/../lib")
+endif()
 
 if(TARGET SDL2::SDL2main)
   target_link_libraries(nom_macros
     PRIVATE
-    $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+      $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
   )
 endif(TARGET SDL2::SDL2main)
 
@@ -23,10 +26,10 @@ target_include_directories(nom_macros
 
 target_link_libraries(nom_macros
   PUBLIC
-  nomlib-core
+    nomlib-core
   PRIVATE
-  $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
-  $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+    $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
 )
 
 install(TARGETS nom_macros
@@ -48,3 +51,8 @@ install(FILES $<TARGET_FILE:SDL2::SDL2>
   RENAME nom_$<TARGET_FILE_NAME:SDL2::SDL2>
   COMPONENT Examples
 )
+
+copy_framework_dep(nom_macros
+  nomlib-core
+)
+

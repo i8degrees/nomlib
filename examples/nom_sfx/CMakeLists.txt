@@ -8,11 +8,14 @@ add_executable(nom_sfx
   audio.cpp
 )
 
-set_target_properties(nom_sfx
-  PROPERTIES
-    INSTALL_RPATH "$ORIGIN/../lib"
-    INSTALL_RPATH_USE_LINK_PATH TRUE
-)
+# TODO(JEFF): This should be a cmake option that can be modified by the
+# end-user for sake of packaging and what not.
+if(APPLE)
+  set_rpath(nom_sfx "@loader_path/../Frameworks;@loader_path/../lib;@loader_path")
+else()
+  # Use standard Unix file hier layout for run path
+  set_rpath(nom_sfx "@origin/../lib")
+endif()
 
 target_sources(nom_sfx
   PRIVATE
@@ -36,19 +39,19 @@ endif(TARGET SDL2::SDL2main)
 
 target_link_libraries(nom_sfx
   PUBLIC
-  nomlib-actions
-  nomlib-audio
-  nomlib-core
-  nomlib-math
-  nomlib-serializers
-  nomlib-system
+    nomlib-actions
+    nomlib-audio
+    nomlib-core
+    nomlib-math
+    nomlib-serializers
+    nomlib-system
   PRIVATE
-  Threads::Threads
-  $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
-  $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
-  $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
-  $<IF:$<TARGET_EXISTS:OpenAL::OpenAL>,OpenAL::OpenAL,OpenAL::OpenAL-static>
-  $<IF:$<TARGET_EXISTS:SndFile::sndfile>,SndFile::sndfile,SndFile::sndfile-static>
+    Threads::Threads
+    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+    $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
+    $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
+    $<IF:$<TARGET_EXISTS:OpenAL::OpenAL>,OpenAL::OpenAL,OpenAL::OpenAL-static>
+    $<IF:$<TARGET_EXISTS:SndFile::sndfile>,SndFile::sndfile,SndFile::sndfile-static>
 
 )
 
@@ -72,3 +75,18 @@ add_custom_command(TARGET nom_sfx
 #${CMAKE_INSTALL_DATADIR}/nomlib/Resources # <prefix/share>/nomlib/Resources
 #COMPONENT Examples
 #)
+
+# FIXME(JEFF): This dependency can be removed once we decouple from 
+# nomlib-actions
+copy_framework_dep(nom_sfx
+  nomlib-actions
+  nomlib-audio
+  nomlib-core
+  nomlib-file
+  nomlib-graphics
+  nomlib-math
+  nomlib-ptree
+  nomlib-serializers
+  nomlib-system
+)
+

@@ -10,7 +10,7 @@
   "maintainers": [
     "Jeffrey Carpenter <1329364+i8degrees@users.noreply.github.com>"
   ],
-  "supports": "(osx & x64), (linux & x64), (windows & x86 & static)",
+  "supports": "(osx & x64), (linux & x64), (windows & x64)",
   "dependencies": [
     {
       "name": "vcpkg-cmake",
@@ -32,7 +32,7 @@
       "name": "openal-soft",
       "version>=": "1.17.2",
       "features": [],
-      "platform": "windows & (x86 | x64)"
+      "platform": "(windows & x64)"
     },
     {
       "name": "sdl2",
@@ -46,7 +46,7 @@
     {
       "name": "librocket",
       "version>=": "1.3.0.0",
-      "platform": "(osx & x64), (linux & x64), (windows & x86 & static)"
+      "platform": "(osx & x64), (linux & x64), (windows & x64)"
     },
     {
       "name": "sdl2",
@@ -62,7 +62,7 @@
       "features": [
         "tiff"
       ],
-      "platform": "(osx & x64), (linux & x64), (windows & x86 & static)"
+      "platform": "(osx & x64), (linux & x64), (windows & x64)"
     },
     {
       "name": "freetype",
@@ -71,7 +71,7 @@
     {
       "name": "sdl2-ttf",
       "version>=": "2.0.14",
-      "platform": "(osx & x64), (linux & x64), (windows & x86 & static)",
+      "platform": "(osx & x64), (linux & x64), (windows & x64)",
       "features": [],
       "default-features": false
     },
@@ -81,7 +81,7 @@
       "features": [
         "external-libs"
       ],
-      "platform": "(osx & x64), (linux & x64), (windows & x86 & static)"
+      "platform": "(osx & x64), (linux & x64), (windows & x64)"
     }
   ],
   "overrides": [

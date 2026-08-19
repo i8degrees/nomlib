@@ -50,11 +50,6 @@ int main(int argc, char** argv) {
   IValueSerializer* fpout; //= new JsonCppSerializer();
   nom::uint32 flags = 0;
 
-  if(nom::init_third_party(flags) == false) {
-    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION, "Could not initialize nomlib.");
-    return(NOM_EXIT_FAILURE);
-  }
-
   // Set the current working directory
   // if(nom::init(argc, argv) == false) {
   //   NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION, "Could not initialize nomlib.");

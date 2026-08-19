@@ -6,11 +6,14 @@ add_executable(nom_cursors
   cursors.cpp
 )
 
-set_target_properties(nom_cursors
-  PROPERTIES
-    INSTALL_RPATH "$ORIGIN/../lib"
-    INSTALL_RPATH_USE_LINK_PATH TRUE
-)
+# TODO(JEFF): This should be a cmake option that can be modified by the
+# end-user for sake of packaging and what not.
+if(APPLE)
+  set_rpath(nom_cursors "@loader_path/../Frameworks;@loader_path/../lib;@loader_path")
+else()
+  # Use standard Unix file hier layout for run path
+  set_rpath(nom_cursors "@origin/../lib")
+endif()
 
 if(TARGET SDL2::SDL2main)
   target_link_libraries(nom_cursors
@@ -37,3 +40,11 @@ install(FILES
   "${PROJECT_SOURCE_DIR}/Resources/icon.png"
   DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/nomlib"
 )
+
+copy_framework_dep(nom_cursors
+  nomlib-core
+  nomlib-file
+  nomlib-graphics
+  nomlib-system
+)
+

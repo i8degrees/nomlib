@@ -14,15 +14,18 @@ add_executable(nom_jsonpp
   MACOSX_BUNDLE
 )
 
-set_target_properties(nom_jsonpp
-  PROPERTIES
-    INSTALL_RPATH "$ORIGIN/../lib"
-    INSTALL_RPATH_USE_LINK_PATH TRUE
-)
+# TODO(JEFF): This should be a cmake option that can be modified by the
+# end-user for sake of packaging and what not.
+if(APPLE)
+  set_rpath(nom_jsonpp "@loader_path/../Frameworks;@loader_path/../lib;@loader_path")
+else()
+  # Use standard Unix file hier layout for run path
+  set_rpath(nom_jsonpp "@origin/../lib")
+endif()
 
 target_include_directories(nom_jsonpp
   PUBLIC
-  ${PROJECT_SOURCE_DIR}/include # include/nomlib
+    ${PROJECT_SOURCE_DIR}/include # include/nomlib
 )
 
 target_sources(nom_jsonpp

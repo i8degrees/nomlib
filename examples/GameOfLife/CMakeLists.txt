@@ -110,12 +110,19 @@ install(FILES
 )
 
 copy_framework_dep(nom_GameOfLife
+  # FIXME(JEFF): This dependency is not needed and will be removed once we
+  # decouple nomlib-actions from nomlib-audio.
+  #nomlib-actions
+  #nomlib-audio
   nomlib-core
-  #nomlib-file
+  nomlib-file
   nomlib-graphics
+  #nomlib-gui
+  nomlib-math
   # FIXME(JEFF): This library should not be a dependency -- once we
   # decouple the SpriteSheet class (graphics) from the use of a serializing
   # pointer, we can safely remove nomlib-serializers from here.
+  nomlib-ptree
   nomlib-serializers
   nomlib-system
 )

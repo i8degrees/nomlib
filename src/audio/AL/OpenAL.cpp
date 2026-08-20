@@ -29,6 +29,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/audio/AL/OpenAL.hpp"
 #include "nomlib/core/err.hpp"
 
+// Private declarations
+#include "nomlib/audio/AL/priv_openal.hpp"
+
 // Private headers
 // #include <string>
 
@@ -81,17 +84,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // } // namespace audio
 // } // namespace nom
-
-#if defined(NOM_USE_OPENAL_SOFT)
-  typedef struct ALCcontext ALCcontext_struct;
-  typedef struct ALCdevice ALCdevice_struct;
-#elif defined(NOM_USE_APPLE_OPENAL)
-  typedef struct ALCcontext_struct ALCcontext;
-  typedef struct ALCdevice_struct ALCdevice;
-
-  typedef ALCcontext ALCcontext_struct;
-  typedef ALCdevice ALCdevice_struct;
-#endif
 
 namespace nom {
 namespace priv {

@@ -29,6 +29,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/audio/AL/OpenAL.hpp"
 #include "nomlib/core/err.hpp"
 
+// Private declarations
+#include "nomlib/audio/AL/priv_openal.hpp"
+
 // Private headers
 // #include <string>
 

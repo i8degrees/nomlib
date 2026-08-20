@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 // Global err buffer
-NOM_EXPORT static err err_buffer;
+static err err_buffer;
 
 err::err()
   : message("\0")

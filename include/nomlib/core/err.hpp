@@ -78,10 +78,10 @@ NOM_EXPORT void clear_error();
 
 // Common error types
 
-NOM_EXPORT const err OUT_OF_MEMORY_ERR =
+const err OUT_OF_MEMORY_ERR =
   nom::make_error("Failed to allocate memory");
 
-NOM_EXPORT const err NULL_ARGUMENT_ERR =
+const err NULL_ARGUMENT_ERR =
   nom::make_error("Passed NULL argument");
 
 } // namespace nom

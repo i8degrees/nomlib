@@ -95,7 +95,7 @@ struct NOM_EXPORT Size2
   /// \brief Compare two Size2 objects and return the larger width and height
   /// of the two objects.
   template <typename U>
-  NOM_EXPORT Size2 max( const Size2<U>& rhs )
+  Size2 max( const Size2<U>& rhs )
   {
     return Size2<T>( std::max( this->w, rhs.w ), std::max( this->h, rhs.h ) );
   }
@@ -103,13 +103,13 @@ struct NOM_EXPORT Size2
   /// \brief Compare two Size2 objects and return the smaller width and height
   /// of the two objects.
   template <typename U>
-  NOM_EXPORT Size2 min( const Size2<U>& rhs )
+  Size2 min( const Size2<U>& rhs )
   {
     return Size2<T>( std::min( this->w, rhs.w ), std::min( this->h, rhs.h ) );
   }
 
   /// \brief Transpose width and height dimensions.
-  NOM_EXPORT void swap( void )
+  void swap( void )
   {
     std::swap( this->w, this->h );
   }
@@ -117,16 +117,16 @@ struct NOM_EXPORT Size2
   /// \brief Null value
   ///
   /// \remarks  Null value implementation depends on signed (negative) numbers.
-  NOM_EXPORT static const Size2 null;
+  static const Size2 null;
 
   /// \brief Zero value constant.
-  NOM_EXPORT static const Size2 zero;
+  static const Size2 zero;
 
   /// Represents the width coordinate point
-  NOM_EXPORT T w;
+  T w;
 
   /// Represents the height coordinate point
-  NOM_EXPORT T h;
+  T h;
 };
 
 /// Pretty print a Size2 object using the following formatting:
@@ -620,14 +620,14 @@ template <> NOM_EXPORT const Size2f Size2f::null;
 template <> NOM_EXPORT const Size2d Size2d::null;
 
 /// \brief Zero value for a nom::Size2 using signed integers
-template <> NOM_EXPORT const Size2i Size2i::zero;
+template <> const Size2i Size2i::zero;
 
 /// \brief Zero value for a nom::Size2 using floating point numbers.
-template <> NOM_EXPORT const Size2f Size2f::zero;
+template <> const Size2f Size2f::zero;
 
 /// \brief Zero value for a nom::Size2 using double precision floating point
 /// numbers.
-template <> NOM_EXPORT const Size2d Size2d::zero;
+template <> const Size2d Size2d::zero;
 
 } // namespace nom
 

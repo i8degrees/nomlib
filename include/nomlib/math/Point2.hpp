@@ -79,7 +79,7 @@ struct NOM_EXPORT Point2
   }
 
   /// \brief Obtain a reference of the object.
-  NOM_EXPORT inline const Point2<T>& get ( void ) const
+  inline const Point2<T>& get ( void ) const
   {
     return *this;
   }
@@ -87,16 +87,16 @@ struct NOM_EXPORT Point2
   /// \brief Null value
   ///
   /// \remarks  Null value implementation depends on signed (negative) numbers.
-  NOM_EXPORT static const Point2 null;
+  static const Point2 null;
 
   /// \brief Zero value constant.
-  NOM_EXPORT static const Point2 zero;
+  static const Point2 zero;
 
   /// Represents the X-axis coordinate point
-  NOM_EXPORT T x;
+  T x;
 
   /// Represents the Y-axis coordinate point
-  NOM_EXPORT T y;
+  T y;
 };
 
 /// Pretty print a Point2 object using the following formatting:

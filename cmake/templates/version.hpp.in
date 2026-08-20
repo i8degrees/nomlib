@@ -82,7 +82,7 @@ struct NOM_EXPORT VersionInfo
     /// unsuccessful conversion, such as if the version string format is invalid.
     ///
     /// \remarks This implementation derives from [version.cpp](http://www.ncbi.nlm.nih.gov/viewvc/v1/trunk/c%2B%2B/src/corelib/version.cpp?revision=51801&content-type=text%2Fplain&view=co), part of the [NCBI C++ Toolkit](http://www.ncbi.nlm.nih.gov/toolkit/).
-    NOM_EXPORT static bool convert_version_string( const std::string& ver_string,
+    static bool convert_version_string( const std::string& ver_string,
                                         VersionInfo& info);
 
   private:

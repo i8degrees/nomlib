@@ -56,7 +56,7 @@ namespace nom {
 /// \brief Number of spaces to pass to JsonCpp for indention.
 ///
 /// \remarks Two space tabbed indention.
-NOM_EXPORT const std::string JSONCPP_INDENTION_LEVEL = "  ";
+NOM_NO_EXPORT const std::string JSONCPP_INDENTION_LEVEL = "  ";
 
 /// \brief Saving of nom::Value objects to JSON documents using the JsonCpp
 /// library.

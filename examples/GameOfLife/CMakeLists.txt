@@ -57,7 +57,7 @@ if(APPLE)
       MACOSX_BUNDLE_BUNDLE_NAME "nom_GameOfLife"
       MACOSX_DEPLOYMENT_TARGET "10.15"
       MACOSX_BUNDLE_COPYRIGHT "(c) COPYRIGHT 2014..${TIMESTAMP} JEFFREY CARPENTER <1329364+i8degrees@users.noreply.github.com>"
-      MACOSX_BUNDLE_INFO_PLIST "${PROJECT_SOURCE_DIR}/cmake/templates/app.plist.in"
+      MACOSX_BUNDLE_INFO_PLIST "${PROJECT_SOURCE_DIR}/cmake/templates/application.plist.in"
       RESOURCE "${MACOSX_ASSETS}"
   )
 endif()

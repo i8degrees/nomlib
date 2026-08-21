@@ -140,9 +140,9 @@ See **third-party/README.md** for where to obtain pre-packaged libraries and how
 
 Required version: Microsoft Windows Vista
 
-**NOTE**: This has not been verified.
-
 See **third-party/README.md** for where to obtain pre-packaged libraries and how to install them.
+
+### setting up build env
 
 1. [Download and install the Microsoft Visual Studio Build Tools 2022][101].
 The [direct download link][100].
@@ -156,13 +156,12 @@ workload, and under the *Installation Details* to the right, select
 5. Verify that `clang-cl.exe --version` is installed.
 
   - Required software tools in your system PATH
-    * MSVSCPP -- **\<MSVSCPP_INSTALL_PATH\>\bin**
-    * CMake -- **\<CMAKE_INSTALL_PATH\>\bin**
-    * Git -- **\<GIT_INSTALL_PATH\>\bin**
+    * MSVSCPP - `msbuild` & `cl.exe`
+    * CMake - `cmake.exe`
+    * Git - `git.exe`
     * `vcpkg` - [Install & use packages with CMake][102]
-        * `%VCPKG_ROOT%`
-
-If this is your first time installing the tools, you might be happy to know that the official installers can do this task for you automatically.
+        * setup `%VCPKG_ROOT%` AKA `$env:VCPKG_ROOT=C:/vcpkg.git` and `$env:PATH += $env:VCPKG_ROOT`
+        * `git clone https://github.com/microsoft/vcpkg.git c:/vcpkg.git`
 
 [100]: https://aka.ms/vs/17/releases/vs_buildtools.exe)
 [101]: https://learn.microsoft.com/en-us/visualstudio/releases/2022/

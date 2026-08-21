@@ -134,7 +134,7 @@ NOM_EXPORT const VersionInfo NOM_VERSION(@PROJECT_VERSION_MAJOR@, @PROJECT_VERSI
 NOM_EXPORT std::string revision();
 
 /// \brief Track version info from project's CMake build script
-NOM_EXPORT static const std::string GIT_REVISION = "@GIT_REVISION@";
+static const std::string GIT_REVISION = "@GIT_REVISION@";
 
 } // namespace nom
 

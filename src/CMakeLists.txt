@@ -134,11 +134,6 @@ configure_file("${PROJECT_SOURCE_DIR}/cmake/templates/config.hpp.in"
   "${PROJECT_SOURCE_DIR}/include/nomlib/config.hpp"
 )
 
-# revision.hpp.in -> include/nomlib/revision.hpp
-configure_file("${PROJECT_SOURCE_DIR}/cmake/templates/revision.cpp.in"
-  "${PROJECT_SOURCE_DIR}/src/revision.cpp"
-)
-
 # version.hpp.in -> include/nomlib/version.hpp
 configure_file("${PROJECT_SOURCE_DIR}/cmake/templates/version.hpp.in"
   "${PROJECT_SOURCE_DIR}/include/nomlib/version.hpp"

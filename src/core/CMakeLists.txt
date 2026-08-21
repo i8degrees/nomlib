@@ -3,7 +3,6 @@
 set(  NOM_CORE_SOURCE
       ${SRC_DIR}/platforms.cpp
       ${SRC_DIR}/version.cpp
-      ${SRC_DIR}/revision.cpp # auto-generated
       ${SRC_DIR}/core/strings.cpp
       ${SRC_DIR}/core/clock.cpp
       ${SRC_DIR}/core/ObjectTypeInfo.cpp
@@ -28,7 +27,6 @@ set(NOM_CORE_HDR
   ${HDR_BASE}/core/unique_ptr.hpp
   ${HDR_BASE}/macros.hpp
   ${HDR_BASE}/platforms.hpp
-  ${HDR_BASE}/revision.hpp   # auto-generated
   ${HDR_BASE}/types.hpp
   ${HDR_BASE}/version.hpp    # auto-generated
 )
@@ -106,6 +104,13 @@ set_target_properties(nomlib-core
     SOVERSION ${PROJECT_VERSION_MAJOR}
     DEBUG_POSTFIX "-d"
 )
+
+if(APPLE AND CMAKE_FRAMEWORK)
+  target_compile_definitions(nomlib-core
+    PUBLIC
+      CMAKE_FRAMEWORK
+  )
+endif()
 
 if(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
   # Skip dllimport/dllexport logic when building as a static library target

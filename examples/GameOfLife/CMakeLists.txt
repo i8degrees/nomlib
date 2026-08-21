@@ -56,7 +56,7 @@ add_custom_command(TARGET nom_GameOfLife
   "${STATIC_ASSETS}/assets/img/bglight.png"
   "${STATIC_ASSETS}/assets/img/pink.png"
   #"${STATIC_ASSETS}/icon.png"
-  $<TARGET_FILE_DIR:nom_GameOfLife/Resources> # <build>/<type>/share
+  $<TARGET_FILE_DIR:nom_GameOfLife> # <build>/<type>/share
 )
 
 # For distribution:

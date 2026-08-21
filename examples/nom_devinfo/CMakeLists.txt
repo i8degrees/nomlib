@@ -1,7 +1,7 @@
 # nom_devinfo example - print out compiled & linked version numbers of libraries
 
 add_executable(nom_devinfo
-  WIN32 # Link SDL2main over WinMain
+  #WIN32 # Link SDL2main over WinMain (console app)
   MACOSX_BUNDLE
   device_info.cpp
 )

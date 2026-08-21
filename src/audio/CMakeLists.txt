@@ -16,10 +16,10 @@ target_sources(nomlib-audio
     BASE_DIRS ${HDR_BASE}
     FILES
     ${HDR_BASE}/audio.hpp
-    ${HDR_BASE}/audio/audio_defs.hpp
+    ${HDR_BASE}/audio/audio_defs.hpp # public
     ${HDR_BASE}/audio/SoundBuffer.hpp
-    ${HDR_BASE}/audio/ISoundFileReader.hpp
-    ${HDR_BASE}/audio/ISoundFileWriter.hpp
+    ${HDR_BASE}/audio/ISoundFileReader.hpp # private
+    ${HDR_BASE}/audio/ISoundFileWriter.hpp # private
     ${HDR_BASE}/audio/SoundFile.hpp
     ${HDR_BASE}/audio/IAudioDevice.hpp
     ${HDR_BASE}/audio/IOAudioEngine.hpp
@@ -51,6 +51,12 @@ if(NOM_BUILD_AUDIO_UNIT)
       # TODO(jeff): Divide libsndfile directory into its own source segment
       ${HDR_BASE}/audio/libsndfile/SoundFileReader.hpp
       ${HDR_BASE}/audio/libsndfile/SoundFileWriter.hpp
+    # FIXME
+    #PRIVATE
+    #FILE_SET PRIV_HEADERS
+      #BASE_DIRS ${HDR_BASE}
+      #FILES
+      #${HDR_BASE}/audio/AL/priv_openal.hpp
     )
     # ...Mac OS X specific OpenAL implementation details...
     if(APPLE OR DEFINED NOM_USE_APPLE_OPENAL)

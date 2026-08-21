@@ -78,7 +78,7 @@ class NOM_EXPORT RocketSDL2RenderInterface: public Rocket::Core::RenderInterface
     ///
     /// \remarks This is not part of the libRocket interface, and is provided
     /// as part of nomlib's high-level initialization routines.
-    NOM_EXPORT static bool gl_init( int width, int height );
+    static bool gl_init( int width, int height );
 
     RocketSDL2RenderInterface( RenderWindow* window );
 
@@ -125,7 +125,7 @@ class NOM_EXPORT RocketSDL2RenderInterface: public Rocket::Core::RenderInterface
     ///
     /// \note We bypass the use of GLEW by requesting this extension through
     /// SDL2.
-    NOM_NO_EXPORT static priv::glUseProgramObjectARB_func ctx_;
+    static priv::glUseProgramObjectARB_func ctx_;
 };
 
 } // namespace nom

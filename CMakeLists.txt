@@ -173,7 +173,7 @@ find_package(SDL2 CONFIG REQUIRED)
 find_package(SDL2_image CONFIG REQUIRED)
 find_package(SDL2_ttf CONFIG REQUIRED)
 if(NOM_BUILD_GUI_UNIT)
-  find_package(OpenGL REQUIRED COMPONENTS OpenGL)
+  find_package(OpenGL REQUIRED)
   find_package(libRocket CONFIG REQUIRED)
 endif()
 

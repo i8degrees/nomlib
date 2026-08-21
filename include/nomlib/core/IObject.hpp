@@ -45,8 +45,8 @@ class NOM_EXPORT IObject
 
     typedef IObject* raw_ptr;
 
-    NOM_EXPORT static uint64 total_alloc_bytes;
-    NOM_EXPORT static uint64 total_dealloc_bytes;
+    static uint64 total_alloc_bytes;
+    static uint64 total_dealloc_bytes;
 
     /// \brief Default constructor.
     IObject( void );
@@ -111,8 +111,8 @@ class NOM_EXPORT IObject
       return false;
     }
 
-    NOM_EXPORT static void* operator new( nom::size_type mem );
-    NOM_EXPORT static void operator delete( void* ptr );
+    static void* operator new( nom::size_type mem );
+    static void operator delete( void* ptr );
 };
 
 /// \brief Equality comparison operator.

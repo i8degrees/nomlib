@@ -17,7 +17,7 @@ set(BUILD_GTEST ON CACHE INTERNAL "prevent cache pollution")
 set(INSTALL_GTEST OFF CACHE INTERNAL "prevent cache pollution")
 #set(CMAKE_BUILD_TYPE "Release" CACHE INTERNAL "prevent cache pollution")
 
-if(NOT BUILD_SHARED_LIBS)
+if(NOT BUILD_SHARED_LIBS AND NOT WIN32)
   if(NOT CMAKE_CXX_FLAGS MATCHES "/-fPIC/")
     string(APPEND CMAKE_CXX_FLAGS "-fPIC")
   endif()
@@ -38,15 +38,23 @@ if(BUILD_SHARED_LIBS)
     # Xcode projects output binaries to lib/Debug
     set(GTEST_LIBRARY "${CMAKE_BINARY_DIR}/lib/Debug/libgtest${LIB_SUFFIX}.so" CACHE FILEPATH "GTest::gtest shared library")
     set(GTEST_MAIN_LIBRARY "${CMAKE_BINARY_DIR}/lib/Debug/libgtest_main${LIB_SUFFIX}.so" CACHE FILEPATH "GTest::gtest_main shared library")
+  elseif(WIN32 AND "${CMAKE_GENERATOR}" MATCHES "Visual Studio")
+    # MSBuild projects output binaries to lib/Debug
+    set(GTEST_LIBRARY "${CMAKE_BINARY_DIR}/lib/Debug/gtest${LIB_SUFFIX}.dll" CACHE FILEPATH "GTest::gtest shared library")
+    set(GTEST_MAIN_LIBRARY "${CMAKE_BINARY_DIR}/lib/Debug/gtest_main${LIB_SUFFIX}.dll" CACHE FILEPATH "GTest::gtest_main shared library")
   else() # Other generators, i.e.: Makefiles output binaries to lib
     set(GTEST_LIBRARY "${CMAKE_BINARY_DIR}/lib/libgtest${LIB_SUFFIX}.so" CACHE FILEPATH "GTest::gtest shared library")
     set(GTEST_MAIN_LIBRARY "${CMAKE_BINARY_DIR}/lib/libgtest_main${LIB_SUFFIX}.so" CACHE FILEPATH "GTest::gtest_main shared library")
   endif()
-else()
+else() # NOT BUILD_SHARED_LIBS
   if(APPLE AND "${CMAKE_GENERATOR}" STREQUAL "Xcode")
     # Xcode projects output binaries to lib/Debug
     set(GTEST_LIBRARY "${CMAKE_BINARY_DIR}/lib/Debug/libgtest${LIB_SUFFIX}.a" CACHE FILEPATH "GTest::gtest static library")
     set(GTEST_MAIN_LIBRARY "${CMAKE_BINARY_DIR}/lib/Debug/libgtest_main${LIB_SUFFIX}.a" CACHE FILEPATH "GTest::gtest_main static library")
+  elseif(WIN32 AND "${CMAKE_GENERATOR}" MATCHES "Visual Studio")
+    # MSBuild projects output binaries to lib/Debug
+    set(GTEST_LIBRARY "${CMAKE_BINARY_DIR}/lib/Debug/gtest${LIB_SUFFIX}.lib" CACHE FILEPATH "GTest::gtest static library")
+    set(GTEST_MAIN_LIBRARY "${CMAKE_BINARY_DIR}/lib/Debug/gtest_main${LIB_SUFFIX}.lib" CACHE FILEPATH "GTest::gtest_main static library")
   else() # Other generators, i.e.: Makefiles output binaries to lib
     set(GTEST_LIBRARY "${CMAKE_BINARY_DIR}/lib/libgtest${LIB_SUFFIX}.a" CACHE FILEPATH "GTest::gtest static library")
     set(GTEST_MAIN_LIBRARY "${CMAKE_BINARY_DIR}/lib/libgtest_main${LIB_SUFFIX}.a" CACHE FILEPATH "GTest::gtest_main static library")

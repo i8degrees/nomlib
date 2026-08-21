@@ -6,7 +6,7 @@ set( NOM_BUILD_ACTION_TIMING_CURVES_TESTS ON )
 if( NOM_BUILD_ACTION_TESTS )
 
   add_executable(ActionTest
-    WIN32
+    WIN32 # gui app
     ActionTest.cpp
     ActionTest_ActionPlayer.cpp
     ActionTest_AlphaBlending.cpp
@@ -19,26 +19,25 @@ if( NOM_BUILD_ACTION_TESTS )
 
   target_include_directories(ActionTest
     PUBLIC
-    # ${PROJECT_SOURCE_DIR}/include # include/nomlib
-    ${PROJECT_SOURCE_DIR}/tests/include
+      ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
-    ${GTEST_INCLUDE_DIR}
-    ${SDL2_INCLUDE_DIR}
-    # TCLAP v1.2.1-release-final headers only distribution
-    ${TCLAP_INCLUDE_DIR}
+      ${GTEST_INCLUDE_DIR}
+      ${SDL2_INCLUDE_DIR}
+      # TCLAP v1.2.1-release-final headers only distribution
+      ${TCLAP_INCLUDE_DIR}
   )
 
   target_link_libraries(ActionTest
     PUBLIC
-    nomlib-actions
-    nomlib-core
-    nomlib-graphics
-    nomlib-visual-unit-test
+      nomlib-actions
+      nomlib-core
+      nomlib-graphics
+      nomlib-visual-unit-test
     PRIVATE
-    Threads::Threads
-    ${GTEST_LIBRARY}
-    #$<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
-    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+      Threads::Threads
+      ${GTEST_LIBRARY}
+      $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+      $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
   )
 
   set( ACTION_TEST_BIN "${TESTS_INSTALL_DIR}/ActionTest" )
@@ -105,17 +104,19 @@ if( NOM_BUILD_ACTION_TESTS )
   nom_add_test( ActionTest_QuintEaseInOut ${ACTION_TEST_BIN}
                 ${ACTION_TEST_ARGS} --timing-mode quint_ease_in_out )
 
-  # Copy resource files for the test
-  install(  FILES
-            "${NOM_TESTS_RESOURCES_DIR}/actions/ActionTest.json"
-            DESTINATION "${TESTS_INSTALL_DIR}" )
+  # For development: Copy resource files for the test
+  add_custom_command(TARGET ActionTest POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${NOM_TESTS_RESOURCES_DIR}/actions/ActionTest.json"
+    $<TARGET_FILE_DIR:ActionTest>
+  )
 
 endif( NOM_BUILD_ACTION_TESTS )
 
 if( NOM_BUILD_ACTION_TIMING_CURVES_TESTS )
 
   add_executable(ActionTimingCurvesTest
-    WIN32
+    WIN32 # GUI app
     ActionTimingCurvesTest.cpp
   )
 
@@ -123,23 +124,22 @@ if( NOM_BUILD_ACTION_TIMING_CURVES_TESTS )
 
   target_include_directories(ActionTimingCurvesTest
     PUBLIC
-    #${PROJECT_SOURCE_DIR}/include # include/nomlib
-    ${PROJECT_SOURCE_DIR}/tests/include
+      ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
-    ${GTEST_INCLUDE_DIR}
-    ${SDL2_INCLUDE_DIR}
+      ${GTEST_INCLUDE_DIR}
+      ${SDL2_INCLUDE_DIR}
   )
 
   target_link_libraries(ActionTimingCurvesTest
     PUBLIC
-    nomlib-actions
-    nomlib-core
-    nomlib-unit-test
+      nomlib-actions
+      nomlib-core
+      nomlib-unit-test
     PRIVATE
-    Threads::Threads
-    ${GTEST_LIBRARY}
-    #$<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
-    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+      Threads::Threads
+      ${GTEST_LIBRARY}
+      $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+      $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
   )
 
   GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/ActionTimingCurvesTest

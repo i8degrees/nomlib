@@ -16,7 +16,7 @@ class JsonConfigFileTest: public ::testing::Test
       cfg{ new JsonConfigFile() }
     {
       // TTcards config copied to build/tests/Debug.
-      cfg->set_filename( "Resources/json/config.json" );
+      cfg->set_filename( "Resources/tests/json/config.json" );
     }
 
     ~JsonConfigFileTest( void )

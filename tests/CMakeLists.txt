@@ -291,36 +291,9 @@ if( NOM_BUILD_SERIALIZERS_TESTS )
   add_subdirectory("src/serializers")
 endif( NOM_BUILD_SERIALIZERS_TESTS )
 
-# Install library dependencies into tests output directory so we can always
-# execute the binaries with the proper dependency versions.
-if(WIN32 AND USE_OLD_WINDOWS_CODE)
-
-  if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
-    set( GTEST_LIBRARY_REDIST_DLL "${GTEST_ROOT}/lib/gtestd.dll" )
-  else()
-    set( GTEST_LIBRARY_REDIST_DLL "${GTEST_ROOT}/lib/gtest.dll" )
-  endif()
-
-  install(  FILES ${GTEST_LIBRARY_REDIST_DLL}
-            DESTINATION ${TESTS_INSTALL_DIR}
-            RENAME "gtest.dll" )
-
-  install ( DIRECTORY
-            ${SDL2_REDIST_DIR}
-            ${SDL2_IMAGE_REDIST_DIR}
-            ${SDL2_TTF_REDIST_DIR}
-            ${OPENAL_REDIST_DIR}
-            ${LIBSNDFILE_REDIST_DIR}
-            ${MSVCPP_REDIST_DIR}
-            DESTINATION
-            ${TESTS_INSTALL_DIR}
-            FILES_MATCHING PATTERN "*.dll"
-          )
-endif(WIN32 AND USE_OLD_WINDOWS_CODE)
-
 # Resources/tests -> <out>/tests/Resources
-install(DIRECTORY
-  "${NOM_TESTS_RESOURCES_DIR}"
-  DESTINATION
-  "${TESTS_INSTALL_DIR}/Resources"
-)
+#install(DIRECTORY
+#  "${NOM_TESTS_RESOURCES_DIR}"
+#  DESTINATION
+#  "${TESTS_INSTALL_DIR}/Resources"
+#)

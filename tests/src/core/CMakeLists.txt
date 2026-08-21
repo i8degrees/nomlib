@@ -7,7 +7,7 @@ set(NOM_BUILD_STRINGS_TEST ON)
 if(NOM_BUILD_VERSION_INFO_TEST)
 
   add_executable(VersionInfoTest
-    WIN32
+    #WIN32 # Link SDL2main over WINMAIN for console apps
     VersionInfoTest.cpp
   )
 
@@ -15,22 +15,21 @@ if(NOM_BUILD_VERSION_INFO_TEST)
 
   target_include_directories(VersionInfoTest
     PUBLIC
-    ${PROJECT_SOURCE_DIR}/include # include/nomlib
-    ${PROJECT_SOURCE_DIR}/tests/include
+      ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
-    ${GTEST_INCLUDE_DIR}
+      ${GTEST_INCLUDE_DIR}
   )
 
   # FIXME: We only need nomlib-system for init...
   target_link_libraries(VersionInfoTest
     PUBLIC
-    nomlib-core
-    nomlib-system
+      nomlib-core
+      nomlib-system
     PRIVATE
-    Threads::Threads
-    ${GTEST_LIBRARY}
-    $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
-    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+      Threads::Threads
+      ${GTEST_LIBRARY}
+      $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+      $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
   )
 
   GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/VersionInfoTest
@@ -42,7 +41,7 @@ endif(NOM_BUILD_VERSION_INFO_TEST)
 if( NOM_BUILD_SDL2_LOGGER_TESTS )
 
   add_executable(SDL2LoggerTest
-    WIN32
+    #WIN32 # Link SDL2main over WINMAIN for console apps
     SDL2LoggerTest.cpp
   )
 
@@ -50,22 +49,21 @@ if( NOM_BUILD_SDL2_LOGGER_TESTS )
 
   target_include_directories(SDL2LoggerTest
     PUBLIC
-    ${PROJECT_SOURCE_DIR}/include # include/nomlib
-    ${PROJECT_SOURCE_DIR}/tests/include
+      ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
-    ${SDL2_INCLUDE_DIR}
-    ${GTEST_INCLUDE_DIR}
+      ${SDL2_INCLUDE_DIR}
+      ${GTEST_INCLUDE_DIR}
   )
 
   target_link_libraries(SDL2LoggerTest
     PUBLIC
-    nomlib-core
-    nomlib-math
+      nomlib-core
+      nomlib-math
     PRIVATE
-    Threads::Threads
-    ${GTEST_LIBRARY}
-    $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
-    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+      Threads::Threads
+      ${GTEST_LIBRARY}
+      $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+      $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
   )
 
   GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/SDL2LoggerTest
@@ -73,7 +71,7 @@ if( NOM_BUILD_SDL2_LOGGER_TESTS )
                     "SDL2LoggerTest.cpp" )
 
   add_executable(ConsoleOutputTest
-    WIN32
+    #WIN32 # Link SDL2main over WINMAIN for console apps
     ConsoleOutputTest.cpp
   )
 
@@ -81,21 +79,21 @@ if( NOM_BUILD_SDL2_LOGGER_TESTS )
 
   target_include_directories(ConsoleOutputTest
     PUBLIC
-    ${PROJECT_SOURCE_DIR}/include # include/nomlib
-    ${PROJECT_SOURCE_DIR}/tests/include
+      ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
-    ${SDL2_INCLUDE_DIR}
-    ${GTEST_INCLUDE_DIR}
+      ${SDL2_INCLUDE_DIR}
+      ${GTEST_INCLUDE_DIR}
   )
 
   # NOTE: We don't actually need nomlib-math for this test
   target_link_libraries(ConsoleOutputTest
     PUBLIC
-    nomlib-core
-    #nomlib-math
+      nomlib-core
+      #nomlib-math
     PRIVATE
-    Threads::Threads
-    ${GTEST_LIBRARY}
+      Threads::Threads
+      ${GTEST_LIBRARY}
+      $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
   )
 
   GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/ConsoleOutputTest
@@ -106,14 +104,8 @@ endif( NOM_BUILD_SDL2_LOGGER_TESTS )
 
 if(NOM_BUILD_STRINGS_TEST)
 
-  #set(NOM_CORE_TESTS_DEPS ${GTEST_LIBRARY} nomlib-core)
-
-  #if(PLATFORM_WINDOWS)
-    #list(APPEND NOM_CORE_TESTS_DEPS ${SDL2MAIN_LIBRARY})
-  #endif(PLATFORM_WINDOWS)
-
   add_executable(StringTest
-    WIN32
+    #WIN32 # Link SDL2main over WINMAIN for console apps
     StringTest.cpp
   )
 
@@ -121,19 +113,19 @@ if(NOM_BUILD_STRINGS_TEST)
 
   target_include_directories(StringTest
     PUBLIC
-    ${PROJECT_SOURCE_DIR}/include # include/nomlib
-    ${PROJECT_SOURCE_DIR}/tests/include
+      ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
-    ${SDL2_INCLUDE_DIR}
-    ${GTEST_INCLUDE_DIR}
+      ${SDL2_INCLUDE_DIR}
+      ${GTEST_INCLUDE_DIR}
   )
 
   target_link_libraries(StringTest
     PUBLIC
-    nomlib-core
+      nomlib-core
     PRIVATE
-    Threads::Threads
-    ${GTEST_LIBRARY}
+      Threads::Threads
+      ${GTEST_LIBRARY}
+      $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
   )
 
   GTEST_ADD_TESTS(${TESTS_INSTALL_DIR}/StringTest

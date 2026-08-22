@@ -44,6 +44,24 @@ target_link_libraries(nom_GameOfLife
     nomlib-system
 )
 
+if(APPLE)
+  string(TIMESTAMP CURR_YEAR "%Y")
+  # Setup a MacOS Application bundle
+  # TODO(JEFF): VERIFY ASAP
+  set_target_properties(nom_GameOfLife
+    PROPERTIES
+      MACOSX_BUNDLE_BUNDLE_VERSION "${BUILD_VERSION}"
+      MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}"
+      # PROJECT_COMPANY_NAMESPACE="net.i8degrees.nomlib"
+      MACOSX_BUNDLE_GUI_IDENTIFIER "${PROJECT_COMPANY_NAMESPACE}.GameOfLife"
+      MACOSX_BUNDLE_BUNDLE_NAME "nom_GameOfLife"
+      MACOSX_DEPLOYMENT_TARGET "10.15"
+      MACOSX_BUNDLE_COPYRIGHT "(c) COPYRIGHT 2014..${TIMESTAMP} JEFFREY CARPENTER <1329364+i8degrees@users.noreply.github.com>"
+      MACOSX_BUNDLE_INFO_PLIST "${PROJECT_SOURCE_DIR}/cmake/templates/app.plist.in"
+      RESOURCE "${MACOSX_ASSETS}"
+  )
+endif()
+
 install(TARGETS nom_GameOfLife
   DESTINATION ${CMAKE_INSTALL_BINDIR}
   COMPONENT Examples

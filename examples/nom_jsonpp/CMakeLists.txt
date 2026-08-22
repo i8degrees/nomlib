@@ -1,6 +1,13 @@
 # nom_jsonpp example - JSON deserialization
 
-set(STATIC_ASSETS ${PROJECT_SOURCE_DIR}/Resources/tests/serializers/json)
+list(APPEND SHARED_ASSETS
+  "${PROJECT_SOURCE_DIR}/resources/tests/serializers/json/auctions.json"
+  "${PROJECT_SOURCE_DIR}/resources/tests/serializers/json/inventory.json"
+  "${PROJECT_SOURCE_DIR}/Resources/tests/serializers/json/omnom.json"
+  "${PROJECT_SOURCE_DIR}/Resources/tests/serializers/json/omnom_sample.json"
+  "${PROJECT_SOURCE_DIR}/Resources/tests/serializers/json/omnom_sample2.json"
+  "${PROJECT_SOURCE_DIR}/Resources/tests/serializers/json/omnom_sample3.json"
+)
 
 add_executable(nom_jsonpp
   #WIN32 # Link SDL2main over WinMain for console apps
@@ -21,9 +28,7 @@ target_include_directories(nom_jsonpp
 target_sources(nom_jsonpp
   PRIVATE
     nom_jsonpp.cpp
-    ${STATIC_ASSETS}/auctions.json
-    ${STATIC_ASSETS}/inventory.json
-    ${STATIC_ASSETS}/omnom.json
+    ${SHARED_ASSETS}
 )
 
 if(TARGET SDL2::SDL2main)
@@ -32,6 +37,22 @@ if(TARGET SDL2::SDL2main)
       $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
   )
 endif(TARGET SDL2::SDL2main)
+
+if(APPLE)
+  string(TIMESTAMP CURR_YEAR "%Y")
+  set_target_properties(nom_jsonpp
+    PROPERTIES
+      MACOSX_BUNDLE_BUNDLE_VERSION "${BUILD_VERSION}"
+      MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}"
+      # PROJECT_COMPANY_NAMESPACE="net.i8degrees.nomlib"
+      MACOSX_BUNDLE_GUI_IDENTIFIER "${PROJECT_COMPANY_NAMESPACE}.nom_jsonpp"
+      MACOSX_BUNDLE_BUNDLE_NAME "nom_jsonpp"
+      MACOSX_DEPLOYMENT_TARGET "10.15"
+      MACOSX_BUNDLE_COPYRIGHT "(c) COPYRIGHT 2014..${TIMESTAMP} JEFFREY CARPENTER <1329364+i8degrees@users.noreply.github.com>"
+      MACOSX_BUNDLE_INFO_PLIST "${PROJECT_SOURCE_DIR}/cmake/templates/app.plist.in"
+      RESOURCE "${MACOSX_ASSETS}"
+  )
+endif()
 
 target_link_libraries(nom_jsonpp
   PRIVATE
@@ -53,14 +74,25 @@ install(TARGETS nom_jsonpp
 # For development:
 add_custom_command(TARGET nom_jsonpp
   POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
-  "${STATIC_ASSETS}/auctions.json"
-  "${STATIC_ASSETS}/inventory.json"
+  "${SHARED_ASSETS}/auctions.json"
+  "${SHARED_ASSETS}/inventory.json"
   $<TARGET_FILE_DIR:nom_jsonpp> # <build>/<type>/share
 )
 
 # For distribution:
-install(DIRECTORY ${STATIC_ASSETS}
-  DESTINATION
-  ${CMAKE_INSTALL_DATADIR}/nomlib/Resources # <prefix/share>/nomlib/Resources
+install(FILES
+  ${SHARED_ASSETS}
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/nomlib/Resources # <prefix/share>/nomlib/Resources
   COMPONENT Examples
 )
+
+# (macos) nomlib libs to app bundle
+copy_framework_dep(nom_jsonpp
+  nomlib-core
+  nomlib-file
+  nomlib-math
+  nomlib-ptree
+  nomlib-serializers
+  nomlib-system
+)
+

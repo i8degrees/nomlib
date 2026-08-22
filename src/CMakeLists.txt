@@ -139,6 +139,12 @@ configure_file("${PROJECT_SOURCE_DIR}/cmake/templates/version.hpp.in"
   "${PROJECT_SOURCE_DIR}/include/nomlib/version.hpp"
 )
 
+if(LINUX)
+  configure_file("${PROJECT_SOURCE_DIR}/cmake/templates/nomlib.desktop.in"
+    "${PROJECT_BINARY_DIR}/nomlib.desktop"
+  )
+endif()
+
 # nomlib-actions
 if(NOM_BUILD_ACTIONS_UNIT)
   add_subdirectory("actions")

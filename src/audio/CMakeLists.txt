@@ -128,7 +128,7 @@ set_target_properties(nomlib-audio
   PROPERTIES
     FRAMEWORK TRUE
     MACOSX_FRAMEWORK_INFO_PLIST
-      "${CMAKE_TEMPLATE_PATH}/Info.plist.in"
+      "${CMAKE_TEMPLATE_PATH}/framework.plist.in"
     MACOSX_FRAMEWORK_NAME
       nomlib-audio
     MACOSX_FRAMEWORK_BUNDLE_VERSION

@@ -1,0 +1,11 @@
+# nomlib desktop app stub
+
+#!/usr/bin/env dex
+[Desktop Entry]
+Categories=Developer;
+Comment=@PROJECT_DESC@
+Exec=@PROJECT_EXEC_STUB@
+GenericName=@PROJECT_NAME@ - @NAME@
+Icon=nomlib
+Name=@NAME@
+Type=Terminal

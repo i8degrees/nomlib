@@ -14,6 +14,7 @@ add_dependencies(VisualUnitTestFrameworkTest gtest)
 
 target_include_directories(VisualUnitTestFrameworkTest
   PUBLIC
+    ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/tests/include
   PRIVATE
     ${GTEST_INCLUDE_DIR}
@@ -48,6 +49,7 @@ add_dependencies(VisualUnitTestFrameworkNonDefaultCtorTest gtest)
 
 target_include_directories(VisualUnitTestFrameworkNonDefaultCtorTest
   PUBLIC
+    ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/tests/include
   PRIVATE
     ${GTEST_INCLUDE_DIR}
@@ -81,6 +83,7 @@ add_dependencies(ImageTestSetTest gtest)
 
 target_include_directories(ImageTestSetTest
   PUBLIC
+    ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/tests/include
   PRIVATE
     ${GTEST_INCLUDE_DIR}
@@ -117,6 +120,7 @@ add_dependencies(ImageDiffTest gtest)
 
 target_include_directories(ImageDiffTest
   PUBLIC
+    ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/tests/include
   PRIVATE
     ${GTEST_INCLUDE_DIR}

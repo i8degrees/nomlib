@@ -28,6 +28,18 @@ target_include_directories(nom_jsonpp
     ${PROJECT_SOURCE_DIR}/include # include/nomlib
 )
 
+if(APPLE)
+  set(MACOSX_ASSETS
+    ${SHARED_ASSETS}
+    "${PROJECT_SOURCE_DIR}/Resources/nomlib.icns"
+  )
+
+  target_sources(nom_jsonpp
+    PUBLIC
+      ${MACOSX_ASSETS}
+  )
+endif()
+
 target_sources(nom_jsonpp
   PRIVATE
     nom_jsonpp.cpp
@@ -77,8 +89,7 @@ install(TARGETS nom_jsonpp
 # For development:
 add_custom_command(TARGET nom_jsonpp
   POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
-  "${SHARED_ASSETS}/auctions.json"
-  "${SHARED_ASSETS}/inventory.json"
+  "${SHARED_ASSETS}"
   $<TARGET_FILE_DIR:nom_jsonpp> # <build>/<type>/share
 )
 

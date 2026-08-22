@@ -15,6 +15,7 @@ if(NOM_BUILD_VERSION_INFO_TEST)
 
   target_include_directories(VersionInfoTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${GTEST_INCLUDE_DIR}
@@ -49,6 +50,7 @@ if( NOM_BUILD_SDL2_LOGGER_TESTS )
 
   target_include_directories(SDL2LoggerTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${SDL2_INCLUDE_DIR}
@@ -79,6 +81,7 @@ if( NOM_BUILD_SDL2_LOGGER_TESTS )
 
   target_include_directories(ConsoleOutputTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${SDL2_INCLUDE_DIR}
@@ -113,6 +116,7 @@ if(NOM_BUILD_STRINGS_TEST)
 
   target_include_directories(StringTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${SDL2_INCLUDE_DIR}

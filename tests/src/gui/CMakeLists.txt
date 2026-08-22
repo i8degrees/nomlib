@@ -14,6 +14,7 @@ if( NOM_BUILD_GUI_BASE_TEST )
 
   target_include_directories(libRocketTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${SDL2_INCLUDE_DIR}
@@ -57,6 +58,7 @@ if( NOM_BUILD_GUI_DATAGRID_TESTS )
 
   target_include_directories(libRocketDataGridTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${SDL2_INCLUDE_DIR}

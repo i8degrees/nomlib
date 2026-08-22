@@ -19,6 +19,7 @@ if( NOM_BUILD_ACTION_TESTS )
 
   target_include_directories(ActionTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${GTEST_INCLUDE_DIR}
@@ -124,6 +125,7 @@ if( NOM_BUILD_ACTION_TIMING_CURVES_TESTS )
 
   target_include_directories(ActionTimingCurvesTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${GTEST_INCLUDE_DIR}

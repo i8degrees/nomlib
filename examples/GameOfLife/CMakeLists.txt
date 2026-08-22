@@ -24,13 +24,32 @@ target_include_directories(nom_GameOfLife
     ${SDL2_INCLUDE_DIR}
 )
 
-target_sources(nom_GameOfLife
-  PRIVATE
-    "${STATIC_ASSETS}/assets/img/bgdark.png"
-    "${STATIC_ASSETS}/assets/img/bglight.png"
-    "${STATIC_ASSETS}/assets/img/pink.png"
-    #"${STATIC_ASSETS}/icon.png"
-)
+if(WIN32)
+  target_sources(nom_GameOfLife
+    PUBLIC
+      ${SHARED_ASSETS}
+      "${PROJECT_SOURCE_DIR}/Resources/GameOfLife/assets/icn/creep.ico"
+  )
+endif()
+
+if(APPLE)
+  set(MACOSX_ASSETS
+    ${SHARED_ASSETS}
+    "${PROJECT_SOURCE_DIR}/Resources/GameOfLife/assets/icn/creep.icns"
+  )
+
+  target_sources(nom_GameOfLife
+    PUBLIC
+      ${MACOSX_ASSETS}
+  )
+endif()
+
+if(LINUX)
+  target_sources(nom_GameOfLife
+    PRIVATE
+      ${SHARED_ASSETS}
+  )
+endif()
 
 if(TARGET SDL2::SDL2main)
   target_link_libraries(nom_GameOfLife

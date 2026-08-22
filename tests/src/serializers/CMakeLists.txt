@@ -17,6 +17,7 @@ if(NOM_BUILD_SERIALIZERS_JSON_TESTS)
 
   target_include_directories(JsonCppSerializerTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${GTEST_INCLUDE_DIR}
@@ -57,6 +58,7 @@ if(NOM_BUILD_SERIALIZERS_JSON_TESTS)
 
   target_include_directories(JsonCppDeserializerTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${GTEST_INCLUDE_DIR}
@@ -92,6 +94,7 @@ if(NOM_BUILD_SERIALIZERS_XML_TESTS)
 
   target_include_directories(RapidXmlSerializerTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${GTEST_INCLUDE_DIR}
@@ -123,6 +126,7 @@ if(NOM_BUILD_SERIALIZERS_XML_TESTS)
 
   target_include_directories(RapidXmlDeserializerTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${GTEST_INCLUDE_DIR}
@@ -207,6 +211,7 @@ if( NOM_BUILD_SERIALIZERS_HTML_TESTS )
 
   target_include_directories(MiniHTMLTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${GTEST_INCLUDE_DIR}

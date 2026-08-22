@@ -1,0 +1,4 @@
+--exclude-dir=tmp,vcpkg_installed,.tags,wiki.git
+--not-match-d=^(build.*|Resources)$
+--not-match-f=^\.travis\.yml$
+--vcs=git

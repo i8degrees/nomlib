@@ -1,6 +1,6 @@
 # nom_jsonpp example - JSON deserialization
 
-set(SHARED_ASSETS
+list(SET SHARED_ASSETS
   "${PROJECT_SOURCE_DIR}/Resources/tests/serializers/json/auctions.json"
   "${PROJECT_SOURCE_DIR}/Resources/tests/serializers/json/inventory.json"
   "${PROJECT_SOURCE_DIR}/Resources/tests/serializers/json/omnom.json"

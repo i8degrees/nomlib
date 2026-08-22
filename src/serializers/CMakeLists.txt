@@ -92,7 +92,7 @@ set_target_properties(nomlib-serializers
   PROPERTIES
     FRAMEWORK TRUE
     MACOSX_FRAMEWORK_INFO_PLIST
-      "${CMAKE_TEMPLATE_PATH}/Info.plist.in"
+      "${CMAKE_TEMPLATE_PATH}/framework.plist.in"
     MACOSX_FRAMEWORK_NAME
       nomlib-serializers
     MACOSX_FRAMEWORK_BUNDLE_VERSION

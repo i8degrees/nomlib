@@ -37,3 +37,7 @@ third-party*/
 vcpkg_installed/*
 !vcpkg-lock.json
 
+# loc env
+report.json
+report.yaml
+

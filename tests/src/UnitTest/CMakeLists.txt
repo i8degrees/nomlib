@@ -9,6 +9,7 @@ add_dependencies(UnitTestFrameworkTest gtest)
 
 target_include_directories(UnitTestFrameworkTest
   PUBLIC
+    ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/tests/include
   PRIVATE
     ${GTEST_INCLUDE_DIR}

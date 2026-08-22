@@ -20,6 +20,7 @@ if(NOM_BUILD_OPENAL_AUDIO_TESTS)
 
   target_include_directories(ALAudioTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${GTEST_INCLUDE_DIR}

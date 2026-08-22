@@ -18,6 +18,7 @@ if( NOM_BUILD_RENDERWINDOW_TESTS )
 
   target_include_directories(RenderWindowTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${GTEST_INCLUDE_DIR}
@@ -58,6 +59,7 @@ if( NOM_BUILD_GRADIENT_TESTS )
 
   target_include_directories(GradientTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${GTEST_INCLUDE_DIR}
@@ -100,8 +102,8 @@ if(NOM_BUILD_BITMAP_FONT_TEST)
 
   target_include_directories(BitmapFontTest
     PUBLIC
-    ${PROJECT_SOURCE_DIR}/include # include/nomlib
-    ${PROJECT_SOURCE_DIR}/tests/include
+      ${PROJECT_SOURCE_DIR}/include # include/nomlib
+      ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
     ${GTEST_INCLUDE_DIR}
     ${SDL2_INCLUDE_DIR}
@@ -115,7 +117,6 @@ if(NOM_BUILD_BITMAP_FONT_TEST)
     PRIVATE
       #Threads::Threads
       #${GTEST_LIBRARY}
-      ${PROJECT_SOURCE_DIR}/include # include/nomlib
   )
 
   nom_add_visual_test(  BitmapFontTest
@@ -141,6 +142,7 @@ if(NOM_BUILD_TRUETYPE_FONT_TEST)
 
   target_include_directories(TrueTypeFontTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${GTEST_INCLUDE_DIR}
@@ -179,6 +181,7 @@ if(NOM_BUILD_BMFONT_TEST)
 
   target_include_directories(BMFontTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include # include/nomlib
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${SDL2_INCLUDE_DIR}

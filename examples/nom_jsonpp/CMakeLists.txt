@@ -1,8 +1,8 @@
 # nom_jsonpp example - JSON deserialization
 
 list(APPEND SHARED_ASSETS
-  "${PROJECT_SOURCE_DIR}/resources/tests/serializers/json/auctions.json"
-  "${PROJECT_SOURCE_DIR}/resources/tests/serializers/json/inventory.json"
+  "${PROJECT_SOURCE_DIR}/Resources/tests/serializers/json/auctions.json"
+  "${PROJECT_SOURCE_DIR}/Resources/tests/serializers/json/inventory.json"
   "${PROJECT_SOURCE_DIR}/Resources/tests/serializers/json/omnom.json"
   "${PROJECT_SOURCE_DIR}/Resources/tests/serializers/json/omnom_sample.json"
   "${PROJECT_SOURCE_DIR}/Resources/tests/serializers/json/omnom_sample2.json"
@@ -28,6 +28,18 @@ target_include_directories(nom_jsonpp
     ${PROJECT_SOURCE_DIR}/include # include/nomlib
 )
 
+if(APPLE)
+  set(MACOSX_ASSETS
+    ${SHARED_ASSETS}
+    "${PROJECT_SOURCE_DIR}/Resources/nomlib.icns"
+  )
+
+  target_sources(nom_jsonpp
+    PUBLIC
+      ${MACOSX_ASSETS}
+  )
+endif()
+
 target_sources(nom_jsonpp
   PRIVATE
     nom_jsonpp.cpp
@@ -52,7 +64,7 @@ if(APPLE)
       MACOSX_BUNDLE_BUNDLE_NAME "nom_jsonpp"
       MACOSX_DEPLOYMENT_TARGET "10.15"
       MACOSX_BUNDLE_COPYRIGHT "(c) COPYRIGHT 2014..${TIMESTAMP} JEFFREY CARPENTER <1329364+i8degrees@users.noreply.github.com>"
-      MACOSX_BUNDLE_INFO_PLIST "${PROJECT_SOURCE_DIR}/cmake/templates/app.plist.in"
+      MACOSX_BUNDLE_INFO_PLIST "${PROJECT_SOURCE_DIR}/cmake/templates/application.plist.in"
       RESOURCE "${MACOSX_ASSETS}"
   )
 endif()
@@ -77,8 +89,7 @@ install(TARGETS nom_jsonpp
 # For development:
 add_custom_command(TARGET nom_jsonpp
   POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
-  "${SHARED_ASSETS}/auctions.json"
-  "${SHARED_ASSETS}/inventory.json"
+  "${SHARED_ASSETS}"
   $<TARGET_FILE_DIR:nom_jsonpp> # <build>/<type>/share
 )
 

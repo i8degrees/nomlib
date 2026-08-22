@@ -16,6 +16,7 @@ if(NOM_BUILD_FONT_CACHE_TESTS)
 
   target_include_directories(FontCacheTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${GTEST_INCLUDE_DIR}
@@ -58,6 +59,7 @@ if(NOM_BUILD_COLOR_DB_TESTS)
 
   target_include_directories(ColorDatabaseTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${GTEST_INCLUDE_DIR}
@@ -91,6 +93,7 @@ if(NOM_BUILD_FILE_TESTS)
 
   target_include_directories(FileInterfaceTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${GTEST_INCLUDE_DIR}
@@ -124,6 +127,7 @@ if(NOM_BUILD_TIMER_TESTS)
 
   target_include_directories(TimerTest
     PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/tests/include
     PRIVATE
       ${GTEST_INCLUDE_DIR}

@@ -19,8 +19,16 @@ if(NOM_INSTALL_CMAKE_PACKAGE)
   write_basic_package_version_file(
     "${CMAKE_CURRENT_BINARY_DIR}/nomlibConfigVersion.cmake"
     VERSION ${PROJECT_VERSION}
-    #COMPATIBILITY SameMinorVersion
-    COMPATIBILITY ExactVersion
+    # One of: (AnyNewerVersion|SameMajorVersion|ExactVersion)
+    COMPATIBILITY SameMajorVersion
+  )
+
+  # generate a config file from a template we create
+  configure_package_config_file(
+    "${CMAKE_SOURCE_DIR}/cmake/templates/nomlibConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/nomlibConfig.cmake"
+    INSTALL_DESTINATION "${nomlib_INSTALL_CMAKEDIR}"
+    #COMPONENT Development
   )
 
   if(BUILD_SHARED_LIBS)
@@ -39,7 +47,7 @@ if(NOM_INSTALL_CMAKE_PACKAGE)
 
   # nomlib's tailored cmake package for importing into foreign cmake build
   install(FILES
-    "${PROJECT_SOURCE_DIR}/cmake/packaging/nomlibConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/nomlibConfig.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/nomlibConfigVersion.cmake"
     DESTINATION "${nomlib_INSTALL_CMAKEDIR}"
     COMPONENT Development
@@ -108,3 +116,17 @@ if(NOM_BUILD_DOCS)
             PATTERN ".*" EXCLUDE # .DS_Store dotfiles
   )
 endif(NOM_BUILD_DOCS)
+
+# If enabled, other projects on your local host will be able to find nomlib
+# without requiring the `install` target to be executed.
+if(NOM_INSTALL_CMAKE_REGISTRY)
+  # Export library targets for the build tree
+  export(EXPORT libtarget
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/nomlib-${type}-targets.cmake"
+    #Namespace nom::
+  )
+
+  # Register the build directory in the CMake user package registry
+  export(PACKAGE nomlib)
+endif()
+

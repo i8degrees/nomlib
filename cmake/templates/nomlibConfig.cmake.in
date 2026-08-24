@@ -1,3 +1,5 @@
+@PACKAGE_INIT@
+
 include(CMakeFindDependencyMacro)
 
 # third-party vendor libraries nomlib requires
@@ -63,3 +65,4 @@ else()
       nomlib_load_targets(shared)
     endif()
 endif()
+

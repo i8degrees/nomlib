@@ -95,6 +95,7 @@ string(COMPARE EQUAL "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}" is_top_
 option(NOM_INSTALL_CMAKE_PACKAGE "Install CMake export package for finding nomlib" "${is_top_level}")
 option(NOM_INSTALL_PKGCONFIG_SUPPORT "Install pkg-config helper for finding nomlib" "${is_top_level}")
 option(NOM_INSTALL_GCDB "gamecontroller_db vendor" OFF)
+option(NOM_INSTALL_CMAKE_REGISTRY "Let other local projects find and use nomlib without a complete install" ON)
 
 if(DEFINED nomlib_SHARED_LIBS)
   set(BUILD_SHARED_LIBS "${nomlib_SHARED_LIBS}")

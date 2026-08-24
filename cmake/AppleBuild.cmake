@@ -42,6 +42,8 @@ if(APPLE)
   set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15 CACHE STRING "Minimum OS X deployment version")
 
   if(APPLE AND "${CMAKE_GENERATOR}" STREQUAL "Xcode")
-    # TODO(JEFF): Reserved for future impl
+    # TODO(JEFF): Verify whether or not we should still handle application
+    # and framework bundles ourselves -- using our existing CMake code --
+    # or turn our code handling off and let Xcode handle it.
   endif()
 endif()

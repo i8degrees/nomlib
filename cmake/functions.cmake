@@ -59,7 +59,8 @@ endfunction()
 # \param target - The executable target to copy to
 # \param lib - One or more libraries to copy
 function(copy_framework_dep target)
-  if(NOT APPLE AND NOT DEFINED CMAKE_FRAMEWORK)
+  #if(NOT APPLE AND NOT DEFINED CMAKE_FRAMEWORK)
+  if(NOT APPLE)
     #message(FATAL_ERROR
       #"Apple and CMAKE_FRAMEWORK must be defined")
     return()

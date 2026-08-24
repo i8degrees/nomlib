@@ -81,4 +81,8 @@ if(WIN32 OR HIDE_SYMBOL_VISIBILITY)
   endif()
 endif(WIN32 OR HIDE_SYMBOL_VISIBILITY)
 
+if(APPLE)
+  option(CMAKE_FRAMEWORK "Use Apple framework bundle" OFF)
+endif()
+
 message(STATUS "Generating CMake project files with ${CMAKE_GENERATOR}")

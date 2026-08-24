@@ -1,6 +1,6 @@
 # nom_jsonpp example - JSON deserialization
 
-list(APPEND SHARED_ASSETS
+set(SHARED_ASSETS
   "${PROJECT_SOURCE_DIR}/Resources/tests/serializers/json/auctions.json"
   "${PROJECT_SOURCE_DIR}/Resources/tests/serializers/json/inventory.json"
   "${PROJECT_SOURCE_DIR}/Resources/tests/serializers/json/omnom.json"
@@ -12,6 +12,7 @@ list(APPEND SHARED_ASSETS
 add_executable(nom_jsonpp
   #WIN32 # Link SDL2main over WinMain for console apps
   MACOSX_BUNDLE
+  nom_jsonpp.cpp
 )
 
 # TODO(JEFF): This should be a cmake option that can be modified by the
@@ -40,11 +41,10 @@ if(APPLE)
   )
 endif()
 
-target_sources(nom_jsonpp
-  PRIVATE
-    nom_jsonpp.cpp
-    ${SHARED_ASSETS}
-)
+#target_sources(nom_jsonpp
+#  PRIVATE
+#    ${SHARED_ASSETS}
+#)
 
 if(TARGET SDL2::SDL2main)
   target_link_libraries(nom_jsonpp
@@ -89,7 +89,7 @@ install(TARGETS nom_jsonpp
 # For development:
 add_custom_command(TARGET nom_jsonpp
   POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
-  "${SHARED_ASSETS}"
+  ${SHARED_ASSETS}
   $<TARGET_FILE_DIR:nom_jsonpp> # <build>/<type>/share
 )
 

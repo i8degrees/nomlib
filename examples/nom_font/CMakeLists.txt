@@ -1,6 +1,8 @@
 # nom_font example - render a set of glyphs with a font of your choice
 
-set(STATIC_ASSETS ${PROJECT_SOURCE_DIR}/Resources/tests/graphics/TrueTypeFontTest)
+set(SHARED_ASSETS
+  "${PROJECT_SOURCE_DIR}/Resources/tests/graphics/TrueTypeFontTest/"
+)
 
 add_executable(nom_font
   #WIN32 # Link SDL2main over WinMain for console apps
@@ -19,9 +21,20 @@ endif()
 
 target_sources(nom_font
   PRIVATE
-    ${STATIC_ASSETS}/OpenSans-Bold.ttf
-    ${STATIC_ASSETS}/OpenSans-Regular.ttf
+    "${SHARED_ASSETS}/OpenSans-Bold.ttf"
+    "${SHARED_ASSETS}/OpenSans-Regular.ttf"
 )
+if(APPLE)
+  set(MACOSX_ASSETS
+    ${SHARED_ASSETS}
+    "${PROJECT_SOURCE_DIR}/Resources/nomlib.icns"
+  )
+
+  target_sources(nom_font
+    PUBLIC
+      ${MACOSX_ASSETS}
+  )
+endif()
 
 # console app
 if(TARGET SDL2::SDL2main)
@@ -59,16 +72,18 @@ install(TARGETS nom_font
 # For development:
 add_custom_command(TARGET nom_font
   POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
-  "${STATIC_ASSETS}/OpenSans-Bold.ttf"
-  "${STATIC_ASSETS}/OpenSans-Regular.ttf"
+  "${SHARED_ASSETS}/OpenSans-Bold.ttf"
+  "${SHARED_ASSETS}/OpenSans-Regular.ttf"
   $<TARGET_FILE_DIR:nom_font> # <build>/<type>/share
 )
 
 # For distribution:
-install(DIRECTORY ${STATIC_ASSETS}
+install(DIRECTORY
+  ${SHARED_ASSETS}
   DESTINATION
-  ${CMAKE_INSTALL_DATADIR}/nomlib/Resources # <prefix/share>/nomlib/Resources
+    ${CMAKE_INSTALL_DATADIR}/nomlib/Resources # <prefix/share>/nomlib/Resources
   COMPONENT Examples
+  OPTIONAL
 )
 
 copy_framework_dep(nom_font

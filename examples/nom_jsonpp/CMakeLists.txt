@@ -39,12 +39,29 @@ if(APPLE)
     PUBLIC
       ${MACOSX_ASSETS}
   )
+elseif(LINUX)
+  target_sources(nom_jsonpp
+    PRIVATE
+      ${SHARED_ASSETS}
+  )
+elseif(WIN32)
+  target_sources(nom_jsonpp
+    PUBLIC
+    ${SHARED_ASSETS}
+    "${PROJECT_SOURCE_DIR}/Resources/nomlib.ico"
+    # TODO(JEFF): The following two files must be generated using cmake's
+    # `configure_file` for the two templates we have at `cmake/templates`.
+    #"${CMAKE_CURRENT_BINARY_DIR}/app.rc"
+    #"${CMAKE_CURRENT_BINARY_DIR}/app.manifest"
+  )
+else()
+  # FIXME(JEFF): Catch-all workaround / default comes here!
 endif()
 
-#target_sources(nom_jsonpp
-#  PRIVATE
-#    ${SHARED_ASSETS}
-#)
+target_sources(nom_jsonpp
+  PRIVATE
+    nom_jsonpp.cpp
+)
 
 if(TARGET SDL2::SDL2main)
   target_link_libraries(nom_jsonpp
@@ -54,12 +71,12 @@ if(TARGET SDL2::SDL2main)
 endif(TARGET SDL2::SDL2main)
 
 if(APPLE)
+  set(PROJECT_COMPANY_NAMESPACE "net.i8degrees.nomlib")
   string(TIMESTAMP CURR_YEAR "%Y")
   set_target_properties(nom_jsonpp
     PROPERTIES
       MACOSX_BUNDLE_BUNDLE_VERSION "${BUILD_VERSION}"
       MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}"
-      # PROJECT_COMPANY_NAMESPACE="net.i8degrees.nomlib"
       MACOSX_BUNDLE_GUI_IDENTIFIER "${PROJECT_COMPANY_NAMESPACE}.nom_jsonpp"
       MACOSX_BUNDLE_BUNDLE_NAME "nom_jsonpp"
       MACOSX_DEPLOYMENT_TARGET "10.15"

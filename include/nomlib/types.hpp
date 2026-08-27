@@ -293,7 +293,7 @@ static_assert ( sizeof ( nom::uchar ) == 1, "nom::uchar" );
 
 // TODO: Relocate this def to run-time (cmake gen)
 #if defined(NOM_PLATFORM_ARCH_X86_64)
-  #if defined(__WIN32__)
+  #if defined(__WIN32__) || defined(_WIN32)
     static_assert(sizeof(nom::ulong) == 4, "nom::ulong");
   #else
     static_assert(sizeof(nom::ulong) == 8, "nom::ulong");

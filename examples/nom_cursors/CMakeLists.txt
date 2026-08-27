@@ -26,6 +26,14 @@ target_include_directories(nom_cursors
 
 target_link_libraries(nom_cursors
   PUBLIC
+    nomlib-core
+    nomlib-graphics
+  PRIVATE
+    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+    $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
+)
+
+copy_framework_dep(nom_cursors
   nomlib-core
   nomlib-graphics
   PRIVATE

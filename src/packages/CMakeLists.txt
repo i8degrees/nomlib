@@ -60,8 +60,9 @@ endif(NOM_INSTALL_PKGCONFIG_SUPPORT)
 
 # Install nomlib's icon files
 install(  FILES
-          "${NOMLIB_RESOURCES_DIR}/nomlib.icns"
-          "${NOMLIB_RESOURCES_DIR}/icon.png"
+          "${PROJECT_SOURCE_DIR}/Resources/nomlib.icns"
+          "${PROJECT_SOURCE_DIR}/Resources/nomlib.ico"
+          "${PROJECT_SOURCE_DIR}/Resources/nomlib.png"
           DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/nomlib"
           OPTIONAL
           COMPONENT Core

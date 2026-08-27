@@ -35,6 +35,24 @@ if(TARGET SDL2::SDL2main)
   )
 endif(TARGET SDL2::SDL2main)
 
+if(libRocket_FOUND)
+  if(OPENGL_FOUND)
+    if(WIN32)
+      # As per the usage instructions of running `vcpkg print-usage opengl`
+      # on Windows.
+      target_link_libraries(nom_app_ex
+        PRIVATE
+          ${OPENGL_LIBRARIES}
+      )
+    else() # APPLE && LINUX
+      target_link_libraries(nom_app_ex
+        PRIVATE
+          OpenGL::GL
+      )
+    endif(WIN32)
+  endif(OPENGL_FOUND)
+endif(libRocket_FOUND)
+
 target_link_libraries(nom_app_ex
   PUBLIC
     nomlib-actions

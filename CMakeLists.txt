@@ -168,6 +168,15 @@ message(STATUS "Installation Prefix: ${CMAKE_INSTALL_PREFIX}")
 ## Third-party dependencies
 #
 
+# Fallback to Release, then Debug if MinSizeRel/RelWithDebInfo are missing
+# from the CMake import targets for the libraries in question. This is
+# apparently an issue when using a multi-config CMake generator,
+# (like Visual Studio) and an imported dependency (i.e.: libRocket) was only
+# built in Debug or Release mode, leaving CMake unable to find the library
+# files for the other configurations.
+set(CMAKE_MAP_IMPORTED_CONFIG_MINSIZEREL Release Debug "")
+set(CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO Release Debug "")
+
 # This is a hard requirement for GoogleTest (BUILD_TESTS=on)
 find_package(Threads REQUIRED)
 find_package(SDL2 CONFIG REQUIRED)

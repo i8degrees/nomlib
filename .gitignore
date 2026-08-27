@@ -41,3 +41,6 @@ vcpkg_installed/*
 report.json
 report.yaml
 
+tmp/*
+!tmp/.placeholder
+

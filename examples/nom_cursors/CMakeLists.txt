@@ -6,25 +6,22 @@ add_executable(nom_cursors
   cursors.cpp
 )
 
-# TODO(JEFF): This should be a cmake option that can be modified by the
-# end-user for sake of packaging and what not.
-if(APPLE)
-  set_rpath(nom_cursors "@loader_path/../Frameworks;@loader_path/../lib;@loader_path")
-else()
-  # Use standard Unix file hier layout for run path
-  set_rpath(nom_cursors "@origin/../lib")
-endif()
+set_target_properties(nom_cursors
+  PROPERTIES
+    INSTALL_RPATH "$ORIGIN/../lib"
+    INSTALL_RPATH_USE_LINK_PATH TRUE
+)
 
 if(TARGET SDL2::SDL2main)
   target_link_libraries(nom_cursors
     PRIVATE
-      $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+    $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
   )
 endif(TARGET SDL2::SDL2main)
 
 target_include_directories(nom_cursors
   PUBLIC
-    ${PROJECT_SOURCE_DIR}/include
+  ${PROJECT_SOURCE_DIR}/include
 )
 
 target_link_libraries(nom_cursors
@@ -38,8 +35,13 @@ target_link_libraries(nom_cursors
 
 copy_framework_dep(nom_cursors
   nomlib-core
-  nomlib-file
   nomlib-graphics
-  nomlib-system
+  PRIVATE
+  #$<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+  $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+  $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
 )
+
+install(  FILES "${NOMLIB_RESOURCES_DIR}/icon.png"
+          DESTINATION "${EXAMPLES_INSTALL_DIR}/Resources" )
 

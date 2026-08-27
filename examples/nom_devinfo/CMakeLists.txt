@@ -27,10 +27,17 @@ endif(NOM_BUILD_AUDIO_UNIT)
 
 if(libRocket_FOUND)
   if(OPENGL_FOUND)
+    if(WIN32)
+      target_link_libraries(nom_devinfo
+        PRIVATE
+          ${OPENGL_LIBRARIES}
+      )
+    else() # APPLE && LINUX
       target_link_libraries(nom_devinfo
         PRIVATE
           OpenGL::GL
       )
+    endif(WIN32)
   endif(OPENGL_FOUND)
 endif(libRocket_FOUND)
 

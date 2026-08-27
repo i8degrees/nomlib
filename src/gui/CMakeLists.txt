@@ -132,6 +132,13 @@ if(APPLE)
     PRIVATE
       OpenGL::GL
   )
+elseif(WIN32)
+  # As per the usage instructions of running `vcpkg print-usage opengl`
+  # on Windows.
+  target_link_libraries(nomlib-gui
+    PRIVATE
+      ${OPENGL_LIBRARIES}
+  )
 else()
   # FIXME(JEFF): We are unable to build ttcards without changing the
   # OpenGL::GL line to GL (when an external project references nomlib's

@@ -5,7 +5,7 @@ set(SHARED_ASSETS
   "${PROJECT_SOURCE_DIR}/Resources/GameOfLife/assets/img/bglight.png"
   "${PROJECT_SOURCE_DIR}/Resources/GameOfLife/assets/img/creep.png"
   "${PROJECT_SOURCE_DIR}/Resources/GameOfLife/assets/img/creep_16.png"
-  #"${PROJECT_SOURCE_DIR}/Resources/GameOfLife/assets/icn/creep.png"
+  "${PROJECT_SOURCE_DIR}/Resources/GameOfLife/assets/icn/creep.png"
   "${PROJECT_SOURCE_DIR}/Resources/GameOfLife/assets/img/pink.png"
   "${PROJECT_SOURCE_DIR}/Resources/GameOfLife/assets/font/Comfortaa-Regular.ttf"
 )

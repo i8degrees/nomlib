@@ -42,7 +42,7 @@ if( NOM_BUILD_RENDERWINDOW_TESTS )
   # For development: Copy nomlib's window icon resource.
   add_custom_command(TARGET RenderWindowTest POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${PROJECT_SOURCE_DIR}/Resources/icon.png"
+    "${PROJECT_SOURCE_DIR}/Resources/nomlib.png"
     $<TARGET_FILE_DIR:RenderWindowTest>
   )
 

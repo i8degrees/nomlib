@@ -80,9 +80,9 @@ TEST_F( RenderWindowTest, SetIcon )
 
   NOM_DUMP_VAR( NOM_LOG_CATEGORY_TEST, "current directory path:", fp.currentPath() );
 
-  std::string icon_path = fp.currentPath() + p.native() + "icon.png";
+  std::string icon_path = fp.currentPath() + p.native() + "nomlib.png";
   // p = fp.resource_path( "org.i8degrees.nomlib" );
-  // std::string icon_path = p.prepend("icon.png");
+  // std::string icon_path = p.prepend("nomlib.png");
 
   ASSERT_TRUE( this->window.set_window_icon( icon_path ) == true );
 }

@@ -36,11 +36,6 @@ target_link_libraries(nom_cursors
     $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
 )
 
-install(FILES
-  "${PROJECT_SOURCE_DIR}/Resources/icon.png"
-  DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/nomlib"
-)
-
 copy_framework_dep(nom_cursors
   nomlib-core
   nomlib-file

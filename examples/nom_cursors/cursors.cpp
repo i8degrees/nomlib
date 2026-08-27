@@ -36,7 +36,7 @@ using namespace nom;
 const nom::Path p;
 
 /// \brief File path name of the resources directory; this must be a relative file path.
-const std::string APP_RESOURCES_DIR = "Resources" + p.native();
+const std::string APP_RESOURCES_DIR = "Resources";
 
 /// \brief Name of our application.
 const std::string APP_NAME = "nomlib's System Mouse Cursors";
@@ -49,7 +49,8 @@ const nom::int32 WINDOW_HEIGHT = 480;
 
 auto WINDOW_RESOLUTION = Size2i(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-const std::string RESOURCE_ICON = APP_RESOURCES_DIR + "icon.png";
+const std::string RESOURCE_ICON = APP_RESOURCES_DIR + p.native() +
+  "icon.png";
 
 /// \brief Relative filename path to saved screen shots.
 ///

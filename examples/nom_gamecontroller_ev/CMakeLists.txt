@@ -7,7 +7,7 @@ set(SHARED_ASSETS
 )
 
 add_executable(nom_gamecontroller_ev
-  WIN32 # Link SDL2main over WinMain
+  #WIN32 # Link SDL2main over WinMain
   MACOSX_BUNDLE
   gamecontroller_events.cpp
 )

@@ -6,7 +6,7 @@ set( NOM_BUILD_GUI_DATAGRID_TESTS ON )
 if( NOM_BUILD_GUI_BASE_TEST )
 
   add_executable(libRocketTest
-    WIN32 # GUI app
+    #WIN32 # GUI app
     libRocketTest.cpp
   )
 
@@ -47,7 +47,7 @@ endif( NOM_BUILD_GUI_BASE_TEST )
 if( NOM_BUILD_GUI_DATAGRID_TESTS )
 
   add_executable(libRocketDataGridTest
-    WIN32 # GUI app
+    #WIN32 # GUI app
     datagrid/Card.cpp
     datagrid/CardCollection.cpp
     datagrid/CardsPageDataSource.cpp

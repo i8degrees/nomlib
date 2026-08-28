@@ -10,7 +10,7 @@ set( NOM_BUILD_SPRITE_TESTS ON )
 if( NOM_BUILD_RENDERWINDOW_TESTS )
 
   add_executable(RenderWindowTest
-    WIN32 # GUI app
+    #WIN32 # GUI app
     RenderWindowTest.cpp
   )
 
@@ -51,7 +51,7 @@ endif( NOM_BUILD_RENDERWINDOW_TESTS )
 if( NOM_BUILD_GRADIENT_TESTS )
 
   add_executable(GradientTest
-    WIN32 # GUI app
+    #WIN32 # GUI app
     GradientTest.cpp
   )
 
@@ -94,7 +94,7 @@ endif( NOM_BUILD_GRADIENT_TESTS )
 if(NOM_BUILD_BITMAP_FONT_TEST)
 
   add_executable(BitmapFontTest
-    WIN32 # GUI app
+    #WIN32 # GUI app
     BitmapFontTest.cpp
   )
 
@@ -115,6 +115,7 @@ if(NOM_BUILD_BITMAP_FONT_TEST)
       nomlib-graphics
       nomlib-visual-unit-test
     PRIVATE
+      $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
       #Threads::Threads
       #${GTEST_LIBRARY}
   )
@@ -134,7 +135,7 @@ endif(NOM_BUILD_BITMAP_FONT_TEST)
 if(NOM_BUILD_TRUETYPE_FONT_TEST)
 
   add_executable(TrueTypeFontTest
-    WIN32 # GUI app
+    #WIN32 # GUI app
     TrueTypeFontTest.cpp
   )
 
@@ -173,7 +174,7 @@ endif(NOM_BUILD_TRUETYPE_FONT_TEST)
 if(NOM_BUILD_BMFONT_TEST)
 
   add_executable(BMFontTest
-    WIN32 # GUI app
+    #WIN32 # GUI app
     BMFontTest.cpp
   )
 
@@ -213,7 +214,7 @@ endif(NOM_BUILD_BMFONT_TEST)
 if(NOM_BUILD_SPRITE_TESTS)
 
   add_executable(SpriteTest
-    WIN32 # GUI app
+    #WIN32 # GUI app
     SpriteTest.cpp
   )
 

@@ -1,7 +1,7 @@
 # nom_cursors example
 
 add_executable(nom_cursors
-  WIN32 # Link SDL2main over WinMain
+  #WIN32 # Link SDL2main over WinMain
   MACOSX_BUNDLE
   cursors.cpp
 )

@@ -6,7 +6,7 @@ set( NOM_BUILD_ACTION_TIMING_CURVES_TESTS ON )
 if( NOM_BUILD_ACTION_TESTS )
 
   add_executable(ActionTest
-    WIN32 # gui app
+    #WIN32 # gui app
     ActionTest.cpp
     ActionTest_ActionPlayer.cpp
     ActionTest_AlphaBlending.cpp
@@ -117,7 +117,7 @@ endif( NOM_BUILD_ACTION_TESTS )
 if( NOM_BUILD_ACTION_TIMING_CURVES_TESTS )
 
   add_executable(ActionTimingCurvesTest
-    WIN32 # GUI app
+    #WIN32 # console app
     ActionTimingCurvesTest.cpp
   )
 

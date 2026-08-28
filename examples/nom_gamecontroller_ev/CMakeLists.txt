@@ -3,7 +3,7 @@
 set(STATIC_ASSETS "${PROJECT_SOURCE_DIR}/Resources/SharedSupport")
 
 add_executable(nom_gamecontroller_ev
-  WIN32 # Link SDL2main over WinMain
+  #WIN32 # Link SDL2main over WinMain
   MACOSX_BUNDLE
   gamecontroller_events.cpp
 )
@@ -34,7 +34,6 @@ target_link_libraries(nom_gamecontroller_ev
     nomlib-graphics
     nomlib-system
   PRIVATE
-    # $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
     $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
     $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
     $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>

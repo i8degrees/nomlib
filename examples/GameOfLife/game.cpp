@@ -55,8 +55,9 @@ const std::string APP_RESOURCES_DIR = "Resources";
 /// \brief  Relative file path name of our resource example
 const nom::Path p;
 
-const std::string RESOURCE_ICON = ".." + p.native() + APP_RESOURCES_DIR +
-  p.native() + "GameOfLife" + p.native() + "creep.png";
+const std::string RESOURCE_ICON = ".." + p.native() + ".." + p.native() +
+  ".." + p.native() + APP_RESOURCES_DIR + p.native() + "GameOfLife" +
+  p.native() + "assets" + p.native() + "icn" + p.native() + "creep.png";
 
 /// \brief Relative filename path to saved screen shot example
 ///
@@ -75,15 +76,18 @@ const nom::int32 BOARD_SIZE = 2048;
 /// \brief length and width (in pixels) for the square cells
 const nom::sint CELL_SIZE = 16;
 
-// ../Resources/creep_16.png # .app/Contents/Resources/
-const std::string IMG_CREEP = ".." + p.native() + APP_RESOURCES_DIR +
-  p.native() + "GameOfLife" + p.native() + "creep_16.png";
+// ../../Resources/GameOfLife/creep_16.png
+const std::string IMG_CREEP = ".." + p.native() + ".." + p.native() + ".." +
+  p.native() + APP_RESOURCES_DIR + p.native() + "GameOfLife" + p.native() +
+  "assets" + p.native() + "img" + p.native() + "creep_16.png";
 
-const std::string BG_LIGHT = ".." + p.native() + APP_RESOURCES_DIR +
-  p.native() + "GameOfLife" + p.native() + "bglight.png";
+const std::string BG_LIGHT = ".." + p.native() + ".." + p.native() + ".." +
+  p.native() + APP_RESOURCES_DIR + p.native() + "GameOfLife" + p.native() +
+  "assets" + p.native() + "img" + p.native() + "bglight.png";
 
-const std::string BG_DARK = ".." + p.native() + APP_RESOURCES_DIR +
-  p.native() + "GameOfLife" + p.native() + "bgdark.png";
+const std::string BG_DARK = ".." + p.native() + ".." + p.native() + ".." +
+  p.native() + APP_RESOURCES_DIR + p.native() + "GameOfLife" + p.native() +
+  "assets" + p.native() + "img" + p.native() + "bgdark.png";
 
 /// \brief Maximum number of active windows we will attempt to spawn in this
 /// example.
@@ -112,7 +116,7 @@ class App: public nom::SDLApp
       }
 
       //Dir fs_root;
-      //fs_root.set_file_root("..");
+      //fs_root.set_file_root(".");
 
       atexit( nom::quit );
     } // end App

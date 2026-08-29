@@ -55,22 +55,55 @@ endif(SDL2_image_FOUND)
 # !! backwards compatibility with.
 if(SDL2_ttf_FOUND)
   include(CheckCSourceCompiles)
-  set(CMAKE_REQUIRED_INCLUDES ${SDL2_INCLUDE_DIR}) # check_c_source_compile
+  set(CMAKE_REQUIRED_INCLUDES "${SDL2_INCLUDE_DIR}") # check_c_source_compile
   set(NOM_USE_SDL2_TTF TRUE) # recorded in config.hpp
+  # FIXME(JEFF): If we can figure out the proper value here, we could forgo
+  # the explicit platform checks below.
+  # set(CMAKE_REQUIRED_LIBRARIES SDL2::SDL2main)
 
-  # >> Introduced in SDL2_ttf v2.0.12
-  check_c_source_compiles("
-    #include <SDL_ttf.h>
-    typedef struct _TTF_Font TTF_Font;
-    int main(void) { return 0; }"
-  HAVE_SDL2_TTF_212)
+  if(WIN32)
+    set(CMAKE_REQUIRED_DEFINITIONS "-DSDL_MAIN_HANDLED")
+    # TODO(JEFF): Figure out if we can use a header file that only contains the
+    # minimum necessary WIN32 API typedefs, so we do not have to use <windows.h>
+    # here.
+    # >> Introduced in SDL2_ttf v2.0.12
+    check_c_source_compiles("
+      #include <SDL_ttf.h>
+      #include <windows.h>
+      typedef struct _TTF_Font TTF_Font;
+      int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
+        return 0;
+      }"
+    HAVE_SDL2_TTF_212)
 
-  # >> Modified in SDL2_ttf v2.23.0
-  check_c_source_compiles("
-    #include <SDL_ttf.h>
-    typedef struct TTF_Font TTF_Font;
-    int main(void) { return 0; }"
-  HAVE_SDL2_TTF_223)
+    # TODO(JEFF): Figure out if we can use a header file that only contains the
+    # minimum necessary WIN32 API typedefs, so we do not have to use <windows.h>
+    # here.
+    # >> Modified in SDL2_ttf v2.23.0
+    check_c_source_compiles("
+      #include <SDL_ttf.h>
+      #include <windows.h>
+      typedef struct TTF_Font TTF_Font;
+      int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
+        return 0;
+      }
+      int main(void) { return 0; }"
+    HAVE_SDL2_TTF_223)
+  else() # Darwin && Linux has no problem with a regular main entrypoint.
+    # >> Introduced in SDL2_ttf v2.0.12
+    check_c_source_compiles("
+      #include <SDL_ttf.h>
+      typedef struct _TTF_Font TTF_Font;
+      int main(void) { return 0; }"
+    HAVE_SDL2_TTF_212)
+
+    # >> Modified in SDL2_ttf v2.23.0
+    check_c_source_compiles("
+      #include <SDL_ttf.h>
+      typedef struct TTF_Font TTF_Font;
+      int main(void) { return 0; }"
+    HAVE_SDL2_TTF_223)
+  endif(WIN32)
 
   # Recorded in config.hpp
   if(HAVE_SDL2_TTF_212)
@@ -89,6 +122,7 @@ endif(SDL2_ttf_FOUND)
 
 if(NOM_BUILD_AUDIO_UNIT)
   include(CheckIncludeFileCXX)
+  #set(CMAKE_REQUIRED_LIBRARIES $<TARGET_NAME_IF_EXISTS:OpenAL::OpenAL>)
 
   # Check for OpenAL Soft standard header style
   check_include_file_cxx("AL/al.h" HAVE_AL_AL_H)

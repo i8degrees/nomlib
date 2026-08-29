@@ -222,7 +222,7 @@ class NOM_EXPORT RenderWindow: public Renderer
     /// \todo Is there a reason why this is a static method???
     ///
     /// \todo Rename to window_from_id?
-    NOM_EXPORT static SDL_WINDOW::RawPtr window_id( uint32 id );
+    static SDL_WINDOW::RawPtr window_id( uint32 id );
 
     /// \brief Get the display index associated with this window.
     ///
@@ -238,7 +238,7 @@ class NOM_EXPORT RenderWindow: public Renderer
     /// string on failure.
     ///
     /// \remarks The display name is platform-dependent.
-    NOM_EXPORT static std::string display_name(int display_id);
+    static std::string display_name(int display_id);
 
     /// \brief Get the display name associated with this window.
     ///
@@ -361,21 +361,21 @@ class NOM_EXPORT RenderWindow: public Renderer
     ///
     /// \remarks  Used internally within nomlib for automatically using the
     ///           active context -- set by nom::RenderWindow::make_current.
-    NOM_EXPORT static SDL_Renderer* context( void );
+    static SDL_Renderer* context( void );
 
     /// \brief Get the number of available video displays.
     ///
     /// \returns The number of video displays -- a number greater than or equal
     /// to one (1) on success, or a negative number on failure.
-    NOM_EXPORT static int num_video_displays();
+    static int num_video_displays();
 
   private:
     /// \brief  Set a new nom::RenderWindow as the active rendering context; we must
     ///         always have a context active at any given time for generating
     ///         resources -- nom::Texture, nom::Image, etc.
-    NOM_NO_EXPORT static void set_context ( RenderWindow::RawPtr window );
+    static void set_context ( RenderWindow::RawPtr window );
 
-    NOM_NO_EXPORT static SDL_Renderer* context_;
+    static SDL_Renderer* context_;
 
     SDL_WINDOW::UniquePtr window_;
 

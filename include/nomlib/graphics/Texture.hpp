@@ -223,7 +223,7 @@ class NOM_EXPORT Texture
     /// context used at the time of creation of the nom::Texture -- in other
     /// words, whichever nom::RenderWindow was active at the time of the nom::Texture
     /// creation.
-    NOM_EXPORT static const Point2i maximum_size ( void );
+    static const Point2i maximum_size ( void );
 
     /// \brief Query lock status of texture
     bool locked() const;

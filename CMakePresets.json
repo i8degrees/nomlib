@@ -340,7 +340,8 @@
         "CMAKE_BUILD_TYPE": "Debug",
         "DEBUG_ASSERT": "ON",
         "BUILD_EXAMPLES": "ON",
-        "BUILD_TESTS": "ON",
+        "$comment": "Unit tests are only available under a static build",
+        "BUILD_TESTS": "OFF",
         "CMAKE_INSTALL_PREFIX": "$env{HOME}/local",
         "VCPKG_TARGET_TRIPLET": "x64-windows-release"
       },
@@ -361,6 +362,7 @@
         "CMAKE_BUILD_TYPE": "Release",
         "DEBUG_ASSERT": "OFF",
         "BUILD_EXAMPLES": "OFF",
+        "$comment": "Unit tests are only available under a static build",
         "BUILD_TESTS": "OFF",
         "CMAKE_INSTALL_PREFIX": "$env{PROGRAMFILES}",
         "VCPKG_TARGET_TRIPLET": "x64-windows"
@@ -382,6 +384,7 @@
         "CMAKE_BUILD_TYPE": "Release",
         "DEBUG_ASSERT": "OFF",
         "BUILD_EXAMPLES": "OFF",
+        "$comment": "Unit tests are only available under a static build",
         "BUILD_TESTS": "OFF",
         "CMAKE_INSTALL_PREFIX": "$env{PROGRAMFILES}",
         "VCPKG_TARGET_TRIPLET": "x64-windows-release"

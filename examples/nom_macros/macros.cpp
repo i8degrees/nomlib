@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 nom::int32 main( nom::int32 argc, char* argv[] )
 {
-  nom::Point2i pos;
+  nom::Point2i pos = {1, 2};
   pos.x = 25;
   pos.y = 25;
 

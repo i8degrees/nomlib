@@ -609,7 +609,7 @@ typedef Size2<float> Size2f;
 
 /// Size2 object defined using double-precision floating point numbers
 typedef Size2<double> Size2d;
-
+#if 0
 /// Null value for a nom::Size using signed integers
 template <> NOM_EXPORT const Size2i Size2i::null;
 
@@ -628,7 +628,7 @@ template <> const Size2f Size2f::zero;
 /// \brief Zero value for a nom::Size2 using double precision floating point
 /// numbers.
 template <> const Size2d Size2d::zero;
-
+#endif
 } // namespace nom
 
 #endif // include guard defined

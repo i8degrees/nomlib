@@ -7,6 +7,21 @@ add_library(nomlib-math
   ${LIBRARY_OUTPUT_TYPE}
 )
 
+# Let CMake generate our NOM_EXPORT macros, i.e.: __declspec(dllexport) for
+# symbol visibility on WIN32 (to build a shared, AKA DLL library).
+#
+# We need only to do this once per project, as opposed to once per library
+# target as previously implemented. One of the nasty side effects of doing it
+# once per library target was that clang had to pass two include paths
+# *per target*; the regular plus the special path of where export.hpp is
+# located at build time, making a mess of things.
+generate_export_header(nomlib-math
+  BASE_NAME
+    NOM
+  EXPORT_FILE_NAME
+    export.hpp
+)
+
 set_target_properties(nomlib-math
   PROPERTIES
     VERSION ${PROJECT_VERSION}
@@ -30,10 +45,10 @@ endif(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
 
 target_sources(nomlib-math
   PRIVATE
-  ${SRC_DIR}/math/Color4.cpp
+  #${SRC_DIR}/math/Color4.cpp
   ${SRC_DIR}/math/math_helpers.cpp
   ${SRC_DIR}/math/Point2.cpp
-  ${SRC_DIR}/math/Point3.cpp
+  #${SRC_DIR}/math/Point3.cpp
   ${SRC_DIR}/math/Rect.cpp
   ${SRC_DIR}/math/Size2.cpp
   PUBLIC
@@ -42,11 +57,18 @@ target_sources(nomlib-math
     FILES
     ${HDR_BASE}/math.hpp
     ${HDR_BASE}/math/Color4.hpp
+    ${HDR_BASE}/math/Color4.inl
     ${HDR_BASE}/math/math_helpers.hpp
     ${HDR_BASE}/math/Point2.hpp
+    #${HDR_BASE}/math/Point2.inl
     ${HDR_BASE}/math/Point3.hpp
+    ${HDR_BASE}/math/Point3.inl
     ${HDR_BASE}/math/Rect.hpp
     ${HDR_BASE}/math/Size2.hpp
+    FILE_SET generated_headers
+    TYPE HEADERS
+    BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/export.hpp
 )
 
 target_include_directories(nomlib-math
@@ -107,6 +129,8 @@ install(TARGETS nomlib-math
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     COMPONENT Runtime
   FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+    COMPONENT Development
+  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     COMPONENT Development
   FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
     COMPONENT Runtime

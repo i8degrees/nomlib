@@ -89,7 +89,8 @@ NOM_EXPORT inline T uniform_real_rand(T start_range, T end_range)
 
 /// Rotates a given X & Y coordinate point along a given pivot axis
 /// (rotation point) at the given angle (in degrees), clockwise.
-const Point2d rotate_points ( float angle, float x, float y, float pivot_x, float pivot_y );
+NOM_EXPORT const Point2d rotate_points(float angle, float x, float y, 
+    float pivot_x, float pivot_y );
 
 /// \brief Round a fractional value.
 ///

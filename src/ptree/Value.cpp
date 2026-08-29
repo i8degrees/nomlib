@@ -45,7 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 // Static initializations
-const Value& Value::null = Value();
+NOM_EXPORT const Value& Value::null = Value();
 
 Value::Value() :
   type_(ValueType::Null)

@@ -26,51 +26,62 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "nomlib/math/math_helpers.hpp"
+#include "nomlib/math/Point3.hpp"
 
 namespace nom {
 
-namespace priv {
+/// Null value for a nom::Point3 using signed integers
+template <> const Point3i Point3i::null(-1, -1, -1);
 
-NOM_EXPORT std::random_device rd;
-NOM_EXPORT std::default_random_engine rd_generator;
+/// Null value for a nom::Point3 using floating point numbers
+template <> const Point3f Point3f::null(-1.0f, -1.0f, -1.0f);
 
-} // namespace priv
+/// Null value for a nom::Point3 using double precision floating point numbers
+template <> const Point3d Point3d::null(-1.0f, -1.0f, -1.0f);
 
-void init_rand(uint32 seed_seq)
+/// \brief Zero value for a nom::Point3 using signed integers
+template <> const Point3i Point3i::zero(0, 0, 0);
+
+/// \brief Zero value for a nom::Point3 using 32-bit floating-point numbers.
+template <> const Point3f Point3f::zero(0.0f, 0.0f, 0.0f);
+
+/// \brief Zero value for a nom::Point3 using double precision (64-bit)
+/// floating-point numbers.
+template <> const Point3d Point3d::zero(0.0f, 0.0f, 0.0f);
+
+/// Pretty print a Point3 object using the following formatting:
+///
+///     <Point3.x>, <Point3.y>, <Point3.z>
+///
+/// An example print:
+///
+///     128, 144, 0
+template <typename T>
+NOM_EXPORT
+inline std::ostream& operator << ( std::ostream& os, const Point3<T>& pos )
 {
-  priv::rd_generator = std::default_random_engine( priv::rd() );
+  os
+  << pos.x
+  << POINT3_DELIMITER
+  << pos.y
+  << POINT3_DELIMITER
+  << pos.z;
 
-  if(seed_seq != 0) {
-    priv::rd_generator.seed(seed_seq);
-  }
+  return os;
 }
 
-const Point2d rotate_points(float angle, float x, float y, float pivot_x,
-    float pivot_y)
+template <typename T>
+NOM_EXPORT
+inline bool operator == ( const Point3<T>& lhs, const Point3<T>& rhs )
 {
-  Point2d p;
-  double  rotated_x = 0;
-  double rotated_y = 0;
-  float translated_x = 0;
-  float translated_y = 0;
+  return  ( lhs.x == rhs.x )  &&  ( lhs.y == rhs.y )  && ( lhs.z == rhs.z );
+}
 
-  float center_x = pivot_x / 2.0f;
-  float center_y = pivot_y / 2.0f;
-
-  translated_x = x - center_x;
-  translated_y = y - center_y;
-
-  rotated_x = ( translated_x * cos ( -angle * PI / 180 ) - translated_y * sin ( -angle * PI / 180 ) );
-  rotated_y = ( translated_x * sin ( -angle * PI / 180 ) + translated_y * cos ( -angle * PI / 180 ) );
-
-  rotated_x += center_x;
-  rotated_y += center_y;
-
-  p.x = rotated_x;
-  p.y = rotated_y;
-
-  return p;
+template <typename T>
+NOM_EXPORT
+inline bool operator != ( const Point3<T>& lhs, const Point3<T>& rhs )
+{
+  return ! ( lhs == rhs );
 }
 
 } // namespace nom

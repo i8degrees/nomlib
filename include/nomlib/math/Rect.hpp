@@ -208,10 +208,10 @@ struct NOM_EXPORT Rect
   /// \brief Null value
   ///
   /// \remarks  Null value implementation depends on signed (negative) numbers.
-  NOM_EXPORT static const Rect null;
+  static const Rect null;
 
   /// \brief Zeroed values.
-  NOM_EXPORT static const Rect zero;
+  static const Rect zero;
 
   /// Left coordinate of the rectangle (X coordinate of Rectangle)
   T x;
@@ -839,22 +839,22 @@ typedef Rect<float> FloatRect;
 typedef Rect<double> DoubleRect;
 
 /// Null value for a nom::Rect using signed integers
-template <> NOM_EXPORT const IntRect IntRect::null;
+//template <> const IntRect IntRect::null;
 
 /// Null value for a nom::Rect using floating point numbers
-template <> NOM_EXPORT const FloatRect FloatRect::null;
+//template <> NOM_EXPORT const FloatRect FloatRect::null;
 
 /// Null value for a nom::Rect using double precision floating point numbers
-template <> NOM_EXPORT const DoubleRect DoubleRect::null;
+//template <> NOM_EXPORT const DoubleRect DoubleRect::null;
 
 /// Zero value for a nom::Rect using signed integers
-template <> NOM_EXPORT const IntRect IntRect::zero;
+//template <> const IntRect IntRect::zero;
 
 /// Zero value for a nom::Rect using floating point numbers
-template <> NOM_EXPORT const FloatRect FloatRect::zero;
+//template <> NOM_EXPORT const FloatRect FloatRect::zero;
 
 /// Zero value for a nom::Rect using double precision floating point numbers
-template <> NOM_EXPORT const DoubleRect DoubleRect::zero;
+//template <> NOM_EXPORT const DoubleRect DoubleRect::zero;
 
 } // namespace nom
 

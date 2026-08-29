@@ -39,7 +39,7 @@ const std::string POINT3_DELIMITER = ", ";
 
 /// \brief 3D Point class
 template <typename T>
-struct NOM_EXPORT Point3
+struct Point3
 {
   /// Default constructor; initialize values to Point3<T>::null
   Point3() :
@@ -80,7 +80,7 @@ struct NOM_EXPORT Point3
   }
 
   /// \brief Obtain a reference of the object.
-  NOM_EXPORT inline const Point3<T>& get() const
+  inline const Point3<T>& get() const
   {
     return *this;
   }
@@ -88,50 +88,15 @@ struct NOM_EXPORT Point3
   /// \brief Null value
   ///
   /// \remarks  Null value implementation depends on signed (negative) numbers.
-  NOM_EXPORT static const Point3 null;
+  static const Point3 null;
 
   /// \brief Zero value constant.
-  NOM_EXPORT static const Point3 zero;
+  static const Point3 zero;
 
-  NOM_EXPORT T x;
-  NOM_EXPORT T y;
-  NOM_EXPORT T z;
+  T x;
+  T y;
+  T z;
 };
-
-/// Pretty print a Point3 object using the following formatting:
-///
-///     <Point3.x>, <Point3.y>, <Point3.z>
-///
-/// An example print:
-///
-///     128, 144, 0
-template <typename T>
-NOM_EXPORT
-inline std::ostream& operator << ( std::ostream& os, const Point3<T>& pos )
-{
-  os
-  << pos.x
-  << POINT3_DELIMITER
-  << pos.y
-  << POINT3_DELIMITER
-  << pos.z;
-
-  return os;
-}
-
-template <typename T>
-NOM_EXPORT
-inline bool operator == ( const Point3<T>& lhs, const Point3<T>& rhs )
-{
-  return  ( lhs.x == rhs.x )  &&  ( lhs.y == rhs.y )  && ( lhs.z == rhs.z );
-}
-
-template <typename T>
-NOM_EXPORT
-inline bool operator != ( const Point3<T>& lhs, const Point3<T>& rhs )
-{
-  return ! ( lhs == rhs );
-}
 
 /// Point3 object defined using signed integers
 typedef Point3<int> Point3i;
@@ -142,6 +107,7 @@ typedef Point3<real32> Point3f;
 /// Point3 object defined using double precision floating-point numbers
 typedef Point3<real64> Point3d;
 
+#if 0
 /// Null value for a nom::Point3 using signed integers
 template <> NOM_EXPORT const Point3i Point3i::null;
 
@@ -160,7 +126,10 @@ template <> NOM_EXPORT const Point3f Point3f::zero;
 /// \brief Zero value for a nom::Point3 using double precision (64-bit)
 /// floating-point numbers.
 template <> NOM_EXPORT const Point3d Point3d::zero;
+#endif
 
 } // namespace nom
+
+#include "Point3.inl"
 
 #endif // include guard defined

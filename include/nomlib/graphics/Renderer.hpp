@@ -60,9 +60,9 @@ class NOM_EXPORT Renderer
     /// driver that supports the requested rendering flags.
     ///
     /// \see nom::available_render_driver
-    NOM_EXPORT static const int DEFAULT_RENDERING_DRIVER = -1;
+    static const int DEFAULT_RENDERING_DRIVER = -1;
 
-    NOM_EXPORT static const uint32 DEFAULT_RENDERER_FLAGS =
+    static const uint32 DEFAULT_RENDERER_FLAGS =
       SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE;
 
     /// Default constructor; initializes instance to sane defaults
@@ -121,7 +121,7 @@ class NOM_EXPORT Renderer
     ///
     /// \note   This method is used internally by nomlib -- nom::Renderer::caps()
     ///         is probably the API you want to use outside of nomlib.
-    NOM_EXPORT static const RendererInfo caps ( SDL_Renderer* target );
+    static const RendererInfo caps ( SDL_Renderer* target );
 
     /// \brief Set the current rendering target back to the default renderer.
     bool reset_render_target() const;

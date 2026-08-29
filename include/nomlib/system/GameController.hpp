@@ -96,7 +96,7 @@ class NOM_EXPORT GameController
     // This issue can be reliably reproduced by adding a second
     // SDL_GameControllerClose call to test/testgamecontroller.c from the SDL
     // source repository.
-    NOM_EXPORT static bool device_closed_;
+    static bool device_closed_;
 
     typedef GameController self_type;
 
@@ -154,7 +154,7 @@ class NOM_EXPORT GameController
     /// \remarks This function can be called before any joysticks are accessed.
     ///
     /// \see Joystick::num_joysticks
-    NOM_EXPORT static std::string name(JoystickIndex device_index);
+    static std::string name(JoystickIndex device_index);
 
     /// \brief Toggle the game controller's event polling state.
     ///
@@ -171,27 +171,26 @@ class NOM_EXPORT GameController
     /// \note This does not disable the underlying joystick events.
     ///
     /// \see Joystick::set_event_state
-    NOM_EXPORT static int set_event_state(int state);
+    static int set_event_state(int state);
 
     /// \brief Update the current state of the opened game controllers.
     ///
     /// \remarks This method is automatically called by the internal event loop
     /// of SDL if any joystick events are enabled.
-    NOM_EXPORT static void update();
+    static void update();
 
     std::string mapping_string();
 
     /// \remarks This function can be called before any joysticks are accessed.
-    NOM_EXPORT static std::string mapping_string(JoystickGUID guid);
+    static std::string mapping_string(JoystickGUID guid);
 
     /// \todo Implement this function
-    NOM_EXPORT
     static int load_mapping_memory(const char* buffer, int buffer_size);
 
     /// \fixme This function call leaks memory from within SDL!
-    NOM_EXPORT static int load_mapping_file(const std::string& filename);
+    static int load_mapping_file(const std::string& filename);
 
-    NOM_EXPORT static int load_mapping_string(const std::string& mapping);
+    static int load_mapping_string(const std::string& mapping);
 
     /// \brief Get the instance ID of a joystick device.
     ///
@@ -204,11 +203,11 @@ class NOM_EXPORT GameController
     /// \remarks This function can be called before any joysticks are accessed.
     ///
     /// \see Joystick::num_joysticks
-    NOM_EXPORT static JoystickID device_id(JoystickIndex device_index);
+    static JoystickID device_id(JoystickIndex device_index);
 
     /// \brief Check to see if the joystick is supported by SDL's game
     /// controller interface.
-    NOM_EXPORT static bool compatible_joystick(JoystickIndex device_index);
+    static bool compatible_joystick(JoystickIndex device_index);
 
   private:
     typedef std::unique_ptr<SDL_GameController, void (*)(SDL_GameController*)>

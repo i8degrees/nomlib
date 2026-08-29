@@ -46,7 +46,7 @@ class NOM_EXPORT ResourceFile
   public:
     typedef ResourceFile self_type;
 
-    NOM_EXPORT static const ResourceFile null;
+    static const ResourceFile null;
 
     enum Type
     {

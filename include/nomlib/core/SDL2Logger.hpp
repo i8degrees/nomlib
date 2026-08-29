@@ -181,7 +181,7 @@ NOM_EXPORT void log_message( void* ptr, int cat, SDL_LogPriority prio, const cha
 /// in the debug output as 255 without explicitly setting the precision to
 /// five (5) or greater.
 template<typename Type>
-NOM_EXPORT void write_debug_output( std::ostream& out, const Type& f )
+void write_debug_output( std::ostream& out, const Type& f )
 {
   out << f;
 }

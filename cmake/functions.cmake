@@ -61,8 +61,9 @@ endfunction()
 function(copy_framework_dep target)
   #if(NOT APPLE AND NOT DEFINED CMAKE_FRAMEWORK)
   if(NOT APPLE)
-    #message(FATAL_ERROR
-      #"Apple and CMAKE_FRAMEWORK must be defined")
+    message(WARN
+      "Apple and CMAKE_FRAMEWORK should be defined"
+    )
     return()
   endif()
 

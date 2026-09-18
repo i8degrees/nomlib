@@ -132,6 +132,11 @@ target_include_directories(nomlib-core
   ${SDL2_INCLUDE_DIR}
 )
 
+target_compile_features(nomlib-core
+  PRIVATE
+    ${nom_cxx_std}
+)
+
 target_link_libraries(nomlib-core
   PRIVATE
     project_warnings

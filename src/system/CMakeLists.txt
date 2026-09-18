@@ -97,7 +97,7 @@ target_include_directories(nomlib-system
 
 target_compile_features(nomlib-system
   PRIVATE
-    cxx_std_14
+    ${nom_cxx_std}
 )
 
 target_link_libraries(nomlib-system

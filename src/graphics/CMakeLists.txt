@@ -144,7 +144,7 @@ target_include_directories(nomlib-graphics
 
 target_compile_features(nomlib-graphics
   PRIVATE
-    cxx_std_14
+    ${nom_cxx_std}
 )
 
 # Common dependencies on all platforms

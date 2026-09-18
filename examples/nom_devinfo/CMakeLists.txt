@@ -48,6 +48,13 @@ target_include_directories(nom_devinfo
     ${PROJECT_SOURCE_DIR}/include # include/nomlib
 )
 
+if(NOM_BUILD_GUI_UNIT)
+  target_link_libraries(nom_devinfo
+    PUBLIC
+      nomlib-gui
+)
+endif()
+
 target_link_libraries(nom_devinfo
   PRIVATE
     $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
@@ -57,7 +64,6 @@ target_link_libraries(nom_devinfo
   PUBLIC
     nomlib-core
     nomlib-graphics
-    nomlib-gui
     nomlib-math
     nomlib-system
 )

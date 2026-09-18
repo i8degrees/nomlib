@@ -108,6 +108,19 @@
       }
     },
     {
+      "name": "aarch64-macos",
+      "hidden": true,
+      "displayName": "(macos) AARCH64 + x86_64 platform architecture",
+      "cacheVariables": {
+        "VCPKG_OVERLAY_TRIPLETS": "cmake/triplets",
+        "VCPKG_TARGET_TRIPLET": "arm64-x64-osx",
+        "VCPKG_INSTALL_OPTIONS": "--allow-unsupported",
+        "$comment": "...",
+        "NOM_BUILD_GUI_UNIT": "NO"
+      },
+      "environment": {}
+    },
+    {
       "name": "debug",
       "displayName": "Build project with debug syms and statically linked libraries (vcpkg, clang)",
       "inherits": ["common", "vcpkg", "clang"],
@@ -204,12 +217,22 @@
         "BUILD_TESTS": "ON",
         "NOM_BUILD_AUDIO_UNIT": "ON",
         "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library/Frameworks",
-        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.15",
-        "CMAKE_OSX_ARCHITECTURES": "x86_64",
-        "VCPKG_TARGET_TRIPLET": "x64-osx"
+        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.15"
       },
       "environment": {
       },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
+    },
+    {
+      "name": "debug-osx-aarch64",
+      "displayName": "(macos) Build project with debug syms and statically linked libraries (vcpkg, clang, aarch64)",
+      "inherits": ["common", "vcpkg", "clang", "debug-osx", "aarch64-macos"],
+      "hidden": false,
+      "cacheVariables": {},
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",

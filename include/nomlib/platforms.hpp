@@ -29,6 +29,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SUPPORTED_PLATFORMS_HPP
 #define NOMLIB_SUPPORTED_PLATFORMS_HPP
 
+// !! Forward declarations for rtdsc funcs -- we cannot include types.hpp or risk
+// !! circular dependency errors
+typedef long long int64_t;
+typedef unsigned long long uint64_t;
+
 /// \brief Identification the platform (operating system)
 ///
 /// I have platform detection separated from nomlib/config.hpp specifically so
@@ -60,6 +65,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #define NOM_PLATFORM_ARCH_X86
 #elif defined( __x86_64__ ) || defined( _M_AMD64 )
   #define NOM_PLATFORM_ARCH_X86_64
+#endif
+
+/// \brief ARM64 platforms, such as the Macbook Air M4
+///
+/// \brief __aarch64__ is defined by clang & gcc
+/// \biref _M_ARM64 is defined by Windows MSVC compiler
+#if defined(__aarch64__) || defined(_M_ARM64)
+  #define NOM_PLATFORM_ARCH_AARCH64
 #endif
 
 /// \brief Compiler detection
@@ -100,6 +113,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// 2.
 #define PATH_MAX 256
 
+#if defined(FIXME)
+  uint64_t rdtsc();
+  uint64_t intel_rdtsc();
+  uint64_t arm64_rdtsc();
+#endif // end if defined(FIXME)
+
 // Cross-platform macro for obtaining the CPU's Time Stamp Counter (RDTSC)
 //
 //    See also
@@ -109,7 +128,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   // Use built-in compiler intrinsic
   #define NOM_RDTSC() __rdtsc();
 #else // Assume clang compiler
-  #define NOM_RDTSC() nom::rdtsc()
+  #define NOM_RDTSC() rdtsc()
 #endif // MS Windows && MSVCPP
 
 #include "export.hpp"

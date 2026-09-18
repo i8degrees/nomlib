@@ -195,20 +195,21 @@ endif(TARGET SDL2_ttf::SDL2_ttf-static)
 #   $<TARGET_FILE_DIR:nom_app_ex>/libRocketCore.so.1
 # )
 
-# For distribution (libRocketCore):
-create_symlink(nom_app_ex $<TARGET_FILE:RocketCore>
-  $<TARGET_FILE_DIR:nom_app_ex>/libRocketCore.so.1
-)
+if(NOM_BUILD_GUI_UNIT)
+  # For distribution (libRocketCore):
+  create_symlink(nom_app_ex $<TARGET_FILE:RocketCore>
+    $<TARGET_FILE_DIR:nom_app_ex>/libRocketCore.so.1
+  )
 
-# For distribution (libRocketControls):
-create_symlink(nom_app_ex $<TARGET_FILE:RocketControls>
-  $<TARGET_FILE_DIR:nom_app_ex>/libRocketControls.so.1
-)
-
-# For distribution (libRocketDebugger):
-create_symlink(nom_app_ex $<TARGET_FILE:RocketDebugger>
-  $<TARGET_FILE_DIR:nom_app_ex>/libRocketDebugger.so.1
-)
+  # For distribution (libRocketControls):
+  create_symlink(nom_app_ex $<TARGET_FILE:RocketControls>
+    $<TARGET_FILE_DIR:nom_app_ex>/libRocketControls.so.1
+  )
+  # For distribution (libRocketDebugger):
+  create_symlink(nom_app_ex $<TARGET_FILE:RocketDebugger>
+    $<TARGET_FILE_DIR:nom_app_ex>/libRocketDebugger.so.1
+  )
+endif()
 
 install(FILES $<TARGET_FILE_DIR:nom_app_ex>/libRocketCore.so.1
   DESTINATION ${CMAKE_INSTALL_LIBDIR}

@@ -33,8 +33,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+#if defined(FIXME)
+
 // Source: http://www.brue.org/2013/01/using-rdtsc-in-gcc-and-clang/
 volatile uint64 rdtsc()
+{
+  uint64 result = 0;
+#if defined(NOM_PLATFORM_ARCH_X86_64) || defined(NOM_PLATFORM_ARCH_X86)
+  result = intel_rdtsc();
+#elif defined(NOM_PLATFORM_ARCH_AARCH64)
+  result = arm64_rdtsc();
+#else
+  #pragma error("Missing rdtsc inline asm instruction call")
+#endif
+  return result;
+}
+
+volatile uint64 intel_rdtsc()
 {
   uint32 a = 0.0f;
   uint32 d = 0.0f;
@@ -43,6 +58,18 @@ volatile uint64 rdtsc()
        :"=a"(a), "=d"(d)::);
   return( ( (uint64) d) << 32) | (uint64) a;
 }
+
+// ARM64's cntvct_el0 behaves exactly like modern invariant TSC.
+// ?? Do we need.to return the val bitshifted by 32 like we do in intel_rdtsc()?
+volatile uint64 arm64_rdtsc()
+{
+  uint64_t val;
+  // mrs = Move Register from System co-processor
+  asm volatile("mrs %0, cntvct_el0" : "=r" (val));
+
+  return val;
+}
+#endif // end if defined(FIXME)
 
 PlatformSpec platform_info()
 {

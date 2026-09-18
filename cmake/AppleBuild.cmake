@@ -34,14 +34,22 @@ if(APPLE)
     message(STATUS "Using macOS SDK version ${NOM_MACOSX_SDK_VERSION}")
   endif(NOT CMAKE_OSX_SYSROOT)
 
-  # Define apple architecture for Release builds, use default. For an explicit
-  # universal executable use `x86_64;arm64`.
-  set(CMAKE_OSX_ARCHITECTURES "${ARCHS_STANDARD}" CACHE INTERNAL "OS X architecture")
+  # Initial values; end-user values, i.e. CMakePresets.json will override the defaults
+  if(CMAKE_CROSSCOMPILING)
+    if(AARCH_64)
+      list(APPEND CMAKE_OSX_ARCHITECTURES "arm64" CACHE INTERNAL "OS X architecture")
+    endif()
+    if(ARCH_64)
+      list(APPEND CMAKE_OSX_ARCHITECTURES "x86_64" CACHE INTERNAL "OS X architecture")
+    endif()
+  endif()
 
   # Support older macOS versions.
   set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15 CACHE STRING "Minimum OS X deployment version")
 
   if(APPLE AND "${CMAKE_GENERATOR}" STREQUAL "Xcode")
+    # ARCHS_STANDARD is set by Xcode and is its default
+    #set(CMAKE_OSX_ARCHITECTURES "${ARCHS_STANDARD}" CACHE INTERNAL "OS X architecture")
     # TODO(JEFF): Reserved for future impl
   endif()
 endif()

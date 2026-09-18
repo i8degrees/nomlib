@@ -121,6 +121,12 @@ if(NOM_BUILD_AUDIO_UNIT)
   # http://steamcommunity.com/sharedfiles/filedetails/?id=230642515
 endif(NOM_BUILD_AUDIO_UNIT)
 
+# cmake string used in target_compile_features
+set(nom_cxx_std "cxx_std_14") # C++14 is the default
+if(NOM_USE_CXX17)
+  set(nom_cxx_std "cxx_std_17") # experimental
+endif()
+
 #
 ## Auto-generation of header files must occur before build of library targets
 #

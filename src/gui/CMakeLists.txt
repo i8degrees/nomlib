@@ -109,7 +109,7 @@ target_include_directories(nomlib-gui
 
 target_compile_features(nomlib-gui
   PRIVATE
-    cxx_std_14
+    ${nom_cxx_std}
 )
 
 target_link_libraries(nomlib-gui

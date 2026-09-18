@@ -44,6 +44,7 @@ option(NOM_USE_CCACHE "Use ccache - a compiler cache for C/C++" OFF)
 # EXPERIMENTAL(JEFF): This feature is a WIP and is not yet ready for general
 # consumption. Your milage may vary.
 option(NOM_USE_DISTCC "Use distcc - a free, fast distributed C/C++ compiler" OFF)
+option(NOM_USE_CXX17 "Experimental - build nomlib using C++17" OFF)
 
 #
 ## DEPRECATED options handling

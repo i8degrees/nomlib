@@ -57,7 +57,7 @@ target_include_directories(nomlib-ptree
 
 target_compile_features(nomlib-ptree
   PRIVATE
-  cxx_std_14
+    ${nom_cxx_std}
 )
 
 target_link_libraries(nomlib-ptree

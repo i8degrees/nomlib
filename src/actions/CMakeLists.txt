@@ -131,7 +131,7 @@ endif(NOM_BUILD_AUDIO_UNIT)
 
 target_compile_features(nomlib-actions
   PRIVATE
-    cxx_std_14
+    ${nom_cxx_std}
 )
 
 # Common internal dependencies for actions

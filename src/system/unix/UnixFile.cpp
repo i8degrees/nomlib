@@ -28,6 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/system/unix/UnixFile.hpp"
 
+#include "nomlib/core/strings.hpp"
 // Private headers (third-party libs)
 #include <unistd.h>
 //#include <libgen.h>
@@ -49,17 +50,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-UnixFile::UnixFile( void )
+UnixFile::UnixFile()
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-UnixFile::~UnixFile( void )
+UnixFile::~UnixFile()
 {
   // NOM_LOG_TRACE( NOM );
 }
 
-const std::string UnixFile::extension ( const std::string& file )
+const std::string UnixFile::extension(const std::string& file)
 {
   std::string extension = "\0";
 
@@ -72,7 +73,7 @@ const std::string UnixFile::extension ( const std::string& file )
   return extension;
 }
 
-int32 UnixFile::size ( const std::string& file_path )
+int32 UnixFile::size(const std::string& file_path)
 {
   struct stat file;
 
@@ -84,7 +85,7 @@ int32 UnixFile::size ( const std::string& file_path )
   return -1;
 }
 
-bool UnixFile::is_dir( const std::string& file_path )
+bool UnixFile::is_dir(const std::string& file_path)
 {
   struct stat fp;
 
@@ -99,7 +100,7 @@ bool UnixFile::is_dir( const std::string& file_path )
   return false;
 }
 
-bool UnixFile::is_file( const std::string& file_path )
+bool UnixFile::is_file(const std::string& file_path)
 {
   struct stat fp;
 
@@ -111,7 +112,7 @@ bool UnixFile::is_file( const std::string& file_path )
   return false;
 }
 
-bool UnixFile::exists( const std::string& file_path )
+bool UnixFile::exists(const std::string& file_path)
 {
   return( this->is_dir( file_path ) || this->is_file( file_path ) );
 }
@@ -130,9 +131,9 @@ bool UnixFile::exists( const std::string& file_path )
 //   return dirname ( path );
 // }
 
-const std::string UnixFile::path ( const std::string& dir_path )
+const std::string UnixFile::path(const std::string& dir_path)
 {
-  Path p; // Just to be safe, we'll let nom::Path determine our path separator!
+  Path p; // Just to be safe, we'll let nom::path determine our path separator!
 
   int32 pos = dir_path.find_last_of( p.native(), PATH_MAX );
 
@@ -146,7 +147,8 @@ const std::string UnixFile::path ( const std::string& dir_path )
   return dir_path.substr( 0, pos );
 }
 
-std::string UnixFile::currentPath( void )
+//std::string UnixFile::path() {}
+std::string UnixFile::currentPath()
 {
   char path[PATH_MAX];
 
@@ -161,7 +163,7 @@ std::string UnixFile::currentPath( void )
   return cwd;
 }
 
-bool UnixFile::set_path ( const std::string& path )
+bool UnixFile::set_path(const std::string& path)
 {
   if ( chdir ( path.c_str() ) != 0 )
   {
@@ -172,7 +174,7 @@ NOM_LOG_ERR ( NOM, "Unknown error on attempt to change working directory to: " +
   return true;
 }
 
-const std::string UnixFile::basename ( const std::string& filename )
+const std::string UnixFile::basename(const std::string& filename)
 {
   nom::size_type pos = 0;
   pos = filename.find_last_of ( ".", PATH_MAX );
@@ -185,7 +187,7 @@ const std::string UnixFile::basename ( const std::string& filename )
   return filename.substr ( 0, pos );
 }
 
-std::vector<std::string> UnixFile::read_dir( const std::string& dir_path )
+std::vector<std::string> UnixFile::read_dir(const std::string& dir_path)
 {
   DIR *dp = nullptr;
   dirent *ep = nullptr;
@@ -233,137 +235,91 @@ std::vector<std::string> UnixFile::read_dir( const std::string& dir_path )
   return files;
 }
 
-const std::string UnixFile::resource_path( const std::string& identifier )
+const std::string UnixFile::resource_path(const std::string& identifier)
 {
+  NOM_ASSERT_INVALID_PATH("STUB: resource_path");
   return "\0";
-/*
-  char resources_path [ PATH_MAX ]; // file-system path
-  CFBundleRef bundle; // bundle type reference
+}
 
-  // Look for a bundle using its identifier if string passed is not null
-  // terminated
-  if ( identifier != "\0" )
-  {
-    CFStringRef identifier_ref; // Apple's string type
-
-    identifier_ref = CFStringCreateWithCString  ( nullptr, identifier.c_str(),
-                                                  strlen ( identifier.c_str() )
-                                                );
-
-    bundle = CFBundleGetBundleWithIdentifier ( identifier_ref );
-  }
-  else // Assume that we are looking for the top-level bundle's Resources path
-  {
-    bundle = CFBundleGetMainBundle();
+const std::string UnixFile::user_documents_path()
+{
+  Path p;
+  // missing
+  auto HOME = this->env("XDG_DOCUMENTS_HOME");
+  if(compare_string_insensitive(HOME, "") != 0) {
+    HOME = this->env("HOME");
+    return HOME + p.native() + "Documents";
   }
 
-  CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL ( bundle );
+  return HOME;
+}
 
-  if ( ! CFURLGetFileSystemRepresentation ( resourcesURL, true, ( uint8* ) resources_path, PATH_MAX ) )
-  {
-    NOM_LOG_ERR ( NOM, "Could not obtain the bundle's Resources path." );
-
-    CFRelease ( resourcesURL );
-
-    return "\0";
+const std::string UnixFile::user_app_support_path()
+{
+  Path p;
+  auto HOME = this->env("XDG_STATE_HOME");
+  if(nom::compare_string_insensitive(HOME, "") != 0) {
+    HOME = this->env("HOME");
+    return HOME + p.native() + ".config";
   }
 
-  CFRelease ( resourcesURL );
-
-  return resources_path;
-  */
+  return HOME;
 }
 
-//#pragma clang diagnostic push
-//#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-
-const std::string UnixFile::user_documents_path( void )
+const std::string UnixFile::user_home_path()
 {
-  return "/home/jeff/Documents";
-/*
-  FSRef ref;
-  OSType folderType = kDocumentsFolderType;
-  char path[PATH_MAX];
+  auto HOME = this->env("HOME");
+  if(nom::compare_string_insensitive(HOME, "") != 0) {
+    HOME = this->env("TMPDIR");
+    // What more can we do here if this fails?
+  }
 
-  FSFindFolder ( kUserDomain, folderType, kCreateFolder, &ref );
-
-  FSRefMakePath ( &ref, (uint8*) &path, PATH_MAX );
-
-  return std::string ( path );
-  */
+  return HOME;
 }
 
-const std::string UnixFile::user_app_support_path( void )
+const std::string UnixFile::system_path()
 {
-  return "/home/jeff/.config";
-  /*
-  FSRef ref;
-  OSType folderType = kApplicationSupportFolderType;
-  char path[PATH_MAX];
+  Path p;
+  // missing
+  auto SYSTEM = this->env("XDG_RUNTIME_DIR");
+  if(nom::compare_string_insensitive(SYSTEM, "") != 0) {
+    SYSTEM = p.native();
+  }
 
-  FSFindFolder ( kUserDomain, folderType, kCreateFolder, &ref );
-
-  FSRefMakePath ( &ref, (uint8*) &path, PATH_MAX );
-
-  return std::string ( path );
-  */
+  return SYSTEM;
 }
 
-const std::string UnixFile::user_home_path( void )
+const std::string UnixFile::system_temp_path()
 {
-  return "/home/jeff";
-  /*
-  char path[PATH_MAX];
-  FSRef ref;
-  OSType folderType = kCurrentUserFolderType;
+  Path p;
+  auto TMPDIR = this->env("TMPDIR");
+  if(nom::compare_string_insensitive(TMPDIR, "") != 0) {
+    TMPDIR = p.native() + "tmp";
+  }
 
-  FSFindFolder( kUserDomain, folderType, kCreateFolder, &ref );
-
-  FSRefMakePath( &ref, ( uint8* ) &path, PATH_MAX );
-
-  return path;*/
+  return TMPDIR;
 }
 
-const std::string UnixFile::system_path( void )
+const std::string UnixFile::system_library_path()
 {
-  return "\0";
-  /*
-  char path[PATH_MAX];
-  FSRef ref;
-  OSType folderType = kSystemFolderType;
-
-  FSFindFolder( kUserDomain, folderType, kCreateFolder, &ref );
-
-  FSRefMakePath( &ref, ( uint8* ) &path, PATH_MAX );
-
-  return path;
-*/
+  Path p("bin");
+  return p.path();
 }
 
-// const std::string UnixFile::system_library_path( void )
-// {
-//   Path p( this->system_path() );
+const std::string UnixFile::system_fonts_path()
+{
+  Path p("/usr/share/fonts");
+  return p.path();
+}
 
-//   return p.prepend( "Library" );
-// }
-
-// const std::string UnixFile::system_fonts_path( void )
-// {
-//   Path p( this->system_library_path() );
-
-//   return p.prepend( "Fonts" );
-// }
-
-//#pragma clang diagnostic pop
-
-bool UnixFile::mkdir( const std::string& path )
+bool UnixFile::mkdir(const std::string& path)
 {
   int ret = 0;
   mode_t perms = 0755;
 
-  if( this->exists( path ) == false )
+  if(this->exists(path) == false)
   {
-    ret = ::mkdir( path.c_str(), perms );
+    ret = ::mkdir(path.c_str(), perms);
 
     if( ret == 0 )
     {
@@ -381,7 +337,7 @@ bool UnixFile::mkdir( const std::string& path )
   return false;
 }
 
-bool UnixFile::recursive_mkdir( const std::string& path )
+bool UnixFile::recursive_mkdir(const std::string& path)
 {
   nom::size_type pos = std::string::npos;
 
@@ -411,7 +367,7 @@ bool UnixFile::recursive_mkdir( const std::string& path )
   return false;
 }
 
-bool UnixFile::rmdir( const std::string& path )
+bool UnixFile::rmdir(const std::string& path)
 {
   int ret = 0;
 
@@ -427,7 +383,7 @@ bool UnixFile::rmdir( const std::string& path )
   return false;
 }
 
-bool UnixFile::mkfile( const std::string& path )
+bool UnixFile::mkfile(const std::string& path)
 {
   std::ofstream fp;
 
@@ -445,7 +401,7 @@ bool UnixFile::mkfile( const std::string& path )
   return false;
 }
 
-std::string UnixFile::env( const std::string& path )
+std::string UnixFile::env(const std::string& path)
 {
   char* value = nullptr;
 

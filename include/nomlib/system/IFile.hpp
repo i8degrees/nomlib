@@ -91,12 +91,13 @@ class NOM_EXPORT IFile
 
     virtual const std::string resource_path( const std::string& identifier = "\0" ) = 0;
 
-    virtual const std::string user_documents_path( void ) = 0;
+    virtual const std::string user_documents_path() = 0;
 
-    virtual const std::string user_app_support_path( void ) = 0;
+    virtual const std::string user_app_support_path() = 0;
 
-    virtual const std::string user_home_path( void ) = 0;
-    virtual const std::string system_path( void ) = 0;
+    virtual const std::string user_home_path() = 0;
+    virtual const std::string system_path() = 0;
+    virtual const std::string system_temp_path() = 0;
 
     virtual bool mkdir( const std::string& path ) = 0;
     virtual bool recursive_mkdir( const std::string& path ) = 0;

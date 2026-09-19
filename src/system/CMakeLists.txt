@@ -97,7 +97,7 @@ target_include_directories(nomlib-system
 
 target_compile_features(nomlib-system
   PRIVATE
-    cxx_std_14
+    ${nom_cxx_std}
 )
 
 target_link_libraries(nomlib-system
@@ -117,7 +117,7 @@ set_target_properties(nomlib-system
   PROPERTIES
     FRAMEWORK TRUE
     MACOSX_FRAMEWORK_INFO_PLIST
-      "${CMAKE_TEMPLATE_PATH}/Info.plist.in"
+      "${CMAKE_TEMPLATE_PATH}/framework.plist.in"
     MACOSX_FRAMEWORK_NAME
       nomlib-system
     MACOSX_FRAMEWORK_BUNDLE_VERSION

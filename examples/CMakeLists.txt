@@ -43,8 +43,9 @@ if(NOM_BUILD_APP_EXAMPLE) # nom_app_ex
   add_subdirectory(nom_app_ex)
 endif(NOM_BUILD_APP_EXAMPLE)
 
-if(NOM_BUILD_AUDIO_EXAMPLE AND NOM_BUILD_AUDIO_UNIT) # nom_sfx
-  add_subdirectory(nom_sfx)
+if(NOM_BUILD_AUDIO_EXAMPLE AND NOM_BUILD_AUDIO_UNIT)
+  add_subdirectory(nom_aplay) # audio playback
+  add_subdirectory(nom_astream) # streaming audio playback
 endif(NOM_BUILD_AUDIO_EXAMPLE AND NOM_BUILD_AUDIO_UNIT)
 
 if(NOM_BUILD_EVENTS_EXAMPLE) # nom_ev

@@ -119,8 +119,7 @@ void free_audio_device(ALCdevice_struct* dev)
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_AUDIO, NOM_LOG_PRIORITY_DEBUG);
 
   if(dev != nullptr) {
-    ALC_CLEAR_ERR(dev);
-    ALC_CHECK_ERR(alcCloseDevice(dev), dev);
+    alcCloseDevice(dev);
 #if 0
     // TODO(jeff): Verify that this enumeration is available on Windows
     // Availability verified: Apple's OpenAL SDK and OpenAL-Soft.

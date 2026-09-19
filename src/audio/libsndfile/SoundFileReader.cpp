@@ -54,13 +54,13 @@ std::string libsndfile_version()
   return sf_version_string();
 }
 
-static uint64 sample_bytes(uint32 channel_format, int64 sample_count)
+static int64 sample_bytes(uint32 channel_format, int64 sample_count)
 {
-  uint64 total_bytes = 0;
+  int64 total_bytes = 0;
 
   // IMPORTANT(jeff): This is dependent upon the internal data type of the
   // samples when they were read from the input file.
-  uint8 bit_size = 0;
+  int64 bit_size = sizeof(int16);
 
   switch(channel_format)
   {
@@ -97,7 +97,9 @@ static uint64 sample_bytes(uint32 channel_format, int64 sample_count)
 
   // Clamp negative values to zero
   sample_count = nom::maximum<int64>(0, sample_count);
-
+  if(sample_count == 0) {
+    return total_bytes; // zero bytes
+  }
   total_bytes = (sample_count * bit_size);
 
   return total_bytes;
@@ -119,13 +121,19 @@ static real32 duration_seconds(SF_INFO& metadata)
   return duration;
 }
 
-static bool libsndfile_check_error(SNDFILE_tag* fp)
+// static bool libsndfile_check_error(SNDFILE_tag* fp)
+static bool libsndfile_check_error(SNDFILE* fp)
 {
+  if(fp == nullptr) {
+    return true;
+  }
+
   int err = sf_error(fp);
   if(err != SF_ERR_NO_ERROR) {
     const char* err_string = sf_strerror(fp);
+    const char* err_num = sf_error_number(err);
 
-    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION, err_string);
+    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION, err_string, err_num);
     return false;
   }
 
@@ -168,8 +176,15 @@ bool SoundFileReader::open(const std::string& filename, SoundInfo& info)
   metadata.format = 0;
 
   this->fp_ = sf_open(filename.c_str(), SFM_READ, &metadata);
+  if(this->fp_ == nullptr) {
+    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION, "Failed to open file at",
+      filename);
+    this->close();
+    return false;
+  }
 
   if(libsndfile_check_error(this->fp_) == false) {
+    // this->close();
     return false;
   }
 
@@ -179,8 +194,7 @@ bool SoundFileReader::open(const std::string& filename, SoundInfo& info)
 }
 
 int64
-SoundFileReader::read(void* data, uint32 channel_format,
-                      nom::size_type frames)
+SoundFileReader::read(void* data, uint32 channel_format, int64 frames)
 {
   sf_count_t sample_frames_read = 0;
 
@@ -188,6 +202,8 @@ SoundFileReader::read(void* data, uint32 channel_format,
   if(this->fp_ == nullptr) {
     return sample_frames_read;
   }
+
+  NOM_ASSERT(data != nullptr);
 
   switch(channel_format) {
     default:
@@ -216,16 +232,6 @@ SoundFileReader::read(void* data, uint32 channel_format,
       sample_frames_read = sf_readf_int(this->fp_, samples, frames);
     } break;
 
-    // IMPORTANT(jeff): We must convert 32-bit integer PCM data to normalized
-    // floating-point values due to lack of support in OpenAL -- see also:
-    //
-    // 1. ::channel_format
-    // 2. http://openal.org/pipermail/openal/2014-December/000287.html
-    // 3. http://openal.org/pipermail/openal/2014-December/000289.html
-
-    // TODO(jeff): Implement a method of toggling a quirks mode for OpenAL
-    // instead of doing it here, for sake of a generic codebase.
-
     case AUDIO_FORMAT_R32: {
       auto samples = NOM_SCAST(real32*, data);
       sample_frames_read = sf_readf_float(this->fp_, samples, frames);
@@ -244,30 +250,10 @@ SoundFileReader::read(void* data, uint32 channel_format,
   return(sample_frames_read);
 }
 
-int64 SoundFileReader::seek(int64 offset, SoundSeek dir)
+// sf_count_t
+int64 SoundFileReader::seek(int64 offset, int whence)
 {
-  sf_count_t cursor_pos = 0;
-  int whence = 0;
-
-  switch(dir)
-  {
-    default:
-    case SOUND_SEEK_SET: {
-      whence = SEEK_SET;
-    } break;
-
-    case SOUND_SEEK_CUR: {
-      whence = SEEK_CUR;
-    } break;
-
-    case SOUND_SEEK_END: {
-      whence = SEEK_END;
-    } break;
-  }
-
-  cursor_pos = sf_seek(this->fp_, offset, whence);
-
-  return cursor_pos;
+  return sf_seek(this->fp_, offset, whence);
 }
 
 void SoundFileReader::close()
@@ -290,14 +276,17 @@ SoundInfo SoundFileReader::parse_header(SF_INFO& metadata)
   info.channel_count = metadata.channels;
   info.duration = audio::duration_seconds(metadata);
   info.seekable = metadata.seekable;
-
+  info.byte_rate = this->byte_rate(this->fp_);
+std::cout << "BYTE_RATE: " << info.byte_rate << std::endl;
+  info.bitrate = info.byte_rate * 8;
+std::cout << "BIT_RATE: " << info.bitrate << std::endl;
   auto format = (metadata.format & SF_FORMAT_SUBMASK);
   switch(format)
   {
     default:
     case AUDIO_FORMAT_UNKNOWN: {
-      info.channel_format = AUDIO_FORMAT_UNKNOWN;
-      NOM_LOG_INFO(NOM_LOG_CATEGORY_TEST, "Unknown audio format",
+      info.channel_format = AUDIO_FORMAT_S16;
+      NOM_LOG_INFO(NOM_LOG_CATEGORY_TEST, "Default audio format - AUDIO_FORMAT_S16",
                    info.channel_format);
     } break;
 
@@ -362,6 +351,10 @@ const char* SoundFileReader::parse_tags(SNDFILE_tag* fp, uint32 sound_tag)
 {
   const char* tag = nullptr;
 
+  if(fp == nullptr) {
+    return tag;
+  }
+
   switch(sound_tag) {
     default: {
       // ...
@@ -413,6 +406,12 @@ const char* SoundFileReader::parse_tags(SNDFILE_tag* fp, uint32 sound_tag)
   }
 
   return tag;
+}
+
+int SoundFileReader::byte_rate(SNDFILE_tag* fp)
+{
+  int result = sf_current_byterate(fp);
+  return result;
 }
 
 } // namespace audio

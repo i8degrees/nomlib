@@ -1,0 +1,254 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "2.08",
+  "elapsed_seconds"    : 25.1494619846344,
+  "n_files"            : 10085,
+  "n_lines"            : 6799810,
+  "files_per_second"   : 401.002614137895,
+  "lines_per_second"   : 270375.962879623,
+  "report_file"        : "report.json"},
+"C/C++ Header" :{
+  "nFiles": 3521,
+  "blank": 1122997,
+  "comment": 704766,
+  "code": 2674630},
+"JSON" :{
+  "nFiles": 314,
+  "blank": 55,
+  "comment": 0,
+  "code": 431586},
+"YAML" :{
+  "nFiles": 20,
+  "blank": 228,
+  "comment": 23,
+  "code": 392184},
+"IDL" :{
+  "nFiles": 604,
+  "blank": 47863,
+  "comment": 3,
+  "code": 293556},
+"HTML" :{
+  "nFiles": 886,
+  "blank": 12350,
+  "comment": 10588,
+  "code": 189264},
+"C++" :{
+  "nFiles": 664,
+  "blank": 39186,
+  "comment": 45863,
+  "code": 184368},
+"C" :{
+  "nFiles": 784,
+  "blank": 27557,
+  "comment": 38550,
+  "code": 128884},
+"D" :{
+  "nFiles": 369,
+  "blank": 6506,
+  "comment": 0,
+  "code": 79775},
+"make" :{
+  "nFiles": 201,
+  "blank": 16190,
+  "comment": 14142,
+  "code": 40996},
+"CMake" :{
+  "nFiles": 834,
+  "blank": 5991,
+  "comment": 6236,
+  "code": 35957},
+"XML" :{
+  "nFiles": 253,
+  "blank": 5027,
+  "comment": 2833,
+  "code": 35270},
+"Perl" :{
+  "nFiles": 83,
+  "blank": 6387,
+  "comment": 7998,
+  "code": 22955},
+"Text" :{
+  "nFiles": 385,
+  "blank": 2731,
+  "comment": 0,
+  "code": 21405},
+"SVG" :{
+  "nFiles": 365,
+  "blank": 377,
+  "comment": 2550,
+  "code": 19971},
+"Markdown" :{
+  "nFiles": 76,
+  "blank": 5360,
+  "comment": 3,
+  "code": 19096},
+"XAML" :{
+  "nFiles": 2,
+  "blank": 105,
+  "comment": 139,
+  "code": 11427},
+"JavaScript" :{
+  "nFiles": 180,
+  "blank": 964,
+  "comment": 4517,
+  "code": 9784},
+"Python" :{
+  "nFiles": 64,
+  "blank": 2094,
+  "comment": 4513,
+  "code": 7776},
+"CSS" :{
+  "nFiles": 13,
+  "blank": 1229,
+  "comment": 274,
+  "code": 6103},
+"VBScript" :{
+  "nFiles": 43,
+  "blank": 1703,
+  "comment": 2025,
+  "code": 6010},
+"XSD" :{
+  "nFiles": 19,
+  "blank": 395,
+  "comment": 128,
+  "code": 5115},
+"Assembly" :{
+  "nFiles": 53,
+  "blank": 1370,
+  "comment": 2738,
+  "code": 4224},
+"PHP" :{
+  "nFiles": 8,
+  "blank": 797,
+  "comment": 0,
+  "code": 4125},
+"Bourne Shell" :{
+  "nFiles": 134,
+  "blank": 700,
+  "comment": 690,
+  "code": 2359},
+"DOS Batch" :{
+  "nFiles": 31,
+  "blank": 510,
+  "comment": 249,
+  "code": 2182},
+"Ring" :{
+  "nFiles": 4,
+  "blank": 346,
+  "comment": 274,
+  "code": 1918},
+"MSBuild script" :{
+  "nFiles": 12,
+  "blank": 0,
+  "comment": 0,
+  "code": 1649},
+"diff" :{
+  "nFiles": 7,
+  "blank": 26,
+  "comment": 105,
+  "code": 1641},
+"Pawn" :{
+  "nFiles": 1,
+  "blank": 478,
+  "comment": 0,
+  "code": 1325},
+"Starlark" :{
+  "nFiles": 3,
+  "blank": 85,
+  "comment": 115,
+  "code": 698},
+"INI" :{
+  "nFiles": 9,
+  "blank": 178,
+  "comment": 78,
+  "code": 522},
+"TNSDL" :{
+  "nFiles": 15,
+  "blank": 106,
+  "comment": 35,
+  "code": 423},
+"Windows Module Definition" :{
+  "nFiles": 6,
+  "blank": 30,
+  "comment": 46,
+  "code": 414},
+"Dockerfile" :{
+  "nFiles": 8,
+  "blank": 47,
+  "comment": 108,
+  "code": 323},
+"m4" :{
+  "nFiles": 7,
+  "blank": 18,
+  "comment": 42,
+  "code": 297},
+"Visual Studio Solution" :{
+  "nFiles": 4,
+  "blank": 2,
+  "comment": 2,
+  "code": 272},
+"SCSS" :{
+  "nFiles": 2,
+  "blank": 37,
+  "comment": 3,
+  "code": 165},
+"TypeScript" :{
+  "nFiles": 74,
+  "blank": 0,
+  "comment": 0,
+  "code": 148},
+"PowerShell" :{
+  "nFiles": 4,
+  "blank": 71,
+  "comment": 567,
+  "code": 122},
+"C#" :{
+  "nFiles": 3,
+  "blank": 105,
+  "comment": 72,
+  "code": 109},
+"Fortran 77" :{
+  "nFiles": 1,
+  "blank": 2,
+  "comment": 0,
+  "code": 93},
+"Windows Resource File" :{
+  "nFiles": 5,
+  "blank": 29,
+  "comment": 20,
+  "code": 47},
+"Haskell" :{
+  "nFiles": 7,
+  "blank": 0,
+  "comment": 0,
+  "code": 42},
+"VSCode Workspace" :{
+  "nFiles": 1,
+  "blank": 0,
+  "comment": 1,
+  "code": 25},
+"Bazel" :{
+  "nFiles": 1,
+  "blank": 4,
+  "comment": 0,
+  "code": 20},
+"Lua" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 1,
+  "code": 11},
+"Visual Basic" :{
+  "nFiles": 2,
+  "blank": 0,
+  "comment": 0,
+  "code": 8},
+"BitBake" :{
+  "nFiles": 2,
+  "blank": 0,
+  "comment": 0,
+  "code": 2},
+"SUM": {
+  "blank": 1310237,
+  "comment": 850297,
+  "code": 4639276,
+  "nFiles": 10085} }

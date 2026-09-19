@@ -1,0 +1,285 @@
+#pragma once
+
+#include <cstdint> // int32_t, int64_t etc
+#include <cstddef> // size_t
+#include <memory> // unique_ptr && shared_ptr
+#include <vector> // iterator typedef
+#include <cassert> // assert macro
+
+// 90s era bits (WIN32 API typedefs)
+// TODO(JEFF): implement in nomlib/types.hpp
+typedef unsigned long DWORD;
+//typedef signed long WORD;
+
+struct OALSource {
+  uint32 source;
+  bool used;
+
+  OALSource(uint32 src) {
+    source = src;
+    used = false;
+  }
+};
+
+enum SoundPriority: uint32 {
+  SOUND_PRIORITY_LOW = 0x00,
+  SOUND_PRIORITY_MEDIUM = 0x02,
+  SOUND_PRIORITY_HIGH = 0x04,
+  SOUND_PRIORITY_ALWAYS = 0x6,
+};
+
+enum AudioCap
+{
+  CAPS_UNDEFINED = 0x0000,
+
+  CAPS_FORMAT_MONO_S8 = 0x1000,
+  CAPS_FORMAT_STEREO_S8 = 0x1002,
+  CAPS_FORMAT_QUAD_S8 = 0x1004,
+  CAPS_FORMAT_51CHN_S8 = 0x1006,
+  CAPS_FORMAT_61CHN_S8 = 0x1008,
+  CAPS_FORMAT_71CHN_S8 = 0x1010,
+
+  CAPS_FORMAT_MONO_U8 = 0x1100,
+  CAPS_FORMAT_STEREO_U8 = 0x1102,
+  CAPS_FORMAT_QUAD_U8 = 0x1104,
+  CAPS_FORMAT_51CHN_U8 = 0x1106,
+  CAPS_FORMAT_61CHN_U8 = 0x1108,
+  CAPS_FORMAT_71CHN_U8 = 0x1110,
+
+  CAPS_FORMAT_MONO_S16 = 0x1200,
+  CAPS_FORMAT_STEREO_S16 = 0x1202,
+  CAPS_FORMAT_QUAD_S16 = 0x1204,
+  CAPS_FORMAT_51CHN_S16 = 0x1206,
+  CAPS_FORMAT_61CHN_S16 = 0x1208,
+  CAPS_FORMAT_71CHN_S16 = 0x1210,
+
+  CAPS_FORMAT_MONO_S24 = 0x1300,
+  CAPS_FORMAT_STEREO_S24 = 0x1302,
+  CAPS_FORMAT_QUAD_S24 = 0x1304,
+  CAPS_FORMAT_51CHN_S24 = 0x1306,
+  CAPS_FORMAT_61CHN_S24 = 0x1308,
+  CAPS_FORMAT_71CHN_S24 = 0x1310,
+
+  CAPS_FORMAT_MONO_S32 = 0x1400,
+  CAPS_FORMAT_STEREO_S32 = 0x1402,
+  CAPS_FORMAT_QUAD_S32 = 0x1404,
+  CAPS_FORMAT_51CHN_S32 = 0x1406,
+  CAPS_FORMAT_61CHN_S32 = 0x1408,
+  CAPS_FORMAT_71CHN_S32 = 0x1410,
+
+  CAPS_FORMAT_MONO_FLOAT32 = 0x1500,
+  CAPS_FORMAT_STEREO_FLOAT32 = 0x1502,
+  CAPS_FORMAT_QUAD_R32 = 0x1504,
+
+  CAPS_FORMAT_MONO_FLOAT64 = 0x1600,
+  CAPS_FORMAT_STEREO_FLOAT64 = 0x1602,
+  CAPS_FORMAT_QUAD_R64 = 0x1604,
+#if 0
+  PLAYBACK_ALC_EVENT_TYPE_DEFAULT_DEVICE_CHANGED_SOFT = 0x1610,
+  CAPTURE_ALC_EVENT_TYPE_DEFAULT_DEVICE_CHANGED_SOFT = 0x1612,
+  PLAYBACK_ALC_EVENT_TYPE_DEFAULT_DEVICE_ADDED_SOFT = 0x1614,
+  CAPTURE_ALC_EVENT_TYPE_DEFAULT_DEVICE_ADDED_SOFT = 0x1616,
+  PLAYBACK_ALC_EVENT_TYPE_DEFAULT_DEVICE_REMOVED_SOFT = 0x1618,
+  CAPTURE_ALC_EVENT_TYPE_DEFAULT_DEVICE_REMOVED_SOFT = 0x1620,
+  ALC_EXT_CAPTURE = 0x1626,
+  ALC_SOFT_system_events = 0x1628,
+  ALC_SOFT_reopen_device = 0x1630,
+  ALC_SOFT_pause_device = 0x1632,
+  AL_EXT_FLOAT32 = 0x1634,
+  AL_EXT_DOUBLE = 0x1636,
+  ALC_ENUMERATE_ALL_EXT = 0x162100,
+  ALC_ENUMERATION_EXT = 0x162900,
+#endif
+  // CAPS_MAC_STATIC_BUFFER,
+  // CAPS_MAC_EXT,
+  // CAPS_EAX,
+  // CAPS_EFX,
+  // CAPS_XRAM,
+};
+
+// Forward declarations
+class IAudioDevice;
+class IAudioContext;
+class ISoundSource;
+class Sound;
+
+typedef IAudioDevice* ptr_renderer;
+typedef IAudioContext* ptr_ctx;
+//typedef std::unique_ptr<IAudioRenderer*> ptr_renderer;
+//typedef std::shared_ptr<IAudioRenderer*> sptr_renderer;
+//typedef std::weak_ptr<IAudioRenderer*> wptr_renderer;
+
+//typedef std::unique_ptr<IAudioContext*> ptr_ctx;
+//typedef std::shared_ptr<IAudioContext*> sptr_ctx;
+//typedef std::weak_ptr<IAudioContext*> wptr_ctx;
+
+//typedef std::vector<ISoundSource*>::iterator SoundSourceIterator;
+using SoundSourceIterator = std::vector<ISoundSource*>::iterator;
+//typedef std::vector<ISoundSource*>::iterator sound_source_iterator;
+//typedef std::vector<ISoundSource*> SoundSources;
+//typedef std::vector<OALSource*> ALSoundSources;
+
+// From vendor/common.h
+
+// It's pi(ish)...
+static const float PI = 3.14159265358979323846f;
+
+// It's pi(ish)...divided by 360.0f!
+static const float PI_OVER_360 = PI / 360.0f;
+
+// Radians to degrees
+static inline double RadToDeg(const double deg)
+{
+  return deg * 180.0 / PI;
+};
+
+// Degrees to radians
+static inline double DegToRad(const double rad)
+{
+  return rad * PI / 180.0;
+};
+
+#define NOM_DELETE_PTR(var) \
+  if(var != nullptr) { \
+    delete var; \
+    var = nullptr; \
+  }
+
+#define NOM_DELETE_SMART_PTR(var) \
+  if(var != nullptr) var.reset();
+
+#define NOM_DELETE_VOID_PTR(var) \
+  if(var != nullptr) { \
+    free(var); \
+    var = nullptr; \
+  }
+
+#if defined(DEBUG)
+  #if !defined(NOM_ASSERT)
+    #define NOM_ASSERT(expr) \
+      assert(expr)
+  #endif
+#else
+  #define NOM_ASSERT(expr)
+#endif
+
+// This enumeration is filled in by libsndfile
+enum AudioTags
+{
+  SOUND_TAG_UNDEFINED = 0,
+  SOUND_TAG_TITLE,
+  SOUND_TAG_COPYRIGHT,
+  SOUND_TAG_SOFTWARE,
+  SOUND_TAG_ARTIST,
+  SOUND_TAG_COMMENT,
+  SOUND_TAG_DATE,
+  SOUND_TAG_ALBUM,
+  SOUND_TAG_LICENSE,
+  SOUND_TAG_TRACK_NUMBER,
+  SOUND_TAG_GENRE,
+};
+
+// This enumeration is filled in by libsndfile
+enum AudioFormat
+{
+  AUDIO_FORMAT_UNKNOWN = 0,
+
+  /// \brief Signed 8-bit integer sample data
+  AUDIO_FORMAT_S8,
+
+  /// \brief Unsigned 8-bit integer sample data
+  AUDIO_FORMAT_U8,
+
+  /// \brief Signed 16-bit integer sample data
+  AUDIO_FORMAT_S16,
+
+  /// \brief Signed 24-bit integer sample data
+  AUDIO_FORMAT_S24,
+
+  /// \brief Signed 32-bit integer sample data
+  AUDIO_FORMAT_S32,
+
+  /// \brief 32-bit IEEE floating-point sample data
+  AUDIO_FORMAT_R32,
+
+  /// \brief 64-bit IEEE floating-point sample data
+  AUDIO_FORMAT_R64,
+};
+
+#if 0
+enum AudioChannels
+{
+  // Mono
+  ONE_CHANNELS = 1,
+  TWO_CHANNELS,
+  FOUR_CHANNELS,
+  FIVE_CHANNELS,
+  SIX_CHANNELS,
+  SEVEN_CHANNELS
+};
+#endif
+
+struct SoundInfo
+{
+  /// \brief The total number of frames.
+  ///
+  /// \remarks One audio frame is the ...
+  size_type frame_count = 0;
+
+  /// \brief The total number of samples.
+  int64 sample_count = 0;
+
+  /// \brief The number of samples per second.
+  uint32 sample_rate = 0;
+
+  /// \brief The number of audio channels.
+  int channel_count = 0;
+
+  /// \brief The total time, in seconds, of the audio samples.
+  real64 duration = 0.0f;
+
+  /// \brief The total number of bytes represented by the audio samples.
+  int64 total_bytes = 0;
+
+  /// \see nom::audio::AudioFormat
+  uint32 channel_format = 0;
+  /// \brief Filled in by sndfile
+  int byte_rate = -1;
+
+  /// \brief Filled in by sndfile
+  int bitrate = -1;
+
+  bool seekable = false;
+
+  // TODO(JEFF): Rename struct to SoundFileMetadata and relocate outside of the main
+  // struct?
+  struct Metadata
+  {
+    const char* title = "\0";
+    const char* copyright = "\0";
+    const char* software = "\0";
+    const char* artist = "\0";
+    const char* comment = "\0";
+    const char* date = "\0";
+    const char* album = "\0";
+    const char* license = "\0";
+    const char* track_number = "\0";
+    const char* genre = "\0";
+  };
+
+  Metadata tags;
+};
+
+/// \brief Compare two numbers for the larger of the two values.
+///
+/// \returns The larger of the two given values.
+template <typename T>
+inline T maximum(const T& a, const T& b)
+{
+  T result = (a < b) ? b : a;
+  return result;
+}
+
+//#define BUFFERLENGTH 32768  // 32KB Part 2
+
+//#define BUFFERLENGTH 131072   // Part 2

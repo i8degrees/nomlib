@@ -11,15 +11,86 @@
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "CMAKE_INSTALL_PREFIX": "$env{HOME}/local",
-        "CMAKE_C_COMPILER": "/usr/bin/clang",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
         "NOM_USE_CCACHE": "OFF",
         "NOM_USE_DISTCC": "OFF"
       },
       "environment": {
-        "CC": "/usr/bin/clang",
-        "CXX": "/usr/bin/clang++",
         "DISTCC_VERBOSE": "1"
+      }
+    },
+    {
+      "name": "gcc",
+      "hidden": true,
+      "displayName": "build project using gcc",
+      "cacheVariables": {
+        "NOM_USE_CCACHE": "ON",
+        "NOM_USE_DISTCC": "OFF",
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++"
+      },
+      "environment": {
+        "CC": "gcc",
+        "CXX": "g++",
+        "DISTCC_VERBOSE": "1"
+      }
+    },
+    {
+      "name": "clang",
+      "hidden": true,
+      "displayName": "build project using clang",
+      "cacheVariables": {
+        "NOM_USE_CCACHE": "ON",
+        "NOM_USE_DISTCC": "OFF",
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++"
+      },
+      "environment": {
+        "CC": "clang",
+        "CXX": "clang++",
+        "DISTCC_VERBOSE": "1"
+      }
+    },
+    {
+      "name": "xcode",
+      "hidden": true,
+      "displayName": "(macos) build project using xcode",
+      "generator": "Xcode",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "NOM_USE_CCACHE": "ON",
+        "NOM_USE_DISTCC": "OFF",
+        "CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED": "NO",
+        "CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY": ""
+      },
+      "environment": {
+        "DISTCC_VERBOSE": "1"
+      }
+    },
+    {
+      "name": "msbuild",
+      "hidden": true,
+      "displayName": "build project using MSBuild",
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_GENERATOR_PLATFORM": "x64",
+        "CMAKE_GENERATOR_TOOLSET": "ClangCL",
+        "NOM_USE_CCACHE": "ON",
+        "NOM_USE_DISTCC": "OFF",
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++"
+      }
+    },
+    {
+      "name": "ninja",
+      "hidden": true,
+      "displayName": "build project using ninja",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_GENERATOR_PLATFORM": "x64",
+        "NOM_USE_CCACHE": "ON",
+        "NOM_USE_DISTCC": "OFF"
       }
     },
     {
@@ -29,76 +100,75 @@
       "description": "use vcpkg for managing dependencies",
       "generator": "Unix Makefiles",
       "binaryDir": "${sourceDir}/build/${presetName}",
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
       "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-        "CMAKE_INSTALL_PREFIX": "$env{HOME}/local",
-        "CMAKE_C_COMPILER": "/usr/bin/clang",
-        "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
-        "NOM_USE_CCACHE": "OFF",
-        "NOM_USE_DISTCC": "OFF"
       },
       "environment": {
-        "CC": "/usr/bin/clang",
-        "CXX": "/usr/bin/clang++",
         "DISTCC_VERBOSE": "1"
       }
     },
     {
+      "name": "aarch64-macos",
+      "hidden": true,
+      "displayName": "(macos) AARCH64 + x86_64 platform architecture",
+      "cacheVariables": {
+        "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/cmake/triplets",
+        "VCPKG_TARGET_TRIPLET": "arm64-x64-osx"
+      },
+      "environment": {}
+    },
+    {
       "name": "debug",
-      "displayName": "Debug configuration for clang toolchain (static lib)",
-      "inherits": "common",
+      "displayName": "Build project with debug syms and statically linked libraries (vcpkg, clang)",
+      "inherits": ["common", "vcpkg", "clang"],
       "cacheVariables": {
         "BUILD_SHARED_LIBS": "OFF",
         "CMAKE_BUILD_TYPE": "Debug",
         "DEBUG_ASSERT": "ON",
         "BUILD_EXAMPLES": "ON",
-        "BUILD_TESTS": "ON"
+        "BUILD_TESTS": "ON",
+        "VCPKG_TARGET_TRIPLET": "x64-linux"
       },
       "environment": {
-        "CC": "/usr/bin/clang",
-        "CXX": "/usr/bin/clang++",
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       }
     },
     {
       "name": "debug-dynamic",
-      "displayName": "Debug configuration for clang toolchain (shared lib)",
-      "inherits": "debug",
+      "displayName": "Build project w/ debug syms and dynamically linked libraries (vcpkg, clang)",
+      "inherits": ["common", "vcpkg", "clang"],
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "BUILD_SHARED_LIBS": "ON",
         "DEBUG_ASSERT": "ON",
         "BUILD_EXAMPLES": "ON",
         "BUILD_TESTS": "ON",
-        "HIDE_SYMBOL_VISIBILITY": "OFF"
-      },
-      "environment": {
-        "CC": "/usr/bin/clang",
-        "CXX": "/usr/bin/clang++",
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+        "HIDE_SYMBOL_VISIBILITY": "OFF",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-dynamic"
       }
     },
     {
       "name": "release",
-      "displayName": "Release configuration for clang toolchain (static lib)",
-      "inherits": "common",
+      "displayName": "Build project release and statically linked libraries (vcpkg, clang)",
+      "inherits": ["common", "vcpkg", "clang"],
       "cacheVariables": {
         "BUILD_SHARED_LIBS": "OFF",
         "CMAKE_BUILD_TYPE": "Release",
         "DEBUG_ASSERT": "OFF",
-        "BUILD_EXAMPLES": "ON",
+        "BUILD_EXAMPLES": "OFF",
         "BUILD_TESTS": "OFF",
         "NOM_INSTALL_GCDB": "ON",
-        "WARNINGS_AS_ERRORS": "OFF"
+        "WARNINGS_AS_ERRORS": "OFF",
+        "HIDE_SYMBOL_VISIBILITY": "ON",
+        "CMAKE_INSTALL_PREFIX": "/usr/local",
+        "VCPKG_TARGET_TRIPLET": "x64-linux"
       },
       "environment": {
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       }
     },
     {
       "name": "release-dynamic",
-      "displayName": "Release configuration for clang toolchain (shared lib)",
-      "inherits": "release",
+      "displayName": "Build project release and dynamically linked libraries (vcpkg, clang)",
+      "inherits": ["common", "vcpkg", "clang"],
       "cacheVariables": {
         "BUILD_SHARED_LIBS": "ON",
         "CMAKE_BUILD_TYPE": "Release",
@@ -108,16 +178,17 @@
         "NOM_BUILD_AUDIO_UNIT": "ON",
         "HIDE_SYMBOL_VISIBILITY": "ON",
         "NOM_INSTALL_GCDB": "ON",
-        "WARNINGS_AS_ERRORS": "OFF"
+        "WARNINGS_AS_ERRORS": "OFF",
+        "CMAKE_INSTALL_PREFIX": "/usr/local",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-dynamic"
       },
       "environment": {
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       }
     },
     {
       "name": "RelWithDebInfo",
-      "displayName": "Release configuration with debug syms for clang toolchain (shared lib)",
-      "inherits": "release",
+      "displayName": "Build project release with debug syms and dynamically linked libraries (vcpkg, clang)",
+      "inherits": ["common", "vcpkg", "clang"],
       "cacheVariables": {
         "BUILD_SHARED_LIBS": "ON",
         "CMAKE_BUILD_TYPE": "RelWithDebInfo",
@@ -127,16 +198,14 @@
         "HIDE_SYMBOL_VISIBILITY": "ON",
         "CMAKE_VERBOSE_MAKEFILE": "ON",
         "NOM_INSTALL_GCDB": "ON",
-        "WARNINGS_AS_ERRORS": "OFF"
-      },
-      "environment": {
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+        "WARNINGS_AS_ERRORS": "OFF",
+        "VCPKG_TARGET_TRIPLET": "x64-linux-dynamic"
       }
     },
     {
       "name": "debug-osx",
-      "displayName": "(macosx) Debug configuration for clang toolchain (static lib)",
-      "inherits": "common",
+      "displayName": "(macos) Build project with debug syms and statically linked libraries (vcpkg, clang)",
+      "inherits": ["common", "vcpkg", "clang"],
       "cacheVariables": {
         "BUILD_SHARED_LIBS": "OFF",
         "CMAKE_BUILD_TYPE": "Debug",
@@ -145,13 +214,24 @@
         "BUILD_TESTS": "ON",
         "NOM_BUILD_AUDIO_UNIT": "ON",
         "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library/Frameworks",
-        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.15",
-        "CMAKE_OSX_ARCHITECTURES": "x86_64"
+        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.15"
       },
       "environment": {
-        "CC": "/usr/bin/clang",
-        "CXX": "/usr/bin/clang++",
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
+    },
+    {
+      "name": "debug-osx-aarch64",
+      "displayName": "(macos) Build project with debug syms and statically linked libraries (vcpkg, clang, aarch64)",
+      "inherits": ["common", "vcpkg", "clang", "debug-osx", "aarch64-macos"],
+      "cacheVariables": {
+        "VCPKG_INSTALL_OPTIONS": "--allow-unsupported",
+        "NOM_BUILD_GUI_UNIT": "NO",
+        "SECONDARY_BUILD": "tmp"
       },
       "condition": {
         "type": "equals",
@@ -161,8 +241,8 @@
     },
     {
       "name": "debug-dyn-osx",
-      "displayName": "(macosx) Debug configuration for clang toolchain (shared lib)",
-      "inherits": "common",
+      "inherits": ["common", "vcpkg", "clang"],
+      "displayName": "(macos) Build project with debug syms and dynamically linked libraries (vcpkg, clang)",
       "cacheVariables": {
         "BUILD_SHARED_LIBS": "ON",
         "CMAKE_BUILD_TYPE": "Debug",
@@ -172,12 +252,10 @@
         "NOM_BUILD_AUDIO_UNIT": "ON",
         "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library/Frameworks",
         "CMAKE_OSX_DEPLOYMENT_TARGET": "10.15",
-        "CMAKE_OSX_ARCHITECTURES": "x86_64"
+        "CMAKE_OSX_ARCHITECTURES": "x86_64",
+        "VCPKG_TARGET_TRIPLET": "x64-osx-dynamic"
       },
       "environment": {
-        "CC": "/usr/bin/clang",
-        "CXX": "/usr/bin/clang++",
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       },
       "condition": {
         "type": "equals",
@@ -187,10 +265,8 @@
     },
     {
       "name": "debug-dyn-xcode",
-      "displayName": "(macos-xcode) Debug configuration with shared library targets",
-      "inherits": "vcpkg",
-      "generator": "Xcode",
-      "binaryDir": "${sourceDir}/build/${presetName}",
+      "inherits": ["common", "vcpkg", "xcode"],
+      "displayName": "(macos) Build project with debug syms and dynamically linked libraries (vcpkg, xcode)",
       "cacheVariables": {
         "BUILD_SHARED_LIBS": "ON",
         "CMAKE_BUILD_TYPE": "Debug",
@@ -198,15 +274,147 @@
         "BUILD_EXAMPLES": "ON",
         "BUILD_TESTS": "ON",
         "NOM_BUILD_AUDIO_UNIT": "ON",
+        "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library/Frameworks",
         "CMAKE_OSX_DEPLOYMENT_TARGET": "10.15",
         "CMAKE_OSX_ARCHITECTURES": "x86_64",
-        "CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED": "NO",
-        "CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY": ""
+        "VCPKG_TARGET_TRIPLET": "x64-osx-dynamic"
       },
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
         "rhs": "Darwin"
+      }
+    },
+    {
+      "name": "release-osx",
+      "displayName": "(macos) Build project release with statically linked libraries (vcpkg, clang)",
+      "inherits": ["common", "vcpkg", "clang"],
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "OFF",
+        "CMAKE_BUILD_TYPE": "Release",
+        "DEBUG_ASSERT": "ON",
+        "BUILD_EXAMPLES": "ON",
+        "BUILD_TESTS": "ON",
+        "NOM_BUILD_AUDIO_UNIT": "ON",
+        "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library/Frameworks",
+        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.15",
+        "CMAKE_OSX_ARCHITECTURES": "x86_64",
+        "VCPKG_TARGET_TRIPLET": "x64-osx"
+      },
+      "environment": {
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
+    },
+    {
+      "name": "release-dyn-osx",
+      "displayName": "(macos) Build project release with dynamically linked libraries (vcpkg, clang)",
+      "inherits": ["common", "vcpkg", "clang"],
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "ON",
+        "CMAKE_BUILD_TYPE": "Release",
+        "DEBUG_ASSERT": "ON",
+        "BUILD_EXAMPLES": "ON",
+        "BUILD_TESTS": "ON",
+        "NOM_BUILD_AUDIO_UNIT": "ON",
+        "CMAKE_INSTALL_PREFIX": "$env{HOME}/Library/Frameworks",
+        "CMAKE_OSX_DEPLOYMENT_TARGET": "10.15",
+        "CMAKE_OSX_ARCHITECTURES": "x86_64",
+        "VCPKG_TARGET_TRIPLET": "x64-osx-dynamic"
+      },
+      "environment": {
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
+    },
+    {
+      "name": "debug-win",
+      "displayName": "(windows) Build project with debug syms and statically linked libraries (vcpkg, msbuild)",
+      "inherits": ["common", "vcpkg", "msbuild"],
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "OFF",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "DEBUG_ASSERT": "ON",
+        "BUILD_EXAMPLES": "ON",
+        "BUILD_TESTS": "ON",
+        "CMAKE_INSTALL_PREFIX": "$env{PROGRAMFILES}",
+        "VCPKG_TARGET_TRIPLET": "x64-windows"
+      },
+      "environment": {
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "debug-dyn-windows",
+      "inherits": ["common", "vcpkg", "msbuild"],
+      "displayName": "(windows) Build project with debug syms and dynamically linked libraries (vcpkg, msbuild)",
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "ON",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "DEBUG_ASSERT": "ON",
+        "BUILD_EXAMPLES": "ON",
+        "BUILD_TESTS": "ON",
+        "CMAKE_INSTALL_PREFIX": "$env{HOME}/local",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-dynamic"
+      },
+      "environment": {
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "release-win",
+      "displayName": "(windows) Build project release with statically linked libraries (vcpkg, msbuild)",
+      "inherits": ["common", "vcpkg", "msbuild"],
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "OFF",
+        "CMAKE_BUILD_TYPE": "Release",
+        "DEBUG_ASSERT": "OFF",
+        "BUILD_EXAMPLES": "OFF",
+        "BUILD_TESTS": "OFF",
+        "CMAKE_INSTALL_PREFIX": "$env{PROGRAMFILES}",
+        "VCPKG_TARGET_TRIPLET": "x64-windows"
+      },
+      "environment": {
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "release-win-dyn",
+      "displayName": "(windows) Build project release with dynamically linked libraries (vcpkg, msbuild)",
+      "inherits": ["common", "vcpkg", "msbuild"],
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "ON",
+        "CMAKE_BUILD_TYPE": "Release",
+        "DEBUG_ASSERT": "OFF",
+        "BUILD_EXAMPLES": "OFF",
+        "BUILD_TESTS": "OFF",
+        "CMAKE_INSTALL_PREFIX": "$env{PROGRAMFILES}",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-dynamic"
+      },
+      "environment": {
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
       }
     },
     {

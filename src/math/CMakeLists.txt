@@ -31,22 +31,26 @@ endif(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
 target_sources(nomlib-math
   PRIVATE
   ${SRC_DIR}/math/Color4.cpp
-  ${SRC_DIR}/math/math_helpers.cpp
+  ${SRC_DIR}/math/Matrix.cpp
   ${SRC_DIR}/math/Point2.cpp
   ${SRC_DIR}/math/Point3.cpp
   ${SRC_DIR}/math/Rect.cpp
   ${SRC_DIR}/math/Size2.cpp
+  ${SRC_DIR}/math/math_helpers.cpp
   PUBLIC
     FILE_SET HEADERS
     BASE_DIRS ${HDR_BASE}
     FILES
     ${HDR_BASE}/math.hpp
     ${HDR_BASE}/math/Color4.hpp
-    ${HDR_BASE}/math/math_helpers.hpp
+    ${HDR_BASE}/math/Matrix.hpp
     ${HDR_BASE}/math/Point2.hpp
     ${HDR_BASE}/math/Point3.hpp
     ${HDR_BASE}/math/Rect.hpp
     ${HDR_BASE}/math/Size2.hpp
+    ${HDR_BASE}/math/Vector3.hpp
+    ${HDR_BASE}/math/Vector4.hpp
+    ${HDR_BASE}/math/math_helpers.hpp
 )
 
 target_include_directories(nomlib-math
@@ -106,8 +110,8 @@ install(TARGETS nomlib-math
     COMPONENT Runtime
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     COMPONENT Runtime
-  FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+  FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     COMPONENT Development
-  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX}
     COMPONENT Runtime
 )

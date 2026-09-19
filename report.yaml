@@ -1,0 +1,116 @@
+---
+# github.com/AlDanial/cloc
+header : 
+  cloc_url           : github.com/AlDanial/cloc
+  cloc_version       : 2.08
+  elapsed_seconds    : 1.42854309082031
+  n_files            : 610
+  n_lines            : 507088
+  files_per_second   : 427.00847032183
+  lines_per_second   : 354968.641309108
+  report_file        : report.yaml
+'JSON' :
+  nFiles: 34
+  blank: 28
+  comment: 0
+  code: 388204
+'C++' :
+  nFiles: 211
+  blank: 12521
+  comment: 9508
+  code: 50412
+'C/C++ Header' :
+  nFiles: 190
+  blank: 5632
+  comment: 13280
+  code: 9056
+'CMake' :
+  nFiles: 69
+  blank: 1096
+  comment: 1584
+  code: 5610
+'SVG' :
+  nFiles: 2
+  blank: 0
+  comment: 2
+  code: 1713
+'Text' :
+  nFiles: 17
+  blank: 326
+  comment: 0
+  code: 1365
+'CSS' :
+  nFiles: 2
+  blank: 239
+  comment: 46
+  code: 1201
+'Markdown' :
+  nFiles: 11
+  blank: 279
+  comment: 0
+  code: 1013
+'XML' :
+  nFiles: 10
+  blank: 197
+  comment: 299
+  code: 889
+'Bourne Shell' :
+  nFiles: 39
+  blank: 304
+  comment: 318
+  code: 842
+'Dockerfile' :
+  nFiles: 8
+  blank: 47
+  comment: 108
+  code: 323
+'JavaScript' :
+  nFiles: 1
+  blank: 31
+  comment: 53
+  code: 136
+'diff' :
+  nFiles: 2
+  blank: 4
+  comment: 12
+  code: 135
+'DOS Batch' :
+  nFiles: 6
+  blank: 34
+  comment: 30
+  code: 53
+'HTML' :
+  nFiles: 3
+  blank: 5
+  comment: 0
+  code: 40
+'make' :
+  nFiles: 1
+  blank: 6
+  comment: 0
+  code: 34
+'VSCode Workspace' :
+  nFiles: 1
+  blank: 0
+  comment: 1
+  code: 25
+'INI' :
+  nFiles: 1
+  blank: 2
+  comment: 0
+  code: 16
+'YAML' :
+  nFiles: 1
+  blank: 2
+  comment: 0
+  code: 14
+'Lua' :
+  nFiles: 1
+  blank: 1
+  comment: 1
+  code: 11
+SUM: 
+  blank: 20754
+  comment: 25242
+  code: 461092
+  nFiles: 610

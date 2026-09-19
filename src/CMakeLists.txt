@@ -146,6 +146,7 @@ endif(NOM_BUILD_ACTIONS_UNIT)
 # nomlib-audio
 if(NOM_BUILD_AUDIO_UNIT)
   add_subdirectory("audio")
+  add_subdirectory("audio2")
 endif(NOM_BUILD_AUDIO_UNIT)
 
 # nomlib-core

@@ -29,6 +29,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/audio/AL/OpenAL.hpp"
 #include "nomlib/core/err.hpp"
 
+// Private declarations
+#include "nomlib/audio/AL/priv_openal.hpp"
+
 // Private headers
 // #include <string>
 
@@ -82,22 +85,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // } // namespace audio
 // } // namespace nom
 
-#if defined(NOM_USE_OPENAL_SOFT)
-  typedef struct ALCcontext ALCcontext_struct;
-  typedef struct ALCdevice ALCdevice_struct;
-#elif defined(NOM_USE_APPLE_OPENAL)
-  typedef struct ALCcontext_struct ALCcontext;
-  typedef struct ALCdevice_struct ALCdevice;
+// namespace nom {
+// namespace priv {
 
-  typedef ALCcontext ALCcontext_struct;
-  typedef ALCdevice ALCdevice_struct;
-#endif
-
-namespace nom {
-namespace priv {
-
-void
-al_err(const std::string& func, const std::string& file, uint32 line)
+ALenum
+al_err(const std::string& func, const std::string& file, uint32_t line)
 {
   ALenum error_code = alGetError();
 
@@ -139,11 +131,14 @@ al_err(const std::string& func, const std::string& file, uint32 line)
     NOM_LOG_ERR(NOM_LOG_CATEGORY_AUDIO, err_cstr, "at", file, ":", line,
                 "in", func);
     nom::set_error(err_cstr);
-  } // end if AL_NO_ERROR
+
+    return error_code;
+  } // end if != AL_NO_ERROR
+  return AL_NO_ERROR;
 }
 
-void
-alc_err(const std::string& func, const std::string& file, uint32 line,
+ALenum
+alc_err(const std::string& func, const std::string& file, uint32_t line,
   ALCdevice* dev)
 {
   ALenum error_code = alcGetError(dev);
@@ -185,8 +180,11 @@ alc_err(const std::string& func, const std::string& file, uint32 line,
     NOM_LOG_ERR(NOM_LOG_CATEGORY_AUDIO, err_cstr, "at", file, ":", line,
                 "in", func);
     nom::set_error(err_cstr);
-  } // end if ALC_NO_ERROR
+
+    return error_code;
+  } // end if != ALC_NO_ERROR
+  return ALC_NO_ERROR;
 }
 
-} // namespace priv
-} // namespace nom
+// } // namespace priv
+// } // namespace nom

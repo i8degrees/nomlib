@@ -34,6 +34,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "export.hpp"
 #include "nomlib/config.hpp"
 
+#define BUFFERLENGTH 65536 // 64KB  // Part 2
+
 namespace nom {
 namespace audio {
 
@@ -127,6 +129,12 @@ struct NOM_EXPORT SoundInfo
 
   /// \see nom::audio::AudioFormat
   uint32 channel_format = 0;
+
+    /// \brief Filled in by sndfile
+  int byte_rate = -1;
+
+  /// \brief Filled in by sndfile
+  int bitrate = -1;
 
   bool seekable = false;
 

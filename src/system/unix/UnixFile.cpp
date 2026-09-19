@@ -95,6 +95,20 @@ bool UnixFile::exists(const std::string& file_path)
   return filesystem::exists( file_path );
 }
 
+// const std::string UnixFile::path ( const std::string& dir_path )
+// {
+//   // We must do this string conversion -- from a std::string to a char
+//   // pointer -- because the c_str method returns a const char pointer, which
+//   // cannot be used for the dirname function, as this call modifies the contents
+//   // of the passed variable.
+
+//   char path[PATH_MAX];
+
+//   std::strcpy ( path, dir_path.c_str() );
+
+//   return dirname ( path );
+// }
+
 const std::string UnixFile::path(const std::string& dir_path)
 {
   filesystem::path p( dir_path );

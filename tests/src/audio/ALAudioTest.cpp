@@ -133,16 +133,6 @@ class ALAudioTest: public ::testing::Test
 
 namespace test {
 
-static int
-compare_string(const char* str1, const char* str2) {
-  int result = nom::compare_cstr_insensitive(str1, str2);
-  if(result != 0) {
-    ADD_FAILURE_AT(NOM_FILE, __LINE__);
-  }
-
-  return result;
-}
-
 static void play_audio(void* samples, const audio::SoundInfo& metadata,
                        audio::IOAudioEngine* target)
 {
@@ -395,40 +385,19 @@ TEST_F(ALAudioTest, SoundFileReader_Metadata)
 
     EXPECT_EQ(true, fp->valid());
 
-    // test::compare_string(metadata.tags.album, "Debug Samples");
-    test::compare_string(metadata.tags.title, "Audio Channel Testing - Left, Center, Right");
-    // test::compare_string(metadata.tags.comment, "sound-theme-freedesktop");
-    // test::compare_string(metadata.tags.genre, "gamedev");
-    test::compare_string(metadata.tags.comment, "sound-theme-freedesktop");
-    test::compare_string(metadata.tags.genre, "nomlib v0.13.1");
-    test::compare_string(metadata.tags.software,
-      "Lavf62.3.100 (libsndfile-1.2.2)");
+    EXPECT_STRCASEEQ(metadata.tags.title, "");
+    EXPECT_STRCASEEQ(metadata.tags.copyright, "");
+    EXPECT_STRCASEEQ(metadata.tags.artist, "");
+    EXPECT_STRCASEEQ(metadata.tags.comment, "sound-theme-freedesktop");
+    EXPECT_STRCASEEQ(metadata.tags.date, "");
+    EXPECT_STRCASEEQ(metadata.tags.album, "");
+    EXPECT_STRCASEEQ(metadata.tags.license, "");
+    EXPECT_STRCASEEQ(metadata.tags.track_number, "");
+    EXPECT_STRCASEEQ(metadata.tags.genre, "nomlib v0.13.1");
+    EXPECT_STRCASEEQ(metadata.tags.software, "Lavf62.3.100 (libsndfile-1.2.2)");
 
     NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST,
                   "    Audio resource:", itr->second);
-
-    // TODO(JEFF): Finish testing the full range of metadata tags we have
-    // implemented
-/*
-    NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST, "title:",
-                  metadata.tags.title);
-    NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST, "copyright:",
-                  metadata.tags.copyright);
-    NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST, "artist:",
-                  metadata.tags.artist);
-    NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST, "comment:",
-                  metadata.tags.comment);
-    NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST, "date:",
-                  metadata.tags.date);
-    NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST, "album:",
-                  metadata.tags.album);
-    NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST, "license:",
-                  metadata.tags.license);
-    NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST, "track_number:",
-                  metadata.tags.track_number);
-    NOM_LOG_DEBUG(NOM_LOG_CATEGORY_TEST, "genre:",
-                  metadata.tags.genre);
-*/
   }
 
   fp->close();
@@ -503,9 +472,12 @@ TEST_F(ALAudioTest, NullAudioVolume)
   // FIXME
   // EXPECT_EQ("NullAudioDevice", dev->device_name() );
   EXPECT_EQ(0.0f, audio::volume(dev));
-  EXPECT_EQ(Point3f(0,0,0), audio::position(dev));
+  // audio::set_volume(1.0f, dev);
   EXPECT_EQ(0.0f, audio::volume(dev));
-  EXPECT_EQ(Point3f(0,0,0), audio::position(dev));
+
+  EXPECT_EQ(Point3f(0.0f,0.0f,0.0f), audio::position(dev));
+  // dev->set_position(Point3f(1.0f, 1.0f, 1.0f));
+  EXPECT_EQ(Point3f(0.0f,0.0f,0.0f), audio::position(dev));
 
   audio::shutdown_audio(dev);
 }
@@ -653,10 +625,14 @@ TEST_F(ALAudioTest, AudioOutputBufferVolume)
   audio::SoundBuffer* buffer =
     audio::create_buffer(AUDIO_FILENAME, dev);
   EXPECT_EQ(100.0f, audio::volume(dev));
-  EXPECT_EQ(100.0f, audio::volume(buffer, dev));
-  EXPECT_EQ(0.0f, audio::min_volume(buffer, dev));
-  EXPECT_EQ(100.0f, audio::max_volume(buffer, dev));
+  // dev->set_volume(buffer, 0.5f);
+  // EXPECT_EQ(0.5f, audio::volume(dev));
+  // dev->set_min_volume(buffer, 0.25f);
+  EXPECT_EQ(0, audio::min_volume(buffer, dev));
+  // dev->set_max_volume(buffer, 0.75f);
+  EXPECT_EQ(100, audio::max_volume(buffer, dev));
   EXPECT_EQ(Point3f(0.0f, 0.0f, 0.0f), audio::position(buffer, dev));
+  // dev->set_position(Point3f(1.0f, 1.0f, 1.0f));
   EXPECT_EQ(Point3f(0.0f, 0.0f, 0.0f), audio::velocity(buffer, dev));
 
   audio::free_buffer(buffer, dev);

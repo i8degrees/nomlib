@@ -371,6 +371,35 @@ TEST_F( PropertyTreeTest, OperatorConstructDeepDepth )
   EXPECT_EQ( "Hello!", o[0]["cards"]["ID_0"][1].get_string() ) << o;
 }
 
+TEST_F(PropertyTreeTest, IteratorBase)
+{
+  //EXPECT_EQ( Value::ValueType::ObjectValues, object.type() );
+  //EXPECT_EQ( 1, object.size() );
+  Value objects;
+  objects[0]["cards"]["ID_0"]["msg"] = "hello";
+  for(auto itr = objects.begin(); itr != objects.end(); ++itr) {
+  }
+
+  ValueIterator itr;
+}
+
+TEST_F(PropertyTreeTest, IteratorIncrement)
+{
+}
+
+TEST_F(PropertyTreeTest, IteratorDecrement)
+{
+}
+
+TEST_F(PropertyTreeTest, ConstIteratorBase)
+{
+
+}
+
+TEST_F(PropertyTreeTest, IteratorRandomAccess)
+{
+}
+
 } // namespace nom
 
 int main( int argc, char **argv )

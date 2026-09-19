@@ -60,7 +60,7 @@ static int64 sample_bytes(uint32 channel_format, int64 sample_count)
 
   // IMPORTANT(jeff): This is dependent upon the internal data type of the
   // samples when they were read from the input file.
-  int64 bit_size = 0;
+  int64 bit_size = sizeof(int16);
 
   switch(channel_format)
   {
@@ -176,8 +176,15 @@ bool SoundFileReader::open(const std::string& filename, SoundInfo& info)
   metadata.format = 0;
 
   this->fp_ = sf_open(filename.c_str(), SFM_READ, &metadata);
+  if(this->fp_ == nullptr) {
+    NOM_LOG_ERR(NOM_LOG_CATEGORY_APPLICATION, "Failed to open file at",
+      filename);
+    this->close();
+    return false;
+  }
 
   if(libsndfile_check_error(this->fp_) == false) {
+    // this->close();
     return false;
   }
 
@@ -225,16 +232,6 @@ SoundFileReader::read(void* data, uint32 channel_format, int64 frames)
       sample_frames_read = sf_readf_int(this->fp_, samples, frames);
     } break;
 
-    // IMPORTANT(jeff): We must convert 32-bit integer PCM data to normalized
-    // floating-point values due to lack of support in OpenAL -- see also:
-    //
-    // 1. ::channel_format
-    // 2. http://openal.org/pipermail/openal/2014-December/000287.html
-    // 3. http://openal.org/pipermail/openal/2014-December/000289.html
-
-    // TODO(jeff): Implement a method of toggling a quirks mode for OpenAL
-    // instead of doing it here, for sake of a generic codebase.
-
     case AUDIO_FORMAT_R32: {
       auto samples = NOM_SCAST(real32*, data);
       sample_frames_read = sf_readf_float(this->fp_, samples, frames);
@@ -279,14 +276,17 @@ SoundInfo SoundFileReader::parse_header(SF_INFO& metadata)
   info.channel_count = metadata.channels;
   info.duration = audio::duration_seconds(metadata);
   info.seekable = metadata.seekable;
-
+  info.byte_rate = this->byte_rate(this->fp_);
+std::cout << "BYTE_RATE: " << info.byte_rate << std::endl;
+  info.bitrate = info.byte_rate * 8;
+std::cout << "BIT_RATE: " << info.bitrate << std::endl;
   auto format = (metadata.format & SF_FORMAT_SUBMASK);
   switch(format)
   {
     default:
     case AUDIO_FORMAT_UNKNOWN: {
-      info.channel_format = AUDIO_FORMAT_UNKNOWN;
-      NOM_LOG_INFO(NOM_LOG_CATEGORY_TEST, "Unknown audio format",
+      info.channel_format = AUDIO_FORMAT_S16;
+      NOM_LOG_INFO(NOM_LOG_CATEGORY_TEST, "Default audio format - AUDIO_FORMAT_S16",
                    info.channel_format);
     } break;
 
@@ -406,6 +406,12 @@ const char* SoundFileReader::parse_tags(SNDFILE_tag* fp, uint32 sound_tag)
   }
 
   return tag;
+}
+
+int SoundFileReader::byte_rate(SNDFILE_tag* fp)
+{
+  int result = sf_current_byterate(fp);
+  return result;
 }
 
 } // namespace audio

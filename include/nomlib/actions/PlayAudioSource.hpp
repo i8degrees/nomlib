@@ -60,7 +60,7 @@ class NOM_EXPORT PlayAudioSource: public virtual IActionObject
     PlayAudioSource(audio::IOAudioEngine* dev, const char* filename);
 
     /// \brief Construct the action from a pre-initialized audio buffer.
-    // PlayAudioSource(audio::IOAudioEngine* dev, audio::SoundBuffer* buffer);
+    PlayAudioSource(audio::IOAudioEngine* dev, audio::SoundBuffer* buffer);
 
     /// \brief Destructor.
     virtual ~PlayAudioSource();
@@ -83,7 +83,7 @@ class NOM_EXPORT PlayAudioSource: public virtual IActionObject
     virtual void release() override;
 
   private:
-    NOM_EXPORT static const char* DEBUG_CLASS_NAME;
+    static const char* DEBUG_CLASS_NAME;
 
     /// \brief Execute the alpha blending logic for the animation.
     IActionObject::FrameState update(real32 t, uint8 b, int16 c, real32 d);
@@ -91,23 +91,10 @@ class NOM_EXPORT PlayAudioSource: public virtual IActionObject
     void first_frame(real32 delta_time);
     void last_frame(real32 delta_time);
 
-    /// \brief The initial alpha blending value.
-    // real32 initial_volume_;
-
-    /// \brief The total change in the alpha blending value.
-    // const real32 total_displacement_;
-
-    nom::size_type curr_frame_ = 0;
-
     audio::IOAudioEngine* impl_ = nullptr;
-
     audio::ISoundFileReader* fp_ = nullptr;
 
     typedef std::vector<audio::SoundBuffer*> audio_buffers;
-    // audio_buffers::iterator current_buffer_;
-    audio_buffers audible_;
-
-    uint32 input_pos_ = 0;
 };
 
 } // namespace nom

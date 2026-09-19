@@ -51,14 +51,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // The OpenAL function call is wrapped inside of this macro that needs
 // checking.
 #define AL_CHECK_ERR(Function) \
-  ( (Function), nom::priv::al_err(NOM_FUNC, __FILE__, __LINE__) )
+  ( Function, al_err(NOM_FUNC, __FILE__, __LINE__) )
 
 // OpenAL error checking macro for audio context error handling
 // The OpenAL function call is wrapped inside of this macro that needs
 // checking. This macro additionally requires the OpenAL device handle to be
 // given.
 #define ALC_CHECK_ERR(Function, device) \
-  ( (Function), nom::priv::alc_err(NOM_FUNC, __FILE__, __LINE__, device) )
+  ( Function, alc_err(NOM_FUNC, __FILE__, __LINE__, device) )
 
 // Clear the error state of OpenAL -- this must be done right before a
 // AL_CHECK_ERR macro is used.
@@ -68,20 +68,26 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // right before a ALC_CHECK_ERR macro is used.
 #define ALC_CLEAR_ERR(device) alcGetError(device);
 
-namespace nom {
-namespace priv {
+// #define AL_CLEAR_ERR()
+// #define ALC_CLEAR_ERR()
+// #define AL_CHECK_ERR()
+// #define ALC_CHECK_ERR()
+
+// namespace nom {
+// namespace priv {
 
 NOM_EXPORT
-void al_err(const std::string& func, const std::string& file, uint32 line);
+ALenum al_err(const std::string& func, const std::string& file, uint32_t line);
+
 NOM_EXPORT
-void alc_err(const std::string& func, const std::string& file, uint32 line,
+ALenum alc_err(const std::string& func, const std::string& file, uint32_t line,
   ALCdevice* dev = nullptr);
 
-} // namespace priv
-} // namespace nom
+// } // namespace priv
+// } // namespace nom
 
-namespace nom {
-namespace audio {
+// namespace nom {
+// namespace audio {
 
 // enum AudioError
 // {
@@ -103,8 +109,8 @@ namespace audio {
 // void set_err(uint32 errno);
 // void set_err(err_t* err);
 
-} // namespace audio
-} // namespace nom
+// } // namespace audio
+// } // namespace nom
 
 #endif // NOMLIB_OPENAL_HEADERS defined
 

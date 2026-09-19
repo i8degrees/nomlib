@@ -34,16 +34,13 @@ if(APPLE)
     message(STATUS "Using macOS SDK version ${NOM_MACOSX_SDK_VERSION}")
   endif(NOT CMAKE_OSX_SYSROOT)
 
-  # Define apple architecture for Release builds, use default. For an explicit
-  # universal executable use `x86_64;arm64`.
-  set(CMAKE_OSX_ARCHITECTURES "${ARCHS_STANDARD}" CACHE INTERNAL "OS X architecture")
-
   # Support older macOS versions.
   set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15 CACHE STRING "Minimum OS X deployment version")
 
   if(APPLE AND "${CMAKE_GENERATOR}" STREQUAL "Xcode")
-    # TODO(JEFF): Verify whether or not we should still handle application
-    # and framework bundles ourselves -- using our existing CMake code --
-    # or turn our code handling off and let Xcode handle it.
+    # ARCHS_STANDARD is set by Xcode's compiler environment
+    if(NOT CMAKE_OSX_ARCHITECTURES)
+      set(CMAKE_OSX_ARCHITECTURES "${ARCHS_STANDARD}" CACHE INTERNAL "OS X architecture")
+    endif(NOT CMAKE_OSX_ARCHITECTURES)
   endif()
 endif()

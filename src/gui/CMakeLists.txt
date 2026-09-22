@@ -19,6 +19,8 @@ set_target_properties(nomlib-gui
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     DEBUG_POSTFIX "-d"
+    MAP_IMPORTED_CONFIG_MINSIZEREL Release
+    MAP_IMPORTED_CONFIG_RELWITHDEBINFO Debug
 )
 
 if(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
@@ -153,35 +155,12 @@ else()
 endif()
 
 # MacOSX Framework bundle support
-set_target_properties(nomlib-gui
-  PROPERTIES
-    FRAMEWORK TRUE
-    MACOSX_FRAMEWORK_INFO_PLIST
-      "${CMAKE_TEMPLATE_PATH}/framework.plist.in"
-    MACOSX_FRAMEWORK_NAME
-      nomlib-gui
-    MACOSX_FRAMEWORK_BUNDLE_VERSION
-      "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_BUILD_TYPE}"
-    MACOSX_FRAMEWORK_SHORT_VERSION_STRING
-      "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
-    MACOSX_FRAMEWORK_IDENTIFIER
-      "net.i8degrees.nomlib-gui"
-    XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY
-      ""
-    MACOSX_RPATH TRUE
-    #INSTALL_RPATH
-      #@executable_path/../Frameworks
+apple_setup_framework(nomlib-gui
+  "${CMAKE_TEMPLATE_PATH}/framework.plist.in"
 )
 
 # MacOSX Framework bundle support - public header files
-if(APPLE)
-  install(TARGETS nomlib-gui
-    FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
-      COMPONENT Runtime
-    FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-gui.framework/Headers"
-      COMPONENT Development
-  )
-endif(APPLE)
+apple_install_framework_headers(nomlib-gui)
 
 install(TARGETS nomlib-gui
   EXPORT libtarget
@@ -191,8 +170,8 @@ install(TARGETS nomlib-gui
     COMPONENT Runtime
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     COMPONENT Runtime
-  FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-    COMPONENT Development
-  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    COMPONENT Runtime
+  #FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+    #COMPONENT Development
+  #FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    #COMPONENT Runtime
 )

@@ -111,6 +111,9 @@ project(nomlib
   LANGUAGES CXX
 )
 
+if(APPLE)
+  set(CMAKE_FRAMEWORK TRUE)
+endif()
 
 include("${CMAKE_SOURCE_DIR}/cmake/StandardProjectSettings.cmake")
 
@@ -202,7 +205,6 @@ else(NOT NOM_BUILD_AUDIO_UNIT) # optional dependencies
   endif(APPLE)
   find_package(SndFile CONFIG)
 endif(NOM_BUILD_AUDIO_UNIT)
-
 if(BUILD_DOCS)
   # Doxygen configuration
   include("${PROJECT_SOURCE_DIR}/cmake/doxygen.cmake")

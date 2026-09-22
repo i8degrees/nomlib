@@ -10,6 +10,8 @@ set_target_properties(nomlib-system
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     DEBUG_POSTFIX "-d"
+    MAP_IMPORTED_CONFIG_MINSIZEREL Release
+    MAP_IMPORTED_CONFIG_RELWITHDEBINFO Debug
 )
 
 if(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
@@ -112,47 +114,33 @@ target_link_libraries(nomlib-system
     $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
 )
 
+if(APPLE AND CMAKE_FRAMEWORK)
+  target_compile_definitions(nomlib-core
+    PUBLIC
+      CMAKE_FRAMEWORK
+  )
+endif()
+
 # MacOSX Framework bundle support
-set_target_properties(nomlib-system
-  PROPERTIES
-    FRAMEWORK TRUE
-    MACOSX_FRAMEWORK_INFO_PLIST
-      "${CMAKE_TEMPLATE_PATH}/framework.plist.in"
-    MACOSX_FRAMEWORK_NAME
-      nomlib-system
-    MACOSX_FRAMEWORK_BUNDLE_VERSION
-      "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_BUILD_TYPE}"
-    MACOSX_FRAMEWORK_SHORT_VERSION_STRING
-      "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
-    MACOSX_FRAMEWORK_IDENTIFIER
-      "net.i8degrees.nomlib-system"
-    XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY
-      ""
-    MACOSX_RPATH TRUE
-    #INSTALL_RPATH
-      #@executable_path/../Frameworks
+apple_setup_framework(nomlib-system
+  "${CMAKE_TEMPLATE_PATH}/framework.plist.in"
 )
 
 # MacOSX Framework bundle support - public header files
-if(APPLE)
-  install(TARGETS nomlib-system
-    FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
-      COMPONENT Runtime
-    FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-system.framework/Headers"
-      COMPONENT Development
-  )
-endif(APPLE)
+apple_install_framework_headers(nomlib-system)
 
-install(TARGETS nomlib-system
-  EXPORT libtarget
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    COMPONENT Runtime
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    COMPONENT Runtime
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    COMPONENT Runtime
-  FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-    COMPONENT Development
-  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    COMPONENT Runtime
-)
+if(NOT CMAKE_FRAMEWORK)
+  install(TARGETS nomlib-system
+    EXPORT libtarget
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      COMPONENT Runtime
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      COMPONENT Runtime
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+      COMPONENT Runtime
+    FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+      COMPONENT Development
+    FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX} #${CMAKE_INSTALL_LIBDIR}
+      COMPONENT Runtime
+  )
+endif()

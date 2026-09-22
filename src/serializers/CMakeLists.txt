@@ -12,6 +12,8 @@ set_target_properties(nomlib-serializers
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     DEBUG_POSTFIX "-d"
+    MAP_IMPORTED_CONFIG_MINSIZEREL Release
+    MAP_IMPORTED_CONFIG_RELWITHDEBINFO Debug
 )
 
 if(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
@@ -88,44 +90,26 @@ target_link_libraries(nomlib-serializers
 )
 
 # MacOSX Framework bundle support
-set_target_properties(nomlib-serializers
-  PROPERTIES
-    FRAMEWORK TRUE
-    MACOSX_FRAMEWORK_INFO_PLIST
-      "${CMAKE_TEMPLATE_PATH}/framework.plist.in"
-    MACOSX_FRAMEWORK_NAME
-      nomlib-serializers
-    MACOSX_FRAMEWORK_BUNDLE_VERSION
-      "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_BUILD_TYPE}"
-    MACOSX_FRAMEWORK_SHORT_VERSION_STRING
-      "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
-    MACOSX_FRAMEWORK_IDENTIFIER
-      "net.i8degrees.nomlib-serializers"
-    XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY
-      ""
-    MACOSX_RPATH TRUE
+apple_setup_framework(nomlib-serializers
+  "${CMAKE_TEMPLATE_PATH}/framework.plist.in"
 )
 
-# MacOSX framework bundle support - public header files
-if(APPLE)
+# MacOSX Framework bundle support - public header files
+apple_install_framework_headers(nomlib-serializers)
+
+if(NOT CMAKE_FRAMEWORK)
   install(TARGETS nomlib-serializers
-    FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    EXPORT libtarget
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
       COMPONENT Runtime
-    FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-serializers.framework/Headers"
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      COMPONENT Runtime
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+      COMPONENT Runtime
+    FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
       COMPONENT Development
+    #FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      #COMPONENT Runtime
   )
-endif(APPLE)
+endif()
 
-install(TARGETS nomlib-serializers
-  EXPORT libtarget
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    COMPONENT Runtime
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    COMPONENT Runtime
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    COMPONENT Runtime
-  FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-    COMPONENT Development
-  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    COMPONENT Runtime
-)

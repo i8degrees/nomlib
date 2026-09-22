@@ -103,6 +103,8 @@ set_target_properties(nomlib-core
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     DEBUG_POSTFIX "-d"
+    MAP_IMPORTED_CONFIG_MINSIZEREL Release
+    MAP_IMPORTED_CONFIG_RELWITHDEBINFO Debug
 )
 
 if(APPLE AND CMAKE_FRAMEWORK)
@@ -139,53 +141,31 @@ target_link_libraries(nomlib-core
 )
 
 # MacOSX Framework bundle support
-set_target_properties(nomlib-core
-  PROPERTIES
-    FRAMEWORK TRUE
-    MACOSX_FRAMEWORK_INFO_PLIST
-      "${CMAKE_TEMPLATE_PATH}/framework.plist.in"
-    MACOSX_FRAMEWORK_NAME
-      nomlib-core
-    MACOSX_FRAMEWORK_BUNDLE_VERSION
-      "${PROJECT_VERSION}-${CMAKE_BUILD_TYPE}"
-    MACOSX_FRAMEWORK_SHORT_VERSION_STRING
-      "${PROJECT_VERSION}"
-    MACOSX_FRAMEWORK_IDENTIFIER
-      "net.i8degrees.nomlib-core"
-    XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY
-      ""
-    MACOSX_RPATH TRUE
-    #INSTALL_RPATH
-      #@executable_path/../Frameworks
+apple_setup_framework(nomlib-core
+  "${CMAKE_TEMPLATE_PATH}/framework.plist.in"
 )
 
 # MacOSX Framework bundle support - public header files
-if(APPLE)
-  install(TARGETS nomlib-core
-    project_warnings
-    FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-core.framework/Headers"
-      COMPONENT Development
-    FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-core.framework/Headers"
-      COMPONENT Development
-    FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
-      COMPONENT Runtime
-  )
-endif(APPLE)
+apple_install_framework_headers(nomlib-core)
 
-install(TARGETS nomlib-core
-  # !! Do not copy this onto other INSTALL targets
-  project_warnings
-  EXPORT libtarget
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    COMPONENT Runtime
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    COMPONENT Runtime
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    COMPONENT Runtime
-  FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-    COMPONENT Development
-  FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-    COMPONENT Development
-  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    COMPONENT Runtime
-)
+#set(CMAKE_INSTALL_LIBDIR "${CMAKE_INSTALL_PREFIX}")
+if(NOT CMAKE_FRAMEWORK)
+  install(TARGETS nomlib-core
+    # !! Do not copy this onto other INSTALL targets
+    project_warnings
+    EXPORT libtarget
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      COMPONENT Runtime
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      COMPONENT Runtime
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+      COMPONENT Runtime
+    FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+      COMPONENT Development
+    FILE_SET generated_headers DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+      COMPONENT Development
+    #FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX} #${CMAKE_INSTALL_LIBDIR}
+      #COMPONENT Runtime
+  )
+endif()
+

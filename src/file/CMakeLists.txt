@@ -56,6 +56,8 @@ set_target_properties(nomlib-file
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     DEBUG_POSTFIX "-d"
+    MAP_IMPORTED_CONFIG_MINSIZEREL Release
+    MAP_IMPORTED_CONFIG_RELWITHDEBINFO Debug
 )
 
 if(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
@@ -108,33 +110,12 @@ target_link_libraries(nomlib-file
 )
 
 # MacOSX Framework bundle support
-set_target_properties(nomlib-file
-  PROPERTIES
-    FRAMEWORK TRUE
-    MACOSX_FRAMEWORK_INFO_PLIST
-      "${CMAKE_TEMPLATE_PATH}/framework.plist.in"
-    MACOSX_FRAMEWORK_NAME
-      nomlib-file
-    MACOSX_FRAMEWORK_BUNDLE_VERSION
-      "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_BUILD_TYPE}"
-    MACOSX_FRAMEWORK_SHORT_VERSION_STRING
-      "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
-    MACOSX_FRAMEWORK_IDENTIFIER
-      "net.i8degrees.nomlib-file"
-    XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY
-      ""
-    MACOSX_RPATH TRUE
+apple_setup_framework(nomlib-file
+  "${CMAKE_TEMPLATE_PATH}/framework.plist.in"
 )
 
-# MacOSX framework bundle support - public header files
-if(APPLE)
-  install(TARGETS nomlib-file
-    FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
-      COMPONENT Runtime
-    FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-file.framework/Headers"
-      COMPONENT Development
-  )
-endif(APPLE)
+# MacOSX Framework bundle support - public header files
+apple_install_framework_headers(nomlib-file)
 
 install(TARGETS nomlib-file
   EXPORT libtarget
@@ -147,6 +128,6 @@ install(TARGETS nomlib-file
   FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     COMPONENT Development
   # MacOSX framework bundle
-  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    COMPONENT Runtime
+  #FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    #COMPONENT Runtime
 )

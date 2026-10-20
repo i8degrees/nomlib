@@ -110,13 +110,13 @@ if(NOM_BUILD_AUDIO_UNIT)
   target_sources(nomlib-actions
     PRIVATE
     ${SRC_DIR}/actions/FadeAudioGainBy.cpp
-    ${SRC_DIR}/actions/PlayAudioSource.cpp
+    #${SRC_DIR}/actions/PlayAudioSource.cpp
     PUBLIC
       FILE_SET HEADERS
       BASE_DIRS ${HDR_BASE}
       FILES
       ${HDR_BASE}/actions/FadeAudioGainBy.hpp
-      ${HDR_BASE}/actions/PlayAudioSource.hpp
+      #${HDR_BASE}/actions/PlayAudioSource.hpp
   )
 
   # Internal dependencies for this action subgroup

@@ -63,10 +63,10 @@ class NOM_EXPORT SoundFileReader: public ISoundFileReader
     // One frame is equal to one sample whereas on multi-channel formats, one
     // frame is equal to one sample of each channel.
     virtual int64
-    read(void* data, uint32 channel_format, nom::size_type frames) override;
+    read(void* data, uint32 channel_format, int64 frames) override;
 
     /// \param offset The cursor offset position, depicted in audio frames.
-    virtual int64 seek(int64 offset, SoundSeek dir) override;
+    virtual int64 seek(int64 offset, int dir) override;
 
     virtual void close() override;
 

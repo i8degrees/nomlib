@@ -7,6 +7,8 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 
+#include "export.hpp"
+
 //#define __FILE__ "__FILE__"
 //#define __FILE__
 #define NOM_FUNC \
@@ -34,9 +36,10 @@
 #define ALC_CLEAR_ERR(device) alcGetError(device);
 
 namespace nom::priv {
-  ALenum al_err(const std::string& func, const std::string& file, uint32_t line);
-  ALenum alc_err(const std::string& func, const std::string& file, uint32_t line,
-    ALCdevice* dev = nullptr);
+  NOM_EXPORT ALenum al_err(const std::string& func, const std::string& file,
+    uint32_t line);
+  NOM_EXPORT ALenum alc_err(const std::string& func, const std::string& file,
+    uint32_t line, ALCdevice* dev = nullptr);
 } // namespace nom::priv
 
 //typedef struct ALCcontext_struct ALCcontext;

@@ -2,12 +2,13 @@
 
 #include "nomlib/audio2/Sound.hpp"
 #include "nomlib/types.hpp"
+#include "export.hpp"
 
 namespace nom {
 namespace audio {
 
 // OggSound
-class StreamSound: public Sound
+class NOM_EXPORT StreamSound: public Sound
 {
   private:
     void init(const std::string& filename);

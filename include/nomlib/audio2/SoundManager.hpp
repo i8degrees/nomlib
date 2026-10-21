@@ -2,6 +2,7 @@
 
 #include <string>
 #include <map>
+#include "export.hpp"
 #include "nomlib/types.hpp"
 #include "nomlib/audio2/Sound.hpp"
 
@@ -18,7 +19,7 @@ enum SoundTraits: nom::uint32
 };
 
 // Put in nom::SDLApp?
-class SoundManager
+class NOM_EXPORT SoundManager
 {
   public:
     static void free_sounds();

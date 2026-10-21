@@ -29,12 +29,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_AUDIO_ISOUND_FILE_READER_HPP
 #define NOMLIB_AUDIO_ISOUND_FILE_READER_HPP
 
+#include "export.hpp"
 #include "types.hpp"
 #include <string>
 
 struct SoundInfo;
 
-class ISoundFileReader
+class NOM_EXPORT ISoundFileReader
 {
   public:
     ISoundFileReader()

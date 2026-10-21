@@ -1,12 +1,13 @@
 #pragma once
 
+#include "export.hpp"
 #include "nomlib/types.hpp"
 
 namespace nom {
 namespace audio {
 
 // Pure abstract interface class
-class IAudioContext
+class NOM_EXPORT IAudioContext
 {
   public:
     // typedef void void_ptr;

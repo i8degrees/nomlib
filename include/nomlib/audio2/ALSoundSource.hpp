@@ -1,5 +1,6 @@
 #pragma once
 
+#include "export.hpp"
 #include "nomlib/types.hpp"
 #include "nomlib/audio2/Sound.hpp"
 #include "nomlib/audio2/ISoundSource.hpp"
@@ -13,7 +14,7 @@ namespace audio {
 struct OALSource;
 
 // SoundNode
-class ALSoundSource: public virtual ISoundSource
+class NOM_EXPORT ALSoundSource: public virtual ISoundSource
 {
   public:
     typedef ISoundSource super;

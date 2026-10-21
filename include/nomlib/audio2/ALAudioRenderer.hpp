@@ -1,5 +1,6 @@
 #pragma once
 
+#include "export.hpp"
 #include "nomlib/types.hpp"
 #include "nomlib/audio/SoundFile.hpp"
 #include "nomlib/math/Matrix.hpp"
@@ -24,7 +25,7 @@ struct OALSource;
 using SoundSourceIterator = std::vector<ISoundSource*>::iterator;
 
 // SoundSystem impl
-class ALAudioRenderer: public IAudioDevice
+class NOM_EXPORT ALAudioRenderer: public IAudioDevice
 {
   public:
     // Default constructor
@@ -92,9 +93,9 @@ class ALAudioRenderer: public IAudioDevice
     ALAudioContext* ctx_;
 };
 
-bool extension_available(const char* key);
-int /*ALenum*/ enum_available(const char* key);
-void* device_function(const ALCchar* fn);
+NOM_EXPORT bool extension_available(const char* key);
+NOM_EXPORT int /*ALenum*/ enum_available(const char* key);
+NOM_EXPORT void* device_function(const ALCchar* fn);
 
 // Convert from nomlib's native AudioFormat enumeration to
 // the equivalent OpenAL format.
@@ -104,7 +105,7 @@ void* device_function(const ALCchar* fn);
 // num_channels == 2 == AUDIO_FORMAT_AL_FORMAT_STEREO
 // ...
 // ?? Rename to openal_format
-ALenum channel_format(nom::uint32 num_channels, nom::audio::AudioFormat channel_format);
+NOM_EXPORT ALenum channel_format(nom::uint32 num_channels, nom::audio::AudioFormat channel_format);
 
 // Convert from nomlib's native AudioCaps enumeration to
 // the equivalent OpenAL format.

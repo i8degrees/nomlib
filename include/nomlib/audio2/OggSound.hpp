@@ -5,6 +5,7 @@
 #include <vorbis/vorbisenc.h>
 #include <vorbis/vorbisfile.h>
 
+#include "export.hpp"
 #include "nomlib/audio2/Sound.hpp"
 #include "nomlib/types.hpp"
 
@@ -18,7 +19,7 @@ typedef OggVorbis_File OggFile;
 namespace nom {
 namespace audio {
 
-class OggSound: public Sound
+class NOM_EXPORT OggSound: public Sound
 {
   protected:
     file_handle* file_handle_;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "export.hpp"
 #include "nomlib/types.hpp"
 #include "nomlib/math/Matrix.hpp"
 #include "nomlib/audio2/ISoundSource.hpp"
@@ -12,7 +13,7 @@ class Sound;
 
 // Pure abstract interface class
 // ?? Rename to IAudioDriver
-class IAudioDevice
+class NOM_EXPORT IAudioDevice
 {
   public:
     virtual ~IAudioDevice() {}

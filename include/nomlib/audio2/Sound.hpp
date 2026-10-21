@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "export.hpp"
 #include "nomlib/types.hpp"
 
 namespace nom {
@@ -9,7 +10,7 @@ namespace audio {
 // Forward declarations
 class ISoundFileReader;
 
-class ISound {
+class NOM_EXPORT ISound {
   public:
     ISound() {};
     virtual ~ISound() {}
@@ -23,7 +24,7 @@ class ISound {
 };
 
 //class Sound: public ISound
-class Sound
+class NOM_EXPORT Sound
 {
   public:
     // Default init ctr for fp_

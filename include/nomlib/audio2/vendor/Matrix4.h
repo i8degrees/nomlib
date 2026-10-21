@@ -15,6 +15,7 @@ _-_-_-_-_-_-_-""  ""
 *//////////////////////////////////////////////////////////////////////////////
 #pragma once
 
+#include "export.hpp"
 #include "nomlib/math/math_helpers.hpp"
 //#include "common.h"
 #include <iostream>
@@ -23,7 +24,7 @@ _-_-_-_-_-_-_-""  ""
 
 class Vector3;
 
-class Matrix4	{
+class NOM_EXPORT Matrix4	{
 public:
 	Matrix4(void);
 	Matrix4(float elements[16]);

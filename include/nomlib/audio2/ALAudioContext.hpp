@@ -1,5 +1,6 @@
 #pragma once
 
+#include "export.hpp"
 #include "nomlib/types.hpp"
 #include "nomlib/audio/AL/OpenAL.hpp"
 #include "nomlib/audio2/IAudioContext.hpp"
@@ -7,7 +8,7 @@
 namespace nom {
 namespace audio {
 
-class ALAudioContext: public IAudioContext
+class NOM_EXPORT ALAudioContext: public IAudioContext
 {
   public:
     ALAudioContext();
@@ -43,9 +44,9 @@ class ALAudioContext: public IAudioContext
     ALCcontext* ctx_;
 };
 
-bool context_extension(const char* key, ALCdevice* target);
-int /*ALenum*/ enum_available(const char* key);
-void* context_function(ALCdevice* target, const ALCchar* fn);
+NOM_EXPORT bool context_extension(const char* key, ALCdevice* target);
+NOM_EXPORT int /*ALenum*/ enum_available(const char* key);
+NOM_EXPORT void* context_function(ALCdevice* target, const ALCchar* fn);
 
 } // namespace audio
 } // namespace nom

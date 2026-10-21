@@ -1,5 +1,6 @@
 #pragma once
 
+#include "export.hpp"
 #include "nomlib/types.hpp"
 #include "nomlib/math/Point3.hpp"
 #include <vector>
@@ -29,7 +30,7 @@ enum SoundPriority: nom::uint32 {
 };
 
 // SoundNode
-class ISoundSource
+class NOM_EXPORT ISoundSource
 {
   public:
     virtual void reset();

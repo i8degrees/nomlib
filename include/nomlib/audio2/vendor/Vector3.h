@@ -11,10 +11,11 @@ _-_-_-_-_-_-_-|   /\_/\   NYANYANYAN
 _-_-_-_-_-_-_-""  ""   
 
 */
+#include "export.hpp"
 #include <cmath>
 #include <iostream>
 
-class Vector3	{
+class NOM_EXPORT Vector3	{
 public:
 	Vector3(void) {
 		ToZero();

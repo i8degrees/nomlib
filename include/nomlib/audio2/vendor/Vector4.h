@@ -11,10 +11,10 @@ _-_-_-_-_-_-_-""  ""
 
 */
 #pragma once
-
+#include "export.hpp"
 #include "Vector3.h"
 
-class Vector4	{
+class NOM_EXPORT Vector4	{
 public:
 	Vector4(void) {
 		x = y = z = w = 1.0f;

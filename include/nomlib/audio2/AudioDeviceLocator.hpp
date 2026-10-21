@@ -1,5 +1,6 @@
 #pragma once
 
+#include "export.hpp"
 #include "nomlib/types.hpp"
 #include "nomlib/audio2/IAudioDevice.hpp"
 
@@ -19,7 +20,7 @@ class IAudioDevice;
 class IAudioContext;
 
 // Global "Singleton" class interface for audio subsystem
-class AudioDeviceLocator
+class NOM_EXPORT AudioDeviceLocator
 {
   public:
     static void release();
@@ -34,7 +35,7 @@ class AudioDeviceLocator
     static ptr_renderer audio_; // device handle
 };
 
-ptr_renderer create_audio_renderer(nom::uint32 channels);
+NOM_EXPORT ptr_renderer create_audio_renderer(nom::uint32 channels);
 // ?? Future implementation
 // ptr_renderer create_audio_renderer(nom::uint32 channels = 64, uint32 audio_specs);
 

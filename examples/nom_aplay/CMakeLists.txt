@@ -82,7 +82,7 @@ add_custom_command(TARGET nom_aplay
 # nomlib-actions
 copy_framework_dep(nom_aplay
   nomlib-actions
-  #nomlib-audio
+  nomlib-audio
   nomlib-audio2
   nomlib-core
   nomlib-file

@@ -24,6 +24,8 @@ _-_-_-_-_-_-_-""  ""
 
 class Vector3;
 
+namespace nom {
+
 class NOM_EXPORT Matrix4	{
 public:
 	Matrix4(void);
@@ -127,3 +129,6 @@ public:
 		return o;
 	}
 };
+
+} // namespace nom
+

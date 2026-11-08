@@ -39,6 +39,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string>
 #include <random> // FIXME
+#include <vector>
+#include <filesystem>
 
 // Pubic nomlib interface headers
 #include "nomlib/math.hpp"
@@ -46,17 +48,62 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics.hpp"
 
 using namespace nom;
+namespace fs = std::filesystem;
 
 #define GAMEOFLIFE_DEBUG 0
 
-/// File path name of the resources directory; this must be a relative file path.
-const std::string APP_RESOURCES_DIR = "Resources";
+/// Resolve the GameOfLife resource directory relative to the executable.
+///
+/// Candidate layouts include:
+///   - <exe>/Resources/GameOfLife
+///   - <exe>/../Resources/GameOfLife             (macOS bundle)
+///   - <exe>/../../Resources/GameOfLife            (development build/<cfg>)
+///   - <exe>/../../../Resources/GameOfLife          (CMake build/<cfg>/bin)
+///   - <exe>/../share/nomlib/Resources/GameOfLife   (installed prefix layout)
+fs::path find_resource_dir( const char* argv0 )
+{
+  fs::path exe_dir;
+  try {
+    exe_dir = fs::canonical( argv0 ).parent_path();
+  } catch( ... ) {
+    exe_dir = fs::path( argv0 ).parent_path();
+  }
 
-/// \brief  Relative file path name of our resource example
-const nom::Path p;
+  const std::vector<fs::path> candidates = {
+    exe_dir / "Resources" / "GameOfLife",
+    exe_dir / ".." / "Resources" / "GameOfLife",
+    exe_dir / ".." / ".." / "Resources" / "GameOfLife",
+    exe_dir / ".." / ".." / ".." / "Resources" / "GameOfLife",
+    exe_dir / ".." / "share" / "nomlib" / "Resources" / "GameOfLife"
+  };
 
-const std::string RESOURCE_ICON = ".." + p.native() + APP_RESOURCES_DIR +
-  p.native() + "GameOfLife" + p.native() + "creep.png";
+  for( const auto& c : candidates ) {
+    fs::path resolved = fs::weakly_canonical( c );
+    if( fs::is_directory( resolved ) ) {
+      return resolved;
+    }
+  }
+
+  // Preserve the preferred fallback even when nothing exists.
+  return fs::weakly_canonical( candidates.at(0) );
+}
+
+/// \brief Resource path helpers; populated at runtime from executable location.
+std::string RESOURCE_ICON;
+std::string IMG_CREEP;
+std::string BG_LIGHT;
+std::string BG_DARK;
+
+/// Initialize resource paths using the executable's filesystem location.
+void init_resource_paths( const char* argv0 )
+{
+  fs::path base = find_resource_dir( argv0 );
+
+  RESOURCE_ICON = ( base / "assets" / "icn" / "creep.png" ).string();
+  IMG_CREEP = ( base / "assets" / "img" / "creep_16.png" ).string();
+  BG_LIGHT = ( base / "assets" / "img" / "bglight.png" ).string();
+  BG_DARK = ( base / "assets" / "img" / "bgdark.png" ).string();
+}
 
 /// \brief Relative filename path to saved screen shot example
 ///
@@ -75,25 +122,9 @@ const nom::int32 BOARD_SIZE = 2048;
 /// \brief length and width (in pixels) for the square cells
 const nom::sint CELL_SIZE = 16;
 
-// ../Resources/creep_16.png # .app/Contents/Resources/
-const std::string IMG_CREEP = ".." + p.native() + APP_RESOURCES_DIR +
-  p.native() + "GameOfLife" + p.native() + "creep_16.png";
-
-const std::string BG_LIGHT = ".." + p.native() + APP_RESOURCES_DIR +
-  p.native() + "GameOfLife" + p.native() + "bglight.png";
-
-const std::string BG_DARK = ".." + p.native() + APP_RESOURCES_DIR +
-  p.native() + "GameOfLife" + p.native() + "bgdark.png";
-
 /// \brief Maximum number of active windows we will attempt to spawn in this
 /// example.
 const nom::int32 MAXIMUM_WINDOWS = 1;
-#if defined(NOM_PLATFORM_OSX) && defined(CMAKE_FRAMEWORK)
-  // Resources/creep_16.png
-  std::string IMG_CREEP = APP_RESOURCES_DIR + p.native() + "creep_16.png";
-  std::string BG_LIGHT = APP_RESOURCES_DIR + p.native() + "bglight.png";
-  std::string BG_DARK = APP_RESOURCES_DIR + p.native() + "bgdark.png";
-#endif
 
 /// \brief Usage example
 class App: public nom::SDLApp
@@ -103,6 +134,10 @@ class App: public nom::SDLApp
     {
       NOM_LOG_TRACE( NOM );
 
+      // Locate the GameOfLife resources relative to the executable before
+      // nom::init changes the working directory.
+      init_resource_paths( argv[0] );
+
       // Fatal error; if we are not able to complete this step, it means that
       // we probably cannot rely on our resource paths!
       if( nom::init( argc, argv ) == false )
@@ -110,9 +145,6 @@ class App: public nom::SDLApp
         nom::DialogMessageBox( APP_NAME, "ERROR: Could not initialize nomlib." );
         exit( NOM_EXIT_FAILURE );
       }
-
-      //Dir fs_root;
-      //fs_root.set_file_root("..");
 
       atexit( nom::quit );
     } // end App
@@ -133,8 +165,7 @@ class App: public nom::SDLApp
       }
 
       if(this->window.set_window_icon(RESOURCE_ICON) == false) {
-        NOM_LOG_ERR(NOM, "ERROR: Could not load window icon at " + RESOURCE_ICON);
-        nom::DialogMessageBox( APP_NAME, "ERROR: COULD NOT LOAD WINDOW ICON AT " + RESOURCE_ICON );
+        nom::DialogMessageBox( APP_NAME, "ERROR: Could not load window icon: " + RESOURCE_ICON );
         return false;
       }
 
@@ -146,21 +177,18 @@ class App: public nom::SDLApp
 
       if( this->creep.load( IMG_CREEP ) == false )
       {
-        NOM_LOG_ERR(NOM, "Error: COULD NOT LOAD RESOURCE AT " + IMG_CREEP);
         nom::DialogMessageBox( APP_NAME, "ERROR: Could not load resource file: " + IMG_CREEP );
         return false;
       }
 
       if( this->bg_light.load( BG_LIGHT ) == false )
       {
-        NOM_LOG_ERR(NOM, "Error: COULD NOT LOAD RESOURCE AT " + BG_LIGHT);
         nom::DialogMessageBox( APP_NAME, "ERROR: Could not load resource file: " + BG_LIGHT );
         return false;
       }
 
       if( this->bg_dark.load( BG_DARK ) == false )
       {
-        NOM_LOG_ERR(NOM, "Error: COULD NOT LOAD RESOURCE AT " + BG_DARK);
         nom::DialogMessageBox( APP_NAME, "ERROR: Could not load resource file: " + BG_DARK );
         return false;
       }

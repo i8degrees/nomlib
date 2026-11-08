@@ -1,5 +1,7 @@
 # nom_GameOfLife example
 
+set(STATIC_ASSETS "${PROJECT_SOURCE_DIR}/Resources/GameOfLife")
+
 set(SHARED_ASSETS
   "${PROJECT_SOURCE_DIR}/Resources/GameOfLife/assets/img/bgdark.png"
   "${PROJECT_SOURCE_DIR}/Resources/GameOfLife/assets/img/bglight.png"
@@ -31,10 +33,7 @@ target_include_directories(nom_GameOfLife
 
 target_sources(nom_GameOfLife
   PRIVATE
-  "${STATIC_ASSETS}/assets/img/bgdark.png"
-  "${STATIC_ASSETS}/assets/img/bglight.png"
-  "${STATIC_ASSETS}/assets/img/pink.png"
-  #"${STATIC_ASSETS}/icon.png"
+  ${SHARED_ASSETS}
 )
 
 
@@ -44,6 +43,11 @@ target_link_libraries(nom_GameOfLife
   nomlib-graphics
   nomlib-serializers
   nomlib-system
+)
+
+target_compile_features(nom_GameOfLife
+  PRIVATE
+  cxx_std_17
 )
 
 if(APPLE)
@@ -60,7 +64,7 @@ if(APPLE)
       MACOSX_DEPLOYMENT_TARGET "10.15"
       MACOSX_BUNDLE_COPYRIGHT "(c) COPYRIGHT 2014..${TIMESTAMP} JEFFREY CARPENTER <1329364+i8degrees@users.noreply.github.com>"
       MACOSX_BUNDLE_INFO_PLIST "${PROJECT_SOURCE_DIR}/cmake/templates/app.plist.in"
-      RESOURCE "${MACOSX_ASSETS}"
+      RESOURCE ${SHARED_ASSETS}
   )
 endif()
 

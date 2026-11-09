@@ -45,11 +45,6 @@ target_link_libraries(nom_GameOfLife
   nomlib-system
 )
 
-target_compile_features(nom_GameOfLife
-  PRIVATE
-  cxx_std_17
-)
-
 if(APPLE)
   string(TIMESTAMP CURR_YEAR "%Y")
   # Setup a MacOS Application bundle

@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Private headers
 #include "nomlib/system/Path.hpp"
+#include "nomlib/system/filesystem.hpp"
 
 namespace nom {
 
@@ -52,106 +53,63 @@ WinFile::~WinFile( void )
 
 const std::string WinFile::extension ( const std::string& file )
 {
-  std::string extension = "\0";
+  filesystem::path p( file );
+  std::string ext = p.extension().native();
 
-  if ( file.find_last_of ( "." ) != std::string::npos ) // match found
+  // nomlib's historical extension() returns the extension without the dot.
+  if( ! ext.empty() && ext[0] == '.' )
   {
-    extension = file.substr ( file.find_last_of (".") + 1 );
+    ext.erase( 0, 1 );
   }
 
-  // if we reach this point, return false (a null terminated string)
-  return extension;
+  return ext;
 }
 
 int32 WinFile::size( const std::string& file_path )
 {
-  NOM_STUBBED( NOM );
-
-  return 0;
+  return static_cast<int32>( filesystem::file_size( file_path ) );
 }
 
 bool WinFile::is_dir( const std::string& file_path )
 {
-  DWORD attr = 0;
-
-  attr = GetFileAttributes( file_path.c_str() );
-
-  if( attr == FILE_ATTRIBUTE_DIRECTORY )
-  {
-    return true;
-  }
-
-  return false;
+  return filesystem::is_directory( file_path );
 }
 
 bool WinFile::is_file( const std::string& file_path )
 {
-  DWORD attr = 0;
-
-  attr = GetFileAttributes( file_path.c_str() );
-
-  if( attr != INVALID_FILE_ATTRIBUTES && this->is_dir( file_path ) == false )
-  {
-    return true;
-  }
-
-  return false;
+  return filesystem::is_regular_file( file_path );
 }
 
 bool WinFile::exists( const std::string& file_path )
 {
-  return( this->is_dir( file_path ) || this->is_file( file_path ) );
+  return filesystem::exists( file_path );
 }
 
 const std::string WinFile::path( const std::string& dir_path )
 {
-  Path p;
-  nom::size_type pos = std::string::npos;
+  filesystem::path p( dir_path );
+  filesystem::path parent = p.parent_path();
 
-  // Try finding the last directory delimiter using the platform's native
-  // separator
-  pos = dir_path.find_last_of( p.native(), PATH_MAX );
+  if( parent.empty() ) return ".";
 
-  // No luck, let's see if we have a POSIX path
-  if( pos == std::string::npos ) {
-    pos = dir_path.find_last_of( "/", PATH_MAX );
-  }
-
-  // If no matches are found, this means the file path given is actually a base
-  // file name path, without any directory path at all.
-  // See also 'man 3 basename'
-  if( pos == std::string::npos ) return ".";
-
-  // A match was found -- return only the directory path leading up to the
-  // file name path, without a a trailing path separator.
-  return dir_path.substr( 0, pos );
+  return parent.native();
 }
 
 std::string WinFile::currentPath( void )
 {
-  char* buffer = nullptr;
-  char* path = nullptr;
-  std::string pwd( ".\\" );
-
-  path = _getcwd( buffer, PATH_MAX );
-
-  if( path != nullptr )
-  {
-    pwd = path;
-  }
-  else
+  std::string pwd = filesystem::current_path().native();
+  if( pwd.empty() )
   {
     NOM_LOG_ERR( NOM, "Could not get the current working directory path." );
   }
-
   return pwd;
 }
 
 bool WinFile::set_path ( const std::string& path )
 {
-  if ( _chdir ( path.c_str() ) != 0 )
+  if ( ::_chdir ( path.c_str() ) != 0 )
   {
-NOM_LOG_ERR ( NOM, "Unknown error on attempt to change working directory to: " + path );
+    NOM_LOG_ERR ( NOM, "Unknown error on attempt to change working directory to: " + path );
     return false;
   }
 
@@ -160,15 +118,7 @@ NOM_LOG_ERR ( NOM, "Unknown error on attempt to change working directory to: " +
 
 const std::string WinFile::basename ( const std::string& filename )
 {
-  nom::size_type pos = 0;
-  pos = filename.find_last_of ( ".", PATH_MAX );
-
-  // If no matches are found, return the input filename back to the end-user.
-  if ( pos == std::string::npos ) return filename; // Failure
-
-  // Bingo! A match was found -- return everything leading up to --
-  // the last '.' character found (excluding the dot).
-  return filename.substr ( 0, pos );
+  return filesystem::path( filename ).stem().native();
 }
 
 std::vector<std::string> WinFile::read_dir( const std::string& dir_path )
@@ -350,88 +300,18 @@ const std::string WinFile::system_path( void )
 
 bool WinFile::mkdir( const std::string& path )
 {
-  DWORD err = 0;
-
-  if( CreateDirectory( path.c_str(), nullptr ) != 0 )
-  {
-    // Successful directory creation
-    return true;
-  }
-  else // Err
-  {
-    err = GetLastError();
-    if( err == ERROR_ALREADY_EXISTS )
-    {
-      NOM_LOG_ERR( NOM, "Could not create directory path: given path already exists at", path );
-      return false;
-    }
-    else if( err == ERROR_PATH_NOT_FOUND )
-    {
-      NOM_LOG_ERR( NOM, "Could not create directory path: given path does not exist at", path );
-      return false;
-    }
-
-    NOM_LOG_ERR( NOM, "Could not create directory path: unknown err return value of", err );
-
-    // Unknown err code
-    return false;
-  }
+  return filesystem::create_directory( path );
 }
 
 bool WinFile::recursive_mkdir( const std::string& path )
 {
-  nom::size_type pos = std::string::npos;
-
-  Path p;
-  std::string delimiter = p.native();
-
-  if( this->exists( path ) == false )
-  {
-    pos = path.find_last_of( p.native() );
-
-    if( pos != std::string::npos )
-    {
-      this->recursive_mkdir( path.substr( 0, pos ) );
-    }
-
-    if( this->mkdir( path.c_str() ) == true )
-    {
-      return true;
-    }
-  }
-  else if( this->exists( path ) == true )
-  {
-    return false;
-  }
-
-  // Unknown err code
-  return false;
+  return filesystem::create_directories( path );
 }
-
 
 bool WinFile::rmdir( const std::string& path )
 {
-  DWORD err = 0;
-
-  if( RemoveDirectory( path.c_str() ) != 0 )
-  {
-    // Successful directory removal
-    return true;
-  }
-  else // Err
-  {
-    err = GetLastError();
-    if( err == ERROR_PATH_NOT_FOUND )
-    {
-      NOM_LOG_ERR( NOM, "Could not remove directory path: given path does not exist at", path );
-      return false;
-    }
-
-    NOM_LOG_ERR( NOM, "Could not remove directory path: unknown err return value of", err );
-
-    // Unknown err
-    return false;
-  }
+  if( ! filesystem::is_directory( path ) ) return false;
+  return filesystem::remove( path );
 }
 
 bool WinFile::mkfile( const std::string& path )

@@ -2,20 +2,32 @@
 
 ## Unreleased ##
 
-* Fixed `examples/GameOfLife/CMakeLists.txt` missing `STATIC_ASSETS` definition and
-  using an undefined `${STATIC_ASSETS}` variable in its target sources and
+* Fixed `examples/GameOfLife/CMakeLists.txt` missing `STATIC_ASSETS` definition
+  and using an undefined `${STATIC_ASSETS}` variable in its target sources and
   post-build copy command.
 
 * Fixed `examples/GameOfLife/game.cpp` duplicate global definitions of
   `IMG_CREEP`, `BG_LIGHT`, and `BG_DARK` that caused a build failure.
 
 * Changed `examples/GameOfLife/game.cpp` resource paths to be resolved at
-  runtime with C++17 `std::filesystem`. The example now locates its
-  `Resources/GameOfLife` directory relative to the executable, supporting
-  multiple build, install, and bundle layouts.
+  runtime. The example now locates its `Resources/GameOfLife` directory
+  relative to the executable, supporting multiple build, install, and bundle
+  layouts.
 
-* Added `target_compile_features(nom_GameOfLife PRIVATE cxx_std_17)` to enable
-  `<filesystem>` support for the GameOfLife example.
+* Added a C++14-compatible `nom::filesystem` layer compatible with the
+  ISO/IEC TS 18822:2015 (N4100) / Boost.Filesystem path model.
+
+* Rewrote `nom::Path` as a thin wrapper around `nom::filesystem::path`.
+
+* Refactored `nom::File`, `nom::UnixFile`, and `nom::WinFile` to use
+  `nom::filesystem` for path decomposition and file system queries.
+
+* Updated `nomlib-file` to build `src/system/filesystem.cpp` and install the
+  public header `include/nomlib/system/filesystem.hpp`.
+
+* Switched the GameOfLife example from C++17 `std::filesystem` to the new
+  C++14 `nom::filesystem` implementation and removed the target-specific
+  C++17 requirement.
 
 ## nom::SpriteSheet Sheets ##
 

@@ -35,26 +35,31 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "export.hpp"
 #include "nomlib/config.hpp"
+#include "nomlib/system/filesystem.hpp"
 
 namespace nom {
 
-/// \brief Platform-agnostic handling of directory paths
+/// \brief Platform-agnostic handling of directory paths.
+///
+/// This class is now a thin wrapper around nom::filesystem::path, preserving
+/// the historical nomlib API while gaining proper path decomposition.
 class NOM_EXPORT Path
 {
   public:
     /// Platform-dependent data typedef used for defining the preferred file
     /// path separator.
-    ///
-    /// \see ::init.
     typedef std::string value_type;
 
     /// \brief Initialize the platform's native path delimiter.
+    ///
+    /// \remarks Kept for backward compatibility; the separator is provided by
+    /// nom::filesystem::path::preferred_separator.
     void init( void );
 
-    /// \brief Default constructor; initialize the native path delimiter.
+    /// \brief Default constructor.
     Path ( void );
 
-    /// \brief Destructor; nothing to clean up (automatic clean up).
+    /// \brief Destructor.
     ~Path ( void );
 
     /// \brief Construct a complete object.
@@ -62,29 +67,21 @@ class NOM_EXPORT Path
     /// \param p The relative or absolute path to a file or directory.
     Path ( const std::string& p );
 
-    /// Obtain native path (directory) separator; the value returned is
-    /// dependent upon the platform and is determined at compile-time, not
-    /// run-time.
+    /// Obtain native path (directory) separator for the current platform.
     const value_type& native ( void ) const;
 
-    /// Obtain assigned pathname
+    /// Obtain assigned pathname.
     const std::string& path ( void ) const;
 
-    /// Assignment operator
+    /// Assignment operator.
     Path& operator =( const Path& rhs );
 
-    /// \brief Add the set object's file path to the beginning of a file path.
-    ///
-    /// \returns If the set file path does not end with a backslash character,
-    /// one is appended beforehand, otherwise the object's file path is appended
-    /// to the specified file path.
-    ///
-    /// \todo Rename to append.
+    /// \brief Prefix the stored path to the given path, inserting a separator
+    /// when needed.
     std::string prepend( const std::string& path ) const;
 
   private:
-    value_type path_separator;
-    std::string pathname;
+    filesystem::path p_;
 };
 
 

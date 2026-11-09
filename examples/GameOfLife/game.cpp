@@ -40,7 +40,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <random> // FIXME
 #include <vector>
-#include <filesystem>
 
 // Pubic nomlib interface headers
 #include "nomlib/math.hpp"
@@ -48,7 +47,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics.hpp"
 
 using namespace nom;
-namespace fs = std::filesystem;
 
 #define GAMEOFLIFE_DEBUG 0
 
@@ -60,16 +58,21 @@ namespace fs = std::filesystem;
 ///   - <exe>/../../Resources/GameOfLife            (development build/<cfg>)
 ///   - <exe>/../../../Resources/GameOfLife          (CMake build/<cfg>/bin)
 ///   - <exe>/../share/nomlib/Resources/GameOfLife   (installed prefix layout)
-fs::path find_resource_dir( const char* argv0 )
+filesystem::path find_resource_dir( const char* argv0 )
 {
-  fs::path exe_dir;
-  try {
-    exe_dir = fs::canonical( argv0 ).parent_path();
-  } catch( ... ) {
-    exe_dir = fs::path( argv0 ).parent_path();
+  filesystem::path argv_path( argv0 );
+  filesystem::path exe_dir;
+
+  if( argv_path.is_absolute() )
+  {
+    exe_dir = argv_path.parent_path();
+  }
+  else
+  {
+    exe_dir = ( filesystem::current_path() / argv_path ).parent_path();
   }
 
-  const std::vector<fs::path> candidates = {
+  const std::vector<filesystem::path> candidates = {
     exe_dir / "Resources" / "GameOfLife",
     exe_dir / ".." / "Resources" / "GameOfLife",
     exe_dir / ".." / ".." / "Resources" / "GameOfLife",
@@ -78,14 +81,13 @@ fs::path find_resource_dir( const char* argv0 )
   };
 
   for( const auto& c : candidates ) {
-    fs::path resolved = fs::weakly_canonical( c );
-    if( fs::is_directory( resolved ) ) {
-      return resolved;
+    if( filesystem::is_directory( c ) ) {
+      return c;
     }
   }
 
   // Preserve the preferred fallback even when nothing exists.
-  return fs::weakly_canonical( candidates.at(0) );
+  return candidates.at(0);
 }
 
 /// \brief Resource path helpers; populated at runtime from executable location.
@@ -97,12 +99,12 @@ std::string BG_DARK;
 /// Initialize resource paths using the executable's filesystem location.
 void init_resource_paths( const char* argv0 )
 {
-  fs::path base = find_resource_dir( argv0 );
+  filesystem::path base = find_resource_dir( argv0 );
 
-  RESOURCE_ICON = ( base / "assets" / "icn" / "creep.png" ).string();
-  IMG_CREEP = ( base / "assets" / "img" / "creep_16.png" ).string();
-  BG_LIGHT = ( base / "assets" / "img" / "bglight.png" ).string();
-  BG_DARK = ( base / "assets" / "img" / "bgdark.png" ).string();
+  RESOURCE_ICON = ( base / "assets" / "icn" / "creep.png" ).native();
+  IMG_CREEP = ( base / "assets" / "img" / "creep_16.png" ).native();
+  BG_LIGHT = ( base / "assets" / "img" / "bglight.png" ).native();
+  BG_DARK = ( base / "assets" / "img" / "bgdark.png" ).native();
 }
 
 /// \brief Relative filename path to saved screen shot example

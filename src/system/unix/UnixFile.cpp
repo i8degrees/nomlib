@@ -47,6 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Private headers
 #include "nomlib/system/Path.hpp"
+#include "nomlib/system/filesystem.hpp"
 
 namespace nom {
 
@@ -62,112 +63,58 @@ UnixFile::~UnixFile()
 
 const std::string UnixFile::extension(const std::string& file)
 {
-  std::string extension = "\0";
+  filesystem::path p( file );
+  std::string ext = p.extension().native();
 
-  if ( file.find_last_of ( "." ) != std::string::npos ) // match found
+  // nomlib's historical extension() returns the extension without the dot.
+  if( ! ext.empty() && ext[0] == '.' )
   {
-    extension = file.substr ( file.find_last_of (".") + 1 );
+    ext.erase( 0, 1 );
   }
 
-   // if we reach this point, return false (a null terminated string)
-  return extension;
+  return ext;
 }
 
 int32 UnixFile::size(const std::string& file_path)
 {
-  struct stat file;
-
-  if ( ! stat ( file_path.c_str(), &file ) )
-  {
-    return file.st_size;
-  }
-
-  return -1;
+  return static_cast<int32>( filesystem::file_size( file_path ) );
 }
 
 bool UnixFile::is_dir(const std::string& file_path)
 {
-  struct stat fp;
-
-  if( stat( file_path.c_str(), &fp ) == 0 )
-  {
-    if( fp.st_mode & S_IFDIR )
-    {
-      return true;
-    }
-  }
-
-  return false;
+  return filesystem::is_directory( file_path );
 }
 
 bool UnixFile::is_file(const std::string& file_path)
 {
-  struct stat fp;
-
-  if( stat( file_path.c_str(), &fp ) == 0 && ( S_ISREG( fp.st_mode ) ) )
-  {
-    return true;
-  }
-
-  return false;
+  return filesystem::is_regular_file( file_path );
 }
 
 bool UnixFile::exists(const std::string& file_path)
 {
-  return( this->is_dir( file_path ) || this->is_file( file_path ) );
+  return filesystem::exists( file_path );
 }
-
-// const std::string UnixFile::path ( const std::string& dir_path )
-// {
-//   // We must do this string conversion -- from a std::string to a char
-//   // pointer -- because the c_str method returns a const char pointer, which
-//   // cannot be used for the dirname function, as this call modifies the contents
-//   // of the passed variable.
-
-//   char path[PATH_MAX];
-
-//   std::strcpy ( path, dir_path.c_str() );
-
-//   return dirname ( path );
-// }
 
 const std::string UnixFile::path(const std::string& dir_path)
 {
-  Path p; // Just to be safe, we'll let nom::path determine our path separator!
+  filesystem::path p( dir_path );
+  filesystem::path parent = p.parent_path();
 
-  int32 pos = dir_path.find_last_of( p.native(), PATH_MAX );
+  if( parent.empty() ) return ".";
 
-  // If no matches are found, this means the file path given is actually a base
-  // file name path, without any directory path at all.
-  // See also 'man 3 basename'
-  if( pos == std::string::npos ) return ".";
-
-  // A match was found -- return only the directory path leading up to the
-  // file name path, without a a trailing path separator.
-  return dir_path.substr( 0, pos );
+  return parent.native();
 }
 
-//std::string UnixFile::path() {}
 std::string UnixFile::currentPath()
 {
-  char path[PATH_MAX];
-
-  if ( getcwd ( path, PATH_MAX ) == nullptr )
-  {
-    NOM_LOG_ERR ( NOM, "Unknown error on attempt to obtain current working directory." );
-    return "\0";
-  }
-
-  std::string cwd ( path );
-
-  return cwd;
+  return filesystem::current_path().native();
 }
 
 bool UnixFile::set_path(const std::string& path)
 {
-  if ( chdir ( path.c_str() ) != 0 )
+  if ( ::chdir( path.c_str() ) != 0 )
   {
-NOM_LOG_ERR ( NOM, "Unknown error on attempt to change working directory to: " + path );
+    NOM_LOG_ERR( NOM, "Unknown error on attempt to change working directory to: " + path );
     return false;
   }
 
@@ -176,15 +123,7 @@ NOM_LOG_ERR ( NOM, "Unknown error on attempt to change working directory to: " +
 
 const std::string UnixFile::basename(const std::string& filename)
 {
-  nom::size_type pos = 0;
-  pos = filename.find_last_of ( ".", PATH_MAX );
-
-  // If no matches are found, return the input filename back to the end-user.
-  if ( pos == std::string::npos ) return filename; // Failure
-
-  // Bingo! A match was found -- return everything leading up to --
-  // the last '.' character found (excluding the dot).
-  return filename.substr ( 0, pos );
+  return filesystem::path( filename ).stem().native();
 }
 
 std::vector<std::string> UnixFile::read_dir(const std::string& dir_path)
@@ -314,73 +253,18 @@ const std::string UnixFile::system_fonts_path()
 
 bool UnixFile::mkdir(const std::string& path)
 {
-  int ret = 0;
-  mode_t perms = 0755;
-
-  if(this->exists(path) == false)
-  {
-    ret = ::mkdir(path.c_str(), perms);
-
-    if( ret == 0 )
-    {
-      // Success!
-      return true;
-    }
-  }
-  else if( this->exists( path ) == true )
-  {
-    NOM_LOG_ERR( NOM, "Could not create directory -- file or directory path exists: ", path );
-    return false;
-  }
-
-  // Unknown err
-  return false;
+  return filesystem::create_directory( path );
 }
 
 bool UnixFile::recursive_mkdir(const std::string& path)
 {
-  nom::size_type pos = std::string::npos;
-
-  Path p;
-  std::string delimiter = p.native();
-
-  if( this->exists( path ) == false )
-  {
-    pos = path.find_last_of( p.native() );
-
-    if( pos != std::string::npos )
-    {
-      this->recursive_mkdir( path.substr( 0, pos ) );
-    }
-
-    if( this->mkdir( path.c_str() ) == true )
-    {
-      return true;
-    }
-  }
-  else if( this->exists( path ) == true )
-  {
-    return false;
-  }
-
-  // Unknown err
-  return false;
+  return filesystem::create_directories( path );
 }
 
 bool UnixFile::rmdir(const std::string& path)
 {
-  int ret = 0;
-
-  ret = ::rmdir( path.c_str() );
-
-  if( ret == 0 )
-  {
-    // Successful directory removal
-    return true;
-  }
-
-  // Err (path not found or access denied at existing path?)
-  return false;
+  if( ! filesystem::is_directory( path ) ) return false;
+  return filesystem::remove( path );
 }
 
 bool UnixFile::mkfile(const std::string& path)

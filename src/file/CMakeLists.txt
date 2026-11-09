@@ -75,6 +75,7 @@ endif(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
 # Base source tree
 target_sources(nomlib-file
   PRIVATE
+  ${SRC_DIR}/system/filesystem.cpp
   ${SRC_DIR}/system/Path.cpp
   ${SRC_DIR}/system/File.cpp
   PUBLIC
@@ -83,6 +84,7 @@ target_sources(nomlib-file
     FILES
     # TODO: Relocate to file sub-directory
     # ${HDR_BASE}/file.hpp
+    ${HDR_BASE}/system/filesystem.hpp
     ${HDR_BASE}/system/Path.hpp
     ${HDR_BASE}/system/File.hpp
     ${HDR_BASE}/system/IFile.hpp

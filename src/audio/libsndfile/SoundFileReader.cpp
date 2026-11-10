@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/audio/libsndfile/SoundFileReader.hpp"
 
 // Private headers
+#include "nomlib/audio/SoundFile.hpp"
 #include "nomlib/math/math_helpers.hpp"
 
 // Forward declarations (third-party)

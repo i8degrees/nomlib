@@ -31,24 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Public header file
 
-#include <nomlib/audio/audio_defs.hpp>
-
-#include <nomlib/audio/ISoundFileReader.hpp>
-#include <nomlib/audio/SoundBuffer.hpp>
-#include <nomlib/audio/SoundFile.hpp>
-
-#if defined(NOM_USE_OPENAL)
-  // #include <nomlib/audio/AL/OpenAL.hpp>
-  #include <nomlib/audio/AL/ALAudioDevice.hpp>
-  #include <nomlib/audio/AL/ALAudioDeviceCaps.hpp>
-  #include <nomlib/audio/AL/SoundSource.hpp>
-#endif
-
-// TODO(jeff): Setup conditional compilation unit for this back-end in time to
-// come..?
-#if defined(NOM_USE_LIBSNDFILE)
-  #include <nomlib/audio/libsndfile/SoundFileReader.hpp>
-  #include <nomlib/audio/libsndfile/SoundFileWriter.hpp>
-#endif
+#include <nomlib/audio/audio.hpp>
 
 #endif // include guard defined

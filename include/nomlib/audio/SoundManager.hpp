@@ -4,7 +4,7 @@
 #include <map>
 #include "export.hpp"
 #include "nomlib/types.hpp"
-#include "nomlib/audio2/Sound.hpp"
+#include "nomlib/audio/Sound.hpp"
 
 namespace nom {
 namespace audio {

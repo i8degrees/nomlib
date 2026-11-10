@@ -5,66 +5,62 @@ add_library(nomlib-audio
   ${LIBRARY_OUTPUT_TYPE} # STATIC || SHARED
 )
 
+set(USE_LIBOGG TRUE)
+set(LOAD_WAV TRUE)
+
+if(LOAD_WAV)
+  # sndfile is already found by this point
+endif()
+
+if(USE_LIBOGG)
+  find_package(Vorbis CONFIG REQUIRED)
+endif()
+
+if(USE_LIBOGG)
+  target_sources(nomlib-audio
+    PRIVATE
+      ${SRC_DIR}/audio/OggSound.cpp
+    PUBLIC
+      FILE_SET HEADERS
+      BASE_DIRS ${HDR_BASE}/audio
+      FILES
+        ${HDR_BASE}/audio/OggSound.hpp
+  )
+endif()
+
 # Default implementation sources (always built)
 target_sources(nomlib-audio
   PRIVATE
-  # ${SRC_DIR}/audio/AudioDeviceLocator.cpp
-  # ${SRC_DIR}/audio/NullAudioDevice.cpp
-  # ${SRC_DIR}/audio/NullAudioDeviceCaps.cpp
+    ${SRC_DIR}/audio/libsndfile/SoundFileReader.cpp
+    ${SRC_DIR}/audio/AL/OpenAL.cpp
+    ${SRC_DIR}/audio/ALAudioContext.cpp
+    ${SRC_DIR}/audio/ALAudioRenderer.cpp
+    ${SRC_DIR}/audio/ALSoundSource.cpp
+    ${SRC_DIR}/audio/AudioDeviceLocator.cpp
+    ${SRC_DIR}/audio/ISoundSource.cpp
+    ${SRC_DIR}/audio/Sound.cpp
+    ${SRC_DIR}/audio/SoundManager.cpp
+    ${SRC_DIR}/audio/StreamSound.cpp
+    ${SRC_DIR}/audio/init.cpp
+    ${SRC_DIR}/audio/vendor/Matrix4.cpp
   PUBLIC
     FILE_SET HEADERS
-    BASE_DIRS ${HDR_BASE}
+    BASE_DIRS ${HDR_BASE}/audio
     FILES
-    ${HDR_BASE}/audio.hpp
-    ${HDR_BASE}/audio/audio_defs.hpp
-    ${HDR_BASE}/audio/SoundBuffer.hpp
-    ${HDR_BASE}/audio/ISoundFileReader.hpp
-    ${HDR_BASE}/audio/ISoundFileWriter.hpp
-    ${HDR_BASE}/audio/SoundFile.hpp
-    ${HDR_BASE}/audio/IAudioDevice.hpp
-    ${HDR_BASE}/audio/IOAudioEngine.hpp
-    # ${HDR_BASE}/audio/AudioDeviceLocator.hpp
-    # ${HDR_BASE}/audio/NullAudioDevice.hpp
-    # ${HDR_BASE}/audio/NullAudioDeviceCaps.hpp
-)
-
-# Common dependencies on all platforms
-if(NOM_BUILD_AUDIO_UNIT)
-  # Common implementation sources (OpenAL)
-  target_sources(nomlib-audio
-    PRIVATE
-    ${SRC_DIR}/audio/AL/ALAudioDevice.cpp
-    ${SRC_DIR}/audio/AL/ALAudioDeviceCaps.cpp
-    ${SRC_DIR}/audio/AL/OpenAL.cpp
-    # TODO(jeff): Divide libsndfile directory into its own source segment
-    ${SRC_DIR}/audio/libsndfile/SoundFileReader.cpp
-    # ${SRC_DIR}/audio/libsndfile/SoundFileWriter.cpp
-    ${SRC_DIR}/audio/AL/SoundSource.cpp
-    PUBLIC
-      FILE_SET HEADERS
-      BASE_DIRS ${HDR_BASE}
-      FILES
-      ${HDR_BASE}/audio/AL/ALAudioDevice.hpp
-      ${HDR_BASE}/audio/AL/ALAudioDeviceCaps.hpp
       ${HDR_BASE}/audio/AL/OpenAL.hpp
-      ${HDR_BASE}/audio/AL/SoundSource.hpp
-      # TODO(jeff): Divide libsndfile directory into its own source segment
-      ${HDR_BASE}/audio/libsndfile/SoundFileReader.hpp
-      ${HDR_BASE}/audio/libsndfile/SoundFileWriter.hpp
-    )
-    # ...Mac OS X specific OpenAL implementation details...
-    if(APPLE OR DEFINED NOM_USE_APPLE_OPENAL)
-      target_sources(nomlib-audio
-        PRIVATE
-        ${SRC_DIR}/audio/AL/osx/apple_extensions.cpp
-        PUBLIC
-          FILE_SET HEADERS
-          BASE_DIRS ${HDR_BASE}
-          FILES
-          ${HDR_BASE}/audio/AL/osx/apple_extensions.hpp
-      )
-    endif()
-endif(NOM_BUILD_AUDIO_UNIT)
+      ${HDR_BASE}/audio/ALAudioContext.hpp
+      ${HDR_BASE}/audio/ALAudioRenderer.hpp
+      ${HDR_BASE}/audio/ALSoundSource.hpp
+      ${HDR_BASE}/audio/AudioDeviceLocator.hpp
+      ${HDR_BASE}/audio/IAudioContext.hpp
+      ${HDR_BASE}/audio/IAudioDevice.hpp
+      ${HDR_BASE}/audio/init.hpp
+      ${HDR_BASE}/audio/ISoundSource.hpp
+      ${HDR_BASE}/audio/OggSound.hpp
+      ${HDR_BASE}/audio/Sound.hpp
+      ${HDR_BASE}/audio/SoundManager.hpp
+      ${HDR_BASE}/audio/StreamSound.hpp
+)
 
 # This is embedded as the SONAME in the library's ELF header and determinnes
 # which file the dynamic linker searches for at runtime, i.e.:
@@ -76,6 +72,26 @@ set_target_properties(nomlib-audio
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     DEBUG_POSTFIX "-d"
+)
+
+if(LOAD_WAV)
+  target_compile_definitions(nomlib-audio
+    PUBLIC
+      LOAD_WAV
+  )
+endif()
+
+if(USE_LIBOGG)
+  target_compile_definitions(nomlib-audio
+    PUBLIC
+      USE_LIBOGG
+  )
+endif()
+
+target_compile_definitions(nomlib-audio
+  PUBLIC
+    VERBOSE
+    DEBUG
 )
 
 if(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
@@ -94,15 +110,15 @@ endif(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
 
 target_include_directories(nomlib-audio
   PRIVATE
-  ${PROJECT_SOURCE_DIR}/include # include/nomlib
-  ${SDL2_INCLUDE_DIR}
-  ${OPENAL_INCLUDE_DIR}
-  ${LIBSNDFILE_INCLUDE_DIR}
+    ${PROJECT_SOURCE_DIR}/include # include/nomlib
+    ${SDL2_INCLUDE_DIR}
+    ${OPENAL_INCLUDE_DIR}
+    ${LIBSNDFILE_INCLUDE_DIR}
 )
 
 target_compile_features(nomlib-audio
   PRIVATE
-    cxx_std_14
+    ${nom_cxx_std}
 )
 
 # Common dependencies on all platforms
@@ -114,8 +130,29 @@ target_link_libraries(nomlib-audio
   PRIVATE
     project_warnings
     OpenAL::OpenAL
-    SndFile::sndfile
 )
+
+if(LOAD_WAV)
+  target_link_libraries(nomlib-audio
+    PUBLIC
+      nomlib-core
+      nomlib-math
+      nomlib-system
+    PRIVATE
+      SndFile::sndfile
+  )
+endif(LOAD_WAV)
+
+if(USE_LIBOGG)
+  target_link_libraries(nomlib-audio
+    PUBLIC
+      nomlib-core
+      nomlib-math
+      nomlib-system
+    PRIVATE
+      Vorbis::vorbisfile
+  )
+endif(USE_LIBOGG)
 
 # MacOSX Framework bundle support
 set_target_properties(nomlib-audio
@@ -159,6 +196,6 @@ install(TARGETS nomlib-audio
   FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     COMPONENT Development
   # MacOSX framework bundle
-  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX}
     COMPONENT Runtime
 )

@@ -4,9 +4,9 @@
 #include "nomlib/types.hpp"
 #include "nomlib/audio/SoundFile.hpp"
 #include "nomlib/math/Matrix.hpp"
-#include "nomlib/audio2/IAudioDevice.hpp"
-#include "nomlib/audio2/ALAudioContext.hpp"
-#include "nomlib/audio2/ISoundSource.hpp"
+#include "nomlib/audio/IAudioDevice.hpp"
+#include "nomlib/audio/ALAudioContext.hpp"
+#include "nomlib/audio/ISoundSource.hpp"
 #include "nomlib/audio/AL/OpenAL.hpp"
 
 #include <vector>

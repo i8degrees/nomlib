@@ -1,65 +1,45 @@
-/******************************************************************************
-
-  nomlib - C++11 cross-platform game engine
-
-Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-******************************************************************************/
-#ifndef NOMLIB_AUDIO_AUDIO_DEVICE_LOCATOR_HPP
-#define NOMLIB_AUDIO_AUDIO_DEVICE_LOCATOR_HPP
+#pragma once
 
 #include "export.hpp"
-#include "nomlib/config.hpp"
-#include "nomlib/audio/NullAudioDevice.hpp"
+#include "nomlib/types.hpp"
+#include "nomlib/audio/IAudioDevice.hpp"
+
+typedef nom::audio::IAudioDevice* ptr_renderer;
+// typedef IAudioContext* ptr_ctx;
+
+/* Experimental typedefs - unused but reserved */
+typedef std::unique_ptr<ptr_renderer> unique_ptr;
+typedef std::shared_ptr<ptr_renderer> shared_ptr;
+typedef std::weak_ptr<ptr_renderer> weak_ptr;
 
 namespace nom {
+namespace audio {
 
 // Forward declarations
 class IAudioDevice;
+class IAudioContext;
 
+// Global "Singleton" class interface for audio subsystem
 class NOM_EXPORT AudioDeviceLocator
 {
   public:
-    ~AudioDeviceLocator( void );
+    static void release();
+    static ptr_renderer instance();
 
-    NOM_EXPORT static void initialize( void );
-    NOM_EXPORT static IAudioDevice& audio_device( void );
-    NOM_EXPORT static void set_provider( IAudioDevice* service );
-
+    static void setup_provider(ptr_renderer dev);
+  protected:
+    AudioDeviceLocator();
+    ~AudioDeviceLocator();
   private:
-    NOM_EXPORT static IAudioDevice* audio_;
-    NOM_EXPORT static NullAudioDevice null_audio_;
+    static void initialize();
+    static ptr_renderer audio_; // device handle
 };
 
+NOM_EXPORT ptr_renderer create_audio_renderer(nom::uint32 channels);
+// ?? Future implementation
+// ptr_renderer create_audio_renderer(nom::uint32 channels = 64, uint32 audio_specs);
+
+//ictx_renderer create_audio_input(nom::uint32 channels);
+
+} // namespace audio
 } // namespace nom
-
-#endif // include guard defined
-
-/// \class nom::AudioDeviceLocator
-/// \ingroup audio
-///
-/// Experimental interface (incomplete).
-///
-/// \see http://gameprogrammingpatterns.com/service-locator.html
-///

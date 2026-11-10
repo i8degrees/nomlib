@@ -6,7 +6,7 @@
 #include <vorbis/vorbisfile.h>
 
 #include "export.hpp"
-#include "nomlib/audio2/Sound.hpp"
+#include "nomlib/audio/Sound.hpp"
 #include "nomlib/types.hpp"
 
 typedef FILE file_handle;

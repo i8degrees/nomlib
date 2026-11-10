@@ -43,7 +43,6 @@ target_link_libraries(nom_astream
   PUBLIC
     #nomlib-actions
     nomlib-audio
-    nomlib-audio2
     nomlib-core
     nomlib-math
     nomlib-serializers
@@ -82,7 +81,7 @@ add_custom_command(TARGET nom_astream
 # nomlib-actions
 copy_framework_dep(nom_astream
   nomlib-actions
-  nomlib-audio2
+  nomlib-audio
   nomlib-core
   nomlib-file
   nomlib-graphics

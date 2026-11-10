@@ -3,7 +3,7 @@
 #include "export.hpp"
 #include "nomlib/types.hpp"
 #include "nomlib/audio/AL/OpenAL.hpp"
-#include "nomlib/audio2/IAudioContext.hpp"
+#include "nomlib/audio/IAudioContext.hpp"
 
 namespace nom {
 namespace audio {

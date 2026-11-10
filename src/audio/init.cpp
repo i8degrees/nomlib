@@ -1,8 +1,8 @@
 
-#include "nomlib/audio2/init.hpp"
-#include "nomlib/audio2/ALAudioRenderer.hpp"
-#include "nomlib/audio2/AudioDeviceLocator.hpp"
-#include "nomlib/audio2/SoundManager.hpp"
+#include "nomlib/audio/init.hpp"
+#include "nomlib/audio/ALAudioRenderer.hpp"
+#include "nomlib/audio/AudioDeviceLocator.hpp"
+#include "nomlib/audio/SoundManager.hpp"
 
 #include <iostream>
 

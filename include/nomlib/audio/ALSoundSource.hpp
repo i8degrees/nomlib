@@ -2,8 +2,8 @@
 
 #include "export.hpp"
 #include "nomlib/types.hpp"
-#include "nomlib/audio2/Sound.hpp"
-#include "nomlib/audio2/ISoundSource.hpp"
+#include "nomlib/audio/Sound.hpp"
+#include "nomlib/audio/ISoundSource.hpp"
 
 #define NUM_STREAM_BUFFERS 3
 

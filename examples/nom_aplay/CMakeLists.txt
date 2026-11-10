@@ -42,8 +42,7 @@ endif(TARGET SDL2::SDL2main)
 target_link_libraries(nom_aplay
   PUBLIC
     #nomlib-actions
-    #nomlib-audio
-    nomlib-audio2
+    nomlib-audio
     nomlib-core
     nomlib-math
     nomlib-serializers
@@ -83,7 +82,6 @@ add_custom_command(TARGET nom_aplay
 copy_framework_dep(nom_aplay
   nomlib-actions
   nomlib-audio
-  nomlib-audio2
   nomlib-core
   nomlib-file
   nomlib-graphics

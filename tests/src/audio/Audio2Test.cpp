@@ -5,7 +5,7 @@
   Copyright (c) 2013, 2014, 2015, 2016 Jeffrey Carpenter <i8degrees@gmail.com>
   All rights reserved.
 
-  This test exercises the `nomlib-audio2` OpenAL-backed audio subsystem.
+  This test exercises the `nomlib-audio` OpenAL-backed audio subsystem.
 
 ******************************************************************************/
 #include <iostream>
@@ -17,7 +17,7 @@
 #include <nomlib/system/init.hpp>
 #include <nomlib/system/Timer.hpp>
 #include <nomlib/core/clock.hpp>
-#include <nomlib/audio2/audio.hpp>
+#include <nomlib/audio/audio.hpp>
 
 #ifndef NOM_PROJECT_SOURCE_DIR
   #define NOM_PROJECT_SOURCE_DIR "."

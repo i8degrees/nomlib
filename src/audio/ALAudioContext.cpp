@@ -1,6 +1,6 @@
 
 #include "nomlib/types.hpp"
-#include "nomlib/audio2/ALAudioContext.hpp"
+#include "nomlib/audio/ALAudioContext.hpp"
 #include "nomlib/math/math_helpers.hpp"
 
 using namespace std;

@@ -34,9 +34,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/audio/ISoundFileReader.hpp"
+#include "nomlib/audio/SoundFile.hpp"
 
 // Forward declarations
-struct SoundInfo;
 typedef struct SF_INFO SF_INFO;
 typedef struct sf_private_tag SNDFILE_tag;
 

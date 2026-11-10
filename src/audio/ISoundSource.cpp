@@ -1,6 +1,6 @@
 #include "nomlib/math/math_helpers.hpp"
-#include "nomlib/audio2/ISoundSource.hpp"
-#include "nomlib/audio2/Sound.hpp"
+#include "nomlib/audio/ISoundSource.hpp"
+#include "nomlib/audio/Sound.hpp"
 
 using namespace nom;
 using namespace nom::audio;

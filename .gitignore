@@ -37,3 +37,5 @@ third-party*/
 vcpkg_installed/*
 !vcpkg-lock.json
 
+inference/
+

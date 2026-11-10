@@ -33,6 +33,10 @@
   The test exercises initialization, `SoundManager` lookup, WAV metadata
   accessors, `IAudioDevice::play_sound`, and renderer updates.
 
+* Added a streaming audio test case that mirrors `examples/nom_astream`: it
+  loads `laura_ff1-s16-mono.ogg` with `streaming=true`, plays it at zero gain,
+  and exercises the renderer update loop for two seconds.
+
 * Fixed `SoundManager::free_sounds()` to erase entries while iterating,
   removing stale pointers after deleting cached `Sound` objects.
 

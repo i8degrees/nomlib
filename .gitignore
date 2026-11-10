@@ -41,3 +41,5 @@ vcpkg_installed/*
 report.json
 report.yaml
 
+inference/
+

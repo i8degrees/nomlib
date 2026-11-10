@@ -10,13 +10,13 @@
 ******************************************************************************/
 #include <iostream>
 #include <string>
-#include <thread>
-#include <chrono>
 
 #include <nomlib/tests/UnitTest.hpp>
 
 #include <nomlib/config.hpp>
 #include <nomlib/system/init.hpp>
+#include <nomlib/system/Timer.hpp>
+#include <nomlib/core/clock.hpp>
 #include <nomlib/audio2/audio.hpp>
 
 #ifndef NOM_PROJECT_SOURCE_DIR
@@ -55,12 +55,6 @@ class Audio2Test: public ::testing::Test
     void shutdown_v2()
     {
       audio::shutdown_audio();
-    }
-
-    std::chrono::milliseconds now() const
-    {
-      return std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now().time_since_epoch());
     }
 };
 
@@ -127,18 +121,21 @@ TEST_F(Audio2Test, RendererPlaysSoundAtZeroGain)
 
   // Let the sound render briefly, including after it stops playing, so the
   // renderer can exercise its source-lifecycle cleanup path.
-  std::chrono::milliseconds previous = this->now();
-  std::chrono::milliseconds elapsed;
-  do {
-    std::this_thread::sleep_for(std::chrono::milliseconds(16));
+  nom::Timer timer;
+  timer.start();
 
-    const std::chrono::milliseconds current = this->now();
-    elapsed = current - previous;
-    const nom::real32 delta =
-      static_cast<nom::real32>(elapsed.count()) / 1000.0f;
+  nom::uint32 previous = timer.ticks();
+  nom::uint32 elapsed = 0;
+  do {
+    nom::sleep(16);
+
+    const nom::uint32 current = timer.ticks();
+    elapsed = current;
+    const nom::real32 delta = nom::Timer::to_seconds(current - previous);
+    previous = current;
 
     dev->update(delta);
-  } while(elapsed < std::chrono::milliseconds(2000));
+  } while(elapsed < 2000);
 
   // shutdown_audio detaches renderer sources before freeing cached sounds.
   this->shutdown_v2();
@@ -170,18 +167,21 @@ TEST_F(Audio2Test, StreamingOggPlaysForTwoSeconds)
 
   // Run the renderer update loop for two seconds so the streaming source
   // decodes and queues additional buffers.
-  std::chrono::milliseconds previous = this->now();
-  std::chrono::milliseconds elapsed;
-  do {
-    std::this_thread::sleep_for(std::chrono::milliseconds(16));
+  nom::Timer timer;
+  timer.start();
 
-    const std::chrono::milliseconds current = this->now();
-    elapsed = current - previous;
-    const nom::real32 delta =
-      static_cast<nom::real32>(elapsed.count()) / 1000.0f;
+  nom::uint32 previous = timer.ticks();
+  nom::uint32 elapsed = 0;
+  do {
+    nom::sleep(16);
+
+    const nom::uint32 current = timer.ticks();
+    elapsed = current;
+    const nom::real32 delta = nom::Timer::to_seconds(current - previous);
+    previous = current;
 
     dev->update(delta);
-  } while(elapsed < std::chrono::milliseconds(2000));
+  } while(elapsed < 2000);
 
   // shutdown_audio detaches renderer sources before freeing cached sounds.
   this->shutdown_v2();

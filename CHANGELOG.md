@@ -29,6 +29,17 @@
   C++14 `nom::filesystem` implementation and removed the target-specific
   C++17 requirement.
 
+* Added `tests/src/audio2/Audio2Test.cpp` as a unit test for `nomlib-audio2`.
+  The test exercises initialization, `SoundManager` lookup, WAV metadata
+  accessors, `IAudioDevice::play_sound`, and renderer updates.
+
+* Fixed `SoundManager::free_sounds()` to erase entries while iterating,
+  removing stale pointers after deleting cached `Sound` objects.
+
+* Fixed `nom::audio::shutdown_audio()` to release the active audio renderer
+  before freeing cached `Sound` objects, preventing use-after-free during
+  shutdown.
+
 ## nom::SpriteSheet Sheets ##
 
 ## v0.2.0 ##

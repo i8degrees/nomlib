@@ -26,8 +26,10 @@ bool init_audio(uint32 channels)
 void shutdown_audio()
 {
   NOM_LOG_TRACE(NOM);
-  SoundManager::free_sounds();
+  // Release the renderer first so it detaches any sound sources that still
+  // reference managed Sound objects.
   AudioDeviceLocator::release();
+  SoundManager::free_sounds();
 }
 
 #if defined(EXPERIMENTAL)

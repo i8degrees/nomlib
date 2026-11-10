@@ -102,11 +102,13 @@ void SoundManager::remove_sound(const std::string& name) {
 void SoundManager::free_sounds() {
   std::cout << "SoundManager::free_sounds()" << std::endl;
 
-  for(SoundIterator i = sounds.begin(); i != sounds.end(); ++i) {
+  for(SoundIterator i = sounds.begin(); i != sounds.end(); ) {
 #if defined(DEBUG)
     std::cout << "Goodbye " << i->second->filename_ << std::endl;
 #endif
-    delete i->second;
+    Sound* sound = i->second;
+    i = sounds.erase(i);
+    delete sound;
   }
 }
 

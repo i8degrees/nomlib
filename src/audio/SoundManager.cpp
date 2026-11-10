@@ -1,11 +1,11 @@
 
 #include "nomlib/audio/AL/OpenAL.hpp"
-#include "nomlib/audio2/SoundManager.hpp"
-#include "nomlib/audio2/Sound.hpp"
-#include "nomlib/audio2/StreamSound.hpp"
+#include "nomlib/audio/SoundManager.hpp"
+#include "nomlib/audio/Sound.hpp"
+#include "nomlib/audio/StreamSound.hpp"
 
 #if defined(USE_LIBOGG)
-  #include "nomlib/audio2/OggSound.hpp"
+  #include "nomlib/audio/OggSound.hpp"
 #endif
 
 #include <map>

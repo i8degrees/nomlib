@@ -1,5 +1,5 @@
 
-#include "nomlib/audio2/Sound.hpp"
+#include "nomlib/audio/Sound.hpp"
 //#include "ISoundFileReader.hpp"
 #include "nomlib/audio/libsndfile/SoundFileReader.hpp"
 

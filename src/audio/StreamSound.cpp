@@ -1,4 +1,4 @@
-#include "nomlib/audio2/StreamSound.hpp"
+#include "nomlib/audio/StreamSound.hpp"
 #include "nomlib/audio/libsndfile/SoundFileReader.hpp"
 
 // Private dependency

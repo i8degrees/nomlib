@@ -3,10 +3,10 @@
 #include "nomlib/audio/AL/OpenAL.hpp"
 #include "nomlib/types.hpp"
 
-#include "nomlib/audio2/ALAudioRenderer.hpp"
-#include "nomlib/audio2/IAudioDevice.hpp" // IAudioContext, IAudioRenderer
-#include "nomlib/audio2/ALSoundSource.hpp" // ISoundSource, ALSoundSource
-#include "nomlib/audio2/Sound.hpp"
+#include "nomlib/audio/ALAudioRenderer.hpp"
+#include "nomlib/audio/IAudioDevice.hpp" // IAudioContext, IAudioRenderer
+#include "nomlib/audio/ALSoundSource.hpp" // ISoundSource, ALSoundSource
+#include "nomlib/audio/Sound.hpp"
 
 using namespace nom;
 using namespace nom::audio;

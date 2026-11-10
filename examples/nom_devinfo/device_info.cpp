@@ -250,16 +250,6 @@ int main ( int argc, char* argv[] )
   uint32 window_flags = SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL;
 
 
-#if defined(NOM_USE_CREATIVE_OPENAL) || defined(NOM_USE_APPLE_OPENAL) || defined(NOM_USE_OPENAL_SOFT)
-  // Initialize audio subsystem...
-  audio::AudioSpec audio_spec = {};
-  audio::AudioSpec request = {};
-  audio::IOAudioEngine* dev = nullptr;
-  request.engine = "openal";
-
-  dev = nom::audio::init_audio(&request, &audio_spec);
-#endif
-
   // We need SDL2 video initialization so we can obtain the available rendering
   // caps
   if( nom::init ( argc, argv ) == false )

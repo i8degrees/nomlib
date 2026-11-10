@@ -105,29 +105,11 @@ if(NOM_BUILD_GRAPHICS_UNIT)
   )
 endif(NOM_BUILD_GRAPHICS_UNIT)
 
-# sub-feature unit available with nomlib-audio for audio actions
-if(NOM_BUILD_AUDIO_UNIT)
-  target_sources(nomlib-actions
-    PRIVATE
-    ${SRC_DIR}/actions/FadeAudioGainBy.cpp
-    #${SRC_DIR}/actions/PlayAudioSource.cpp
-    PUBLIC
-      FILE_SET HEADERS
-      BASE_DIRS ${HDR_BASE}
-      FILES
-      ${HDR_BASE}/actions/FadeAudioGainBy.hpp
-      #${HDR_BASE}/actions/PlayAudioSource.hpp
-  )
-
-  # Internal dependencies for this action subgroup
-  target_link_libraries(nomlib-actions
-    PUBLIC
-      nomlib-audio
-    PRIVATE
-      project_warnings
-      $<IF:$<TARGET_EXISTS:OpenAL::OpenAL>,OpenAL::OpenAL,OpenAL::OpenAL-static>
-  )
-endif(NOM_BUILD_AUDIO_UNIT)
+# Audio actions have been temporarily disabled while the old nomlib-audio
+# API is replaced by the new implementation.
+# if(NOM_BUILD_AUDIO_UNIT)
+# ...
+# endif(NOM_BUILD_AUDIO_UNIT)
 
 target_compile_features(nomlib-actions
   PRIVATE

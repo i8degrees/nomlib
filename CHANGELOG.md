@@ -14,6 +14,14 @@
   relative to the executable, supporting multiple build, install, and bundle
   layouts.
 
+* Removed the old `nomlib-audio` (v1) implementation. The new audio
+  subsystem previously under `nomlib-audio2` has taken its place as
+  `nomlib-audio` in both include paths and CMake target names.
+
+* Renamed `include/nomlib/audio2/` to `include/nomlib/audio/` and
+  `src/audio2/` to `src/audio/`. All public headers are now under
+  `nomlib/audio/`.
+
 * Added a C++14-compatible `nom::filesystem` layer compatible with the
   ISO/IEC TS 18822:2015 (N4100) / Boost.Filesystem path model.
 
@@ -29,13 +37,16 @@
   C++14 `nom::filesystem` implementation and removed the target-specific
   C++17 requirement.
 
-* Added `tests/src/audio2/Audio2Test.cpp` as a unit test for `nomlib-audio2`.
-  The test exercises initialization, `SoundManager` lookup, WAV metadata
-  accessors, `IAudioDevice::play_sound`, and renderer updates.
+* Added `tests/src/audio/Audio2Test.cpp` as a unit test for the new
+  `nomlib-audio` API. The test exercises initialization, `SoundManager`
+  lookup, WAV metadata accessors, `IAudioDevice::play_sound`, and renderer
+  updates. A streaming test case mirrors `examples/nom_astream`.
 
-* Added a streaming audio test case that mirrors `examples/nom_astream`: it
-  loads `laura_ff1-s16-mono.ogg` with `streaming=true`, plays it at zero gain,
-  and exercises the renderer update loop for two seconds.
+* Disabled the old v1 audio actions (`FadeAudioGainBy`, `PlayAudioSource`)
+  in `src/actions/CMakeLists.txt` and `include/nomlib/actions.hpp` pending
+  migration to the new audio API.
+
+* Removed the old audio subsystem example stubs in `examples/nom_aplay`.
 
 * Fixed `SoundManager::free_sounds()` to erase entries while iterating,
   removing stale pointers after deleting cached `Sound` objects.
@@ -43,6 +54,10 @@
 * Fixed `nom::audio::shutdown_audio()` to release the active audio renderer
   before freeing cached `Sound` objects, preventing use-after-free during
   shutdown.
+
+* Fixed `nom::audio::ISoundFileReader.hpp` to wrap its interface in the
+  `nom::audio` namespace so that `SoundFileReader` can correctly implement
+  the abstract base class.
 
 ## nom::SpriteSheet Sheets ##
 

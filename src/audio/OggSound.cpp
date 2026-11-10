@@ -1,5 +1,5 @@
 
-#include "nomlib/audio2/OggSound.hpp"
+#include "nomlib/audio/OggSound.hpp"
 #include "nomlib/types.hpp"
 #include "nomlib/audio/AL/OpenAL.hpp"
 #include <vector>

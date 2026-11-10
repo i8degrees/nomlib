@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 
-#include "nomlib/audio2/audio.hpp"
+#include "nomlib/audio/audio.hpp"
 
 using namespace std;
 using namespace nom;

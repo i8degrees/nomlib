@@ -1,6 +1,6 @@
 
-#include "nomlib/audio2/ALSoundSource.hpp"
-#include "nomlib/audio2/AudioDeviceLocator.hpp"
+#include "nomlib/audio/ALSoundSource.hpp"
+#include "nomlib/audio/AudioDeviceLocator.hpp"
 #include "nomlib/audio/AL/OpenAL.hpp"
 
 using namespace nom;

@@ -29,38 +29,34 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_AUDIO_ISOUND_FILE_READER_HPP
 #define NOMLIB_AUDIO_ISOUND_FILE_READER_HPP
 
-#include <string>
-
 #include "export.hpp"
-#include "nomlib/config.hpp"
-#include "nomlib/audio/SoundFile.hpp"
+#include "nomlib/types.hpp"
+#include <string>
 
 namespace nom {
 namespace audio {
+
+struct SoundInfo;
 
 class NOM_EXPORT ISoundFileReader
 {
   public:
     ISoundFileReader()
     {
-      NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_AUDIO,
-                         NOM_LOG_PRIORITY_VERBOSE);
+      //NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_AUDIO,
+                         //NOM_LOG_PRIORITY_VERBOSE);
     }
 
     virtual ~ISoundFileReader()
     {
-      NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_AUDIO,
-                         NOM_LOG_PRIORITY_VERBOSE);
+      //NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE_AUDIO,
+                         //NOM_LOG_PRIORITY_VERBOSE);
     }
 
     virtual bool valid() const = 0;
-
     virtual bool open(const std::string& filename, SoundInfo& info) = 0;
-
     virtual int64 read(void* data, uint32 format, int64 frames) = 0;
-
     virtual int64 seek(int64 offset, int whence) = 0;
-
     virtual void close() = 0;
 };
 

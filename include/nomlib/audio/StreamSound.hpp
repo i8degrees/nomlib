@@ -1,6 +1,6 @@
 #pragma once
 
-#include "nomlib/audio2/Sound.hpp"
+#include "nomlib/audio/Sound.hpp"
 #include "nomlib/types.hpp"
 #include "export.hpp"
 

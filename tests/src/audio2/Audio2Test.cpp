@@ -125,19 +125,20 @@ TEST_F(Audio2Test, RendererPlaysSoundAtZeroGain)
   dev->set_master_volume(0.0f);
   dev->play_sound(sound, 0.0f);
 
-  // Advance the renderer for a few frames without blocking the CPU indefinitely.
+  // Let the sound render briefly, including after it stops playing, so the
+  // renderer can exercise its source-lifecycle cleanup path.
   std::chrono::milliseconds previous = this->now();
-  for(int frame = 0; frame < 10; ++frame)
-  {
+  std::chrono::milliseconds elapsed;
+  do {
     std::this_thread::sleep_for(std::chrono::milliseconds(16));
 
     const std::chrono::milliseconds current = this->now();
+    elapsed = current - previous;
     const nom::real32 delta =
-      static_cast<nom::real32>((current - previous).count()) / 1000.0f;
-    previous = current;
+      static_cast<nom::real32>(elapsed.count()) / 1000.0f;
 
     dev->update(delta);
-  }
+  } while(elapsed < std::chrono::milliseconds(2000));
 
   // shutdown_audio detaches renderer sources before freeing cached sounds.
   this->shutdown_v2();

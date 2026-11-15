@@ -67,9 +67,15 @@
   `for` support and skips `.` and `..` entries, matching the Boost.Filesystem
   `tut3.cpp` behavior.
 
-* Added `tests/src/system/FileInterfaceTest.cpp` cases for directory iteration,
-  empty directories, missing directories, file sizes, and Unicode path
-  constructors (mirroring Boost.Filesystem `tut5.cpp`).
+* Extended `nom::filesystem::path` with element iterators (`begin`, `end`) and
+  `make_preferred()`, allowing paths to be decomposed element-by-element and to
+  normalize separators to the platform's preferred form.
+
+* Added `tests/src/system/FileInterfaceTest.cpp` cases for status queries
+  (`exists`, `is_regular_file`, `is_directory`, `file_size`), directory
+  iteration, empty directories, missing directories, file sizes, and Unicode
+  path constructors (mirroring Boost.Filesystem `tut2.cpp`, `tut3.cpp`, and
+  `tut5.cpp`).
 
 * Fixed `examples/GameOfLife/CMakeLists.txt` missing `STATIC_ASSETS` definition
   and using an undefined `${STATIC_ASSETS}` variable in its target sources and

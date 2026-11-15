@@ -917,6 +917,32 @@ path::iterator path::iterator::operator++( int )
 
 bool path::iterator::operator==( const iterator& other ) const
 {
+  const bool this_end = this->pos_ >= this->elements_.size();
+  const bool other_end = other.pos_ >= other.elements_.size();
+
+  if( this_end && other_end )
+  {
+    return true;
+  }
+  if( this_end != other_end )
+  {
+    return false;
+  }
+
+  // Two iterators into equivalent sequences at the same position are equal.
+  if( this->elements_.size() != other.elements_.size() )
+  {
+    return false;
+  }
+
+  for( std::size_t i = 0; i < this->elements_.size(); ++i )
+  {
+    if( this->elements_[i].native() != other.elements_[i].native() )
+    {
+      return false;
+    }
+  }
+
   return this->pos_ == other.pos_;
 }
 
@@ -1168,7 +1194,19 @@ bool directory_iterator::operator==( const directory_iterator& other ) const
                         this->state_->entry_.path().empty();
   const bool other_end = ( other.state_ == nullptr ) ||
                          other.state_->entry_.path().empty();
-  return this_end == other_end;
+
+  if( this_end && other_end )
+  {
+    return true;
+  }
+  if( this_end != other_end )
+  {
+    return false;
+  }
+
+  // Two non-end iterators are equal only if they share the same directory
+  // state (i.e. they were copied from the same source iterator).
+  return this->state_ == other.state_;
 }
 
 bool directory_iterator::operator!=( const directory_iterator& other ) const

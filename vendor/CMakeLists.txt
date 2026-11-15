@@ -80,18 +80,20 @@ FetchContent_Declare(
   PATCH_COMMAND   patch -i "${PATCHES_DIR}/rapidxml_bug16.patch"
 )
 
-if(NOM_INSTALL_GCDB)
-  set(GCDB_TAG "master")
-  set(GCDB_URL "https://github.com/mdqinc/SDL_GameControllerDB/archive/refs/heads/${GCDB_TAG}.zip")
-  set(GCDB_SHA512 "b3e27d972ad9ed115def8d1aaa9dabd2195558a4b5ab9a9cb027dc5d4ce0974cf94c3a9aa3fb9a9bd792e44137dcc8e17ffddbc24ff5fd93c632928fed824b60")
-  FetchContent_Declare(
-    gamecontroller_db
-    URL             "${GCDB_URL}"
-    URL_HASH        "SHA512=${GCDB_SHA512}"
-  )
+# The game controller mapping database is fetched on every configure so that
+# examples using SDL's game controller interface always have an up-to-date set
+# of mappings. NOM_INSTALL_GCDB is retained for backward compatibility but no
+# longer gates the download.
+set(GCDB_TAG "9d63598d49a62b19580fc63aed6cdf906be8e1d6")
+set(GCDB_URL "https://github.com/mdqinc/SDL_GameControllerDB/archive/${GCDB_TAG}.zip")
+set(GCDB_SHA512 "379469ebce2e3d3603a78980525aa552613d846d348cba1e42487f349cf0a3ba1b1d376206b560f52d9015523f359ea81949597daaadf7dea16249ffa412371d")
+FetchContent_Declare(
+  gamecontroller_db
+  URL             "${GCDB_URL}"
+  URL_HASH        "SHA512=${GCDB_SHA512}"
+)
 
-  FetchContent_MakeAvailable(gamecontroller_db)
-endif()
+FetchContent_MakeAvailable(gamecontroller_db)
 
 #
 ## build settings

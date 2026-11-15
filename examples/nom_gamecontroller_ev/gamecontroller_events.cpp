@@ -32,6 +32,10 @@
   OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
+#include <climits>
+#include <cstdlib>
+#include <limits.h>
+
 #include <nomlib/core.hpp>
 #include <nomlib/math.hpp>
 #include <nomlib/system.hpp>
@@ -61,16 +65,20 @@ constexpr nom::size_type MAX_AXES = 2;
 ///   - <exe>/../share/nomlib/Resources/SharedSupport   (installed prefix layout)
 filesystem::path find_resource_dir( const char* argv0 )
 {
-  filesystem::path argv_path( argv0 );
   filesystem::path exe_dir;
 
-  if( argv_path.is_absolute() )
-  {
-    exe_dir = argv_path.parent_path();
-  }
-  else
-  {
-    exe_dir = ( filesystem::current_path() / argv_path ).parent_path();
+  // Use realpath to resolve symlinks and collapse any ".."/"." segments
+  // that may appear when argv[0] is unusual (e.g., rewritten by a launcher).
+  char resolved[PATH_MAX];
+  if( ::realpath( argv0, resolved ) != nullptr ) {
+    exe_dir = filesystem::path( resolved ).parent_path();
+  } else {
+    filesystem::path argv_path( argv0 );
+    if( argv_path.is_absolute() ) {
+      exe_dir = argv_path.parent_path();
+    } else {
+      exe_dir = ( filesystem::current_path() / argv_path ).parent_path();
+    }
   }
 
   const std::vector<filesystem::path> candidates = {
@@ -89,8 +97,16 @@ filesystem::path find_resource_dir( const char* argv0 )
     }
   }
 
-  // Preserve the preferred fallback even when nothing exists.
-  return candidates.at(0);
+  // Fallback to the first candidate that actually exists, even if it does not
+  // yet contain all assets. This avoids returning a synthesized directory path.
+  for( const auto& c : candidates ) {
+    if( filesystem::is_directory( c ) ) {
+      return c;
+    }
+  }
+
+  // Last resort: a source-tree relative path where input device mappings live.
+  return filesystem::current_path() / "Resources" / "SharedSupport";
 }
 
 class App;

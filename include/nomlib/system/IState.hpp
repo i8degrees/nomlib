@@ -32,6 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "export.hpp"
 #include "nomlib/config.hpp"
 
+#include <string>
+
 namespace nom {
 
 // Forward declarations
@@ -116,6 +118,19 @@ class NOM_EXPORT IState
     ///
     /// \returns One of the IState::Type enumeration values.
     IState::Type type( void ) const;
+
+    /// \brief The nom::InputStateMapper context key associated with this state.
+    ///
+    /// When a nom::StateMachine has an input mapper installed
+    /// (see nom::StateMachine::set_input_mapper) and this key is not empty, the
+    /// machine activates the context after on_init and on_resume, disables it
+    /// after on_pause, and erases it after on_exit. An empty key (the default)
+    /// opts the state out of automatic context management.
+    ///
+    /// \remarks The context must be inserted into the mapper (e.g. in the
+    /// state's constructor or on_init) before the machine activates it;
+    /// activation happens after on_init returns.
+    virtual std::string input_context() const;
 
     /// \brief User-defined implementation of the state's event handling logic.
     ///

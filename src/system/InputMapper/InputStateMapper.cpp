@@ -214,13 +214,35 @@ void InputStateMapper::dump( void )
 
 void InputStateMapper::set_event_handler(EventHandler& evt_handler)
 {
+  // Idempotent: do not enqueue a second watch for the same handler.
+  if( this->event_handler_ == &evt_handler ) {
+    return;
+  }
+
+  // Detach any previously installed watch first.
+  if( this->event_handler_ != nullptr ) {
+    this->remove_event_handler();
+  }
+
   this->event_handler_ = &evt_handler;
 
-  auto event_watch = nom::event_filter( [=](const Event& evt, void* data) {
+  this->event_watch_ = nom::event_filter( [=](const Event& evt, void* data) {
     this->on_event(evt);
   });
 
-  this->event_handler_->append_event_watch(event_watch, nullptr);
+  this->event_handler_->append_event_watch(this->event_watch_, nullptr);
+}
+
+void InputStateMapper::remove_event_handler()
+{
+  if( this->event_handler_ == nullptr ) {
+    return;
+  }
+
+  this->event_handler_->remove_event_watch(this->event_watch_);
+
+  this->event_handler_ = nullptr;
+  this->event_watch_ = nullptr;
 }
 
 // Private scope

@@ -140,6 +140,11 @@ class NOM_EXPORT EventHandler
     void append_event_watch(const event_filter& filter, void* data);
 
     /// \brief Erase an event listener.
+    ///
+    /// \remarks Watches created from distinct lambda expressions are
+    /// identified by their std::function::target_type(). Two watches created
+    /// from the same lambda expression are indistinguishable; this method will
+    /// remove the first matching watch.
     void remove_event_watch(const event_filter& filter);
 
     /// \brief Erase all event watchers.

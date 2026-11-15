@@ -114,12 +114,24 @@ class NOM_EXPORT InputStateMapper
 
     /// \brief Install the event handler used by the interface.
     ///
-    /// \remarks The application's events will not be processed until a call is
-    /// made to the event handler's ::poll_event method.
+    /// \remarks Installing on the same handler twice is a no-op. Installing on
+    /// a different handler detaches the previously installed watch first.
     ///
-    /// \note The installed event handler must outlive the destruction of
-    /// this interface!
+    /// The application's events will not be processed until a call is made to
+    /// the event handler's ::poll_event method.
+    ///
+    /// \note The installed event handler must outlive the destruction of this
+    /// interface! The destructor intentionally does not touch the non-owned
+    /// handler; call remove_event_handler() before the handler is destroyed.
     void set_event_handler(EventHandler& evt_handler);
+
+    /// \brief Detach the event handler watch previously installed via
+    /// set_event_handler.
+    ///
+    /// \remarks Safe to call when no handler is installed (no-op). Call this
+    /// before the installed nom::EventHandler is destroyed; the destructor
+    /// intentionally does not touch the (non-owned) handler.
+    void remove_event_handler();
 
   private:
     /// \brief Internal event handler for triggering mapped action states.
@@ -159,6 +171,10 @@ class NOM_EXPORT InputStateMapper
 
     // Non-owned pointer
     EventHandler* event_handler_ = nullptr;
+
+    // Stored copy of the watch installed in event_handler_; enables
+    // idempotent installs and precise removal via target_type() matching.
+    event_filter event_watch_ = nullptr;
 
     InputStateMap states_;
 };

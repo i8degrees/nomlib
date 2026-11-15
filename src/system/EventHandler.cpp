@@ -230,10 +230,11 @@ void EventHandler::remove_event_watch(const event_filter& filter)
   auto& evt_watch = this->event_watchers_;
   for( auto itr = evt_watch.begin(); itr != evt_watch.end(); ++itr ) {
 
-    event_filter* callback = (*itr)->callback.target<event_filter>();
-    const event_filter* arg = filter.target<event_filter>();
-
-    if( callback == arg ) {
+    // Match on the stored callable type; watches created from distinct
+    // lambda expressions have distinct target types.
+    if( (*itr)->callback != nullptr &&
+        (*itr)->callback.target_type() == filter.target_type() )
+    {
       evt_watch.erase(itr);
       return;
     }

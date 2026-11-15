@@ -186,20 +186,12 @@ void ALAudioRenderer::update(real32 delta)
 
   this->update_listener();
 
-  // Update temporary emitters
+  // Update temporary emitters. When a temporary emitter has no remaining
+  // playback time and is not looping, it is finished and can be deleted.
   for(SoundSourceIterator i =
     this->temporary_emitters_.begin(); i != this->temporary_emitters_.end(); )
   {
-    //ALint state;
-    //alSourcei( (*i)->source(), AL_SOURCE_STATE, &state);
-    //if( ( (*i)->time_left() < 0.0f) && !(*i)->looping()) {
-    // if( ((*i)->state_ - (*i)->time_left()) < 0.0f && !(*i)->looping()) {
-    if((*i)->state() == 1 & (*i)->time_left() < 0.0f && !(*i)->looping()) {
-      // FIXME(JEFF): The remaining time from the sound source is not right,
-      // due to the fact that the time remaining calculation is being updated
-      // every frame from the moment that the ALSoundSource is attached.
-      //
-      // Instead, it needs to be from the moment that ???
+    if((*i)->time_left() <= 0.0 && !(*i)->looping()) {
       std::cout << "ALAudioRenderer::update(" << delta << ") - time left " <<
         (*i)->time_left() << std::endl;
       delete (*i);

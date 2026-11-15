@@ -5,7 +5,7 @@
 #include "nomlib/audio/Sound.hpp"
 #include "nomlib/audio/ISoundSource.hpp"
 
-#define NUM_STREAM_BUFFERS 3
+#define NUM_STREAM_BUFFERS 4
 
 namespace nom {
 namespace audio {
@@ -36,6 +36,7 @@ class NOM_EXPORT ALSoundSource: public virtual ISoundSource
 
     // Update(real32);
     virtual void update(nom::real32 delta) override;
+    void set_volume(nom::real32 gain) override;
   private:
     // UpdateSoundState(real32);
     void update_state(nom::real32 delta) override;
@@ -44,6 +45,7 @@ class NOM_EXPORT ALSoundSource: public virtual ISoundSource
     // Part 2
     nom::real64 stream_pos_;
     nom::uint32 stream_buffers_[NUM_STREAM_BUFFERS];
+    nom::real64 stream_buffer_durations_[NUM_STREAM_BUFFERS];
 };
 
 } // namespace audio

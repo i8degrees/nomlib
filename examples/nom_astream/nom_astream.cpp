@@ -64,9 +64,10 @@ int main(int argc, char* argv[])
 
   for(auto itr = sounds.begin(); itr != sounds.end(); ++itr) {
     auto name = *itr;
-    bool streaming = name.extension().native() == ".ogg";
 
-    SoundManager::add_sound(name.native(), streaming);
+    // Stream playback is handled via libsndfile + OpenAL; file format is
+    // auto-detected by the reader, so any supported extension can stream.
+    SoundManager::add_sound(name.native(), true);
   }
 
   path media_path = path("Resources/tests/audio/ALAudioTest") / "laura_ff1-s16-mono.ogg";

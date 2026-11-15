@@ -6,11 +6,6 @@ add_library(nomlib-audio
 )
 
 set(USE_LIBOGG TRUE)
-set(LOAD_WAV TRUE)
-
-if(LOAD_WAV)
-  # sndfile is already found by this point
-endif()
 
 if(USE_LIBOGG)
   find_package(Vorbis CONFIG REQUIRED)
@@ -74,13 +69,6 @@ set_target_properties(nomlib-audio
     DEBUG_POSTFIX "-d"
 )
 
-if(LOAD_WAV)
-  target_compile_definitions(nomlib-audio
-    PUBLIC
-      LOAD_WAV
-  )
-endif()
-
 if(USE_LIBOGG)
   target_compile_definitions(nomlib-audio
     PUBLIC
@@ -130,18 +118,8 @@ target_link_libraries(nomlib-audio
   PRIVATE
     project_warnings
     OpenAL::OpenAL
+    SndFile::sndfile
 )
-
-if(LOAD_WAV)
-  target_link_libraries(nomlib-audio
-    PUBLIC
-      nomlib-core
-      nomlib-math
-      nomlib-system
-    PRIVATE
-      SndFile::sndfile
-  )
-endif(LOAD_WAV)
 
 if(USE_LIBOGG)
   target_link_libraries(nomlib-audio

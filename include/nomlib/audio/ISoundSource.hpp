@@ -49,7 +49,7 @@ class NOM_EXPORT ISoundSource
     nom::Point3f& position();
 
     void set_priority(SoundPriority p);
-    void set_volume(nom::real32 gain);
+    virtual void set_volume(nom::real32 gain);
     void set_pitch(nom::real32 pitch);
     void set_looping(bool state);
     void set_radius(nom::real32 value);

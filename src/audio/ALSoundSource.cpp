@@ -24,6 +24,7 @@ ALSoundSource::ALSoundSource()
   this->stream_pos_ = 0;
   for(uint32 i = 0; i < NUM_STREAM_BUFFERS; ++i) {
     this->stream_buffers_[i] = 0;
+    this->stream_buffer_durations_[i] = 0.0;
   }
 
   this->oalSource_ = nullptr;
@@ -104,6 +105,7 @@ void ALSoundSource::attach_source(OALSource* s)
   if(this->sound_->streaming()) { // Part 2
     // this->stream_pos_ = this->time_left_;
     this->stream_pos_ = this->sound_->duration();
+    this->time_left_ = this->sound_->duration();
     int numBuffered = 0;
     while(numBuffered < NUM_STREAM_BUFFERS) {
       // stream in more data
@@ -112,7 +114,7 @@ void ALSoundSource::attach_source(OALSource* s)
           this->stream_pos_);
 
       if(streamed) {
-        this->stream_pos_ -= streamed;
+        this->stream_buffer_durations_[numBuffered] = streamed;
         ++numBuffered; // Another buffer filled
       } else {
         break; // No more buffers to fill
@@ -122,6 +124,15 @@ void ALSoundSource::attach_source(OALSource* s)
     AL_CLEAR_ERR();
     AL_CHECK_ERR(alSourceQueueBuffers(this->oalSource_->source, numBuffered,
       &stream_buffers_[0]));
+
+    // Safety fallback: ensure playback resumes if the source was previously
+    // starved and stopped.
+    ALint state;
+    AL_CLEAR_ERR();
+    AL_CHECK_ERR(alGetSourcei(this->oalSource_->source, AL_SOURCE_STATE, &state));
+    if(state == AL_STOPPED) {
+      alSourcePlay(this->oalSource_->source);
+    }
 #if 0
     // Safety fallback; ensure that playback resumes if starved
     // (and stopped).
@@ -221,22 +232,16 @@ void ALSoundSource::update_state(real32 delta)
 {
   std::cout << "ALSoundSource::update_state(" << delta << ")" << std::endl;
 
-  if(this->oalSource_ /*&& this->sound_*/ /*&& this->sound_->streaming() == false*/) {
-    ALint state;
-    alGetSourcei(this->oalSource_->source, AL_SOURCE_STATE, &state);
-    if(state != AL_PLAYING && state != AL_PAUSED) {
-      // Signal to ALAudioRenderer::update to garbage collect, in addition to
-      // checking for the remaining time of an audio source.
-      this->state_ = 1;
-    }
-  }
-
   if(this->sound_) {
-    this->time_left_ -= (delta * this->pitch());
+    // Streaming sources track remaining time via stream_pos_; non-streaming
+    // sources count down by elapsed wall-clock time.
+    if(this->sound_->streaming() == false) {
+      this->time_left_ -= (delta * this->pitch());
 
-    if(this->looping_) {
-      while(this->time_left_ < 0) {
-        this->time_left_ += this->sound_->duration();
+      if(this->looping_) {
+        while(this->time_left_ < 0) {
+          this->time_left_ += this->sound_->duration();
+        }
       }
     }
 
@@ -288,23 +293,40 @@ void ALSoundSource::update_state(real32 delta)
         AL_CHECK_ERR(alSourcei(this->oalSource_->source, AL_LOOPING, 0));
 
         // The && prevents clipping at the end of sounds!
-        while(numProcessed--) {// && this->time_left_ > 0) {
+        while(numProcessed--) {
           ALuint freeBuffer;
 
           AL_CLEAR_ERR();
           AL_CHECK_ERR(alSourceUnqueueBuffers(this->oalSource_->source, 1,
             &freeBuffer));
 
-          this->stream_pos_ -= this->sound_->stream(freeBuffer,
-            this->stream_pos_);
+          // Find the slot that holds this buffer's queued duration and
+          // subtract it from the remaining stream time.
+          int slot = -1;
+          for(int s = 0; s < NUM_STREAM_BUFFERS; ++s) {
+            if(this->stream_buffers_[s] == freeBuffer) {
+              slot = s;
+              break;
+            }
+          }
+          if(slot >= 0) {
+            this->stream_pos_ -= this->stream_buffer_durations_[slot];
+          }
+
+          real64 streamed =
+            this->sound_->stream(freeBuffer, this->stream_pos_);
+          if(streamed > 0.0) {
+            this->stream_buffer_durations_[slot] = streamed;
+
 #if defined(DEBUG)
-          std::cout << "ALSoundSource::update_state(" << delta << ") - " <<
-            this->sound_->filename_ << " at spos: " << this->stream_pos_ <<
-          std::endl;
+            std::cout << "ALSoundSource::update_state(" << delta << ") - " <<
+              this->sound_->filename_ << " at spos: " << this->stream_pos_ <<
+            std::endl;
 #endif
-          AL_CLEAR_ERR();
-          AL_CHECK_ERR(alSourceQueueBuffers(this->oalSource_->source, 1,
-            &freeBuffer));
+            AL_CLEAR_ERR();
+            AL_CHECK_ERR(alSourceQueueBuffers(this->oalSource_->source, 1,
+              &freeBuffer));
+          }
 
           if(this->stream_pos_ < 0 && this->looping_) {
             this->stream_pos_ += this->sound_->duration();
@@ -315,6 +337,23 @@ void ALSoundSource::update_state(real32 delta)
           // if(this->stream_pos_ >= this->sound_->duration()) {
             // alSourceRewind(this->oalSource_->source);
           // }
+        }
+
+        // Floating-point rounding can leave stream_pos_ as a tiny positive
+        // value once the file is fully consumed. Clamp it so cleanup triggers.
+        if(this->stream_pos_ < 0.001 && this->stream_pos_ > -0.001) {
+          this->stream_pos_ = 0.0;
+        }
+
+        this->time_left_ = this->stream_pos_;
+
+        // If the source starved and stopped, resume playback now that buffers
+        // have been refilled.
+        ALint state;
+        AL_CLEAR_ERR();
+        AL_CHECK_ERR(alGetSourcei(this->oalSource_->source, AL_SOURCE_STATE, &state));
+        if(state == AL_STOPPED && this->stream_pos_ > 0.0) {
+          alSourcePlay(this->oalSource_->source);
         }
       } else {
         AL_CLEAR_ERR();
@@ -333,6 +372,17 @@ void ALSoundSource::update(real32 delta)
     AudioDeviceLocator::instance()->add_source(this);
   }
   //IEntityObject::update(delta);
+}
+
+void ALSoundSource::set_volume(real32 gain)
+{
+  super::set_volume(gain);
+
+  if(this->oalSource_ != nullptr) {
+    AL_CLEAR_ERR();
+    AL_CHECK_ERR(alSourcef(this->oalSource_->source, AL_GAIN,
+      this->volume()));
+  }
 }
 
 } // namespace audio

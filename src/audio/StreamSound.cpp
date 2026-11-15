@@ -71,56 +71,67 @@ StreamSound::StreamSound(int16* samples, uint32 format, int channels)
 
 real64 StreamSound::stream(uint32 buffer, real64 pos)
 {
+  NOM_ASSERT(this->fp_ != nullptr);
+  if(this->fp_ == nullptr) {
+    return 0.0;
+  }
+
+  // 'pos' is seconds remaining until EOF, flowing from duration() down to
+  // zero. We rely on the file cursor advancing sequentially across calls;
+  // explicit seeking is not needed for the engine's linear streaming model.
 #if defined(DEBUG)
-  real32 seek_pos = ((this->duration()) - pos);
-  std::cout << "StreamSound::stream(" << buffer << ", " << pos << ")" <<
-    "seek_pos: " << seek_pos << std::endl;
+  std::cout << "StreamSound::stream(" << buffer << ", " << pos << ")" << std::endl;
 #endif
 
-  //std::vector<int16*> pcmData(BUFFERLENGTH);
-  // int16* pcmData = new int16[BUFFERLENGTH * this->channels() * sizeof(int16)];
   int16* pcmData = this->data();
-  // for(auto idx = 0; idx != 256; ++idx) {
-  //   std::cout << NOM_SCAST(int16*, pcmData)[idx] << "\n";
-  // }
-  size_type bytes_read = 0;
+  size_type frames_buffered = 0;
+  size_type bytes_buffered = 0;
 
-  while(bytes_read < BUFFERLENGTH) {
-    int64 read_result = this->fp_->read(pcmData + bytes_read, AUDIO_FORMAT_S16,
-      static_cast<int>(BUFFERLENGTH - bytes_read));
+  // Fill one BUFFERLENGTH byte chunk (matching the old OggSound chunk size).
+  const size_type bytes_per_frame = this->channels() * sizeof(int16);
+  while(bytes_buffered < BUFFERLENGTH) {
+    size_type bytes_remaining = BUFFERLENGTH - bytes_buffered;
+    size_type frames_remaining = bytes_remaining / bytes_per_frame;
+    if(frames_remaining == 0) {
+      break;
+    }
+
+    int64 read_result = this->fp_->read(
+      pcmData + (frames_buffered * this->channels()), AUDIO_FORMAT_S16,
+      static_cast<int64>(frames_remaining));
 
     if(read_result > 0) {
-      bytes_read += read_result;
+      frames_buffered += static_cast<size_type>(read_result);
+      bytes_buffered = frames_buffered * bytes_per_frame;
     } else if(read_result == 0) {
       std::cout << "read result was zero" << std::endl;
       break; // EOF
     } else {
       std::cerr << "ERROR: stream decoding failure" << std::endl;
-      return 0.0f;
-      //return false;
-    }
-
-    if(bytes_read > 0) {
-      alBufferData(buffer, this->format(), pcmData,
-        static_cast<ALsizei>(bytes_read), this->frequency());
-      //return true;
+      return 0.0;
     }
   }
+
+  if(frames_buffered == 0) {
+    return 0.0;
+  }
+
+  // alBufferData expects the size in bytes.
+  alBufferData(buffer, this->format(), pcmData,
+    static_cast<ALsizei>(bytes_buffered), this->frequency());
+
 #if defined(DEBUG)
-  std::cout << "read pos: " << (real32)bytes_read << std::endl;
-  std::cout << "stream pos: " << seek_pos << std::endl;
+  std::cout << "read frames: " << (real32)frames_buffered << std::endl;
 #endif
-  real32 byte_rate = (this->bitrate() / 8.0f);
-  byte_rate = (16 / 8.0f);
 
-  // FIXME(JEFF): Need to test this new equation!
-  // The bits per second divided by 8 gives us the byte rate per second
-  // times the total duration minus the time remaining
-  //auto time_cursor = (this->bitrate() / 8) * (this->duration() - pos);
+  // bitrate() is the *compressed* rate for Vorbis/MP3, so derive the chunk
+  // duration from the decoded PCM frame count and sample rate.
+  if(this->frequency() <= 0.0f) {
+    return 0.0;
+  }
 
-  // return the current position of the stream in seconds
-  // return((real32)bytes_read / (this->channels() * this->frequency() * (this->bitrate() / 8.0)));
-  return((real32)bytes_read / (this->channels() * this->frequency() * byte_rate));
+  // Return the duration of the buffered audio (seconds).
+  return static_cast<real64>(frames_buffered) / this->frequency();
 }
 
 // Private scope - member methods

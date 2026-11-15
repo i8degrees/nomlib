@@ -42,6 +42,6 @@ copy_framework_dep(nom_cursors
   $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
 )
 
-install(  FILES "${NOMLIB_RESOURCES_DIR}/icon.png"
+install(  FILES "${NOMLIB_RESOURCES_DIR}/nomlib.png"
           DESTINATION "${EXAMPLES_INSTALL_DIR}/Resources" )
 

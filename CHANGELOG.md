@@ -91,6 +91,11 @@
 * Fixed `nom::filesystem::directory_iterator` and `nom::filesystem::path::iterator`
   equality so that two non-end iterators over different sequences compare unequal.
 
+* Added lexical normalization of `.` and `..` to `nom::filesystem::path`:
+  trailing `..` walks up relative paths, absolute paths cannot escape the root,
+  and `.` segments are discarded. This removes a directory-traversal vector
+  identified in the security review.
+
 * Switched `FileInterfaceTest` file creation to a platform-aware
   `open_output_stream()` helper so UTF-8 filenames use the wide-character
   `ofstream` constructor on Windows.

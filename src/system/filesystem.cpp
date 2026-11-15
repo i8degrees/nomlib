@@ -478,6 +478,7 @@ path& path::operator/=( const path& other )
     this->has_trailing_separator_ = true;
   }
 
+  this->normalize();
   this->invalidate_cache();
   return *this;
 }
@@ -602,6 +603,38 @@ std::wstring path::generic_wstring() const
   return this->wstring();
 }
 
+void path::normalize()
+{
+  std::vector<string_type> out;
+  out.reserve( this->components_.size() );
+
+  for( const auto& component : this->components_ )
+  {
+    if( component == "." )
+    {
+      continue;
+    }
+
+    if( component == ".." )
+    {
+      if( !out.empty() && out.back() != ".." )
+      {
+        out.pop_back();
+      }
+      else if( !this->is_absolute() )
+      {
+        out.push_back( component );
+      }
+      // An absolute path drops ".." components that would escape the root.
+      continue;
+    }
+
+    out.push_back( component );
+  }
+
+  this->components_ = std::move( out );
+}
+
 void path::parse( const string_type& source )
 {
   this->clear();
@@ -658,6 +691,8 @@ void path::parse( const string_type& source )
   {
     this->components_.push_back( token );
   }
+
+  this->normalize();
 
   // A trailing directory separator adds an empty filename element so that
   // parent_path() / filename() behave like std::filesystem::path.

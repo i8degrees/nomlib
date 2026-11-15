@@ -197,6 +197,7 @@ class NOM_EXPORT path
 
   private:
     void parse( const string_type& source );
+    void normalize();
     void invalidate_cache() const;
     void rebuild_cache() const;
 

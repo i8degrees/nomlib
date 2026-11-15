@@ -62,6 +62,15 @@
   executable directory is normalized with `realpath()` to survive unusual
   relative `argv[0]` values and launcher paths.
 
+* Added `nom::filesystem::directory_entry` and `nom::filesystem::directory_iterator`
+  for POSIX directory iteration (Windows via `FindFirstFileW`). Includes range-based
+  `for` support and skips `.` and `..` entries, matching the Boost.Filesystem
+  `tut3.cpp` behavior.
+
+* Added `tests/src/system/FileInterfaceTest.cpp` cases for directory iteration,
+  empty directories, missing directories, file sizes, and Unicode path
+  constructors (mirroring Boost.Filesystem `tut5.cpp`).
+
 * Fixed `examples/GameOfLife/CMakeLists.txt` missing `STATIC_ASSETS` definition
   and using an undefined `${STATIC_ASSETS}` variable in its target sources and
   post-build copy command.

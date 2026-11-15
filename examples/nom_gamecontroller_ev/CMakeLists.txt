@@ -2,6 +2,14 @@
 
 set(STATIC_ASSETS "${PROJECT_SOURCE_DIR}/Resources/SharedSupport")
 
+set(SHARED_ASSETS
+  "${STATIC_ASSETS}/InputDevices.json"
+)
+
+if(NOM_INSTALL_GCDB)
+  list(APPEND SHARED_ASSETS "${gcdb_SOURCE_DIR}/gamecontrollerdb.txt")
+endif()
+
 add_executable(nom_gamecontroller_ev
   WIN32 # Link SDL2main over WinMain
   MACOSX_BUNDLE
@@ -26,45 +34,62 @@ target_include_directories(nom_gamecontroller_ev
   ${PROJECT_SOURCE_DIR}/include # include/nomlib
 )
 
+target_sources(nom_gamecontroller_ev
+  PRIVATE
+  ${SHARED_ASSETS}
+)
+
 target_link_libraries(nom_gamecontroller_ev
   PUBLIC
   nomlib-graphics
   nomlib-system
   PRIVATE
-    # $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
     $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
     $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
     $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
 )
 
-# For development:
-add_custom_command(TARGET nom_gamecontroller_ev
-  POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
-  "${STATIC_ASSETS}/InputDevices.json"
-  $<TARGET_FILE_DIR:nom_gamecontroller_ev> # <build>/<type>/share
-)
-
-if(NOM_INSTALL_GCDB)
-  add_custom_command(TARGET nom_gamecontroller_ev
-    POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${gcdb_SOURCE_DIR}/gamecontrollerdb.txt"
-    $<TARGET_FILE_DIR:nom_gamecontroller_ev> # <build>/<type>/share
+if(APPLE)
+  string(TIMESTAMP CURR_YEAR "%Y")
+  set_target_properties(nom_gamecontroller_ev
+    PROPERTIES
+      MACOSX_BUNDLE_BUNDLE_VERSION "${BUILD_VERSION}"
+      MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}"
+      MACOSX_BUNDLE_GUI_IDENTIFIER "${PROJECT_COMPANY_NAMESPACE}.gamecontroller_ev"
+      MACOSX_BUNDLE_BUNDLE_NAME "nom_gamecontroller_ev"
+      MACOSX_DEPLOYMENT_TARGET "10.15"
+      MACOSX_BUNDLE_COPYRIGHT "(c) COPYRIGHT 2014..${TIMESTAMP} JEFFREY CARPENTER <1329364+i8degrees@users.noreply.github.com>"
+      MACOSX_BUNDLE_INFO_PLIST "${PROJECT_SOURCE_DIR}/cmake/templates/app.plist.in"
+      RESOURCE ${SHARED_ASSETS}
   )
 endif()
 
+# For development:
+add_custom_command(TARGET nom_gamecontroller_ev
+  POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
+  ${SHARED_ASSETS}
+  $<TARGET_FILE_DIR:nom_gamecontroller_ev> # <build>/<type>/bin
+)
+
 # For distribution
 install(TARGETS nom_gamecontroller_ev
-  # EXPORT nomlib
   DESTINATION ${CMAKE_INSTALL_BINDIR}
   COMPONENT Examples
 )
 
-# For distribution
-install(FILES
-  "${NOMLIB_SHARED_SUPPORT_DIR}/InputDevices.json"
-  "${gcdb_SOURCE_DIR}/gamecontrollerdb.txt"
+# For distribution:
+install(DIRECTORY ${STATIC_ASSETS}
   DESTINATION
-  "${EXAMPLES_INSTALL_DIR}"
-  OPTIONAL
+  ${CMAKE_INSTALL_DATADIR}/nomlib/Resources # <prefix/share>/nomlib/Resources
   COMPONENT Examples
 )
+
+if(NOM_INSTALL_GCDB)
+  install(FILES
+    "${gcdb_SOURCE_DIR}/gamecontrollerdb.txt"
+    DESTINATION
+    "${CMAKE_INSTALL_DATADIR}/nomlib/Resources/SharedSupport"
+    OPTIONAL
+    COMPONENT Examples
+  )
+endif()

@@ -52,6 +52,12 @@
 * Fixed `nom::filesystem::file_size()` on POSIX to return `st.st_size`
   instead of the previous accidental `st.st_mode`.
 
+* Expanded `tests/src/system/FileInterfaceTest.cpp` with unit tests covering
+  `nom::filesystem::path` construction, decomposition, UTF-8 / UTF-16 /
+  wide-string round-trips, `operator/` / `operator+=` composition, and the
+  `create_directory`, `create_directories`, `exists`, `is_directory`,
+  `is_regular_file`, `remove`, `file_size`, and `current_path` operations.
+
 * Switched the GameOfLife example from C++17 `std::filesystem` to the new
   C++14 `nom::filesystem` implementation and removed the target-specific
   C++17 requirement.

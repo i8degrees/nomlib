@@ -28,7 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "gtest/gtest.h"
 
+#include <fstream>
+
 #include <nomlib/system.hpp>
+#include "nomlib/system/filesystem.hpp"
 
 namespace nom {
 
@@ -257,6 +260,172 @@ TEST_F( FileInterfaceTest, MakeFile )
   EXPECT_TRUE( fp.mkfile( "nom_file" ) );
 
   EXPECT_TRUE( fp.is_file( "nom_file" ) );
+}
+
+TEST_F( FileInterfaceTest, FilesystemPathConstruction )
+{
+  using namespace nom::filesystem;
+
+  path p("Resources/tests/audio/4s.wav");
+
+  EXPECT_EQ( "Resources/tests/audio/4s.wav", p.native() );
+  EXPECT_EQ( "Resources/tests/audio/4s.wav", p.string() );
+  EXPECT_EQ( "Resources/tests/audio/4s.wav", p.generic_string() );
+  EXPECT_EQ( "Resources/tests/audio/4s.wav", p.u8string() );
+  EXPECT_EQ( "Resources/tests/audio/4s.wav", p.generic_u8string() );
+  EXPECT_EQ( "4s.wav", p.filename().native() );
+  EXPECT_EQ( ".wav", p.extension().native() );
+  EXPECT_EQ( "4s", p.stem().native() );
+  EXPECT_EQ( "Resources/tests/audio", p.parent_path().native() );
+  EXPECT_TRUE( p.has_filename() );
+  EXPECT_TRUE( p.has_extension() );
+  EXPECT_TRUE( p.has_parent_path() );
+  EXPECT_FALSE( p.is_absolute() );
+}
+
+TEST_F( FileInterfaceTest, FilesystemPathUtf8Content )
+{
+  using namespace nom::filesystem;
+
+  std::string utf8 = "/tmp/nomlib_音乐_🎵_test.txt";
+  path p(utf8);
+
+  EXPECT_EQ( utf8, p.native() );
+  EXPECT_EQ( utf8, p.u8string() );
+  EXPECT_EQ( utf8, p.generic_u8string() );
+  EXPECT_EQ( "nomlib_音乐_🎵_test.txt", p.filename().native() );
+  EXPECT_EQ( ".txt", p.extension().native() );
+  EXPECT_EQ( "nomlib_音乐_🎵_test", p.stem().native() );
+}
+
+TEST_F( FileInterfaceTest, FilesystemPathUtf16RoundTrip )
+{
+  using namespace nom::filesystem;
+
+  std::string utf8 = "/tmp/nomlib_音乐_🎵_test";
+  path p8(utf8);
+  std::u16string u16 = p8.u16string();
+
+  path p16(u16);
+  EXPECT_EQ( utf8, p16.native() );
+  EXPECT_EQ( u16, p16.u16string() );
+  EXPECT_EQ( u16, p16.generic_u16string() );
+}
+
+TEST_F( FileInterfaceTest, FilesystemPathWstringRoundTrip )
+{
+  using namespace nom::filesystem;
+
+  std::string utf8 = "/tmp/nomlib_音乐_🎵_test";
+  path p8(utf8);
+  std::wstring w = p8.wstring();
+
+  path pw(w);
+  EXPECT_EQ( utf8, pw.native() );
+  EXPECT_EQ( w, pw.wstring() );
+  EXPECT_EQ( w, pw.generic_wstring() );
+}
+
+TEST_F( FileInterfaceTest, FilesystemPathAssign )
+{
+  using namespace nom::filesystem;
+
+  path p;
+  p.assign( std::u16string(u"音乐/file.txt") );
+  EXPECT_EQ( "音乐/file.txt", p.native() );
+
+  p = std::wstring(L"another/路径.txt");
+  EXPECT_EQ( "another/路径.txt", p.native() );
+
+  p.assign( "/tmp/final.txt" );
+  EXPECT_EQ( "/tmp/final.txt", p.native() );
+}
+
+TEST_F( FileInterfaceTest, FilesystemPathAppend )
+{
+  using namespace nom::filesystem;
+
+  std::string sep( 1, path::preferred_separator );
+  path base("/tmp");
+  path result = base / "音乐" / "test.txt";
+
+  EXPECT_EQ( std::string("/tmp") + sep + "音乐" + sep + "test.txt",
+             result.native() );
+  EXPECT_EQ( "test.txt", result.filename().native() );
+  EXPECT_EQ( ".txt", result.extension().native() );
+
+  path concat("Resources");
+  concat += "/gui.png";
+  EXPECT_EQ( "Resources/gui.png", concat.native() );
+}
+
+TEST_F( FileInterfaceTest, FilesystemCurrentPath )
+{
+  using namespace nom::filesystem;
+
+  path cwd = current_path();
+  EXPECT_FALSE( cwd.empty() );
+  EXPECT_TRUE( exists(cwd) );
+  EXPECT_TRUE( is_directory(cwd) );
+}
+
+TEST_F( FileInterfaceTest, FilesystemUtf8DirectoryOps )
+{
+  using namespace nom::filesystem;
+
+  path p("/tmp/nomlib_音乐");
+  ASSERT_FALSE( exists(p) );
+
+  EXPECT_TRUE( create_directory(p) );
+  EXPECT_TRUE( exists(p) );
+  EXPECT_TRUE( is_directory(p) );
+  EXPECT_FALSE( is_regular_file(p) );
+
+  EXPECT_TRUE( remove(p) );
+  EXPECT_FALSE( exists(p) );
+}
+
+TEST_F( FileInterfaceTest, FilesystemUtf8RecursiveDirectoryOps )
+{
+  using namespace nom::filesystem;
+
+  path leaf("/tmp/nomlib_音乐_parents_🎵_leaf");
+  ASSERT_FALSE( exists(leaf) );
+
+  EXPECT_TRUE( create_directories(leaf) );
+  EXPECT_TRUE( exists(leaf) );
+  EXPECT_TRUE( is_directory(leaf) );
+
+  EXPECT_TRUE( remove(leaf) );
+  EXPECT_FALSE( exists(leaf) );
+
+  // Clean up the intermediate parent directory created by create_directories.
+  path parent = leaf.parent_path();
+  if( !parent.empty() && exists(parent) )
+  {
+    remove(parent);
+  }
+}
+
+TEST_F( FileInterfaceTest, FilesystemFileSize )
+{
+  using namespace nom::filesystem;
+
+  std::string content = "Hello, nomlib filesystem! 音乐 🎵";
+  path p("/tmp/nomlib_filesystem_size_test.txt");
+
+  {
+    std::ofstream out( p.c_str(), std::ios::binary );
+    ASSERT_TRUE( out.is_open() );
+    out.write( content.data(), content.size() );
+  }
+
+  EXPECT_EQ( content.size(), file_size(p) );
+  EXPECT_TRUE( is_regular_file(p) );
+  EXPECT_FALSE( is_directory(p) );
+
+  EXPECT_TRUE( remove(p) );
+  EXPECT_FALSE( exists(p) );
 }
 
 } // namespace nom

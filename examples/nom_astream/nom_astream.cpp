@@ -3,15 +3,17 @@
 #include <vector>
 
 #include "nomlib/audio/audio.hpp"
+#include "nomlib/system/filesystem.hpp"
 
 using namespace std;
 using namespace nom;
 using namespace nom::audio;
+using namespace nom::filesystem;
 
 #define MAX_COUNT 120 // 120s
 
-std::vector<std::string> sounds = {
-  "Resources/tests/audio/ALAudioTest/laura_ff1-s16-mono.ogg",
+std::vector<path> sounds = {
+  path("Resources/tests/audio/ALAudioTest") / "laura_ff1-s16-mono.ogg",
 };
 
 #include <chrono>
@@ -62,17 +64,13 @@ int main(int argc, char* argv[])
 
   for(auto itr = sounds.begin(); itr != sounds.end(); ++itr) {
     auto name = *itr;
-    bool streaming = true;
-#if 0
-    std::string ext = name.substr(name.length()-3, 3);
-    if(ext == "ogg") {
-      streaming = true;
-    }
-#endif
-    SoundManager::add_sound(name, streaming);
+    bool streaming = name.extension().native() == ".ogg";
+
+    SoundManager::add_sound(name.native(), streaming);
   }
 
-  Sound* media = SoundManager::find_sound("Resources/tests/audio/ALAudioTest/laura_ff1-s16-mono.ogg");
+  path media_path = path("Resources/tests/audio/ALAudioTest") / "laura_ff1-s16-mono.ogg";
+  Sound* media = SoundManager::find_sound(media_path.native());
   NOM_ASSERT(media != nullptr && "media should NOT be nullptr");
   if(media != nullptr) {
     cout << "total_bytes():" << media->total_bytes() << endl;

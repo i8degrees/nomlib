@@ -33,6 +33,25 @@
 * Updated `nomlib-file` to build `src/system/filesystem.cpp` and install the
   public header `include/nomlib/system/filesystem.hpp`.
 
+* Rewrote `examples/nom_aplay` and `examples/nom_astream` to use the new
+  `nom::filesystem::path` API for path composition and extension queries.
+
+* Extended `nom::filesystem::path` with UTF-8 / UTF-16 / wide string support
+  matching the ISO/IEC TS 18822:2015 (N4100) / Boost.Filesystem interface:
+  added `u8string_type`, `u16string_type`, `u8string()`, `u16string()`,
+  `wstring()`, and their `generic_*` aliases, plus constructors and
+  assignment operators from `std::u16string` and `std::wstring`.
+
+* Added internal UTF-8 / UTF-16 / UTF-32 conversion helpers used by the new
+  `nom::filesystem::path` string accessors.
+
+* Switched the Windows `nom::filesystem` operational functions to use the
+  wide Windows APIs (`_wstat`, `CreateDirectoryW`, `RemoveDirectoryW`,
+  `DeleteFileW`, `_wgetcwd`, `_wchdir`) so UTF-8 paths round-trip correctly.
+
+* Fixed `nom::filesystem::file_size()` on POSIX to return `st.st_size`
+  instead of the previous accidental `st.st_mode`.
+
 * Switched the GameOfLife example from C++17 `std::filesystem` to the new
   C++14 `nom::filesystem` implementation and removed the target-specific
   C++17 requirement.

@@ -1,41 +1,48 @@
 # Project instructions
 
-nomlib is a video game engine written in C++14. It is developed along-side
-the development of a video game remake called Triple Triad, a side-game
-of Final Fantasy VIII console game that was released in 1998 by
-Square Enix for the Playstation (PSX).
+nomlib is a cross-platform game engine written primarily in C++14, developed
+alongside `ttcards`, a remake of the Triple Triad side-game from *Final
+Fantasy VIII*.
 
 - https://github.com/i8degrees/nomlib.git
 - https://github.com/i8degrees/ttcards.git
 
 ## Build and test
 
-- Ensure that the computer has the build dependencies:
+Make sure the build dependencies are installed:
 
-- Linux
-    - `cmake`, `git`, `clang++`, `vcpkg`
-- Windows
-    - `cmake.exe`, `git.exe`, `vcpkg.exe`, `cl.exe`
-- macOS
-    - `cmake`, `git`, `clang++`, `vcpkg`, `brew`
+| Platform | Tools |
+|---|---|
+| Linux | `cmake`, `git`, `clang++`, `vcpkg` |
+| Windows | `cmake.exe`, `git.exe`, `vcpkg.exe`, `cl.exe` |
+| macOS | `cmake`, `git`, `clang++`, `vcpkg`, `brew` |
 
-- Always have a build directory for `cmake` -- `mkdir build && cd build` from
-the project's root.
+All builds are configured from the repo root using CMake presets defined in
+`CMakePresets.json`.
 
-For a debug build, use the `debug` preset:
-`cmake -S . --preset debug -DNOM_USE_CCACHE=on`
+Debug build:
 
-or for a release build:
-`cmake -S . --preset release-dynamic -DNOM_USE_CCACHE=on -DNOM_INSTALL_GCDB=off`
+```shell
+cmake -S . --preset debug -DNOM_USE_CCACHE=on
+cmake --build build/debug --target all -j$(nproc)
+```
 
-and finally, initiate the compilation with `cmake --build build/release-dynamic --target all`
-for the release-dynamic preset, or `cmake --build build/debug --target all`
-for the debug release.
+Release build:
 
-For testing, we use `cmake -S . --preset debug -DNOM_USE_CCACHE=on -DBUILD_TESTS=1`
-to configure and then proceed to building the VisualUnitTest and UnitTest
-cmake targets. The executables should be found under build/<preset>/opt and
-can be tested individually by going to this build directory. For example,
+```shell
+cmake -S . --preset release-dynamic -DNOM_USE_CCACHE=on -DNOM_INSTALL_GCDB=off
+cmake --build build/release-dynamic --target all -j$(nproc)
+```
+
+Unit tests are enabled with `BUILD_TESTS=1`:
+
+```shell
+cmake -S . --preset debug -DNOM_USE_CCACHE=on -DBUILD_TESTS=1
+cmake --build build/debug --target all -j$(nproc)
+```
+
+The test executables are written to `build/<preset>/opt`. Run them from that
+directory, for example:
 
 ```shell
 cd build/debug/opt
@@ -43,92 +50,93 @@ cd build/debug/opt
 ./ptree
 ```
 
-- For testing the `nom_jsonpp` example, you should feed it every json file
-you find in the build artifacts directory, one file per execution, except for
-`auctions.json`. This last file mentioned is 8MB and on a debug build (`-g`),
-requires (on my CPU) roughly 30s to read and output. The release build
-builds requires approximately 10s to read and output. Test this
-last file as a separate background task and compare the real time against
-the statement made here and report back when the time exceeds 5 seconds. 
-Report to me when any of the other `json` files tested come back with a 
-non-zero exit with the shell output included.
+### Example-specific testing
 
-- For testing the `nom_font` example, the minimum number of arguments 
-necessary to run this example are `--text "Hello, world!" $(pwd)/build/release-dynamic/bin/OpenSans-Regular.ttf`.
-You may find other resource files under `Resources` as well as the build 
-artifacts directory.
+- `nom_jsonpp`: feed it every `.json` file in the build artifacts directory,
+  one per execution, except `auctions.json`. That file is 8 MB and on a
+  debug build takes roughly 30 s to read and output; the release build takes
+  about 10 s. Test `auctions.json` as a background task and report if the real
+  time exceeds 5 s. Report any non-zero exit from the other JSON files with the
+  full shell output.
 
-- To build the public API documentation, configure the project with 
-`cmake -S . <preset> -DBUILD_DOCS=1`. The generated documentation will be in
-the build artifacts directory of the named cmake preset in a directory called
-`docs/html`.
+- `nom_font`: minimum invocation is
+  `--text "Hello, world!" $(pwd)/build/release-dynamic/bin/OpenSans-Regular.ttf`.
+  Additional resource files are available under `Resources` and in the build
+  artifacts directory.
 
-- For testing `nom_astream`, `nom_aplay` and any other executable using
-the `openal-soft` dependency, the `ALSOFT_LOGLEVEL=3` environment may be
-prefixed to the executable in order to enable diagnostic messages, rated
-from INFO to ERROR. `ALSOFT_LOGLEVEL=3 build/<preset>/bin/nom_astream` is an
-example.
+- `nom_astream` / `nom_aplay` / other OpenAL examples: run from the repo root
+  so relative `Resources` paths resolve. To enable OpenAL Soft diagnostics,
+  prefix the command with `ALSOFT_LOGLEVEL=3`:
+
+  ```shell
+  ALSOFT_LOGLEVEL=3 ./build/debug/bin/nom_astream
+  ```
+
+### Public API documentation
+
+```shell
+cmake -S . --preset <preset> -DBUILD_DOCS=1
+```
+
+Generated docs are in `build/<preset>/docs/html`.
 
 ## Conventions
 
-- nomlib consists of several key library targets, specified under
-`src/<target>/CMakeLists.txt`.
-- `nomlib-audio`, `nomlib-actions`, `nomlib-audio`, `nomlib-core`, `nomlib-file`,
-`nomlib-graphics`, `nomlib-gui`, `nomlib-math`, `nomlib-ptree`, 
-`nomlib-serializers` and `nomlib-system`.
+- nomlib is split into these library targets, each under `src/<target>/CMakeLists.txt`:
+  `nomlib-actions`, `nomlib-audio`, `nomlib-core`, `nomlib-file`, `nomlib-graphics`,
+  `nomlib-gui`, `nomlib-math`, `nomlib-ptree`, `nomlib-serializers`, `nomlib-system`.
 
-- `export.hpp` is generated by cmake at `src/core/CMakeLists.txt`. Initially,
-I had cmake generating an `export.hpp` on all library exports, but have since
-decided to only do this in the core unit so as to limit the number of 
-repetitive calls made in each library unit.
+- `export.hpp` is generated by CMake in `src/core/CMakeLists.txt`. Earlier versions
+  generated one per library, but this was reduced to the core unit to avoid
+  repetitive configure output.
 
-- All existing source files must be valid C++14 and must be able to compile
-using the `clang` toolchain on Linux, macOS and Windows.
+- Existing source files must compile as standard C++14 with the `clang`
+  toolchain on Linux, macOS, and Windows.
 
-- New source files are permitted to use C++17 (without extensions), so long
-as it does not break any contract set out here.
+- New source files may use C++17 without extensions, provided they do not break
+  existing contracts or downstream users.
 
-- Windows 10 and 11 use Microsoft Visual C++ Build Tools 2022 with the `clang-cl`
-dialect. Consult `CMakePresets.txt` for the general build environment.
+- Windows 10 and 11 use Microsoft Visual C++ Build Tools 2022 with the
+  `clang-cl` dialect. See `CMakePresets.json` for the general build environment.
 
-- Third-party library details can be found under `third-party/README.md` of
-the repository's root. If this path is unavailable, consult
-https://nomlib.479831.xyz/frs/README.md for the information. Do not assume
-that the library versions in this document are necessarily up-to-date.
+- Keep public API changes backward-compatible at the source level.
 
-- additional dependencies that are managed by CMake at the time of
-project configuration can be found at `vendor/CMakeLists.txt`. This includes
-`gtest`, `jsoncpp`, `rapidxml` and `tclap`. `gtest` is required for building
-unit tests (including VisualUnitTest) and the others are headers-only
-implementations that are required by library components, such as 
-`nomlib-serializers`. `tclap` is used by various examples and unit tests.
+- Auto-generated files must never be edited by hand:
+  - `include/nomlib/config.hpp`
+  - `include/nomlib/export.hpp`
+  - `include/nomlib/version.hpp`
 
-- nomlib has a wiki at https://github.com/i8degrees/nomlib/wiki of which is
-also available as a submodule called `wiki.git` in the repository root. This
-path is intended to be a collection of thoughts, ideas and experiments that
-have happened during the life of this project. It should be considered
-read-only except by explicit consult for me to review.
+- These paths are also off-limits:
+  - `tmp`
+  - `Resources` (append-only)
+  - `docs` (generated docs)
+  - `extra`
+  - `build` / `build.*`
 
-- nomlib dependencies should always be handled by `vcpkg`. See also: `vcpkg.json`
-and `vcpkg-configuration.json`. The `vcpkg_installed` directory should never 
-be modified for this is managed by `vcpkg`.
+## Third-party dependencies
 
-- Keep public API changes backward compatible.
+- vcpkg handles all nomlib dependencies. See `vcpkg.json` and
+  `vcpkg-configuration.json`. The `vcpkg_installed` directory is managed by
+  vcpkg and must not be edited manually.
 
-- Never edit files under the following paths:
-`include/nomlib/config.hpp`, `include/nomlib/export.hpp`, `include/nomlib/version.hpp`
-for these are auto-generated files created by CMake at the time of configure.
+- CMake-managed dependencies are listed in `vendor/CMakeLists.txt`:
+  - `gtest` — required for unit tests, including `VisualUnitTest`.
+  - `jsoncpp`, `rapidxml`, `tclap` — header-only or near-header-only;
+    used by `nomlib-serializers`, examples, and unit tests.
 
-- Never edit files under the following paths:
-`tmp`, `Resources`, `docs`, `extra`, `build`, `build.*`
+- Third-party library details and historical notes are in `third-party/README.md`,
+  or at https://nomlib.479831.xyz/frs/README.md if the local file is missing.
+  Do not assume the versions listed there are current.
 
-- The `Resources` path is append-only.
+## Project wiki
 
-- The `docs` path is for generated documentation using `doxygen` and `graphviz`.
+nomlib has a wiki at https://github.com/i8degrees/nomlib/wiki, also available
+as the `wiki.git` submodule in the repo root. It is a collection of notes,
+ideas, and experiments; treat it as read-only unless asked to review it.
 
-- Before finishing, run the narrowest test that covers the change. Create a
-unit test with the source file under `tests/src/<test_name>` and put the
-header file(s) under `tests/include/nomlib/<test_name>`. The test should
-always use the conventions set out by the Google Test v10.x API, bundled
-with this project for running each test.
+## Test policy
 
+Before finishing a change, run the narrowest test or example that exercises
+it. If no existing test covers the new path, create one under `tests/src/<test_name>`
+and put headers under `tests/include/nomlib/<test_name>`. Tests must follow
+the Google Test v10.x API bundled with the project.

@@ -39,6 +39,25 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+namespace {
+
+/// \brief Open an std::ofstream using the platform-native path encoding.
+///
+/// On Windows, MSVC's standard library provides a wchar_t constructor for
+/// fstreams, so we convert the UTF-8 path to UTF-16 via wstring(). On POSIX
+/// systems, the narrow UTF-8 representation is opened directly.
+std::ofstream open_output_stream( const filesystem::path& p,
+                                  std::ios::openmode mode = std::ios::out )
+{
+#if defined( NOM_PLATFORM_WINDOWS )
+  return std::ofstream( p.wstring().c_str(), mode );
+#else
+  return std::ofstream( p.c_str(), mode );
+#endif
+}
+
+} // namespace
+
 class FileInterfaceTest: public ::testing::Test
 {
   public:
@@ -63,8 +82,8 @@ class FileInterfaceTest: public ::testing::Test
     /// \remarks This method is called at the end of each unit test.
     virtual ~FileInterfaceTest( void )
     {
-      if( exists("nom_file") ) {
-        EXPECT_TRUE( fp.remove( "nom_file" ) );
+      if( filesystem::exists( "nom_file" ) ) {
+        EXPECT_TRUE( filesystem::remove( "nom_file" ) );
       }
     }
 
@@ -459,7 +478,7 @@ TEST_F( FileInterfaceTest, FilesystemFileSize )
   }
 
   {
-    std::ofstream out( p.c_str(), std::ios::binary );
+    std::ofstream out = open_output_stream( p, std::ios::binary );
     ASSERT_TRUE( out.is_open() );
     out.write( content.data(), content.size() );
   }
@@ -501,7 +520,7 @@ TEST_F( FileInterfaceTest, FilesystemStatusQueries )
 
   const std::string content = "Hello, nomlib filesystem status queries!";
   {
-    std::ofstream out( file.c_str(), std::ios::binary );
+    std::ofstream out = open_output_stream( file, std::ios::binary );
     ASSERT_TRUE( out.is_open() );
     out.write( content.data(), content.size() );
   }
@@ -668,9 +687,9 @@ TEST_F( FileInterfaceTest, FilesystemDirectoryIteration )
   ASSERT_TRUE( is_directory(dir) );
 
   {
-    std::ofstream out1( file1.c_str() );
+    std::ofstream out1 = open_output_stream( file1 );
     ASSERT_TRUE( out1.is_open() );
-    std::ofstream out2( file2.c_str() );
+    std::ofstream out2 = open_output_stream( file2 );
     ASSERT_TRUE( out2.is_open() );
   }
 
@@ -726,11 +745,11 @@ TEST_F( FileInterfaceTest, FilesystemDirectoryIterationSortedByFilename )
   ASSERT_TRUE( exists(dir) );
 
   {
-    std::ofstream out1( file1.c_str() );
+    std::ofstream out1 = open_output_stream( file1 );
     ASSERT_TRUE( out1.is_open() );
-    std::ofstream out2( file2.c_str() );
+    std::ofstream out2 = open_output_stream( file2 );
     ASSERT_TRUE( out2.is_open() );
-    std::ofstream out3( file3.c_str() );
+    std::ofstream out3 = open_output_stream( file3 );
     ASSERT_TRUE( out3.is_open() );
   }
 
@@ -851,37 +870,37 @@ TEST_F( FileInterfaceTest, FilesystemPathUnicodeConstructors )
     }
   }
 
-  // Create the files using only the converted path's native representation.
+  // Create the files using the platform-native path encoding.
   {
-    std::ofstream f( p1.c_str() );
+    std::ofstream f = open_output_stream( p1 );
     ASSERT_TRUE( f.is_open() ) << p1.native();
   }
   {
-    std::ofstream f( p2.c_str() );
+    std::ofstream f = open_output_stream( p2 );
     ASSERT_TRUE( f.is_open() ) << p2.native();
   }
   {
-    std::ofstream f( p3.c_str() );
+    std::ofstream f = open_output_stream( p3 );
     ASSERT_TRUE( f.is_open() ) << p3.native();
   }
   {
-    std::ofstream f( p4.c_str() );
+    std::ofstream f = open_output_stream( p4 );
     ASSERT_TRUE( f.is_open() ) << p4.native();
   }
   {
-    std::ofstream f( p5.c_str() );
+    std::ofstream f = open_output_stream( p5 );
     ASSERT_TRUE( f.is_open() ) << p5.native();
   }
   {
-    std::ofstream f( p6.c_str() );
+    std::ofstream f = open_output_stream( p6 );
     ASSERT_TRUE( f.is_open() ) << p6.native();
   }
   {
-    std::ofstream f( p7.c_str() );
+    std::ofstream f = open_output_stream( p7 );
     ASSERT_TRUE( f.is_open() ) << p7.native();
   }
   {
-    std::ofstream f( p8.c_str() );
+    std::ofstream f = open_output_stream( p8 );
     ASSERT_TRUE( f.is_open() ) << p8.native();
   }
 

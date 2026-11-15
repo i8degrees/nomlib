@@ -30,6 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <cstdlib>
 #include <cassert>
+#include <climits>
+#include <limits.h>
 
 // Pubic nomlib interface headers
 #include <nomlib/math.hpp>
@@ -72,12 +74,117 @@ const nom::Point2i INFO_BOX_ORIGINS[2] =  {
                                                         )
                                           };
 
-const std::string RESOURCE_ICON = "icon.png";
+/// \brief Return the parent directory of the executable, resolving symlinks
+/// and launcher-relative argv[0] values where possible.
+filesystem::path exe_parent_dir( const char* argv0 )
+{
+#if defined( NOM_PLATFORM_POSIX )
+  char resolved[PATH_MAX];
+  if( ::realpath( argv0, resolved ) != nullptr ) {
+    return filesystem::path( resolved ).parent_path();
+  }
+#endif
 
-const std::string RESOURCE_SPRITE_SHEET = "cursors.json";
+  filesystem::path argv_path( argv0 );
+  if( argv_path.is_absolute() ) {
+    return argv_path.parent_path();
+  }
+
+  return ( filesystem::current_path() / argv_path ).parent_path();
+}
+
+/// Resolve the nom_app_ex resource directory relative to the executable.
+///
+/// Candidate layouts include:
+///   - <exe>/Resources/tests/gui
+///   - <exe>/../Resources/tests/gui                (macOS bundle)
+///   - <exe>/../../Resources/tests/gui            (development build/<cfg>)
+///   - <exe>/../../../Resources/tests/gui          (CMake build/<cfg>/bin)
+///   - <exe>/../share/nomlib/Resources/tests/gui   (installed prefix layout)
+filesystem::path find_tests_resource_dir( const char* argv0 )
+{
+  filesystem::path exe_dir = exe_parent_dir( argv0 );
+
+  const std::vector<filesystem::path> candidates = {
+    exe_dir / "Resources" / "tests" / "gui",
+    exe_dir / ".." / "Resources" / "tests" / "gui",
+    exe_dir / ".." / ".." / "Resources" / "tests" / "gui",
+    exe_dir / ".." / ".." / ".." / "Resources" / "tests" / "gui",
+    exe_dir / ".." / "share" / "nomlib" / "Resources" / "tests" / "gui",
+  };
+
+  for( const auto& c : candidates ) {
+    if( filesystem::is_directory( c ) ) {
+      return c;
+    }
+  }
+
+  // Preserve the preferred fallback even when nothing exists.
+  return candidates.at(0);
+}
+
+/// Resolve the nom_app_ex resource directory relative to the executable.
+///
+/// Candidate layouts include:
+///   - <exe>/Resources/examples/app
+///   - <exe>/../Resources/examples/app             (macOS bundle)
+///   - <exe>/../../Resources/examples/app            (development build/<cfg>)
+///   - <exe>/../../../Resources/examples/app          (CMake build/<cfg>/bin)
+///   - <exe>/../share/nomlib/Resources/examples/app   (installed prefix layout)
+filesystem::path find_resource_dir( const char* argv0 )
+{
+  filesystem::path exe_dir = exe_parent_dir( argv0 );
+
+  const std::vector<filesystem::path> candidates = {
+    exe_dir / "Resources" / "examples" / "app",
+    exe_dir / ".." / "Resources" / "examples" / "app",
+    exe_dir / ".." / ".." / "Resources" / "examples" / "app",
+    exe_dir / ".." / ".." / ".." / "Resources" / "examples" / "app",
+    exe_dir / ".." / "share" / "nomlib" / "Resources" / "examples" / "app",
+  };
+
+  for( const auto& c : candidates ) {
+    if( filesystem::is_directory( c ) ) {
+      return c;
+    }
+  }
+
+  // Preserve the preferred fallback even when nothing exists.
+  return candidates.at(0);
+}
+
+/// \brief Resource path helpers; populated at runtime from executable location.
+std::string RESOURCE_ICON;
+
+std::string RESOURCE_SPRITE_SHEET;
 
 /// Copyright (c) 2013 Fielding Johnston. All rights reserved.
-const std::string RESOURCE_STATIC_IMAGE = "boardoutline.png";
+std::string RESOURCE_STATIC_IMAGE;
+
+/// \brief libRocket GUI resource files (document markup)
+std::string MESSAGEBOX_RML;
+/// \brief libRocket GUI resource files (font)
+std::string DELICIOUS_FONT; 
+/// \brief libRocket GUI resource files (font)
+std::string OPENSANS_FONT_REG;
+/// \brief libRocket GUI resource files (font)
+std::string OPENSANS_FONT_BOLD;
+ 
+/// Initialize resource paths using the executable's filesystem location.
+void init_resource_paths( const char* argv0 )
+{
+  filesystem::path base = find_resource_dir( argv0 );
+  filesystem::path tests = find_tests_resource_dir( argv0 );
+
+  RESOURCE_ICON = ( base / "icon.png" ).native();
+  RESOURCE_SPRITE_SHEET = ( base / "cursors.json" ).native();
+  RESOURCE_STATIC_IMAGE = ( base / "boardoutline.png" ).native();
+
+  MESSAGEBOX_RML = ( tests / "messagebox.rml" ).native();
+  DELICIOUS_FONT = ( tests / "Delicious-Bold.otf" ).native();
+  OPENSANS_FONT_REG = ( tests / "OpenSans-Regular.ttf" ).native();
+  OPENSANS_FONT_BOLD = ( tests / "OpenSans-Bold.ttf" ).native();
+}
 
 /// \brief Relative filename path to saved screen shot example
 ///
@@ -128,9 +235,9 @@ class App: public nom::SDLApp
       nom::uint32 render_flags = SDL_RENDERER_ACCELERATED;
       int render_driver = -1;
 
+#if 0
       nom::SearchPath res, res_gui;
       std::string res_file = "app.json";
-
       // Determine our resources path based on several possible locations;
       // this is dependent upon the build environment
       if( res.load_file(res_file,"resources") == false )
@@ -139,7 +246,8 @@ class App: public nom::SDLApp
                      "Could not determine the resource path for", res_file );
         return false;
       }
-
+#endif
+#if 0
       if( res_gui.load_file(res_file,"gui") == false )
       {
         NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION,
@@ -147,7 +255,7 @@ class App: public nom::SDLApp
                       res_file );
         return false;
       }
-
+#endif
       if ( nom::set_hint ( SDL_HINT_RENDER_VSYNC, "0" ) == false )
       {
         NOM_LOG_INFO ( NOM, "Could not disable vertical refresh." );
@@ -181,10 +289,10 @@ class App: public nom::SDLApp
           return false;
         }
 
-        if( this->window[idx].set_window_icon( res.path() + RESOURCE_ICON ) == false ) {
+        if( this->window[idx].set_window_icon(RESOURCE_ICON ) == false ) {
           nom::DialogMessageBox(  APP_NAME,
                                   "Could not load window icon: " +
-                                  res.path() + RESOURCE_ICON );
+                                  RESOURCE_ICON );
           return false;
         }
 
@@ -213,7 +321,7 @@ class App: public nom::SDLApp
       // Initialize the core of libRocket; these are the core dependencies that
       // libRocket depends on for successful initialization.
       Rocket::Core::FileInterface* fs =
-        new nom::RocketFileInterface( res_gui.path() );
+        new nom::RocketFileInterface(MESSAGEBOX_RML); // ?? obtain dir path?
 
       Rocket::Core::SystemInterface* sys =
         new nom::RocketSDL2SystemInterface();
@@ -238,21 +346,21 @@ class App: public nom::SDLApp
 
       this->desktop.set_event_handler(this->evt_handler);
 
-      if( this->desktop.load_font( "Delicious-Bold.otf" ) == false )
+      if( this->desktop.load_font(DELICIOUS_FONT) == false )
       {
-        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not load font file: Delicious-Bold.otf" );
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not load font file:", DELICIOUS_FONT);
         return false;
       }
 
-      if( this->desktop.load_font( "OpenSans-Regular.ttf" ) == false )
+      if( this->desktop.load_font(OPENSANS_FONT_REG) == false )
       {
-        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not load font file: OpenSans-Regular.ttf" );
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not load font file:", OPENSANS_FONT_REG);
         return false;
       }
 
-      if( this->desktop.load_font( "OpenSans-Bold.ttf" ) == false )
+      if( this->desktop.load_font(OPENSANS_FONT_BOLD) == false )
       {
-        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not load font file: OpenSans-Bold.ttf" );
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not load font file:", OPENSANS_FONT_BOLD);;
         return false;
       }
 
@@ -267,18 +375,19 @@ class App: public nom::SDLApp
 
       // Load a sprite sheet, using the sheet_filename as the base path to load
       // the image file from disk
-      if( sprite_frames.load_file(res.path() + RESOURCE_SPRITE_SHEET) == false ) {
+      if( sprite_frames.load_file(RESOURCE_SPRITE_SHEET) == false ) {
         nom::DialogMessageBox(  APP_NAME,
                                 "Could not load sprite sheet: " +
-                                res.path() + RESOURCE_SPRITE_SHEET );
+                                RESOURCE_SPRITE_SHEET);
         return false;
       }
 
-      if( this->sprite_tex.load( res.path() + sprite_frames.sheet_filename(), false, nom::Texture::Access::Streaming ) == false )
+      if( this->sprite_tex.load( sprite_frames.sheet_filename(), false, 
+          nom::Texture::Access::Streaming ) == false )
       {
         nom::DialogMessageBox(  APP_NAME,
                                 "Could not load sprite texture: " +
-                                res.path() + sprite_frames.sheet_filename() );
+                                sprite_frames.sheet_filename() );
         return false;
       }
 
@@ -295,11 +404,11 @@ class App: public nom::SDLApp
       // another texture source would be OK, too, if we didn't care about
       // preserving the original scale of the sprite here for testing purposes.
       // this->ani_sprite.set_texture( *this->sprite_tex.clone() );
-      if( ani_sprite_tex->load( res.path() + sprite_frames.sheet_filename() ) == false )
+      if( ani_sprite_tex->load(sprite_frames.sheet_filename() ) == false )
       {
         nom::DialogMessageBox(  APP_NAME,
                                 "Could not load sprite texture: " +
-                                res.path() + sprite_frames.sheet_filename() );
+                                sprite_frames.sheet_filename() );
         return false;
       }
 
@@ -327,10 +436,10 @@ class App: public nom::SDLApp
       if ( MAXIMUM_WINDOWS > 1 )
       {
         this->window[1].make_current();
-        if( this->background.load(res.path() + RESOURCE_STATIC_IMAGE) == false ) {
+        if( this->background.load(RESOURCE_STATIC_IMAGE) == false ) {
           nom::DialogMessageBox(  APP_NAME,
                                   "Could not load image file: " +
-                                  res.path() + RESOURCE_STATIC_IMAGE );
+                                  RESOURCE_STATIC_IMAGE );
           return false;
         }
       }
@@ -339,7 +448,7 @@ class App: public nom::SDLApp
 
       // info_box[0]
       this->info_box[0].set_context(&this->desktop);
-      if( this->info_box[0].load_document_file( "messagebox.rml" ) == false )
+      if( this->info_box[0].load_document_file(MESSAGEBOX_RML) == false )
       {
         NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION,
                       "UIMessageBox should not be invalid; is the context and document file valid?" );
@@ -741,6 +850,10 @@ nom::int32 main ( nom::int32 argc, char* argv[] )
     NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
                   "Could not disable Spaces support." );
   }
+
+  // Locate the GameOfLife resources relative to the executable before
+  // nom::init changes the working directory.
+  init_resource_paths( argv[0] );
 
   // nom::init sets the working directory to this executable's directory
   // path

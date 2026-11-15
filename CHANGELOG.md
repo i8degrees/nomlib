@@ -96,6 +96,11 @@
   and `.` segments are discarded. This removes a directory-traversal vector
   identified in the security review.
 
+* Refactored `examples/nom_app_ex` resource handling to match `GameOfLife` and
+  `nom_gamecontroller_ev`: executable directory is normalized with `realpath()`
+  on POSIX, CMake copies `Resources/examples/app` and `Resources/tests/gui`
+  next to the built binary, and assets are listed as target sources.
+
 * Switched `FileInterfaceTest` file creation to a platform-aware
   `open_output_stream()` helper so UTF-8 filenames use the wide-character
   `ofstream` constructor on Windows.

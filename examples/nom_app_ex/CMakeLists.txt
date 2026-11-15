@@ -1,7 +1,11 @@
 # nom_app_ex example
 
-# Search paths file to use in finding the resources path
-set(STATIC_ASSET_CONFIG "${PROJECT_SOURCE_DIR}/Resources/examples/app.json")
+# Resource paths used both at development time and at install time.
+set(STATIC_ASSETS "${PROJECT_SOURCE_DIR}/Resources/examples/app")
+set(TEST_GUI_ASSETS "${PROJECT_SOURCE_DIR}/Resources/tests/gui")
+
+file(GLOB APP_ASSET_FILES "${STATIC_ASSETS}/*")
+file(GLOB GUI_ASSET_FILES "${TEST_GUI_ASSETS}/*")
 
 add_executable(nom_app_ex
   WIN32 # Link SDL2main over WinMain
@@ -9,52 +13,52 @@ add_executable(nom_app_ex
   app.cpp
 )
 
-# TODO(JEFF): This should be a cmake option that can be modified by the
-# end-user for sake of packaging and what not.
-if(APPLE)
-  set_rpath(nom_app_ex "@loader_path/../Frameworks;@loader_path/../lib;@loader_path")
-else()
-  # Use standard Unix file hier layout for run path
-  set_rpath(nom_app_ex "@origin/../lib")
-endif()
-
-target_sources(nom_app_ex
-  PRIVATE
-    ${STATIC_ASSET_CONFIG}
+set_target_properties(nom_app_ex
+  PROPERTIES
+    INSTALL_RPATH "$ORIGIN/../lib"
+    INSTALL_RPATH_USE_LINK_PATH TRUE
 )
 
 target_include_directories(nom_app_ex
   PUBLIC
-    ${PROJECT_SOURCE_DIR}/include
+  ${PROJECT_SOURCE_DIR}/include
+)
+
+if(APPLE AND APP_ASSET_FILES)
+  set_target_properties(nom_app_ex
+    PROPERTIES
+      RESOURCE ${APP_ASSET_FILES}
+  )
+endif()
+
+target_sources(nom_app_ex
+  PRIVATE
+  ${APP_ASSET_FILES}
+  ${GUI_ASSET_FILES}
 )
 
 if(TARGET SDL2::SDL2main)
   target_link_libraries(nom_app_ex
     PRIVATE
-      $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+    $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
   )
 endif(TARGET SDL2::SDL2main)
 
 target_link_libraries(nom_app_ex
   PUBLIC
-    nomlib-actions
-    # FIXME(JEFF): This dependency is not needed and will be removed once we
-    # decouple nomlib-actions from nomlib-audio.
-    nomlib-audio
-    nomlib-core
-    nomlib-graphics
-    nomlib-gui
-    nomlib-math
-    nomlib-ptree
-    nomlib-serializers
-    nomlib-system
+  nomlib-core
+  nomlib-actions
+  nomlib-graphics
+  nomlib-gui
+  nomlib-serializers
+  nomlib-system
   PRIVATE
-    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
-    $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
-    $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
-    $<IF:$<TARGET_EXISTS:RocketCore>,RocketCore,RocketCore-static>
-    $<IF:$<TARGET_EXISTS:RocketControls>,RocketControls,RocketControls-static>
-    $<IF:$<TARGET_EXISTS:RocketDebugger>,RocketDebugger,RocketDebugger-static>
+  $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+  $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
+  $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
+  $<IF:$<TARGET_EXISTS:RocketCore>,RocketCore,RocketCore-static>
+  $<IF:$<TARGET_EXISTS:RocketControls>,RocketControls,RocketControls-static>
+  $<IF:$<TARGET_EXISTS:RocketDebugger>,RocketDebugger,RocketDebugger-static>
 )
 
 install(TARGETS nom_app_ex
@@ -64,15 +68,23 @@ install(TARGETS nom_app_ex
 )
 
 #
-## Copy assets into app bundle
+## Copy assets next to the executable for development builds.
 #
+if(STATIC_ASSETS)
+  add_custom_command(TARGET nom_app_ex POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+      "${STATIC_ASSETS}"
+      "$<TARGET_FILE_DIR:nom_app_ex>/Resources/examples/app"
+  )
+endif()
 
-# For development:
-add_custom_command(TARGET nom_app_ex
-  POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
-  "${STATIC_ASSET_CONFIG}"
-  $<TARGET_FILE_DIR:nom_app_ex> # <build>/<type>/share
-)
+if(TEST_GUI_ASSETS)
+  add_custom_command(TARGET nom_app_ex POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+      "${TEST_GUI_ASSETS}"
+      "$<TARGET_FILE_DIR:nom_app_ex>/Resources/tests/gui"
+  )
+endif()
 
 # For distribution:
 install(DIRECTORY
@@ -224,19 +236,3 @@ install(FILES $<TARGET_FILE_DIR:nom_app_ex>/libRocketDebugger.so.1
   DESTINATION ${CMAKE_INSTALL_LIBDIR}
   COMPONENT Examples
 )
-
-copy_framework_dep(nom_app_ex
-  # FIXME(JEFF): This dependency is not needed and will be removed once we
-  # decouple nomlib-actions from nomlib-audio.
-  nomlib-actions
-  nomlib-audio
-  nomlib-core
-  nomlib-file
-  nomlib-graphics
-  nomlib-gui
-  nomlib-math
-  nomlib-ptree
-  nomlib-serializers
-  nomlib-system
-)
-

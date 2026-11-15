@@ -63,7 +63,9 @@ class FileInterfaceTest: public ::testing::Test
     /// \remarks This method is called at the end of each unit test.
     virtual ~FileInterfaceTest( void )
     {
-      // Nothing to be done...
+      if( exists("nom_file") ) {
+        EXPECT_TRUE( fp.remove( "nom_file" ) );
+      }
     }
 
     /// \remarks This method is called after construction, at the start of each
@@ -696,6 +698,60 @@ TEST_F( FileInterfaceTest, FilesystemDirectoryIteration )
 
   EXPECT_TRUE( remove(file1) );
   EXPECT_TRUE( remove(file2) );
+  EXPECT_TRUE( remove(dir) );
+  EXPECT_FALSE( exists(dir) );
+}
+
+TEST_F( FileInterfaceTest, FilesystemDirectoryIterationSortedByFilename )
+{
+  using namespace nom::filesystem;
+
+  // This test mirrors the Boost.Filesystem tut4.cpp exercise: collect entries
+  // from a directory iterator, sort them, and inspect only the filename part.
+
+  const path dir("/tmp/nomlib_dir_iter_tut4_test");
+  const path file1( dir / "zebra.txt" );
+  const path file2( dir / "apple.txt" );
+  const path file3( dir / "mango.txt" );
+
+  // Defensive cleanup in case a prior run left the path behind.
+  if( exists(file1) ) remove(file1);
+  if( exists(file2) ) remove(file2);
+  if( exists(file3) ) remove(file3);
+  if( exists(dir) ) remove(dir);
+
+  ASSERT_FALSE( exists(dir) );
+
+  EXPECT_TRUE( create_directories(dir) );
+  ASSERT_TRUE( exists(dir) );
+
+  {
+    std::ofstream out1( file1.c_str() );
+    ASSERT_TRUE( out1.is_open() );
+    std::ofstream out2( file2.c_str() );
+    ASSERT_TRUE( out2.is_open() );
+    std::ofstream out3( file3.c_str() );
+    ASSERT_TRUE( out3.is_open() );
+  }
+
+  std::vector<path> entries;
+  for( const auto& entry : directory_iterator(dir) )
+  {
+    entries.push_back( entry.path().filename() );
+  }
+
+  std::sort( entries.begin(), entries.end(), []( const path& a, const path& b ) {
+    return a.native() < b.native();
+  });
+
+  ASSERT_EQ( 3u, entries.size() );
+  EXPECT_EQ( "apple.txt", entries[0].native() );
+  EXPECT_EQ( "mango.txt", entries[1].native() );
+  EXPECT_EQ( "zebra.txt", entries[2].native() );
+
+  EXPECT_TRUE( remove(file1) );
+  EXPECT_TRUE( remove(file2) );
+  EXPECT_TRUE( remove(file3) );
   EXPECT_TRUE( remove(dir) );
   EXPECT_FALSE( exists(dir) );
 }

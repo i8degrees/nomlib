@@ -4,11 +4,8 @@ set(STATIC_ASSETS "${PROJECT_SOURCE_DIR}/Resources/SharedSupport")
 
 set(SHARED_ASSETS
   "${STATIC_ASSETS}/InputDevices.json"
+  "${gcdb_SOURCE_DIR}/gamecontrollerdb.txt"
 )
-
-if(NOM_INSTALL_GCDB)
-  list(APPEND SHARED_ASSETS "${gcdb_SOURCE_DIR}/gamecontrollerdb.txt")
-endif()
 
 add_executable(nom_gamecontroller_ev
   WIN32 # Link SDL2main over WinMain
@@ -66,9 +63,12 @@ endif()
 
 # For development:
 add_custom_command(TARGET nom_gamecontroller_ev
-  POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
-  ${SHARED_ASSETS}
-  $<TARGET_FILE_DIR:nom_gamecontroller_ev> # <build>/<type>/bin
+  POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory
+      "$<TARGET_FILE_DIR:nom_gamecontroller_ev>/Resources/SharedSupport"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+      ${SHARED_ASSETS}
+      "$<TARGET_FILE_DIR:nom_gamecontroller_ev>/Resources/SharedSupport"
 )
 
 # For distribution
@@ -84,12 +84,9 @@ install(DIRECTORY ${STATIC_ASSETS}
   COMPONENT Examples
 )
 
-if(NOM_INSTALL_GCDB)
-  install(FILES
-    "${gcdb_SOURCE_DIR}/gamecontrollerdb.txt"
-    DESTINATION
-    "${CMAKE_INSTALL_DATADIR}/nomlib/Resources/SharedSupport"
-    OPTIONAL
-    COMPONENT Examples
-  )
-endif()
+install(FILES
+  "${gcdb_SOURCE_DIR}/gamecontrollerdb.txt"
+  DESTINATION
+  "${CMAKE_INSTALL_DATADIR}/nomlib/Resources/SharedSupport"
+  COMPONENT Examples
+)

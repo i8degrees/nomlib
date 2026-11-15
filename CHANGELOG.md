@@ -31,10 +31,17 @@
   now transitions between `WaitingState` and `PlayingState`, with contexts
   managed automatically by the state machine.
 
+* Fetched `SDL_GameControllerDB` unconditionally in `vendor/CMakeLists.txt`
+  so the community game controller mapping database is always available to
+  examples. The `master` download is now pinned to commit
+  `9d63598d49a62b19580fc63aed6cdf906be8e1d6` with an updated SHA512 hash.
+
 * Refactored `examples/nom_gamecontroller_ev` resource handling to resolve
   `Resources/SharedSupport` at runtime relative to the executable, matching
-  `examples/GameOfLife`. The example now loads `gamecontrollerdb.txt` only when
-  it is present and gracefully falls back to SDL's built-in mappings otherwise.
+  `examples/GameOfLife`. Development builds now copy both `InputDevices.json`
+  and `gamecontrollerdb.txt` into `<build>/bin/Resources/SharedSupport`, and the
+  executable directory is normalized with `realpath()` to survive unusual
+  relative `argv[0]` values and launcher paths.
 
 * Fixed `examples/GameOfLife/CMakeLists.txt` missing `STATIC_ASSETS` definition
   and using an undefined `${STATIC_ASSETS}` variable in its target sources and

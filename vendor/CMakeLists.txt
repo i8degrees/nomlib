@@ -29,18 +29,6 @@ set(PATCHES_DIR "${PROJECT_SOURCE_DIR}/vendor/patches")
 
 include(FetchContent)
 
-#
-## Pre-requisite for vendor dependencies
-#
-
-# jsoncpp && rapidxml sources require patching
-# (this is necessary for the vcpkg nomlib package)
-find_package(Patch REQUIRED) # VARS Patch_EXECUTABLE
-
-# IMPORTANT(JEFF): This is required for the jsoncpp vendor dependency
-# (this is necessary for the vcpkg nomlib package)
-find_package(Python3 COMPONENTS Interpreter REQUIRED)
-
 # Build flags
 
 # >> GoogleTest v1.11.0 is our vendor package target due to compiler issues
@@ -66,10 +54,7 @@ FetchContent_Declare(
   URL             "${JSONCPP_URL}"
   URL_HASH        "SHA512=${JSONCPP_SHA512}"
   PATCH_COMMAND   python3 <SOURCE_DIR>/amalgamate.py
-  COMMAND         ${Patch_EXECUTABLE} <SOURCE_DIR>/src/lib_json/CMakeLists.txt "${PATCHES_DIR}/jsoncpp_no-install.patch"
-  #COMMAND         patch <SOURCE_DIR>/src/lib_json/CMakeLists.txt "${PATCHES_DIR}/jsoncpp_no-install.patch"
-  #COMMAND         "${CMAKE_COMMAND}" -E patch <SOURCE_DIR>/src/lib_json/CMakeLists.txt "${PATCHES_DIR}/jsoncpp_no-install.patch"
-  #COMMAND         git apply --directory=src/lib_json "${PATCHES_DIR}/jsoncpp_no-install.patch"
+  COMMAND         patch <SOURCE_DIR>/src/lib_json/CMakeLists.txt "${PATCHES_DIR}/jsoncpp_no-install.patch"
 )
 
 # >> tclap v1.2.1 by ...
@@ -95,24 +80,26 @@ FetchContent_Declare(
   PATCH_COMMAND   patch -i "${PATCHES_DIR}/rapidxml_bug16.patch"
 )
 
-if(NOM_INSTALL_GCDB)
-  set(GCDB_TAG "master")
-  set(GCDB_URL "https://github.com/mdqinc/SDL_GameControllerDB/archive/refs/heads/${GCDB_TAG}.zip")
-  set(GCDB_SHA512 "f78882866d9cda5505cc789d8f3ec03b0927a75ae87f43e8b4f60c02785a850972ef3ce537966fba984188c06e85c8efadc3d5cafa191619d6ffedfb1014a9d7")
-  FetchContent_Declare(
-    gamecontroller_db
-    URL             "${GCDB_URL}"
-    URL_HASH        "SHA512=${GCDB_SHA512}"
-  )
+# The game controller mapping database is fetched on every configure so that
+# examples using SDL's game controller interface always have an up-to-date set
+# of mappings. NOM_INSTALL_GCDB is retained for backward compatibility but no
+# longer gates the download.
+set(GCDB_TAG "9d63598d49a62b19580fc63aed6cdf906be8e1d6")
+set(GCDB_URL "https://github.com/mdqinc/SDL_GameControllerDB/archive/${GCDB_TAG}.zip")
+set(GCDB_SHA512 "379469ebce2e3d3603a78980525aa552613d846d348cba1e42487f349cf0a3ba1b1d376206b560f52d9015523f359ea81949597daaadf7dea16249ffa412371d")
+FetchContent_Declare(
+  gamecontroller_db
+  URL             "${GCDB_URL}"
+  URL_HASH        "SHA512=${GCDB_SHA512}"
+)
 
-  FetchContent_MakeAvailable(gamecontroller_db)
-endif()
+FetchContent_MakeAvailable(gamecontroller_db)
 
 #
 ## build settings
 #
 
-# jsoncpp env
+# jsoncpp settings
 set(CMAKE_POLICY_VERSION_MINIMUM 3.5 CACHE INTERNAL "prevent cache pollution")
 set(JSONCPP_LIB_BUILD_SHARED OFF CACHE INTERNAL "prevent cache pollution")
 set(JSONCPP_WITH_TESTS OFF CACHE INTERNAL "prevent cache pollution")

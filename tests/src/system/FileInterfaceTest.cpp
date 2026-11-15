@@ -28,7 +28,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "gtest/gtest.h"
 
+#include <algorithm>
 #include <fstream>
+#include <list>
+#include <string>
+#include <vector>
 
 #include <nomlib/system.hpp>
 #include "nomlib/system/filesystem.hpp"
@@ -426,6 +430,220 @@ TEST_F( FileInterfaceTest, FilesystemFileSize )
 
   EXPECT_TRUE( remove(p) );
   EXPECT_FALSE( exists(p) );
+}
+
+TEST_F( FileInterfaceTest, FilesystemDirectoryIteration )
+{
+  using namespace nom::filesystem;
+
+  // This test mirrors the Boost.Filesystem tut3.cpp directory-iteration
+  // exercise: open a directory, collect its entries, sort them, and verify
+  // each entry's filename.
+
+  const path dir("/tmp/nomlib_dir_iter_test");
+  ASSERT_FALSE( exists(dir) );
+
+  // Prepare a clean directory with two known files.
+  EXPECT_TRUE( create_directories(dir) );
+  ASSERT_TRUE( exists(dir) );
+  ASSERT_TRUE( is_directory(dir) );
+
+  const path file1( dir / "alpha.txt" );
+  const path file2( dir / "beta.txt" );
+
+  {
+    std::ofstream out1( file1.c_str() );
+    ASSERT_TRUE( out1.is_open() );
+    std::ofstream out2( file2.c_str() );
+    ASSERT_TRUE( out2.is_open() );
+  }
+
+  EXPECT_TRUE( is_regular_file(file1) );
+  EXPECT_TRUE( is_regular_file(file2) );
+
+  std::vector<path> entries;
+  for( const auto& entry : directory_iterator(dir) )
+  {
+    entries.push_back( entry.path() );
+  }
+
+  std::sort( entries.begin(), entries.end(), []( const path& a, const path& b ) {
+    return a.filename().native() < b.filename().native();
+  });
+
+  ASSERT_EQ( 2u, entries.size() );
+  EXPECT_EQ( "alpha.txt", entries[0].filename().native() );
+  EXPECT_EQ( "beta.txt", entries[1].filename().native() );
+
+  EXPECT_TRUE( entries[0].has_filename() );
+  EXPECT_TRUE( entries[1].has_filename() );
+  EXPECT_TRUE( exists(entries[0]) );
+  EXPECT_TRUE( exists(entries[1]) );
+
+  EXPECT_TRUE( remove(file1) );
+  EXPECT_TRUE( remove(file2) );
+  EXPECT_TRUE( remove(dir) );
+  EXPECT_FALSE( exists(dir) );
+}
+
+TEST_F( FileInterfaceTest, FilesystemDirectoryIteratorEmptyDirectory )
+{
+  using namespace nom::filesystem;
+
+  const path dir("/tmp/nomlib_empty_dir_iter_test");
+  ASSERT_FALSE( exists(dir) );
+
+  EXPECT_TRUE( create_directory(dir) );
+  ASSERT_TRUE( exists(dir) );
+
+  std::size_t count = 0;
+  for( const auto& entry : directory_iterator(dir) )
+  {
+    ++count;
+    (void)entry;
+  }
+
+  EXPECT_EQ( 0u, count );
+  EXPECT_TRUE( remove(dir) );
+}
+
+TEST_F( FileInterfaceTest, FilesystemDirectoryIteratorMissingDirectory )
+{
+  using namespace nom::filesystem;
+
+  const path dir("/tmp/nomlib_missing_dir_iter_test");
+  if( exists(dir) )
+  {
+    EXPECT_TRUE( remove(dir) );
+  }
+
+  std::size_t count = 0;
+  for( const auto& entry : directory_iterator(dir) )
+  {
+    ++count;
+    (void)entry;
+  }
+
+  EXPECT_EQ( 0u, count );
+}
+
+TEST_F( FileInterfaceTest, FilesystemPathUnicodeConstructors )
+{
+  using namespace nom::filesystem;
+
+  // This test mirrors the Boost.Filesystem tut5.cpp exercise: path should
+  // accept narrow C-strings, narrow strings, wide C-strings, wide strings,
+  // and character ranges in either encoding. The expected filesystem result
+  // (on POSIX) is a set of files named:
+  //   smile smile☺ smile2 smile2☺ smile3 smile3☺ smile4 smile4☺
+
+  const char narrow_cstr[] = "smile";
+  const wchar_t wide_cstr[] = L"smile\u263A";
+  std::string narrow_string("smile2");
+  std::wstring wide_string(L"smile2\u263A");
+
+  std::list<char> narrow_list { 's', 'm', 'i', 'l', 'e', '3' };
+  std::list<wchar_t> wide_list { L's', L'm', L'i', L'l', L'e', L'3', L'\u263A' };
+
+  // Build paths from every supported source type.
+  path p1(narrow_cstr);
+  path p2(wide_cstr);
+  path p3(narrow_string);
+  path p4(wide_string);
+  path p5(std::string(narrow_list.begin(), narrow_list.end()));
+  path p6(std::wstring(wide_list.begin(), wide_list.end()));
+
+  // Mutate the ranges to produce the fourth pair of files.
+  narrow_list.pop_back();
+  narrow_list.push_back('4');
+  wide_list.pop_back();
+  wide_list.pop_back();
+  wide_list.push_back(L'4');
+  wide_list.push_back(L'\u263A');
+
+  path p7(std::string(narrow_list.begin(), narrow_list.end()));
+  path p8(std::wstring(wide_list.begin(), wide_list.end()));
+
+  // Make sure we are starting clean.
+  for( const auto& p : { p1, p2, p3, p4, p5, p6, p7, p8 } )
+  {
+    if( exists(p) )
+    {
+      EXPECT_TRUE( remove(p) )
+      << "Pre-existing file should be removable: " << p.native();
+    }
+  }
+
+  // Create the files using only the converted path's native representation.
+  {
+    std::ofstream f( p1.c_str() );
+    ASSERT_TRUE( f.is_open() ) << p1.native();
+  }
+  {
+    std::ofstream f( p2.c_str() );
+    ASSERT_TRUE( f.is_open() ) << p2.native();
+  }
+  {
+    std::ofstream f( p3.c_str() );
+    ASSERT_TRUE( f.is_open() ) << p3.native();
+  }
+  {
+    std::ofstream f( p4.c_str() );
+    ASSERT_TRUE( f.is_open() ) << p4.native();
+  }
+  {
+    std::ofstream f( p5.c_str() );
+    ASSERT_TRUE( f.is_open() ) << p5.native();
+  }
+  {
+    std::ofstream f( p6.c_str() );
+    ASSERT_TRUE( f.is_open() ) << p6.native();
+  }
+  {
+    std::ofstream f( p7.c_str() );
+    ASSERT_TRUE( f.is_open() ) << p7.native();
+  }
+  {
+    std::ofstream f( p8.c_str() );
+    ASSERT_TRUE( f.is_open() ) << p8.native();
+  }
+
+  // Verify every path represents a regular file on disk.
+  EXPECT_TRUE( exists(p1) );
+  EXPECT_TRUE( is_regular_file(p1) );
+  EXPECT_TRUE( exists(p2) );
+  EXPECT_TRUE( is_regular_file(p2) );
+  EXPECT_TRUE( exists(p3) );
+  EXPECT_TRUE( is_regular_file(p3) );
+  EXPECT_TRUE( exists(p4) );
+  EXPECT_TRUE( is_regular_file(p4) );
+  EXPECT_TRUE( exists(p5) );
+  EXPECT_TRUE( is_regular_file(p5) );
+  EXPECT_TRUE( exists(p6) );
+  EXPECT_TRUE( is_regular_file(p6) );
+  EXPECT_TRUE( exists(p7) );
+  EXPECT_TRUE( is_regular_file(p7) );
+  EXPECT_TRUE( exists(p8) );
+  EXPECT_TRUE( is_regular_file(p8) );
+
+  // Spot-check preservation of the UTF-8 filename components.
+  EXPECT_EQ( "smile", p1.filename().native() );
+  EXPECT_EQ( "smile2", p3.filename().native() );
+  EXPECT_EQ( "smile3", p5.filename().native() );
+  EXPECT_EQ( "smile4", p7.filename().native() );
+
+  EXPECT_EQ( std::wstring(L"smile\u263A"), p2.wstring() );
+  EXPECT_EQ( std::wstring(L"smile2\u263A"), p4.wstring() );
+  EXPECT_EQ( std::wstring(L"smile3\u263A"), p6.wstring() );
+  EXPECT_EQ( std::wstring(L"smile4\u263A"), p8.wstring() );
+
+  // Clean up.
+  for( const auto& p : { p1, p2, p3, p4, p5, p6, p7, p8 } )
+  {
+    EXPECT_TRUE( remove(p) )
+    << "Could not remove test file: " << p.native();
+    EXPECT_FALSE( exists(p) );
+  }
 }
 
 } // namespace nom

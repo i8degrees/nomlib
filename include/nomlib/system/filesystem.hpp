@@ -29,7 +29,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_FILESYSTEM_HEADERS
 #define NOMLIB_FILESYSTEM_HEADERS
 
+#include <cstddef>
 #include <cstdint>
+#include <iterator>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -170,6 +173,61 @@ class NOM_EXPORT path
     std::vector<string_type> components_;
     bool has_trailing_separator_;
 };
+
+/// \brief Directory entry used by nom::filesystem::directory_iterator.
+class NOM_EXPORT directory_entry
+{
+  public:
+    directory_entry();
+    explicit directory_entry( class path p );
+
+    /// \brief The file's full pathname (directory path + filename).
+    const class path& path() const;
+
+  private:
+    class path path_;
+};
+
+/// \brief Minimal input iterator over the entries of a directory.
+///
+/// \remarks Default-constructed iterator acts as the end iterator. The
+/// iterator skips the special entries "." and "..".
+class NOM_EXPORT directory_iterator
+{
+  public:
+    typedef directory_entry value_type;
+    typedef const directory_entry* pointer;
+    typedef const directory_entry& reference;
+    typedef std::ptrdiff_t difference_type;
+    typedef std::input_iterator_tag iterator_category;
+
+    /// \brief Construct an end iterator.
+    directory_iterator();
+
+    /// \brief Open the directory at \c p and position at the first entry.
+    explicit directory_iterator( const class path& p );
+
+    directory_iterator( const directory_iterator& other ) = default;
+    directory_iterator& operator=( const directory_iterator& other ) = default;
+
+    ~directory_iterator();
+
+    const directory_entry& operator*() const;
+    const directory_entry* operator->() const;
+
+    directory_iterator& operator++();
+
+    bool operator==( const directory_iterator& other ) const;
+    bool operator!=( const directory_iterator& other ) const;
+
+  private:
+    struct state;
+    std::shared_ptr<state> state_;
+};
+
+/// \brief Range support for directory_iterator.
+NOM_EXPORT directory_iterator begin( directory_iterator it );
+NOM_EXPORT directory_iterator end( const directory_iterator& );
 
 /// \brief Append two paths using the filesystem path-append rules.
 NOM_EXPORT path operator/( const path& lhs, const path& rhs );

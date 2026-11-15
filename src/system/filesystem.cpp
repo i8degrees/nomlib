@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 #include <utility>
 #include <vector>
 
@@ -53,6 +54,7 @@ std::wstring to_wide_path( const std::string& u8 )
   #include <unistd.h>
   #include <sys/stat.h>
   #include <sys/types.h>
+  #include <dirent.h>
 #endif
 
 namespace nom {
@@ -857,6 +859,214 @@ path operator+( const path& lhs, const char* rhs )
 {
   return lhs + path( rhs ? rhs : "" );
 }
+
+/// \name Directory iteration
+/// \{
+
+directory_entry::directory_entry() :
+  path_()
+{
+  // Nothing to do
+}
+
+directory_entry::directory_entry( class path p ) :
+  path_( std::move( p ) )
+{
+  // Nothing to do
+}
+
+const path& directory_entry::path() const
+{
+  return this->path_;
+}
+
+struct directory_iterator::state
+{
+#if defined( NOM_PLATFORM_WINDOWS )
+  HANDLE handle_ = nullptr;
+#else
+  DIR* dir_ = nullptr;
+#endif
+  path dir_path_;
+  directory_entry entry_;
+
+  ~state()
+  {
+    this->close();
+  }
+
+  void close() noexcept
+  {
+#if defined( NOM_PLATFORM_WINDOWS )
+    if( this->handle_ != nullptr )
+    {
+      ::FindClose( this->handle_ );
+      this->handle_ = nullptr;
+    }
+#else
+    if( this->dir_ != nullptr )
+    {
+      ::closedir( this->dir_ );
+      this->dir_ = nullptr;
+    }
+#endif
+  }
+
+#if defined( NOM_PLATFORM_WINDOWS )
+  void open( const path& p )
+  {
+    this->dir_path_ = p;
+    std::wstring pattern = to_wide_path( p.native() ) + L"\\*";
+    WIN32_FIND_DATAW data;
+    this->handle_ = ::FindFirstFileW( pattern.c_str(), &data );
+    if( this->handle_ == INVALID_HANDLE_VALUE )
+    {
+      this->handle_ = nullptr;
+      this->entry_ = directory_entry();
+      return;
+    }
+
+    if( std::wcscmp( data.cFileName, L"." ) == 0 ||
+        std::wcscmp( data.cFileName, L".." ) == 0 )
+    {
+      this->advance();
+    }
+    else
+    {
+      this->entry_ = directory_entry( this->dir_path_ / narrow_name(data.cFileName) );
+    }
+  }
+
+  static std::string narrow_name( const wchar_t* wname )
+  {
+    int len = ::WideCharToMultiByte( CP_UTF8, 0, wname, -1,
+                                     nullptr, 0, nullptr, nullptr );
+    std::string name;
+    if( len > 0 )
+    {
+      name.resize( static_cast<std::size_t>( len - 1 ) );
+      ::WideCharToMultiByte( CP_UTF8, 0, wname, -1, &name[0], len,
+                             nullptr, nullptr );
+    }
+    return name;
+  }
+
+  void advance()
+  {
+    if( this->handle_ == nullptr )
+    {
+      this->entry_ = directory_entry();
+      return;
+    }
+
+    WIN32_FIND_DATAW data;
+    while( ::FindNextFileW( this->handle_, &data ) != 0 )
+    {
+      if( std::wcscmp( data.cFileName, L"." ) == 0 ||
+          std::wcscmp( data.cFileName, L".." ) == 0 )
+      {
+        continue;
+      }
+
+      this->entry_ = directory_entry( this->dir_path_ / narrow_name(data.cFileName) );
+      return;
+    }
+
+    this->close();
+    this->entry_ = directory_entry();
+  }
+#else // POSIX
+  void open( const path& p )
+  {
+    this->dir_path_ = p;
+    this->dir_ = ::opendir( p.c_str() );
+    this->advance();
+  }
+
+  void advance()
+  {
+    if( this->dir_ == nullptr )
+    {
+      this->entry_ = directory_entry();
+      return;
+    }
+
+    struct dirent* item = nullptr;
+    while( ( item = ::readdir( this->dir_ ) ) != nullptr )
+    {
+      if( std::strcmp( item->d_name, "." ) == 0 ||
+          std::strcmp( item->d_name, ".." ) == 0 )
+      {
+        continue;
+      }
+
+      this->entry_ = directory_entry( this->dir_path_ / item->d_name );
+      return;
+    }
+
+    this->close();
+    this->entry_ = directory_entry();
+  }
+#endif
+};
+
+directory_iterator::directory_iterator()
+{
+  // Nothing to do: state_ is empty, indicating the end iterator.
+}
+
+directory_iterator::directory_iterator( const class path& p ) :
+  state_( std::make_shared<state>() )
+{
+  this->state_->open( p );
+}
+
+directory_iterator::~directory_iterator()
+{
+  // Nothing to do: shared_ptr handles cleanup of the underlying directory.
+}
+
+const directory_entry& directory_iterator::operator*() const
+{
+  return this->state_->entry_;
+}
+
+const directory_entry* directory_iterator::operator->() const
+{
+  return &this->state_->entry_;
+}
+
+directory_iterator& directory_iterator::operator++()
+{
+  this->state_->advance();
+  return *this;
+}
+
+bool directory_iterator::operator==( const directory_iterator& other ) const
+{
+  const bool this_end = ( this->state_ == nullptr ) ||
+                        this->state_->entry_.path().empty();
+  const bool other_end = ( other.state_ == nullptr ) ||
+                         other.state_->entry_.path().empty();
+  return this_end == other_end;
+}
+
+bool directory_iterator::operator!=( const directory_iterator& other ) const
+{
+  return !this->operator==( other );
+}
+
+directory_iterator begin( directory_iterator it )
+{
+  return it;
+}
+
+directory_iterator end( const directory_iterator& )
+{
+  return directory_iterator();
+}
+
+/// \}
 
 /// \name Operational functions
 /// \{

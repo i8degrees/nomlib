@@ -4,6 +4,7 @@ set( NOM_BUILD_FILE_TESTS ON )
 set( NOM_BUILD_FONT_CACHE_TESTS ON )
 set( NOM_BUILD_COLOR_DB_TESTS ON )
 set( NOM_BUILD_TIMER_TESTS ON )
+set( NOM_BUILD_STATE_MACHINE_TESTS ON )
 
 if( NOM_BUILD_FONT_CACHE_TESTS )
 
@@ -159,3 +160,40 @@ if( NOM_BUILD_TIMER_TESTS )
                     "TimerTest.cpp" )
 
 endif( NOM_BUILD_TIMER_TESTS )
+
+if( NOM_BUILD_STATE_MACHINE_TESTS )
+
+  add_executable(StateMachineTest
+    WIN32
+    StateMachineTest.cpp
+  )
+
+  add_dependencies(StateMachineTest gtest)
+
+  #if( PLATFORM_WINDOWS )
+    #list( APPEND STATE_MACHINE_DEPS ${SDL2MAIN_LIBRARY} )
+  #endif( PLATFORM_WINDOWS )
+
+  target_include_directories(StateMachineTest
+    PUBLIC
+    ${PROJECT_SOURCE_DIR}/include # include/nomlib
+    ${PROJECT_SOURCE_DIR}/tests/include
+    PRIVATE
+    ${GTEST_INCLUDE_DIR}
+    ${SDL2_INCLUDE_DIR}
+  )
+
+  target_link_libraries(StateMachineTest
+    PUBLIC
+    nomlib-core
+    nomlib-system
+    PRIVATE
+    Threads::Threads
+    ${GTEST_LIBRARY}
+  )
+
+  GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/StateMachineTest
+                    "" # args
+                    "StateMachineTest.cpp" )
+
+endif( NOM_BUILD_STATE_MACHINE_TESTS )

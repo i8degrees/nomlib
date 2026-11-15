@@ -73,9 +73,10 @@
 
 * Added `tests/src/system/FileInterfaceTest.cpp` cases for status queries
   (`exists`, `is_regular_file`, `is_directory`, `file_size`), directory
-  iteration, empty directories, missing directories, file sizes, and Unicode
-  path constructors (mirroring Boost.Filesystem `tut2.cpp`, `tut3.cpp`, and
-  `tut5.cpp`).
+  iteration, directory contents sorted by filename (mirroring Boost.Filesystem
+  `tut4.cpp`), empty directories, missing directories, file sizes, and Unicode
+  path constructors (mirroring Boost.Filesystem `tut2.cpp`, `tut3.cpp`,
+  `tut4.cpp`, and `tut5.cpp`).
 
 * Hardened `nom::filesystem` based on code review: fixed the Windows build
   (`to_wide_path` helper ordering and `<cwchar>` include), fixed doubled-separator

@@ -3,18 +3,20 @@
 #include <vector>
 
 #include "nomlib/audio/audio.hpp"
+#include "nomlib/system/filesystem.hpp"
 
 using namespace std;
 using namespace nom;
 using namespace nom::audio;
+using namespace nom::filesystem;
 
 #define MAX_COUNT 16 // seconds
 
-std::vector<std::string> sounds = {
-  "Resources/tests/audio/ALAudioTest/4s.wav",
-  "Resources/tests/audio/ALAudioTest/audio-channel-front-center.wav",
-  "Resources/tests/audio/ALAudioTest/audio-channel-rear-center.wav",
-  // "Resources/tests/audio/ALAudioTest/laura_ff1-s16-mono.ogg",
+std::vector<path> sounds = {
+  path("Resources/tests/audio/ALAudioTest") / "4s.wav",
+  path("Resources/tests/audio/ALAudioTest") / "audio-channel-front-center.wav",
+  path("Resources/tests/audio/ALAudioTest") / "audio-channel-rear-center.wav",
+  // path("Resources/tests/audio/ALAudioTest") / "laura_ff1-s16-mono.ogg",
 };
 
 #include <chrono>
@@ -67,19 +69,18 @@ int main(int argc, char* argv[])
     auto name = *itr;
     bool streaming = false;
 
-    std::string ext = name.substr(name.length()-3, 3);
-    if(ext == "ogg") {
+    if(name.extension().native() == ".ogg") {
       streaming = true;
     }
 
-    SoundManager::add_sound(name, streaming);
+    SoundManager::add_sound(name.native(), streaming);
   }
 
   cout << "Hello, there!" << endl;
 
-  Sound* sample_null = SoundManager::find_sound("sample1.wav");
+  Sound* sample_null = SoundManager::find_sound(path("sample1.wav").native());
   NOM_ASSERT(sample_null == nullptr && "sample_null should be nullptr");
-  Sound* sample1 = SoundManager::find_sound("Resources/tests/audio/ALAudioTest/4s.wav");
+  Sound* sample1 = SoundManager::find_sound((path("Resources/tests/audio/ALAudioTest") / "4s.wav").native());
   //NOM_ASSERT(sample1 != nullptr && "sample1 should NOT be nullptr");
   if(sample1 != nullptr) {
     cout << "samples1->total_bytes():" << sample1->total_bytes() << endl;
@@ -93,7 +94,7 @@ int main(int argc, char* argv[])
     //cout << "samples1->volume():" << sample1->volume() << endl;
   }
 
-  Sound* sample2 = SoundManager::find_sound("Resources/tests/audio/ALAudioTest/audio-channel-rear-center.wav");
+  Sound* sample2 = SoundManager::find_sound((path("Resources/tests/audio/ALAudioTest") / "audio-channel-rear-center.wav").native());
   //NOM_ASSERT(sample2 != nullptr && "sample2 should NOT be nullptr");
   if(sample2 != nullptr) {
     cout << "samples2->total_bytes():" << sample2->total_bytes() << endl;
@@ -110,7 +111,7 @@ int main(int argc, char* argv[])
   //Sound* sample3 = SoundManager::find_sound("Resources/tests/audio/ALAudioTest/laura_ff1-s16-mono.15s.ogg");
   //NOM_ASSERT(sample3 != nullptr && "sample3 should NOT be nullptr");
   // Sound* sample3 = nullptr;
-  Sound* sample3 = SoundManager::find_sound("Resources/tests/audio/ALAudioTest/laura_ff1-s16-mono.ogg");
+  Sound* sample3 = SoundManager::find_sound((path("Resources/tests/audio/ALAudioTest") / "laura_ff1-s16-mono.ogg").native());
   //NOM_ASSERT(sample3 != nullptr && "sample3 should NOT be nullptr");
   if(sample3 != nullptr) {
     cout << "samples3->total_bytes():" << sample3->total_bytes() << endl;
@@ -124,7 +125,7 @@ int main(int argc, char* argv[])
     cout << "samples3->bitrate():" << sample3->bitrate() << endl;
   }
 
-  Sound* sample4 = SoundManager::find_sound("Resources/tests/audio/ALAudioTest/laura_ff1-s16-mono.ogg");
+  Sound* sample4 = SoundManager::find_sound((path("Resources/tests/audio/ALAudioTest") / "laura_ff1-s16-mono.ogg").native());
   //NOM_ASSERT(sample3 != nullptr && "sample3 should NOT be nullptr");
   if(sample4 != nullptr) {
     cout << "sample4->total_bytes():" << sample4->total_bytes() << endl;

@@ -35,13 +35,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <utility>
 #include <vector>
 
-#if defined( NOM_PLATFORM_WINDOWS )
+  #if defined( NOM_PLATFORM_WINDOWS )
   #include <direct.h>
   #include <io.h>
   #include <sys/stat.h>
   #include <sys/types.h>
   #include <windows.h>
-#else
+
+// Convert a UTF-8 narrow path to a native wide path for Windows API calls.
+namespace {
+std::wstring to_wide_path( const std::string& u8 )
+{
+  return nom::filesystem::detail::utf8_to_wstring( u8 );
+}
+} // anonymous namespace
+  #else
   #include <unistd.h>
   #include <sys/stat.h>
   #include <sys/types.h>
@@ -114,6 +122,228 @@ std::string join_components( const std::vector<std::string>& components,
   return result;
 }
 
+// Decode a single UTF-16 code unit sequence starting at i, returning the code
+// point and updating i past consumed code units.  Invalid sequences return
+// false and consume one code unit.
+bool decode_utf16( const std::u16string& u16, std::size_t& i, std::uint32_t& cp )
+{
+  if( i >= u16.size() ) return false;
+
+  char16_t high = u16[i++];
+
+  // High surrogate (0xD800-0xDBFF)
+  if( high >= 0xD800 && high <= 0xDBFF )
+  {
+    if( i >= u16.size() ) return false;
+
+    char16_t low = u16[i++];
+    if( low < 0xDC00 || low > 0xDFFF ) return false;
+
+    cp = 0x10000u +
+         ( ( static_cast<std::uint32_t>( high ) - 0xD800u ) << 10 ) +
+         ( static_cast<std::uint32_t>( low ) - 0xDC00u );
+    return true;
+  }
+
+  // Standalone low surrogate is invalid.
+  if( high >= 0xDC00 && high <= 0xDFFF ) return false;
+
+  cp = static_cast<std::uint32_t>( high );
+  return true;
+}
+
+// Append a single Unicode code point to a UTF-8 string.
+void encode_utf8( std::string& out, std::uint32_t cp )
+{
+  if( cp < 0x80 )
+  {
+    out.push_back( static_cast<char>( cp ) );
+  }
+  else if( cp < 0x800 )
+  {
+    out.push_back( static_cast<char>( 0xC0 | ( cp >> 6 ) ) );
+    out.push_back( static_cast<char>( 0x80 | ( cp & 0x3F ) ) );
+  }
+  else if( cp < 0x10000 )
+  {
+    out.push_back( static_cast<char>( 0xE0 | ( cp >> 12 ) ) );
+    out.push_back( static_cast<char>( 0x80 | ( ( cp >> 6 ) & 0x3F ) ) );
+    out.push_back( static_cast<char>( 0x80 | ( cp & 0x3F ) ) );
+  }
+  else
+  {
+    out.push_back( static_cast<char>( 0xF0 | ( cp >> 18 ) ) );
+    out.push_back( static_cast<char>( 0x80 | ( ( cp >> 12 ) & 0x3F ) ) );
+    out.push_back( static_cast<char>( 0x80 | ( ( cp >> 6 ) & 0x3F ) ) );
+    out.push_back( static_cast<char>( 0x80 | ( cp & 0x3F ) ) );
+  }
+}
+
+// Decode a single UTF-8 code point starting at i, returning the code point
+// and updating i past consumed bytes.  Invalid sequences return false and
+// consume one byte.
+bool decode_utf8( const std::string& u8, std::size_t& i, std::uint32_t& cp )
+{
+  if( i >= u8.size() ) return false;
+
+  unsigned char c = static_cast<unsigned char>( u8[i] );
+  std::uint32_t code_point = 0;
+  std::size_t extra = 0;
+
+  if( ( c & 0x80 ) == 0 )
+  {
+    code_point = c;
+    extra = 0;
+  }
+  else if( ( c & 0xE0 ) == 0xC0 )
+  {
+    code_point = c & 0x1F;
+    extra = 1;
+  }
+  else if( ( c & 0xF0 ) == 0xE0 )
+  {
+    code_point = c & 0x0F;
+    extra = 2;
+  }
+  else if( ( c & 0xF8 ) == 0xF0 )
+  {
+    code_point = c & 0x07;
+    extra = 3;
+  }
+  else
+  {
+    // Invalid lead byte.
+    ++i;
+    return false;
+  }
+
+  if( i + extra >= u8.size() )
+  {
+    ++i;
+    return false;
+  }
+
+  for( std::size_t j = 1; j <= extra; ++j )
+  {
+    unsigned char n = static_cast<unsigned char>( u8[i + j] );
+    if( ( n & 0xC0 ) != 0x80 )
+    {
+      ++i;
+      return false;
+    }
+    code_point = ( code_point << 6 ) | ( n & 0x3F );
+  }
+
+  // Reject overlong encodings, surrogates and out-of-range values.
+  if( ( extra == 0 && c > 0x7F ) ||
+      ( extra == 1 && code_point < 0x80 ) ||
+      ( extra == 2 && code_point < 0x800 ) ||
+      ( extra == 3 && code_point < 0x10000 ) ||
+      code_point > 0x10FFFF ||
+      ( code_point >= 0xD800 && code_point <= 0xDFFF ) )
+  {
+    ++i;
+    return false;
+  }
+
+  cp = code_point;
+  i += extra + 1;
+  return true;
+}
+
+std::string utf16_to_utf8( const std::u16string& u16 )
+{
+  std::string u8;
+  u8.reserve( u16.size() );
+
+  std::size_t i = 0;
+  std::uint32_t cp = 0;
+  while( decode_utf16( u16, i, cp ) )
+  {
+    encode_utf8( u8, cp );
+  }
+
+  return u8;
+}
+
+std::u16string utf8_to_utf16( const std::string& u8 )
+{
+  std::u16string u16;
+  u16.reserve( u8.size() );
+
+  std::size_t i = 0;
+  std::uint32_t cp = 0;
+  while( decode_utf8( u8, i, cp ) )
+  {
+    if( cp > 0xFFFF )
+    {
+      cp -= 0x10000u;
+      u16.push_back( static_cast<char16_t>( 0xD800u | ( cp >> 10 ) ) );
+      u16.push_back( static_cast<char16_t>( 0xDC00u | ( cp & 0x3FF ) ) );
+    }
+    else
+    {
+      u16.push_back( static_cast<char16_t>( cp ) );
+    }
+  }
+
+  return u16;
+}
+
+std::u32string utf8_to_utf32( const std::string& u8 )
+{
+  std::u32string u32;
+  u32.reserve( u8.size() );
+
+  std::size_t i = 0;
+  std::uint32_t cp = 0;
+  while( decode_utf8( u8, i, cp ) )
+  {
+    u32.push_back( static_cast<char32_t>( cp ) );
+  }
+
+  return u32;
+}
+
+std::string utf32_to_utf8( const std::u32string& u32 )
+{
+  std::string u8;
+  u8.reserve( u32.size() * 4 );
+
+  for( char32_t c : u32 )
+  {
+    encode_utf8( u8, static_cast<std::uint32_t>( c ) );
+  }
+
+  return u8;
+}
+
+#if defined( NOM_PLATFORM_WINDOWS )
+std::wstring utf8_to_wstring( const std::string& u8 )
+{
+  std::u16string u16 = utf8_to_utf16( u8 );
+  return std::wstring( u16.begin(), u16.end() );
+}
+
+std::string wstring_to_utf8( const std::wstring& w )
+{
+  std::u16string u16( w.begin(), w.end() );
+  return utf16_to_utf8( u16 );
+}
+#else
+std::wstring utf8_to_wstring( const std::string& u8 )
+{
+  std::u32string u32 = utf8_to_utf32( u8 );
+  return std::wstring( u32.begin(), u32.end() );
+}
+
+std::string wstring_to_utf8( const std::wstring& w )
+{
+  std::u32string u32( w.begin(), w.end() );
+  return utf32_to_utf8( u32 );
+}
+#endif
+
 } // namespace detail
 
 #if defined( NOM_PLATFORM_WINDOWS )
@@ -141,6 +371,16 @@ path::path( const char* source ) : path()
   if( source ) this->parse( source );
 }
 
+path::path( const u16string_type& source ) : path()
+{
+  this->parse( detail::utf16_to_utf8( source ) );
+}
+
+path::path( const std::wstring& source ) : path()
+{
+  this->parse( detail::wstring_to_utf8( source ) );
+}
+
 path::path( const path& other ) = default;
 path::path( path&& other ) noexcept = default;
 path::~path() = default;
@@ -161,9 +401,33 @@ path& path::operator=( const char* source )
   return *this;
 }
 
+path& path::operator=( const u16string_type& source )
+{
+  this->parse( detail::utf16_to_utf8( source ) );
+  return *this;
+}
+
+path& path::operator=( const std::wstring& source )
+{
+  this->parse( detail::wstring_to_utf8( source ) );
+  return *this;
+}
+
 path& path::assign( const string_type& source )
 {
   this->parse( source );
+  return *this;
+}
+
+path& path::assign( const u16string_type& source )
+{
+  this->parse( detail::utf16_to_utf8( source ) );
+  return *this;
+}
+
+path& path::assign( const std::wstring& source )
+{
+  this->parse( detail::wstring_to_utf8( source ) );
   return *this;
 }
 
@@ -293,6 +557,36 @@ path::string_type path::string() const
 path::string_type path::generic_string() const
 {
   return this->native();
+}
+
+path::u8string_type path::u8string() const
+{
+  return this->native();
+}
+
+path::u16string_type path::u16string() const
+{
+  return detail::utf8_to_utf16( this->native() );
+}
+
+std::wstring path::wstring() const
+{
+  return detail::utf8_to_wstring( this->native() );
+}
+
+path::u8string_type path::generic_u8string() const
+{
+  return this->u8string();
+}
+
+path::u16string_type path::generic_u16string() const
+{
+  return this->u16string();
+}
+
+std::wstring path::generic_wstring() const
+{
+  return this->wstring();
 }
 
 void path::parse( const string_type& source )
@@ -572,8 +866,9 @@ bool exists( const path& p )
   if( p.empty() ) return false;
 
 #if defined( NOM_PLATFORM_WINDOWS )
+  std::wstring wp = to_wide_path( p.native() );
   struct _stat st;
-  if( ::_stat( p.c_str(), &st ) != 0 ) return false;
+  if( ::_wstat( wp.c_str(), &st ) != 0 ) return false;
 #else
   struct stat st;
   if( ::stat( p.c_str(), &st ) != 0 ) return false;
@@ -586,8 +881,9 @@ bool is_directory( const path& p )
   if( p.empty() ) return false;
 
 #if defined( NOM_PLATFORM_WINDOWS )
+  std::wstring wp = to_wide_path( p.native() );
   struct _stat st;
-  if( ::_stat( p.c_str(), &st ) != 0 ) return false;
+  if( ::_wstat( wp.c_str(), &st ) != 0 ) return false;
   return ( st.st_mode & _S_IFDIR ) != 0;
 #else
   struct stat st;
@@ -601,8 +897,9 @@ bool is_regular_file( const path& p )
   if( p.empty() ) return false;
 
 #if defined( NOM_PLATFORM_WINDOWS )
+  std::wstring wp = to_wide_path( p.native() );
   struct _stat st;
-  if( ::_stat( p.c_str(), &st ) != 0 ) return false;
+  if( ::_wstat( wp.c_str(), &st ) != 0 ) return false;
   return ( st.st_mode & _S_IFREG ) != 0;
 #else
   struct stat st;
@@ -616,7 +913,8 @@ bool create_directory( const path& p )
   if( p.empty() ) return false;
 
 #if defined( NOM_PLATFORM_WINDOWS )
-  if( CreateDirectoryA( p.c_str(), nullptr ) != 0 ) return true;
+  std::wstring wp = to_wide_path( p.native() );
+  if( CreateDirectoryW( wp.c_str(), nullptr ) != 0 ) return true;
 #else
   if( ::mkdir( p.c_str(), 0755 ) == 0 ) return true;
 #endif
@@ -642,11 +940,12 @@ bool remove( const path& p )
   if( p.empty() ) return false;
 
 #if defined( NOM_PLATFORM_WINDOWS )
+  std::wstring wp = to_wide_path( p.native() );
   if( is_directory( p ) )
   {
-    return RemoveDirectoryA( p.c_str() ) != 0;
+    return RemoveDirectoryW( wp.c_str() ) != 0;
   }
-  return DeleteFileA( p.c_str() ) != 0;
+  return DeleteFileW( wp.c_str() ) != 0;
 #else
   if( is_directory( p ) )
   {
@@ -659,8 +958,9 @@ bool remove( const path& p )
 std::uintmax_t file_size( const path& p )
 {
 #if defined( NOM_PLATFORM_WINDOWS )
+  std::wstring wp = to_wide_path( p.native() );
   struct _stat st;
-  if( ::_stat( p.c_str(), &st ) != 0 ) return 0;
+  if( ::_wstat( wp.c_str(), &st ) != 0 ) return 0;
   return static_cast<std::uintmax_t>( st.st_size );
 #else
   struct stat st;
@@ -672,9 +972,9 @@ std::uintmax_t file_size( const path& p )
 path current_path()
 {
 #if defined( NOM_PLATFORM_WINDOWS )
-  char buffer[4096];
-  if( ::_getcwd( buffer, sizeof(buffer) ) == nullptr ) return path();
-  return path( buffer );
+  wchar_t buffer[4096];
+  if( ::_wgetcwd( buffer, sizeof(buffer) / sizeof(buffer[0]) ) == nullptr ) return path();
+  return path( std::wstring( buffer ) );
 #else
   char buffer[4096];
   if( ::getcwd( buffer, sizeof(buffer) ) == nullptr ) return path();
@@ -685,7 +985,8 @@ path current_path()
 void current_path( const path& p )
 {
 #if defined( NOM_PLATFORM_WINDOWS )
-  ::_chdir( p.c_str() );
+  std::wstring wp = to_wide_path( p.native() );
+  ::_wchdir( wp.c_str() );
 #else
   ::chdir( p.c_str() );
 #endif

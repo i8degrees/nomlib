@@ -94,6 +94,39 @@ class NOM_EXPORT path
     /// For nomlib, generic and native strings are interchangeable.
     string_type generic_string() const;
 
+    /// \name UTF-8 / UTF-16 / Wide string conversions
+    /// \{
+    using u8string_type = std::string;
+    using u16string_type = std::u16string;
+
+    path( const u16string_type& source );
+    path( const std::wstring& source );
+
+    path& operator=( const u16string_type& source );
+    path& operator=( const std::wstring& source );
+
+    path& assign( const u16string_type& source );
+    path& assign( const std::wstring& source );
+
+    /// Return the path encoded as UTF-8.
+    u8string_type u8string() const;
+
+    /// Return the path encoded as UTF-16.
+    u16string_type u16string() const;
+
+    /// Return the path as a wide-character string.
+    std::wstring wstring() const;
+
+    /// Generic-string alias for u8string().
+    u8string_type generic_u8string() const;
+
+    /// Generic-string alias for u16string().
+    u16string_type generic_u16string() const;
+
+    /// Generic-string alias for wstring().
+    std::wstring generic_wstring() const;
+    /// \}
+
     /// \name Decomposition
     /// \{
     path root_name() const;

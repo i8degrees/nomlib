@@ -135,6 +135,7 @@ TEST_F( FileInterfaceTest, PathDelimiter )
   #endif
 }
 
+// res:// paths, i.e.: Apple Application Bundle -- .app layout
 TEST_F( FileInterfaceTest, DirPath )
 {
   std::string pwd = "\0";
@@ -270,17 +271,22 @@ TEST_F( FileInterfaceTest, FilesystemPathConstruction )
 {
   using namespace nom::filesystem;
 
+  auto native = []( std::string s ) {
+    std::replace( s.begin(), s.end(), '/', path::preferred_separator );
+    return s;
+  };
+
   path p("Resources/tests/audio/4s.wav");
 
-  EXPECT_EQ( "Resources/tests/audio/4s.wav", p.native() );
-  EXPECT_EQ( "Resources/tests/audio/4s.wav", p.string() );
-  EXPECT_EQ( "Resources/tests/audio/4s.wav", p.generic_string() );
-  EXPECT_EQ( "Resources/tests/audio/4s.wav", p.u8string() );
-  EXPECT_EQ( "Resources/tests/audio/4s.wav", p.generic_u8string() );
+  EXPECT_EQ( native("Resources/tests/audio/4s.wav"), p.native() );
+  EXPECT_EQ( native("Resources/tests/audio/4s.wav"), p.string() );
+  EXPECT_EQ( native("Resources/tests/audio/4s.wav"), p.generic_string() );
+  EXPECT_EQ( native("Resources/tests/audio/4s.wav"), p.u8string() );
+  EXPECT_EQ( native("Resources/tests/audio/4s.wav"), p.generic_u8string() );
   EXPECT_EQ( "4s.wav", p.filename().native() );
   EXPECT_EQ( ".wav", p.extension().native() );
   EXPECT_EQ( "4s", p.stem().native() );
-  EXPECT_EQ( "Resources/tests/audio", p.parent_path().native() );
+  EXPECT_EQ( native("Resources/tests/audio"), p.parent_path().native() );
   EXPECT_TRUE( p.has_filename() );
   EXPECT_TRUE( p.has_extension() );
   EXPECT_TRUE( p.has_parent_path() );
@@ -378,6 +384,13 @@ TEST_F( FileInterfaceTest, FilesystemUtf8DirectoryOps )
   using namespace nom::filesystem;
 
   path p("/tmp/nomlib_音乐");
+
+  // Defensive cleanup in case a prior run left the path behind.
+  if( exists(p) )
+  {
+    remove(p);
+  }
+
   ASSERT_FALSE( exists(p) );
 
   EXPECT_TRUE( create_directory(p) );
@@ -393,7 +406,21 @@ TEST_F( FileInterfaceTest, FilesystemUtf8RecursiveDirectoryOps )
 {
   using namespace nom::filesystem;
 
-  path leaf("/tmp/nomlib_音乐_parents_🎵_leaf");
+  // Use an intermediate root directory so that parent_path() points at a path
+  // created by this test, not /tmp itself.
+  path root("/tmp/nomlib_音乐_parents_🎵_root");
+  path leaf( root / "leaf" );
+
+  // Defensive cleanup in case a prior run left the path behind.
+  if( exists(leaf) )
+  {
+    remove(leaf);
+  }
+  if( exists(root) )
+  {
+    remove(root);
+  }
+
   ASSERT_FALSE( exists(leaf) );
 
   EXPECT_TRUE( create_directories(leaf) );
@@ -409,6 +436,11 @@ TEST_F( FileInterfaceTest, FilesystemUtf8RecursiveDirectoryOps )
   {
     remove(parent);
   }
+
+  if( exists(root) )
+  {
+    remove(root);
+  }
 }
 
 TEST_F( FileInterfaceTest, FilesystemFileSize )
@@ -417,6 +449,12 @@ TEST_F( FileInterfaceTest, FilesystemFileSize )
 
   std::string content = "Hello, nomlib filesystem! 音乐 🎵";
   path p("/tmp/nomlib_filesystem_size_test.txt");
+
+  // Defensive cleanup in case a prior run left the file behind.
+  if( exists(p) )
+  {
+    remove(p);
+  }
 
   {
     std::ofstream out( p.c_str(), std::ios::binary );
@@ -444,6 +482,16 @@ TEST_F( FileInterfaceTest, FilesystemStatusQueries )
   const path dir("/tmp/nomlib_status_queries_test");
   const path file( dir / "data.txt" );
   const path missing( dir / "missing.txt" );
+
+  // Defensive cleanup in case a prior run left the path behind.
+  if( exists(file) )
+  {
+    remove(file);
+  }
+  if( exists(dir) )
+  {
+    remove(dir);
+  }
 
   ASSERT_FALSE( exists(dir) );
 
@@ -482,16 +530,21 @@ TEST_F( FileInterfaceTest, FilesystemPathDecomposition )
   // a relative path from three elements using operator/= and verify observers,
   // decomposition and query functions.
 
+  auto native = []( std::string s ) {
+    std::replace( s.begin(), s.end(), '/', path::preferred_separator );
+    return s;
+  };
+
   path p;
   p /= "foo";
   p /= "bar";
   p /= "baz.txt";
 
-  EXPECT_EQ( "foo/bar/baz.txt", p.native() );
-  EXPECT_EQ( "foo/bar/baz.txt", p.string() );
-  EXPECT_EQ( "foo/bar/baz.txt", p.generic_string() );
-  EXPECT_EQ( "foo/bar/baz.txt", p.u8string() );
-  EXPECT_EQ( "foo/bar/baz.txt", p.generic_u8string() );
+  EXPECT_EQ( native("foo/bar/baz.txt"), p.native() );
+  EXPECT_EQ( native("foo/bar/baz.txt"), p.string() );
+  EXPECT_EQ( native("foo/bar/baz.txt"), p.generic_string() );
+  EXPECT_EQ( native("foo/bar/baz.txt"), p.u8string() );
+  EXPECT_EQ( native("foo/bar/baz.txt"), p.generic_u8string() );
 
   // Iteration yields each path element.
   std::vector<std::string> parts;
@@ -504,17 +557,16 @@ TEST_F( FileInterfaceTest, FilesystemPathDecomposition )
   EXPECT_EQ( "bar", parts[1] );
   EXPECT_EQ( "baz.txt", parts[2] );
 
-  // make_preferred() is a no-op on POSIX but should be chainable.
-  EXPECT_EQ( "foo/bar/baz.txt", p.make_preferred().native() );
-
+  // make_preferred() normalizes separators to the platform preferred form.
+  EXPECT_EQ( native("foo/bar/baz.txt"), p.make_preferred().native() );
   EXPECT_TRUE( p.make_preferred().native() == path("foo/bar/baz.txt").native() );
 
   // Decomposition.
   EXPECT_EQ( "", p.root_name().native() );
   EXPECT_EQ( "", p.root_directory().native() );
   EXPECT_EQ( "", p.root_path().native() );
-  EXPECT_EQ( "foo/bar/baz.txt", p.relative_path().native() );
-  EXPECT_EQ( "foo/bar", p.parent_path().native() );
+  EXPECT_EQ( native("foo/bar/baz.txt"), p.relative_path().native() );
+  EXPECT_EQ( native("foo/bar"), p.parent_path().native() );
   EXPECT_EQ( "baz.txt", p.filename().native() );
   EXPECT_EQ( "baz", p.stem().native() );
   EXPECT_EQ( ".txt", p.extension().native() );
@@ -548,13 +600,18 @@ TEST_F( FileInterfaceTest, FilesystemAbsolutePathDecomposition )
   //   stem: "baa"
   //   extension: ".txt"
 
+  auto native = []( std::string s ) {
+    std::replace( s.begin(), s.end(), '/', path::preferred_separator );
+    return s;
+  };
+
   path p;
   p /= "/foo";
   p /= "bar";
   p /= "baa.txt";
 
   // Parsing after appending "/foo" should have produced an absolute path.
-  EXPECT_EQ( "/foo/bar/baa.txt", p.native() );
+  EXPECT_EQ( native("/foo/bar/baa.txt"), p.native() );
   EXPECT_TRUE( p.is_absolute() );
   EXPECT_FALSE( p.is_relative() );
 
@@ -572,8 +629,8 @@ TEST_F( FileInterfaceTest, FilesystemAbsolutePathDecomposition )
   EXPECT_EQ( "", p.root_name().native() );
   EXPECT_EQ( "/", p.root_directory().native() );
   EXPECT_EQ( "/", p.root_path().native() );
-  EXPECT_EQ( "foo/bar/baa.txt", p.relative_path().native() );
-  EXPECT_EQ( "/foo/bar", p.parent_path().native() );
+  EXPECT_EQ( native("foo/bar/baa.txt"), p.relative_path().native() );
+  EXPECT_EQ( native("/foo/bar"), p.parent_path().native() );
   EXPECT_EQ( "baa.txt", p.filename().native() );
   EXPECT_EQ( "baa", p.stem().native() );
   EXPECT_EQ( ".txt", p.extension().native() );
@@ -593,15 +650,20 @@ TEST_F( FileInterfaceTest, FilesystemDirectoryIteration )
   // each entry's filename.
 
   const path dir("/tmp/nomlib_dir_iter_test");
+  const path file1( dir / "alpha.txt" );
+  const path file2( dir / "beta.txt" );
+
+  // Defensive cleanup in case a prior run left the path behind.
+  if( exists(file1) ) remove(file1);
+  if( exists(file2) ) remove(file2);
+  if( exists(dir) ) remove(dir);
+
   ASSERT_FALSE( exists(dir) );
 
   // Prepare a clean directory with two known files.
   EXPECT_TRUE( create_directories(dir) );
   ASSERT_TRUE( exists(dir) );
   ASSERT_TRUE( is_directory(dir) );
-
-  const path file1( dir / "alpha.txt" );
-  const path file2( dir / "beta.txt" );
 
   {
     std::ofstream out1( file1.c_str() );
@@ -643,6 +705,13 @@ TEST_F( FileInterfaceTest, FilesystemDirectoryIteratorEmptyDirectory )
   using namespace nom::filesystem;
 
   const path dir("/tmp/nomlib_empty_dir_iter_test");
+
+  // Defensive cleanup in case a prior run left the path behind.
+  if( exists(dir) )
+  {
+    remove(dir);
+  }
+
   ASSERT_FALSE( exists(dir) );
 
   EXPECT_TRUE( create_directory(dir) );

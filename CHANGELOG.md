@@ -77,6 +77,16 @@
   path constructors (mirroring Boost.Filesystem `tut2.cpp`, `tut3.cpp`, and
   `tut5.cpp`).
 
+* Hardened `nom::filesystem` based on code review: fixed the Windows build
+  (`to_wide_path` helper ordering and `<cwchar>` include), fixed doubled-separator
+  output when appending to a path with a trailing separator, made `remove()`
+  use `lstat` on POSIX so symlinks to directories are unlinked, switched
+  Windows `file_size()` to `_wstat64`, corrected `is_absolute()` after a
+  root-name-preserving append, and made `stem()`/`extension()` treat `.` and
+  `..` as extension-less. Also improved test isolation in
+  `FileInterfaceTest.cpp` and removed the `/tmp`-deletion risk in the
+  recursive-directory test.
+
 * Fixed `examples/GameOfLife/CMakeLists.txt` missing `STATIC_ASSETS` definition
   and using an undefined `${STATIC_ASSETS}` variable in its target sources and
   post-build copy command.

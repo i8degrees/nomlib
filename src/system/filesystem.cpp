@@ -42,14 +42,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #include <sys/stat.h>
   #include <sys/types.h>
   #include <windows.h>
-
-// Convert a UTF-8 narrow path to a native wide path for Windows API calls.
-namespace {
-std::wstring to_wide_path( const std::string& u8 )
-{
-  return nom::filesystem::detail::utf8_to_wstring( u8 );
-}
-} // anonymous namespace
+  #include <cwchar>
   #else
   #include <unistd.h>
   #include <sys/stat.h>
@@ -350,6 +343,13 @@ std::string wstring_to_utf8( const std::wstring& w )
 
 #if defined( NOM_PLATFORM_WINDOWS )
 const path::value_type path::preferred_separator = '\\';
+
+namespace {
+std::wstring to_wide_path( const std::string& u8 )
+{
+  return nom::filesystem::detail::utf8_to_wstring( u8 );
+}
+} // anonymous namespace
 #else
 const path::value_type path::preferred_separator = '/';
 #endif
@@ -448,6 +448,7 @@ path& path::operator/=( const path& other )
       string_type keep_root = this->root_name_;
       *this = other;
       this->root_name_ = keep_root;
+      this->absolute_ = !this->root_name_.empty() && this->has_root_directory_;
       this->invalidate_cache();
     }
     else
@@ -455,6 +456,16 @@ path& path::operator/=( const path& other )
       *this = other;
     }
     return *this;
+  }
+
+  // Avoid producing "foo//bar" when the left-hand side has a trailing
+  // separator (which parse() stores as an empty final component).
+  if( this->has_trailing_separator_ &&
+      !this->components_.empty() &&
+      this->components_.back().empty() )
+  {
+    this->components_.pop_back();
+    this->has_trailing_separator_ = false;
   }
 
   for( const auto& c : other.components_ )
@@ -738,6 +749,12 @@ path path::stem() const
   string_type f = this->filename().native();
   if( f.empty() ) return path();
 
+  // Special names such as "." and ".." are not extension-bearing.
+  if( f == "." || f == ".." )
+  {
+    return path( f );
+  }
+
   std::size_t pos = f.find_last_of( '.' );
   if( pos == string_type::npos || pos == 0 )
   {
@@ -750,6 +767,12 @@ path path::extension() const
 {
   string_type f = this->filename().native();
   if( f.empty() ) return path();
+
+  // Special names such as "." and ".." are not extension-bearing.
+  if( f == "." || f == ".." )
+  {
+    return path();
+  }
 
   std::size_t pos = f.find_last_of( '.' );
   if( pos == string_type::npos || pos == 0 )
@@ -1248,17 +1271,29 @@ bool remove( const path& p )
 
 #if defined( NOM_PLATFORM_WINDOWS )
   std::wstring wp = to_wide_path( p.native() );
-  if( is_directory( p ) )
+  DWORD attrs = ::GetFileAttributesW( wp.c_str() );
+  if( attrs == INVALID_FILE_ATTRIBUTES )
   {
-    return RemoveDirectoryW( wp.c_str() ) != 0;
+    return false;
   }
-  return DeleteFileW( wp.c_str() ) != 0;
+
+  if( attrs & FILE_ATTRIBUTE_DIRECTORY )
+  {
+    return ::RemoveDirectoryW( wp.c_str() ) != 0;
+  }
+  return ::DeleteFileW( wp.c_str() ) != 0;
 #else
-  if( is_directory( p ) )
+  struct stat st;
+  if( ::lstat( p.c_str(), &st ) != 0 )
+  {
+    return false;
+  }
+
+  if( S_ISDIR( st.st_mode ) )
   {
     return ::rmdir( p.c_str() ) == 0;
   }
-  return std::remove( p.c_str() ) == 0;
+  return ::remove( p.c_str() ) == 0;
 #endif
 }
 
@@ -1266,8 +1301,8 @@ std::uintmax_t file_size( const path& p )
 {
 #if defined( NOM_PLATFORM_WINDOWS )
   std::wstring wp = to_wide_path( p.native() );
-  struct _stat st;
-  if( ::_wstat( wp.c_str(), &st ) != 0 ) return 0;
+  struct __stat64 st;
+  if( ::_wstat64( wp.c_str(), &st ) != 0 ) return 0;
   return static_cast<std::uintmax_t>( st.st_size );
 #else
   struct stat st;

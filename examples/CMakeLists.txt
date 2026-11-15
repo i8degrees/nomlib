@@ -29,6 +29,7 @@ set( NOM_BUILD_GAME_CONTROLLER_EXAMPLE ON )
 set( NOM_BUILD_FONTS_EXAMPLE ON )
 set( NOM_BUILD_MOUSE_CURSORS_EXAMPLE ON )
 set( NOM_BUILD_MACROS_EXAMPLE ON )
+set( NOM_BUILD_PAINT_EXAMPLE ON )
 
 # Use common build output directories for MSVCPP && Xcode project files
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/bin")
@@ -71,6 +72,10 @@ endif( NOM_BUILD_JOYSTICK_EXAMPLE )
 if(NOM_BUILD_MOUSE_CURSORS_EXAMPLE) # nom_cursors
   add_subdirectory(nom_cursors)
 endif(NOM_BUILD_MOUSE_CURSORS_EXAMPLE)
+
+if(NOM_BUILD_PAINT_EXAMPLE) # nom_paint
+  add_subdirectory(nom_paint)
+endif(NOM_BUILD_PAINT_EXAMPLE)
 
 if(NOM_BUILD_MACROS_EXAMPLE) # nom_macros
   add_subdirectory(nom_macros)

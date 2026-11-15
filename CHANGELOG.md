@@ -31,6 +31,8 @@
   now transitions between `WaitingState` and `PlayingState`, with contexts
   managed automatically by the state machine.
 
+* Added `examples/nom_paint`, a pixel paint program using `nom::Image`, `nom::Texture`, and `nom::EventHandler`. Features include pencil, eraser, outline and filled rectangles and circles, flood fill with optional vertical gradient, and text stamping; a left-hand toolbar with shape icons and hover tooltips; a 16×16 color palette grid built from the 16 basic HTML colors with white at the first swatch and black at the last; per-tool size control from 1 to 40 pixels; undo/redo history; and PNG save/load.
+
 * Fetched `SDL_GameControllerDB` unconditionally in `vendor/CMakeLists.txt`
   so the community game controller mapping database is always available to
   examples. The `master` download is now pinned to commit

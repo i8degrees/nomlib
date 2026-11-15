@@ -42,6 +42,7 @@ namespace nom {
 struct Event;
 class IState;
 class RenderWindow;
+class InputStateMapper;
 
 namespace priv {
 
@@ -90,6 +91,21 @@ class NOM_EXPORT StateMachine
     /// \remarks The state identifier is user-defined.
     uint32 next_state_id( void ) const;
 
+    /// \brief Install the input mapper used to auto-manage per-state input
+    /// contexts during state transitions.
+    ///
+    /// \param mapper Non-owned pointer; it must outlive this machine or be
+    /// reset via set_input_mapper(nullptr). May be nullptr (default).
+    ///
+    /// \remarks For every state whose nom::IState::input_context() key is not
+    /// empty: the context is activated after on_init and on_resume, disabled
+    /// after on_pause, and erased after on_exit. States with an empty context
+    /// key manage their contexts manually.
+    void set_input_mapper( InputStateMapper* mapper );
+
+    /// \brief Obtain the installed input mapper, or nullptr.
+    InputStateMapper* input_mapper() const;
+
     /// \param state  The nom::IState deriving object to be set as the current
     /// state.
     /// \param data   User-defined data; used for passing data in between
@@ -137,11 +153,17 @@ class NOM_EXPORT StateMachine
     /// callback is completed.
     void set_deferred_state( std::unique_ptr<IState> state, void_ptr data );
 
+    void activate_input_context( const IState& state );
+    void disable_input_context( const IState& state );
+    void erase_input_context( const IState& state );
+
     /// \brief The pending state to be set on the next frame update
     priv::DeferredState next_state_;
 
     /// \brief Stack of states
     std::vector<std::unique_ptr<IState>> states_;
+
+    InputStateMapper* input_mapper_ = nullptr;
 };
 
 } // namespace nom

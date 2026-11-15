@@ -662,6 +662,28 @@ TEST_F( FileInterfaceTest, FilesystemAbsolutePathDecomposition )
   EXPECT_TRUE( p.has_parent_path() );
 }
 
+TEST_F( FileInterfaceTest, FilesystemPathNormalization )
+{
+  using namespace nom::filesystem;
+
+  // ".." components must be collapsed. Relative paths preserve leading ".."
+  // segments; absolute paths cannot escape the root.
+
+  EXPECT_EQ( "foo", ( path("foo/bar") / ".." ).native() );
+  EXPECT_EQ( "foo", path("foo/bar/..").filename().native() );
+  EXPECT_EQ( "", path("foo/bar/..").parent_path().native() );
+  EXPECT_EQ( "../baz", ( path("../bar") / ".." / "baz" ).native() );
+
+  EXPECT_EQ( "/foo", ( path("/foo/bar") / ".." ).native() );
+  EXPECT_EQ( "/", ( path("/foo") / ".." ).native() );
+  EXPECT_EQ( "/", ( path("/") / ".." ).native() );
+  EXPECT_EQ( "/data", ( path("/etc") / ".." / ".." / "data" ).native() );
+
+  // "." components should be discarded.
+  EXPECT_EQ( "foo/bar", path("foo/././bar").native() );
+  EXPECT_EQ( "foo/bar", ( path("foo") / "." / "bar" ).native() );
+}
+
 TEST_F( FileInterfaceTest, FilesystemDirectoryIteration )
 {
   using namespace nom::filesystem;

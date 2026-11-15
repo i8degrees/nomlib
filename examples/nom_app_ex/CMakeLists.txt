@@ -1,7 +1,11 @@
 # nom_app_ex example
 
-# Search paths file to use in finding the resources path
-set(STATIC_ASSET_CONFIG "${NOM_EXAMPLES_RESOURCES_DIR}/app.json")
+# Resource paths used both at development time and at install time.
+set(STATIC_ASSETS "${PROJECT_SOURCE_DIR}/Resources/examples/app")
+set(TEST_GUI_ASSETS "${PROJECT_SOURCE_DIR}/Resources/tests/gui")
+
+file(GLOB APP_ASSET_FILES "${STATIC_ASSETS}/*")
+file(GLOB GUI_ASSET_FILES "${TEST_GUI_ASSETS}/*")
 
 add_executable(nom_app_ex
   WIN32 # Link SDL2main over WinMain
@@ -15,14 +19,22 @@ set_target_properties(nom_app_ex
     INSTALL_RPATH_USE_LINK_PATH TRUE
 )
 
-target_sources(nom_app_ex
-  PRIVATE
-  ${STATIC_ASSET_CONFIG}
-)
-
 target_include_directories(nom_app_ex
   PUBLIC
   ${PROJECT_SOURCE_DIR}/include
+)
+
+if(APPLE AND APP_ASSET_FILES)
+  set_target_properties(nom_app_ex
+    PROPERTIES
+      RESOURCE ${APP_ASSET_FILES}
+  )
+endif()
+
+target_sources(nom_app_ex
+  PRIVATE
+  ${APP_ASSET_FILES}
+  ${GUI_ASSET_FILES}
 )
 
 if(TARGET SDL2::SDL2main)
@@ -56,15 +68,23 @@ install(TARGETS nom_app_ex
 )
 
 #
-## Copy assets into app bundle
+## Copy assets next to the executable for development builds.
 #
+if(STATIC_ASSETS)
+  add_custom_command(TARGET nom_app_ex POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+      "${STATIC_ASSETS}"
+      "$<TARGET_FILE_DIR:nom_app_ex>/Resources/examples/app"
+  )
+endif()
 
-# For development:
-add_custom_command(TARGET nom_app_ex
-  POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
-  "${STATIC_ASSET_CONFIG}"
-  $<TARGET_FILE_DIR:nom_app_ex> # <build>/<type>/share
-)
+if(TEST_GUI_ASSETS)
+  add_custom_command(TARGET nom_app_ex POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+      "${TEST_GUI_ASSETS}"
+      "$<TARGET_FILE_DIR:nom_app_ex>/Resources/tests/gui"
+  )
+endif()
 
 # For distribution:
 install(DIRECTORY

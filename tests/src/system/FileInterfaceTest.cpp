@@ -432,6 +432,158 @@ TEST_F( FileInterfaceTest, FilesystemFileSize )
   EXPECT_FALSE( exists(p) );
 }
 
+TEST_F( FileInterfaceTest, FilesystemStatusQueries )
+{
+  using namespace nom::filesystem;
+
+  // This test mirrors the Boost.Filesystem tut2.cpp exercise:
+  //   - existing regular file  -> "<path> size is <size>"
+  //   - existing directory     -> "<path> is a directory"
+  //   - non-existent path      -> "<path> does not exist"
+
+  const path dir("/tmp/nomlib_status_queries_test");
+  const path file( dir / "data.txt" );
+  const path missing( dir / "missing.txt" );
+
+  ASSERT_FALSE( exists(dir) );
+
+  EXPECT_TRUE( create_directories(dir) );
+
+  const std::string content = "Hello, nomlib filesystem status queries!";
+  {
+    std::ofstream out( file.c_str(), std::ios::binary );
+    ASSERT_TRUE( out.is_open() );
+    out.write( content.data(), content.size() );
+  }
+
+  ASSERT_TRUE( exists(file) );
+  ASSERT_TRUE( is_regular_file(file) );
+  ASSERT_FALSE( is_directory(file) );
+  EXPECT_EQ( content.size(), file_size(file) );
+
+  ASSERT_TRUE( exists(dir) );
+  ASSERT_TRUE( is_directory(dir) );
+  ASSERT_FALSE( is_regular_file(dir) );
+
+  ASSERT_FALSE( exists(missing) );
+  ASSERT_FALSE( is_regular_file(missing) );
+  ASSERT_FALSE( is_directory(missing) );
+
+  EXPECT_TRUE( remove(file) );
+  EXPECT_TRUE( remove(dir) );
+  EXPECT_FALSE( exists(dir) );
+}
+
+TEST_F( FileInterfaceTest, FilesystemPathDecomposition )
+{
+  using namespace nom::filesystem;
+
+  // This test mirrors the Boost.Filesystem path_info.cpp exercise. We compose
+  // a relative path from three elements using operator/= and verify observers,
+  // decomposition and query functions.
+
+  path p;
+  p /= "foo";
+  p /= "bar";
+  p /= "baz.txt";
+
+  EXPECT_EQ( "foo/bar/baz.txt", p.native() );
+  EXPECT_EQ( "foo/bar/baz.txt", p.string() );
+  EXPECT_EQ( "foo/bar/baz.txt", p.generic_string() );
+  EXPECT_EQ( "foo/bar/baz.txt", p.u8string() );
+  EXPECT_EQ( "foo/bar/baz.txt", p.generic_u8string() );
+
+  // Iteration yields each path element.
+  std::vector<std::string> parts;
+  for( const auto& element : p )
+  {
+    parts.push_back( element.native() );
+  }
+  ASSERT_EQ( 3u, parts.size() );
+  EXPECT_EQ( "foo", parts[0] );
+  EXPECT_EQ( "bar", parts[1] );
+  EXPECT_EQ( "baz.txt", parts[2] );
+
+  // make_preferred() is a no-op on POSIX but should be chainable.
+  EXPECT_EQ( "foo/bar/baz.txt", p.make_preferred().native() );
+
+  EXPECT_TRUE( p.make_preferred().native() == path("foo/bar/baz.txt").native() );
+
+  // Decomposition.
+  EXPECT_EQ( "", p.root_name().native() );
+  EXPECT_EQ( "", p.root_directory().native() );
+  EXPECT_EQ( "", p.root_path().native() );
+  EXPECT_EQ( "foo/bar/baz.txt", p.relative_path().native() );
+  EXPECT_EQ( "foo/bar", p.parent_path().native() );
+  EXPECT_EQ( "baz.txt", p.filename().native() );
+  EXPECT_EQ( "baz", p.stem().native() );
+  EXPECT_EQ( ".txt", p.extension().native() );
+
+  // Queries.
+  EXPECT_FALSE( p.empty() );
+  EXPECT_FALSE( p.is_absolute() );
+  EXPECT_TRUE( p.is_relative() );
+  EXPECT_FALSE( p.has_root_name() );
+  EXPECT_FALSE( p.has_root_directory() );
+  EXPECT_FALSE( p.has_root_path() );
+  EXPECT_TRUE( p.has_relative_path() );
+  EXPECT_TRUE( p.has_parent_path() );
+  EXPECT_TRUE( p.has_filename() );
+  EXPECT_TRUE( p.has_stem() );
+  EXPECT_TRUE( p.has_extension() );
+}
+
+TEST_F( FileInterfaceTest, FilesystemAbsolutePathDecomposition )
+{
+  using namespace nom::filesystem;
+
+  // Mirrors the Boost.Filesystem path_info.cpp output for an absolute path:
+  //   elements: "/", "foo", "bar", "baa.txt"
+  //   root_name: ""
+  //   root_directory: "/"
+  //   root_path: "/"
+  //   relative_path: "foo/bar/baa.txt"
+  //   parent_path: "/foo/bar"
+  //   filename: "baa.txt"
+  //   stem: "baa"
+  //   extension: ".txt"
+
+  path p;
+  p /= "/foo";
+  p /= "bar";
+  p /= "baa.txt";
+
+  // Parsing after appending "/foo" should have produced an absolute path.
+  EXPECT_EQ( "/foo/bar/baa.txt", p.native() );
+  EXPECT_TRUE( p.is_absolute() );
+  EXPECT_FALSE( p.is_relative() );
+
+  std::vector<std::string> parts;
+  for( const auto& element : p )
+  {
+    parts.push_back( element.native() );
+  }
+  ASSERT_EQ( 4u, parts.size() );
+  EXPECT_EQ( "/", parts[0] );
+  EXPECT_EQ( "foo", parts[1] );
+  EXPECT_EQ( "bar", parts[2] );
+  EXPECT_EQ( "baa.txt", parts[3] );
+
+  EXPECT_EQ( "", p.root_name().native() );
+  EXPECT_EQ( "/", p.root_directory().native() );
+  EXPECT_EQ( "/", p.root_path().native() );
+  EXPECT_EQ( "foo/bar/baa.txt", p.relative_path().native() );
+  EXPECT_EQ( "/foo/bar", p.parent_path().native() );
+  EXPECT_EQ( "baa.txt", p.filename().native() );
+  EXPECT_EQ( "baa", p.stem().native() );
+  EXPECT_EQ( ".txt", p.extension().native() );
+
+  EXPECT_TRUE( p.has_root_directory() );
+  EXPECT_TRUE( p.has_root_path() );
+  EXPECT_TRUE( p.has_relative_path() );
+  EXPECT_TRUE( p.has_parent_path() );
+}
+
 TEST_F( FileInterfaceTest, FilesystemDirectoryIteration )
 {
   using namespace nom::filesystem;

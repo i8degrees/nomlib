@@ -85,6 +85,42 @@ class NOM_EXPORT path
 
     void clear() noexcept;
 
+    /// \brief Convert any directory separators to the platform's preferred
+    /// separator in-place and return this path.
+    path& make_preferred();
+
+    /// \name Iteration
+    /// \{
+    class iterator
+    {
+      public:
+        typedef path value_type;
+        typedef const path* pointer;
+        typedef const path& reference;
+        typedef std::ptrdiff_t difference_type;
+        typedef std::input_iterator_tag iterator_category;
+
+        iterator();
+        iterator( const path& p, bool end_it );
+
+        reference operator*() const;
+        pointer operator->() const;
+
+        iterator& operator++();
+        iterator operator++( int );
+
+        bool operator==( const iterator& other ) const;
+        bool operator!=( const iterator& other ) const;
+
+      private:
+        std::vector<path> elements_;
+        std::size_t pos_;
+    };
+
+    iterator begin() const;
+    iterator end() const;
+    /// \}
+
     /// Return the path in the platform's native format.
     const string_type& native() const;
 
@@ -163,6 +199,10 @@ class NOM_EXPORT path
     void parse( const string_type& source );
     void invalidate_cache() const;
     void rebuild_cache() const;
+
+    /// \brief Break the path into its iteration elements (root-name,
+    /// root-directory, and each path component).
+    std::vector<path> path_elements() const;
 
     mutable string_type native_pathname_;
     mutable bool dirty_;

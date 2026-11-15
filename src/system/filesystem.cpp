@@ -815,6 +815,103 @@ bool path::is_relative() const
   return !this->absolute_;
 }
 
+path& path::make_preferred()
+{
+  const char sep = path::preferred_separator;
+
+  string_type native = this->native();
+
+  for( char& c : native )
+  {
+    if( detail::is_separator( c ) && c != sep )
+    {
+      c = sep;
+    }
+  }
+
+  this->parse( native );
+  return *this;
+}
+
+std::vector<path> path::path_elements() const
+{
+  std::vector<path> result;
+
+  if( !this->root_name_.empty() )
+  {
+    result.push_back( path( this->root_name_ ) );
+  }
+
+  if( this->has_root_directory_ )
+  {
+    result.push_back( path( std::string( 1, path::preferred_separator ) ) );
+  }
+
+  for( const auto& component : this->components_ )
+  {
+    result.push_back( path( component ) );
+  }
+
+  return result;
+}
+
+path::iterator::iterator() :
+  elements_(),
+  pos_( 0 )
+{
+  // End-of-range default iterator.
+}
+
+path::iterator::iterator( const path& p, bool end_it ) :
+  elements_( p.path_elements() ),
+  pos_( end_it ? this->elements_.size() : 0 )
+{
+  // Nothing to do
+}
+
+path::iterator::reference path::iterator::operator*() const
+{
+  return this->elements_[this->pos_];
+}
+
+path::iterator::pointer path::iterator::operator->() const
+{
+  return &this->elements_[this->pos_];
+}
+
+path::iterator& path::iterator::operator++()
+{
+  ++this->pos_;
+  return *this;
+}
+
+path::iterator path::iterator::operator++( int )
+{
+  iterator tmp( *this );
+  ++this->pos_;
+  return tmp;
+}
+
+bool path::iterator::operator==( const iterator& other ) const
+{
+  return this->pos_ == other.pos_;
+}
+
+bool path::iterator::operator!=( const iterator& other ) const
+{
+  return !this->operator==( other );
+}
+
+path::iterator path::begin() const
+{
+  return path::iterator( *this, false );
+}
+
+path::iterator path::end() const
+{
+  return path::iterator( *this, true );
+}
+
 bool path::empty() const
 {
   return !this->has_root_name() && !this->has_root_directory_ &&

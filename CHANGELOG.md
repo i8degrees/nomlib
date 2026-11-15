@@ -88,6 +88,13 @@
   `FileInterfaceTest.cpp` and removed the `/tmp`-deletion risk in the
   recursive-directory test.
 
+* Fixed `nom::filesystem::directory_iterator` and `nom::filesystem::path::iterator`
+  equality so that two non-end iterators over different sequences compare unequal.
+
+* Switched `FileInterfaceTest` file creation to a platform-aware
+  `open_output_stream()` helper so UTF-8 filenames use the wide-character
+  `ofstream` constructor on Windows.
+
 * Fixed `examples/GameOfLife/CMakeLists.txt` missing `STATIC_ASSETS` definition
   and using an undefined `${STATIC_ASSETS}` variable in its target sources and
   post-build copy command.

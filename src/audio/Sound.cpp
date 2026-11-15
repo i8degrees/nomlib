@@ -3,6 +3,9 @@
 //#include "ISoundFileReader.hpp"
 #include "nomlib/audio/libsndfile/SoundFileReader.hpp"
 
+// Standard headers
+#include <algorithm>
+
 // Forward declarations
 // #include <sndfile.h>
 #include "nomlib/audio/AL/OpenAL.hpp"
@@ -116,9 +119,10 @@ void Sound::init(int16* samples, uint32 format, int num_channels) {
 
   this->fp_->seek(0, SEEK_SET);
   if(this->streaming() == false) {
-    auto sample_count = this->fp_->read(samples, format,
-      this->sample_count());
-    if(sample_count != this->sample_count()) {
+    // read returns frames; sample_count_ stores samples (frames * channels).
+    nom::int64 expected_frames = this->sample_count_ / std::max(1, this->num_channels_);
+    auto frames_read = this->fp_->read(samples, format, expected_frames);
+    if(frames_read != expected_frames) {
   #if defined(DEBUG)
       std::cerr << "Sound::init(" << this->filename_ << ")" <<
         "Failed to load audio samples" << std::endl;
@@ -127,7 +131,7 @@ void Sound::init(int16* samples, uint32 format, int num_channels) {
     } else {
   #if defined(DEBUG)
       std::cout << "Sound::init(" << this->filename_ << ")" <<
-        "sample_count is " << sample_count << std::endl;
+        "sample_count is " << frames_read << std::endl;
   #endif
     }
   }

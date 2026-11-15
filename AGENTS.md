@@ -63,6 +63,12 @@ artifacts directory.
 the build artifacts directory of the named cmake preset in a directory called
 `docs/html`.
 
+- For testing `nom_astream`, `nom_aplay` and any other executable using
+the `openal-soft` dependency, the `ALSOFT_LOGLEVEL=3` environment may be
+prefixed to the executable in order to enable diagnostic messages, rated
+from INFO to ERROR. `ALSOFT_LOGLEVEL=3 build/<preset>/bin/nom_astream` is an
+example.
+
 ## Conventions
 
 - nomlib consists of several key library targets, specified under

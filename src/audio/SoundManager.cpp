@@ -3,9 +3,10 @@
 #include "nomlib/audio/SoundManager.hpp"
 #include "nomlib/audio/Sound.hpp"
 #include "nomlib/audio/StreamSound.hpp"
-
 #if defined(USE_LIBOGG)
   #include "nomlib/audio/OggSound.hpp"
+#else
+  #include "nomlib/audio/StreamSound.hpp"
 #endif
 
 #include <map>
@@ -54,14 +55,12 @@ void SoundManager::add_sound(const std::string& name, bool streaming) {
       AL_CHECK_ERR(alBufferData(s->buffer(), s->format(), s->data(),
         s->total_bytes(), (ALsizei)s->frequency()));
     } else if(streaming == true) {
-
 #if defined(USE_LIBOGG)
       OggSound* stream = new OggSound();
-      stream->open(name);
 #else
       StreamSound* stream = new StreamSound();
-      stream->open(name);
 #endif
+      stream->open(name);
 
 #if defined(VERBOSE)
       std::cout << "SoundManager::add_sound(" << stream->buffer() <<

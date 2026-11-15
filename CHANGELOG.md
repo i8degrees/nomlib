@@ -2,6 +2,40 @@
 
 ## Unreleased ##
 
+* Fixed `nom::EventHandler::remove_event_watch` matching by using
+  `std::function::target_type()` instead of the broken `target<event_filter>()`
+  comparison. Distinct lambda-backed watchers are now removed precisely.
+
+* Added `nom::InputStateMapper::remove_event_handler()` and made
+  `set_event_handler()` idempotent. Installing the same handler twice is now
+  a no-op, and calling `set_event_handler()` with a different handler detaches
+  the previous watch first.
+
+* Added `nom::IState::input_context()` hook so states can declare a
+  `nom::InputStateMapper` context key.
+
+* Extended `nom::StateMachine` with `set_input_mapper()` / `input_mapper()`
+  and automatic per-state input context lifecycle management: contexts are
+  activated after `on_init` and `on_resume`, disabled after `on_pause`, and
+  erased after `on_exit`. Also fixed the pop/resume branch to clear
+  `next_state_.deferred` / `next_state_.data`, preventing double-pops.
+
+* Added `tests/src/system/StateMachineTest.cpp` with `StateMachineTest`
+  covering keyboard, mouse button, joystick button, and game controller button
+  input callbacks triggering deferred state transitions, plus
+  `EventHandler`/`InputStateMapper` lifecycle tests.
+
+* Rewrote `examples/nom_gamecontroller_ev/gamecontroller_events.cpp` to use
+  `nom::StateMachine` and per-state input contexts for keyboard, game controller
+  button, and game controller axis mappings. Controller connection/disconnection
+  now transitions between `WaitingState` and `PlayingState`, with contexts
+  managed automatically by the state machine.
+
+* Refactored `examples/nom_gamecontroller_ev` resource handling to resolve
+  `Resources/SharedSupport` at runtime relative to the executable, matching
+  `examples/GameOfLife`. The example now loads `gamecontrollerdb.txt` only when
+  it is present and gracefully falls back to SDL's built-in mappings otherwise.
+
 * Fixed `examples/GameOfLife/CMakeLists.txt` missing `STATIC_ASSETS` definition
   and using an undefined `${STATIC_ASSETS}` variable in its target sources and
   post-build copy command.

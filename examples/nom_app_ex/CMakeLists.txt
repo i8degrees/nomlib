@@ -90,7 +90,14 @@ endif()
 install(DIRECTORY
   ${PROJECT_SOURCE_DIR}/Resources/examples/app
   DESTINATION
-    ${CMAKE_INSTALL_DATADIR}/nomlib/Resources # <prefix>/share/nomlib/Resources
+    ${CMAKE_INSTALL_DATADIR}/nomlib/Resources/examples
+  COMPONENT Examples
+)
+
+install(DIRECTORY
+  ${PROJECT_SOURCE_DIR}/Resources/tests/gui
+  DESTINATION
+    ${CMAKE_INSTALL_DATADIR}/nomlib/Resources/tests
   COMPONENT Examples
 )
 

@@ -188,10 +188,20 @@ void SDL2_ttf_version_info( void )
 OpenALVersionInfo OpenAL_version() {
   OpenALVersionInfo info;
 #if defined(NOM_USE_CREATIVE_OPENAL) || defined(NOM_USE_APPLE_OPENAL) || defined(NOM_USE_OPENAL_SOFT)
-  AL_CHECK_ERR( info.version = alGetString(AL_VERSION ) );
-  AL_CHECK_ERR( info.renderer = alGetString(AL_RENDERER ) );
-  AL_CHECK_ERR( info.vendor = alGetString(AL_VENDOR ) );
-  AL_CHECK_ERR( info.extensions = alGetString(AL_EXTENSIONS ) );
+  // Without an active OpenAL context, alGetString returns nullptr. Guard the
+  // assignments so the example does not crash when audio is linked but no
+  // device has been opened.
+  const ALchar* version = alGetString(AL_VERSION);
+  if ( version != nullptr ) info.version = version;
+
+  const ALchar* renderer = alGetString(AL_RENDERER);
+  if ( renderer != nullptr ) info.renderer = renderer;
+
+  const ALchar* vendor = alGetString(AL_VENDOR);
+  if ( vendor != nullptr ) info.vendor = vendor;
+
+  const ALchar* extensions = alGetString(AL_EXTENSIONS);
+  if ( extensions != nullptr ) info.extensions = extensions;
 #endif // end if NOM_USE_OPENAL
   return info;
 }

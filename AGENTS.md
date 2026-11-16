@@ -50,6 +50,12 @@ cd build/debug/opt
 ./ptree
 ```
 
+To install the preset that you have built, `cmake --install <preset-build-dir>`:
+
+```shell
+cmake --install build/debug
+```
+
 ### Example-specific testing
 
 - `nom_app_ex`: potentially needs `SDL_VIDEODRIVER=wayland`
@@ -62,8 +68,9 @@ cd build/debug/opt
 
 - `nom_font`: minimum invocation is
   `--text "Hello, world!" $(pwd)/build/release-dynamic/bin/OpenSans-Regular.ttf`.
-  Additional resource files are available under `Resources` and in the build
-  artifacts directory.
+  Both relative and absolute font file paths are accepted; the path is resolved
+  before the engine changes the working directory. Additional resource files are
+  available under `Resources` and in the build artifacts directory.
 
 - `nom_astream` / `nom_aplay` / other OpenAL examples: run from the repo root
   so relative `Resources` paths resolve. To enable OpenAL Soft diagnostics,

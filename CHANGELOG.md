@@ -138,6 +138,10 @@
   `src/audio/SoundManager.cpp` and `examples/nom_devinfo` now use
   `NOM_USE_LIBOGG`.
 
+* Updated `AGENTS.md` to document installing a preset with `cmake --install`
+  and to note that `examples/nom_font` accepts both relative and absolute
+  font file paths.
+
 * Improved `examples/nom_font` startup: failure to load the requested font
   now terminates the example with a non-zero exit code instead of continuing
   with an invalid font.

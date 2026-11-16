@@ -52,6 +52,7 @@ cd build/debug/opt
 
 ### Example-specific testing
 
+- `nom_app_ex`: potentially needs `SDL_VIDEODRIVER=wayland`
 - `nom_jsonpp`: feed it every `.json` file in the build artifacts directory,
   one per execution, except `auctions.json`. That file is 8 MB and on a
   debug build takes roughly 30 s to read and output; the release build takes

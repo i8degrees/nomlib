@@ -3,7 +3,6 @@
 set(STATIC_ASSETS "${PROJECT_SOURCE_DIR}/Resources/SharedSupport")
 
 set(SHARED_ASSETS
-  "${STATIC_ASSETS}/InputDevices.json"
   "${gcdb_SOURCE_DIR}/gamecontrollerdb.txt"
 )
 

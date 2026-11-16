@@ -89,14 +89,6 @@ filesystem::path find_resource_dir( const char* argv0 )
     exe_dir / ".." / "share" / "nomlib" / "Resources" / "SharedSupport"
   };
 
-  for( const auto& c : candidates ) {
-    if( filesystem::is_directory( c ) &&
-        filesystem::is_regular_file( c / "InputDevices.json" ) )
-    {
-      return c;
-    }
-  }
-
   // Fallback to the first candidate that actually exists, even if it does not
   // yet contain all assets. This avoids returning a synthesized directory path.
   for( const auto& c : candidates ) {

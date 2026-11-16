@@ -112,6 +112,12 @@
   relative and absolute font file paths. The BMFont file root is set to the
   absolute parent directory of the resolved font file.
 
+* Added `nom::filesystem::filesystem_error` exception type mirroring the
+  Boost.Filesystem interface: stores the error code and up to two
+  involved paths, and `what()` includes the original message, path(s), and
+  system error text. `nom::filesystem::current_path()` operations now
+  report failures by throwing `filesystem_error` instead of failing silently.
+
 * Switched `FileInterfaceTest` file creation to a platform-aware
   `open_output_stream()` helper so UTF-8 filenames use the wide-character
   `ofstream` constructor on Windows.

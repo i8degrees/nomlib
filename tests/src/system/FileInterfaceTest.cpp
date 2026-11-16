@@ -29,9 +29,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "gtest/gtest.h"
 
 #include <algorithm>
+#include <cerrno>
 #include <fstream>
 #include <list>
 #include <string>
+#include <system_error>
 #include <vector>
 
 #include <nomlib/system.hpp>
@@ -962,6 +964,50 @@ TEST_F( FileInterfaceTest, FilesystemPathUnicodeConstructors )
     << "Could not remove test file: " << p.native();
     EXPECT_FALSE( exists(p) );
   }
+}
+
+TEST_F( FileInterfaceTest, FilesystemErrorSinglePath )
+{
+  using filesystem::path;
+
+  path p1( this->sys_temp.prepend( "missing_file.txt" ) );
+  std::error_code ec( ENOENT, std::system_category() );
+
+  filesystem::filesystem_error err( "could not access path", p1, ec );
+
+  EXPECT_EQ( ec, err.code() );
+  EXPECT_EQ( p1.native(), err.path1().native() );
+  EXPECT_TRUE( err.path2().empty() );
+
+  std::string msg( err.what() );
+  EXPECT_NE( std::string::npos, msg.find( "could not access path" ) );
+  EXPECT_NE( std::string::npos, msg.find( p1.native() ) );
+  EXPECT_NE( std::string::npos, msg.find( ec.message() ) );
+
+  // Must be usable through the standard interface.
+  const std::system_error& base = err;
+  EXPECT_EQ( ec, base.code() );
+}
+
+TEST_F( FileInterfaceTest, FilesystemErrorTwoPaths )
+{
+  using filesystem::path;
+
+  path src( this->sys_temp.prepend( "source.txt" ) );
+  path dst( this->sys_temp.prepend( "destination.txt" ) );
+  std::error_code ec( EXDEV, std::system_category() );
+
+  filesystem::filesystem_error err( "could not rename across devices", src, dst, ec );
+
+  EXPECT_EQ( ec, err.code() );
+  EXPECT_EQ( src.native(), err.path1().native() );
+  EXPECT_EQ( dst.native(), err.path2().native() );
+
+  std::string msg( err.what() );
+  EXPECT_NE( std::string::npos, msg.find( "could not rename across devices" ) );
+  EXPECT_NE( std::string::npos, msg.find( src.native() ) );
+  EXPECT_NE( std::string::npos, msg.find( dst.native() ) );
+  EXPECT_NE( std::string::npos, msg.find( ec.message() ) );
 }
 
 } // namespace nom

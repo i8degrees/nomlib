@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iterator>
 #include <memory>
 #include <string>
+#include <system_error>
 #include <vector>
 
 #include "nomlib/config.hpp"
@@ -320,6 +321,36 @@ NOM_EXPORT path current_path();
 NOM_EXPORT void current_path( const path& p );
 
 /// \}
+
+/// \brief Exception type used to report filesystem errors.
+///
+/// Mirrors the interface described in ISO/IEC TS 18822:2015 (N4100) and
+/// Boost.Filesystem. The exception stores the path(s) involved and the error
+/// code, and its `what()` string includes the supplied reason, the path(s),
+/// and the system error message.
+class NOM_EXPORT filesystem_error: public std::system_error
+{
+  public:
+    filesystem_error( const std::string& what_arg, const path& p1,
+                    std::error_code ec );
+
+    filesystem_error( const std::string& what_arg, const path& p1,
+                      const path& p2, std::error_code ec );
+
+    /// \brief Return the first path associated with the error.
+    const path& path1() const noexcept;
+
+    /// \brief Return the second path associated with the error, if any.
+    const path& path2() const noexcept;
+
+    /// \brief Return a message describing the error and the involved paths.
+    const char* what() const noexcept override;
+
+  private:
+    path path1_;
+    path path2_;
+    mutable std::string what_;
+};
 
 } // namespace filesystem
 } // namespace nom

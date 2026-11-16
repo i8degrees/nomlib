@@ -1388,11 +1388,19 @@ path current_path()
 {
 #if defined( NOM_PLATFORM_WINDOWS )
   wchar_t buffer[4096];
-  if( ::_wgetcwd( buffer, sizeof(buffer) / sizeof(buffer[0]) ) == nullptr ) return path();
+  if( ::_wgetcwd( buffer, sizeof(buffer) / sizeof(buffer[0]) ) == nullptr )
+  {
+    throw filesystem_error( "could not obtain current working directory",
+                              path(), std::error_code(errno, std::system_category()) );
+  }
   return path( std::wstring( buffer ) );
 #else
   char buffer[4096];
-  if( ::getcwd( buffer, sizeof(buffer) ) == nullptr ) return path();
+  if( ::getcwd( buffer, sizeof(buffer) ) == nullptr )
+  {
+    throw filesystem_error( "could not obtain current working directory",
+                              path(), std::error_code(errno, std::system_category()) );
+  }
   return path( buffer );
 #endif
 }
@@ -1401,10 +1409,65 @@ void current_path( const path& p )
 {
 #if defined( NOM_PLATFORM_WINDOWS )
   std::wstring wp = to_wide_path( p.native() );
-  ::_wchdir( wp.c_str() );
+  if( ::_wchdir( wp.c_str() ) != 0 )
+  {
+    throw filesystem_error( "could not change current working directory",
+                              p, std::error_code(errno, std::system_category()) );
+  }
 #else
-  ::chdir( p.c_str() );
+  if( ::chdir( p.c_str() ) != 0 )
+  {
+    throw filesystem_error( "could not change current working directory",
+                              p, std::error_code(errno, std::system_category()) );
+  }
 #endif
+}
+
+filesystem_error::filesystem_error( const std::string& what_arg, const path& p1,
+                                      std::error_code ec )
+  : std::system_error( ec, what_arg ),
+    path1_(p1)
+{
+  // Empty
+}
+
+filesystem_error::filesystem_error( const std::string& what_arg, const path& p1,
+                                      const path& p2, std::error_code ec )
+  : std::system_error( ec, what_arg ),
+    path1_(p1),
+    path2_(p2)
+{
+  // Empty
+}
+
+const path& filesystem_error::path1() const noexcept
+{
+  return this->path1_;
+}
+
+const path& filesystem_error::path2() const noexcept
+{
+  return this->path2_;
+}
+
+const char* filesystem_error::what() const noexcept
+{
+  if( this->what_.empty() == true )
+  {
+    this->what_ = std::system_error::what();
+
+    if( this->path1_.empty() == false )
+    {
+      this->what_ += " [" + this->path1_.native() + "]";
+    }
+
+    if( this->path2_.empty() == false )
+    {
+      this->what_ += " [" + this->path2_.native() + "]";
+    }
+  }
+
+  return this->what_.c_str();
 }
 
 /// \}

@@ -124,6 +124,14 @@
   now only assigned when the pointer is non-null, preserving the existing
   "N/A" default.
 
+* Added `nom::audio::OggSound::vorbis_version_string()` and wired
+  `examples/nom_devinfo` to log the linked libvorbis version when
+  `USE_LIBOGG` is enabled.
+
+* Improved `examples/nom_font` startup: failure to load the requested font
+  now terminates the example with a non-zero exit code instead of continuing
+  with an invalid font.
+
 * Switched `FileInterfaceTest` file creation to a platform-aware
   `open_output_stream()` helper so UTF-8 filenames use the wide-character
   `ofstream` constructor on Windows.

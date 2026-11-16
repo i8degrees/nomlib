@@ -51,6 +51,7 @@ class NOM_EXPORT OggSound: public Sound
 
     virtual nom::real64 stream(nom::uint32 buffer, nom::real64 pos);
     virtual bool stream__(nom::uint32 buffer, nom::real64 pos);
+    static std::string vorbis_version_string();
 };
 
 } // namespace audio

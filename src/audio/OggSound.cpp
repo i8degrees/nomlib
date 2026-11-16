@@ -223,5 +223,10 @@ void OggSound::check_error(const std::string& filename, int error_code)
   }
 }
 
+std::string /*static*/ OggSound::vorbis_version_string() {
+  const char* result = ::vorbis_version_string();
+  return std::string(result);
+}
+
 } // namespace audio
 } // namespace nom

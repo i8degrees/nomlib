@@ -154,6 +154,17 @@
   `RenderWindow::set_position()` so the compositor cannot ignore the
   per-display hint.
 
+* Integrated `nom::InputStateMapper` with `nom::StateMachine` and fixed the
+  event-watch plumbing that previously prevented safe per-state input contexts.
+  `EventHandler::remove_event_watch` now matches by
+  `std::function::target_type()`; `InputStateMapper::set_event_handler` /
+  `remove_event_handler` are idempotent and detachable; `IState` exposes a
+  `virtual input_context()` key; and `StateMachine` auto-activates,
+  disables, and erases that context across on_init / on_pause / on_resume /
+  on_exit. Also fixed the `StateMachine::update()` pop/resume branch so it
+  resets `next_state_`, preventing a double-pop on subsequent updates. A new
+  unit test, `StateMachineTest`, exercises all six scenarios.
+
 * Updated `AGENTS.md` to document installing a preset with `cmake --install`
   and to note that `examples/nom_font` accepts both relative and absolute
   font file paths.

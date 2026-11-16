@@ -36,6 +36,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <system_error>
 #include <vector>
 
+#if defined( NOM_PLATFORM_POSIX )
+#include <unistd.h>
+#endif
+
 #include <nomlib/system.hpp>
 #include "nomlib/system/filesystem.hpp"
 
@@ -1008,6 +1012,86 @@ TEST_F( FileInterfaceTest, FilesystemErrorTwoPaths )
   EXPECT_NE( std::string::npos, msg.find( src.native() ) );
   EXPECT_NE( std::string::npos, msg.find( dst.native() ) );
   EXPECT_NE( std::string::npos, msg.find( ec.message() ) );
+}
+
+TEST_F( FileInterfaceTest, FilesystemSymlinkQueries )
+{
+#if !defined( NOM_PLATFORM_POSIX )
+  GTEST_SKIP() << "symlink tests require a POSIX platform";
+#else
+  using filesystem::path;
+
+  std::string root_name =
+    std::string( "nomlib_symlink_test_" ) + std::to_string( ::getpid() );
+  path root( this->sys_temp.prepend( root_name.c_str() ) );
+
+  ASSERT_FALSE( exists( root ) )
+    << "Test root path already exists: " << root.native();
+  EXPECT_TRUE( create_directory( root ) );
+
+  path file = root / "file.txt";
+  path dir = root / "dir";
+  path link_to_file = root / "link_to_file";
+  path link_to_dir = root / "link_to_dir";
+  path dangling = root / "dangling";
+
+  {
+    std::ofstream out = open_output_stream( file );
+    ASSERT_TRUE( out.is_open() );
+    out << "hello";
+  }
+  EXPECT_TRUE( create_directory( dir ) );
+
+  EXPECT_EQ( 0, ::symlink( file.native().c_str(),
+                           link_to_file.native().c_str() ) );
+  EXPECT_EQ( 0, ::symlink( dir.native().c_str(),
+                           link_to_dir.native().c_str() ) );
+  EXPECT_EQ( 0, ::symlink( "nonexistent_target",
+                           dangling.native().c_str() ) );
+
+  // Following-symlink queries should resolve the target.
+  EXPECT_TRUE( exists( file ) );
+  EXPECT_TRUE( exists( link_to_file ) );
+  EXPECT_FALSE( exists( dangling ) );
+
+  EXPECT_TRUE( is_regular_file( file ) );
+  EXPECT_TRUE( is_regular_file( link_to_file ) );
+
+  EXPECT_TRUE( is_directory( dir ) );
+  EXPECT_TRUE( is_directory( link_to_dir ) );
+
+  // Non-following queries should distinguish the link itself.
+  EXPECT_TRUE( is_symlink( link_to_file ) );
+  EXPECT_TRUE( is_symlink( link_to_dir ) );
+  EXPECT_TRUE( is_symlink( dangling ) );
+  EXPECT_FALSE( is_symlink( file ) );
+
+  EXPECT_TRUE( exists_symlink( link_to_file ) );
+  EXPECT_TRUE( exists_symlink( link_to_dir ) );
+  EXPECT_TRUE( exists_symlink( dangling ) );
+  EXPECT_TRUE( exists_symlink( file ) );
+
+  EXPECT_TRUE( is_symlink_regular_file( link_to_file ) );
+  EXPECT_TRUE( is_symlink_directory( link_to_dir ) );
+  EXPECT_FALSE( is_symlink_regular_file( link_to_dir ) );
+  EXPECT_FALSE( is_symlink_directory( link_to_file ) );
+  EXPECT_FALSE( is_symlink_regular_file( dangling ) );
+  EXPECT_FALSE( is_symlink_directory( dangling ) );
+
+  EXPECT_EQ( file.native().size(), file_size_symlink( link_to_file ) );
+  EXPECT_EQ( dir.native().size(), file_size_symlink( link_to_dir ) );
+  EXPECT_EQ( std::string( "nonexistent_target" ).size(),
+             file_size_symlink( dangling ) );
+  EXPECT_EQ( 0u, file_size_symlink( file ) );
+
+  // Clean up.
+  EXPECT_TRUE( remove( file ) );
+  EXPECT_TRUE( remove( dir ) );
+  EXPECT_TRUE( remove( link_to_file ) );
+  EXPECT_TRUE( remove( link_to_dir ) );
+  EXPECT_TRUE( remove( dangling ) );
+  EXPECT_TRUE( remove( root ) );
+#endif
 }
 
 } // namespace nom

@@ -1311,6 +1311,77 @@ bool is_regular_file( const path& p )
 #endif
 }
 
+bool is_symlink( const path& p )
+{
+  if( p.empty() ) return false;
+
+#if defined( NOM_PLATFORM_POSIX )
+  struct stat st;
+  if( ::lstat( p.c_str(), &st ) != 0 ) return false;
+  return S_ISLNK( st.st_mode );
+#else
+  return false;
+#endif
+}
+
+bool exists_symlink( const path& p )
+{
+  if( p.empty() ) return false;
+
+#if defined( NOM_PLATFORM_POSIX )
+  struct stat st;
+  return ::lstat( p.c_str(), &st ) == 0;
+#else
+  return exists( p );
+#endif
+}
+
+bool is_symlink_directory( const path& p )
+{
+  if( p.empty() ) return false;
+
+#if defined( NOM_PLATFORM_POSIX )
+  struct stat st_link;
+  if( ::lstat( p.c_str(), &st_link ) != 0 ) return false;
+  if( !S_ISLNK( st_link.st_mode ) ) return false;
+
+  struct stat st_target;
+  if( ::stat( p.c_str(), &st_target ) != 0 ) return false;
+  return S_ISDIR( st_target.st_mode );
+#else
+  return false;
+#endif
+}
+
+bool is_symlink_regular_file( const path& p )
+{
+  if( p.empty() ) return false;
+
+#if defined( NOM_PLATFORM_POSIX )
+  struct stat st_link;
+  if( ::lstat( p.c_str(), &st_link ) != 0 ) return false;
+  if( !S_ISLNK( st_link.st_mode ) ) return false;
+
+  struct stat st_target;
+  if( ::stat( p.c_str(), &st_target ) != 0 ) return false;
+  return S_ISREG( st_target.st_mode );
+#else
+  return false;
+#endif
+}
+
+std::uintmax_t file_size_symlink( const path& p )
+{
+#if defined( NOM_PLATFORM_POSIX )
+  struct stat st;
+  if( ::lstat( p.c_str(), &st ) != 0 ) return 0;
+  if( !S_ISLNK( st.st_mode ) ) return 0;
+  return static_cast<std::uintmax_t>( st.st_size );
+#else
+  return 0;
+#endif
+}
+
 bool create_directory( const path& p )
 {
   if( p.empty() ) return false;

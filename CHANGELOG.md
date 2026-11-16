@@ -99,7 +99,10 @@
 * Refactored `examples/nom_app_ex` resource handling to match `GameOfLife` and
   `nom_gamecontroller_ev`: executable directory is normalized with `realpath()`
   on POSIX, CMake copies `Resources/examples/app` and `Resources/tests/gui`
-  next to the built binary, and assets are listed as target sources.
+  next to the built binary, and assets are listed as target sources. Also fixed
+  the libRocket file-interface root: it now receives the parent directory of
+  `messagebox.rml`, not the full file path, so relative template and RCSS
+  references resolve correctly.
 
 * Switched `FileInterfaceTest` file creation to a platform-aware
   `open_output_stream()` helper so UTF-8 filenames use the wide-character

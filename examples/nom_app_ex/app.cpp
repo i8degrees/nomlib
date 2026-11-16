@@ -321,7 +321,7 @@ class App: public nom::SDLApp
       // Initialize the core of libRocket; these are the core dependencies that
       // libRocket depends on for successful initialization.
       Rocket::Core::FileInterface* fs =
-        new nom::RocketFileInterface(MESSAGEBOX_RML); // ?? obtain dir path?
+        new nom::RocketFileInterface( filesystem::path(MESSAGEBOX_RML).parent_path().native() );
 
       Rocket::Core::SystemInterface* sys =
         new nom::RocketSDL2SystemInterface();

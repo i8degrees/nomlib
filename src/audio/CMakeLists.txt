@@ -5,14 +5,11 @@ add_library(nomlib-audio
   ${LIBRARY_OUTPUT_TYPE} # STATIC || SHARED
 )
 
-# !! Rename to NOM_USE_LIBOGG
-set(USE_LIBOGG TRUE)
-
-if(USE_LIBOGG)
+if(NOM_USE_LIBOGG)
   find_package(Vorbis CONFIG REQUIRED)
 endif()
 
-if(USE_LIBOGG)
+if(NOM_USE_LIBOGG)
   target_sources(nomlib-audio
     PRIVATE
       ${SRC_DIR}/audio/OggSound.cpp
@@ -70,10 +67,10 @@ set_target_properties(nomlib-audio
     DEBUG_POSTFIX "-d"
 )
 
-if(USE_LIBOGG)
+if(NOM_USE_LIBOGG)
   target_compile_definitions(nomlib-audio
     PUBLIC
-      USE_LIBOGG
+      NOM_USE_LIBOGG
   )
 endif()
 
@@ -122,7 +119,7 @@ target_link_libraries(nomlib-audio
     SndFile::sndfile
 )
 
-if(USE_LIBOGG)
+if(NOM_USE_LIBOGG)
   target_link_libraries(nomlib-audio
     PUBLIC
       nomlib-core
@@ -131,7 +128,7 @@ if(USE_LIBOGG)
     PRIVATE
       Vorbis::vorbisfile
   )
-endif(USE_LIBOGG)
+endif(NOM_USE_LIBOGG)
 
 # MacOSX Framework bundle support
 set_target_properties(nomlib-audio

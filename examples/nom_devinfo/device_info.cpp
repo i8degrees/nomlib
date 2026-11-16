@@ -51,7 +51,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #include "nomlib/audio/libsndfile/SoundFileReader.hpp"
 #endif
 
-#if defined(USE_LIBOGG)
+#if defined(NOM_USE_LIBOGG)
   #include "nomlib/audio/OggSound.hpp"
 #endif
 
@@ -216,8 +216,8 @@ void libsndfile_version_info( void )
 void vorbis_version_info()
 {
   std::string vorbis_version_str = 
-    "N/A (engine was not built with NOM_BUILD_AUDIO_UNIT && USE_LIBOGG)";
-#if defined(USE_LIBOGG)
+    "N/A (engine was not built with NOM_BUILD_AUDIO_UNIT && NOM_USE_LIBOGG)";
+#if defined(NOM_USE_LIBOGG)
   vorbis_version_str = audio::OggSound::vorbis_version_string();
 #else
 #endif

@@ -118,6 +118,12 @@
   system error text. `nom::filesystem::current_path()` operations now
   report failures by throwing `filesystem_error` instead of failing silently.
 
+* Fixed a segmentation fault in `examples/nom_devinfo`: `OpenAL_version()`
+  assigned the result of `alGetString()` directly to `std::string` members, but
+  those calls return `nullptr` when no OpenAL context is active. The values are
+  now only assigned when the pointer is non-null, preserving the existing
+  "N/A" default.
+
 * Switched `FileInterfaceTest` file creation to a platform-aware
   `open_output_stream()` helper so UTF-8 filenames use the wide-character
   `ofstream` constructor on Windows.

@@ -57,10 +57,10 @@
 
 * Refactored `examples/nom_gamecontroller_ev` resource handling to resolve
   `Resources/SharedSupport` at runtime relative to the executable, matching
-  `examples/GameOfLife`. Development builds now copy both `InputDevices.json`
-  and `gamecontrollerdb.txt` into `<build>/bin/Resources/SharedSupport`, and the
-  executable directory is normalized with `realpath()` to survive unusual
-  relative `argv[0]` values and launcher paths.
+  `examples/GameOfLife`. Development builds now copy `gamecontrollerdb.txt`
+  into `<build>/bin/Resources/SharedSupport`, and the executable directory is
+  normalized with `realpath()` to survive unusual relative `argv[0]` values and
+  launcher paths.
 
 * Added `nom::filesystem::directory_entry` and `nom::filesystem::directory_iterator`
   for POSIX directory iteration (Windows via `FindFirstFileW`). Includes range-based
@@ -105,6 +105,13 @@
   `MESSAGEBOX_RML`, resolved the sprite sheet image path relative to the JSON
   file parent directory, corrected install destination directories to match the
   runtime search layout, and fixed a double-semicolon log statement.
+
+* Removed the unused `Resources/examples/audio.json` and
+  `Resources/SharedSupport/InputDevices.json` resource descriptors.
+  `examples/nom_aplay` and `examples/nom_astream` no longer copy a static
+  JSON asset, and `examples/nom_gamecontroller_ev` resolves
+  `Resources/SharedSupport` as a directory rather than requiring
+  `InputDevices.json`.
 
 * Switched `FileInterfaceTest` file creation to a platform-aware
   `open_output_stream()` helper so UTF-8 filenames use the wide-character

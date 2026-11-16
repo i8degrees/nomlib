@@ -1,7 +1,7 @@
 # nom_aplay example - audio playback basics
 
 set(STATIC_ASSET_CONFIG
-  "${PROJECT_SOURCE_DIR}/Resources/examples/audio.json"
+  #Resources/"xxx"
 )
 
 add_executable(nom_aplay
@@ -19,10 +19,12 @@ else()
   set_rpath(nom_aplay "@origin/../lib")
 endif()
 
-target_sources(nom_aplay
-  PRIVATE
-  ${STATIC_ASSET_CONFIG}
-)
+if("${STATIC_ASSET_CONFIG}")
+  target_sources(nom_aplay
+    PRIVATE
+    ${STATIC_ASSET_CONFIG}
+  )
+endif()
 
 target_include_directories(nom_aplay
   PUBLIC
@@ -62,13 +64,15 @@ install(TARGETS nom_aplay
   COMPONENT Examples
 )
 
-# Copy resource files for the example
-# For development:
-add_custom_command(TARGET nom_aplay
-  POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
-  ${STATIC_ASSET_CONFIG}
-  $<TARGET_FILE_DIR:nom_aplay> # <build>/<type>/share
-)
+if("${STATIC_ASSET_CONFIG}")
+  # Copy resource files for the example
+  # For development:
+  add_custom_command(TARGET nom_aplay
+    POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    ${STATIC_ASSET_CONFIG}
+    $<TARGET_FILE_DIR:nom_aplay> # <build>/<type>/share
+  )
+endif()
 
 # For distribution:
 #install(DIRECTORY ${PROJECT_SOURCE_DIR}/Resources/tests/audio

@@ -138,6 +138,15 @@
   `src/audio/SoundManager.cpp` and `examples/nom_devinfo` now use
   `NOM_USE_LIBOGG`.
 
+* Refactored `examples/nom_app_ex` for per-window rendering passes. Each
+  window now gets its own `make_current()` / clear / draw / present cycle
+  inside the main loop, and the blinking cursor sprite has been moved from
+  the primary window to the background window (`window[1]`). The animated
+  cursor texture is loaded while `window[1]` is current so it belongs to that
+  window's `SDL_Renderer`. Also added `src/graphics/scout_findings.md`
+  documenting the current multi-window capabilities and blockers in
+  `nom::RenderWindow` / `nom::Renderer`.
+
 * Updated `AGENTS.md` to document installing a preset with `cmake --install`
   and to note that `examples/nom_font` accepts both relative and absolute
   font file paths.

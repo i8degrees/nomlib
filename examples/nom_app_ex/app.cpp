@@ -400,43 +400,9 @@ class App: public nom::SDLApp
       this->sprite_tex.resize(nom::Texture::ResizeAlgorithm::scale2x);
       this->sprite.set_frame(1); // Left-pointing cursor hand
 
-      auto ani_sprite_tex =
-        std::make_shared<nom::Texture>();
-      NOM_ASSERT(ani_sprite_tex != nullptr);
-
-      // Sharing the same texture for the animated sprite instead of loading
-      // another texture source would be OK, too, if we didn't care about
-      // preserving the original scale of the sprite here for testing purposes.
-      // this->ani_sprite.set_texture( *this->sprite_tex.clone() );
-      if( ani_sprite_tex->load( sheet_img ) == false )
-      {
-        nom::DialogMessageBox(  APP_NAME,
-                                "Could not load sprite texture: " +
-                                sheet_img );
-        return false;
-      }
-
-      this->ani_sprite =
-        std::make_shared<nom::SpriteBatch>();
-      NOM_ASSERT(this->ani_sprite != nullptr);
-      this->ani_sprite->set_texture(ani_sprite_tex);
-
-      // Use the same sprite sheet source for the animated sprite
-      this->ani_sprite->set_sprite_sheet(sprite_frames);
-      this->ani_sprite->set_frame(0);
-
-      // 100ms blink (~10 fps)
-      auto sprite_action =
-        nom::create_action<nom::SpriteBatchAction>(this->ani_sprite, 0.100f);
-      NOM_ASSERT(sprite_action != nullptr);
-
-      auto blinking_sprite_action =
-        nom::create_action<nom::RepeatForeverAction>(sprite_action);
-      NOM_ASSERT(blinking_sprite_action != nullptr);
-      blinking_sprite_action->set_name("blinking_cursor");
-
-      this->actions.run_action(blinking_sprite_action);
-
+      // The background window (window[1]) gets its own cursor sprite.
+      // Textures are tied to the SDL_Renderer they are created with, so we must
+      // load it after making window[1] current.
       if ( MAXIMUM_WINDOWS > 1 )
       {
         this->window[1].make_current();
@@ -446,6 +412,35 @@ class App: public nom::SDLApp
                                   RESOURCE_STATIC_IMAGE );
           return false;
         }
+
+        auto ani_sprite_tex = std::make_shared<nom::Texture>();
+        NOM_ASSERT(ani_sprite_tex != nullptr);
+
+        if( ani_sprite_tex->load( sheet_img ) == false )
+        {
+          nom::DialogMessageBox(  APP_NAME,
+                                  "Could not load sprite texture: " +
+                                  sheet_img );
+          return false;
+        }
+
+        this->ani_sprite = std::make_shared<nom::SpriteBatch>();
+        NOM_ASSERT(this->ani_sprite != nullptr);
+        this->ani_sprite->set_texture(ani_sprite_tex);
+        this->ani_sprite->set_sprite_sheet(sprite_frames);
+        this->ani_sprite->set_frame(0);
+
+        // 100ms blink (~10 fps)
+        auto sprite_action =
+          nom::create_action<nom::SpriteBatchAction>(this->ani_sprite, 0.100f);
+        NOM_ASSERT(sprite_action != nullptr);
+
+        auto blinking_sprite_action =
+          nom::create_action<nom::RepeatForeverAction>(sprite_action);
+        NOM_ASSERT(blinking_sprite_action != nullptr);
+        blinking_sprite_action->set_name("blinking_cursor");
+
+        this->actions.run_action(blinking_sprite_action);
       }
 
       this->window[0].make_current();
@@ -481,7 +476,12 @@ class App: public nom::SDLApp
       this->info_box[1].show();
 
       this->sprite.set_position( nom::Point2i(this->info_box[0].position().x - this->sprite.size().w, this->info_box[0].position().y) );
-      this->ani_sprite->set_position( nom::Point2i(this->info_box[0].position().x + this->info_box[0].size().w + this->sprite.size().w, this->info_box[0].position().y) );
+
+      if ( MAXIMUM_WINDOWS > 1 && this->ani_sprite != nullptr && this->ani_sprite->valid() == true )
+      {
+        // Place the animated cursor in the upper-left corner of the background window.
+        this->ani_sprite->set_position( nom::Point2i(0, 0) );
+      }
 
       return true;
     } // onInit
@@ -500,21 +500,31 @@ class App: public nom::SDLApp
 
       while( this->running() == true ) {
 
+        // Process the single SDL event queue once per frame. The event
+        // listeners registered with EventHandler receive all events; per-window
+        // dispatching is done below by rendering/updating each window in turn.
         nom::Event evt;
         while( this->evt_handler.poll_event(evt) == true ) {
           // NOTE: Pending events will be handled by the event listeners that
           // were given an EventHandler object via ::set_event_handler.
         }
 
+        // Update shared animations once per frame.
+        this->actions.update(0);
+
+        // Compute rotation angle to pass to renderer
+        this->sprite_angle += 4.0f;
+        if ( this->sprite_angle > 360.0f ) this->sprite_angle -= 360.0f;
+
+        // Render each window in its own pass. This gives every window an
+        // independent clear/draw/present cycle inside the same frame.
         for( auto idx = 0; idx < MAXIMUM_WINDOWS; idx++ ) {
 
-          this->window[idx].update();
-          this->desktop.update();
-          this->actions.update(0);
+          this->window[idx].make_current();
           this->fps[idx].update();
 
           // Refresh the frames per second at 1 second intervals
-          if( this->update[idx].ticks() > 1000 ) {
+          if ( this->update[idx].ticks() > 1000 ) {
 
             auto fps_str = this->fps[idx].asString();
             std::stringstream window_str;
@@ -530,52 +540,63 @@ class App: public nom::SDLApp
 
             this->update[idx].restart();
           } // end refresh cycle
-        } // end for MAXIMUM_WINDOWS update loop
 
-        // Compute rotation angle to pass to renderer
-        this->sprite_angle += 4.0f;
-        if ( this->sprite_angle > 360.0f ) this->sprite_angle -= 360.0f;
+          switch( idx ) {
+            default:
+            {
+              if( idx >= 3 )
+              {
+                // Choose a random color for filling the window with as a backdrop
+                // when MAXIMUM_WINDOWS is greater than 3
+                nom::int32 random_color = nom::uniform_int_rand<nom::int32>(1, 11);
+                switch( random_color )
+                {
+                  default: this->window[idx].fill ( nom::Color4i::Black ); break;
+                  case 1: this->window[idx].fill ( nom::Color4i::White ); break;
+                  case 2: this->window[idx].fill ( nom::Color4i::Red ); break;
+                  case 3: this->window[idx].fill ( nom::Color4i::Green ); break;
+                  case 4: this->window[idx].fill ( nom::Color4i::Blue ); break;
+                  case 5: this->window[idx].fill ( nom::Color4i::Yellow ); break;
+                  case 6: this->window[idx].fill ( nom::Color4i::Magenta ); break;
+                  case 7: this->window[idx].fill ( nom::Color4i::Cyan ); break;
+                  case 8: this->window[idx].fill ( nom::Color4i::Orange ); break;
+                  case 9: this->window[idx].fill ( nom::Color4i::LightGray ); break;
+                  case 10: this->window[idx].fill ( nom::Color4i::SkyBlue ); break;
+                  case 11: this->window[idx].fill ( nom::Color4i::Magenta ); break;
+                }
+              }
+              break;
+            }
 
-        this->window[0].fill ( nom::Color4i::SkyBlue );
-        this->desktop.draw();
-        this->sprite.draw ( this->window[0], this->sprite_angle );
-        if( this->ani_sprite != nullptr && this->ani_sprite->valid() == true ) {
-          this->ani_sprite->draw(this->window[0]);
-        }
+            case 0:
+            {
+              this->window[idx].fill( nom::Color4i::SkyBlue );
+              this->desktop.update();
+              this->desktop.draw();
+              this->sprite.draw( this->window[idx], this->sprite_angle );
+              break;
+            }
 
-        if ( MAXIMUM_WINDOWS > 1 )
-        {
-          this->window[1].fill ( nom::Color4i::Black );
-          this->background.draw ( this->window[1] );
-        }
+            case 1:
+            {
+              this->window[idx].fill( nom::Color4i::Black );
+              this->background.draw( this->window[idx] );
+              if( this->ani_sprite != nullptr && this->ani_sprite->valid() == true ) {
+                this->ani_sprite->draw( this->window[idx] );
+              }
+              break;
+            }
 
-        if ( MAXIMUM_WINDOWS > 2 ) // Third window
-        {
-          this->window[2].fill ( nom::Color4i::Magenta );
-        }
+            case 2:
+            {
+              this->window[idx].fill( nom::Color4i::Magenta );
+              break;
+            }
+          } // end switch(idx)
 
-        // Choose a random color for filling the window with as a backdrop when
-        // MAXIMUM_WINDOWS is greater than 3
-        for ( auto idx = 3; idx < MAXIMUM_WINDOWS; idx++ )
-        {
-          nom::int32 random_color = nom::uniform_int_rand<nom::int32>(1, 11);
+          this->window[idx].update();
 
-          switch ( random_color )
-          {
-            default: this->window[idx].fill ( nom::Color4i::Black ); break;
-            case 1: this->window[idx].fill ( nom::Color4i::White ); break;
-            case 2: this->window[idx].fill ( nom::Color4i::Red ); break;
-            case 3: this->window[idx].fill ( nom::Color4i::Green ); break;
-            case 4: this->window[idx].fill ( nom::Color4i::Blue ); break;
-            case 5: this->window[idx].fill ( nom::Color4i::Yellow ); break;
-            case 6: this->window[idx].fill ( nom::Color4i::Magenta ); break;
-            case 7: this->window[idx].fill ( nom::Color4i::Cyan ); break;
-            case 8: this->window[idx].fill ( nom::Color4i::Orange ); break;
-            case 9: this->window[idx].fill ( nom::Color4i::LightGray ); break;
-            case 10: this->window[idx].fill ( nom::Color4i::SkyBlue ); break;
-            case 11: this->window[idx].fill ( nom::Color4i::Magenta ); break;
-          }
-        }
+        } // end for MAXIMUM_WINDOWS render loop
 
       } // end while SDLApp::running() is true
 

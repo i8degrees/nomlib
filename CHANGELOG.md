@@ -132,6 +132,12 @@
   querying `alGetString()`. The example now prints the real OpenAL version,
   renderer, vendor, and extension list when the audio unit is built.
 
+* Renamed `USE_LIBOGG` to `NOM_USE_LIBOGG` across the build system and
+  source so the macro follows the project's namespacing convention. The
+  CMake flag in `src/audio/CMakeLists.txt` and the conditional compilation in
+  `src/audio/SoundManager.cpp` and `examples/nom_devinfo` now use
+  `NOM_USE_LIBOGG`.
+
 * Improved `examples/nom_font` startup: failure to load the requested font
   now terminates the example with a non-zero exit code instead of continuing
   with an invalid font.

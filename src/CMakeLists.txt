@@ -108,6 +108,9 @@ if(NOM_BUILD_AUDIO_UNIT)
 
   set(NOM_USE_CREATIVE_OPENAL FALSE)
   set(NOM_USE_LIBSNDFILE TRUE)
+  # TODO(JEFF): Once we rename USE_LIBOGG, we will remove the definition to
+  # below here -- (see src/audio/CMakeLists.txt)
+  #set(NOM_USE_LIBOGG TRUE)
 
   # TODO(jeff): Consider setting NOM_USE_OPENAL when one of these three are
   # set; it might also be good to add a check inside the OpenAL header file

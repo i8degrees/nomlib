@@ -51,6 +51,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #include "nomlib/audio/libsndfile/SoundFileReader.hpp"
 #endif
 
+#if defined(USE_LIBOGG)
+  #include "nomlib/audio/OggSound.hpp"
+#endif
+
 #if defined( NOM_USE_LIBROCKET )
   #include "nomlib/gui/init_librocket.hpp"
 #endif
@@ -209,6 +213,17 @@ void libsndfile_version_info( void )
   #endif // defined(NOM_USE_LIBSNDFILE)
 }
 
+void vorbis_version_info()
+{
+  std::string vorbis_version_str = 
+    "N/A (engine was not built with NOM_BUILD_AUDIO_UNIT && USE_LIBOGG)";
+#if defined(USE_LIBOGG)
+  vorbis_version_str = audio::OggSound::vorbis_version_string();
+#else
+#endif
+  NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION,
+      "vorbis version:", vorbis_version_str);
+}
 void libs_version_info()
 {
   std::string librocket_ver = "N/A (engine was not built with NOM_BUILD_GUI_UNIT)";
@@ -224,6 +239,9 @@ void libs_version_info()
   std::cout << std::endl;
 
   libsndfile_version_info();
+  std::cout << std::endl;
+  
+  vorbis_version_info();
   std::cout << std::endl;
 
   auto audio_info = OpenAL_version();

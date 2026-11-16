@@ -161,7 +161,9 @@ class FontRenderingApp: public nom::SDLApp
       // 'file' field.
       nom::set_file_root( font_root );
 
-      this->load_font();
+      if(this->load_font() == false) {
+        exit(2); // ENOENT
+      }
 
       return true;
     } // onInit

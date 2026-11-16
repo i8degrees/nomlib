@@ -5,6 +5,7 @@ add_library(nomlib-audio
   ${LIBRARY_OUTPUT_TYPE} # STATIC || SHARED
 )
 
+# !! Rename to NOM_USE_LIBOGG
 set(USE_LIBOGG TRUE)
 
 if(USE_LIBOGG)

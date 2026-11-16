@@ -147,6 +147,11 @@
   `is_symlink_regular_file`, and `file_size_symlink`. These use `lstat` where
   available and do not follow symbolic links.
 
+* Added `nom::filesystem::valid_utf8()` for explicitly validating UTF-8
+  strings. On Windows, `to_wide_path()` now throws `filesystem_error` if the
+  path contains invalid UTF-8, instead of silently producing a malformed wide
+  string.
+
 * Improved `examples/nom_font` startup: failure to load the requested font
   now terminates the example with a non-zero exit code instead of continuing
   with an invalid font.

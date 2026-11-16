@@ -339,7 +339,34 @@ std::string wstring_to_utf8( const std::wstring& w )
 }
 #endif
 
+bool valid_utf8( const std::string& u8 )
+{
+  std::size_t i = 0;
+  std::uint32_t cp = 0;
+
+  while( i < u8.size() )
+  {
+    std::size_t prev = i;
+    if( !decode_utf8( u8, i, cp ) )
+    {
+      return false;
+    }
+    if( i == prev )
+    {
+      // decode_utf8 should always advance; guard against infinite loops.
+      return false;
+    }
+  }
+
+  return true;
+}
+
 } // namespace detail
+
+bool valid_utf8( const std::string& s )
+{
+  return detail::valid_utf8( s );
+}
 
 #if defined( NOM_PLATFORM_WINDOWS )
 const path::value_type path::preferred_separator = '\\';
@@ -347,6 +374,13 @@ const path::value_type path::preferred_separator = '\\';
 namespace {
 std::wstring to_wide_path( const std::string& u8 )
 {
+  if( !nom::filesystem::detail::valid_utf8( u8 ) )
+  {
+    throw filesystem_error( "invalid UTF-8 encoding in path",
+                            path( u8 ),
+                            std::make_error_code( std::errc::illegal_byte_sequence ) );
+  }
+
   return nom::filesystem::detail::utf8_to_wstring( u8 );
 }
 } // anonymous namespace

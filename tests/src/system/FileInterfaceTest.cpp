@@ -1014,6 +1014,22 @@ TEST_F( FileInterfaceTest, FilesystemErrorTwoPaths )
   EXPECT_NE( std::string::npos, msg.find( ec.message() ) );
 }
 
+TEST_F( FileInterfaceTest, FilesystemValidUtf8 )
+{
+  using filesystem::valid_utf8;
+
+  EXPECT_TRUE( valid_utf8( "" ) );
+  EXPECT_TRUE( valid_utf8( "plain ASCII text" ) );
+  EXPECT_TRUE( valid_utf8( "\xE2\x98\xBA" ) ); // U+263A (smiley)
+  EXPECT_TRUE( valid_utf8( "\xF0\x9F\x98\x80" ) ); // U+1F600 (grinning face)
+
+  EXPECT_FALSE( valid_utf8( "\x80" ) ); // standalone continuation byte
+  EXPECT_FALSE( valid_utf8( "\xC0\xAF" ) ); // overlong encoding of '/'
+  EXPECT_FALSE( valid_utf8( "\xED\xA0\x80" ) ); // surrogate half U+D800
+  EXPECT_FALSE( valid_utf8( "\xE2\x28\xA1" ) ); // invalid second byte
+  EXPECT_FALSE( valid_utf8( "valid\xFFinvalid" ) ); // invalid lead byte mid-string
+}
+
 TEST_F( FileInterfaceTest, FilesystemSymlinkQueries )
 {
 #if !defined( NOM_PLATFORM_POSIX )

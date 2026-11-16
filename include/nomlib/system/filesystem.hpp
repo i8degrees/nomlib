@@ -351,6 +351,12 @@ NOM_EXPORT path current_path();
 /// \brief Change the current working directory.
 NOM_EXPORT void current_path( const path& p );
 
+/// \brief Validate that a byte string is well-formed UTF-8.
+///
+/// \returns true if every byte of \a s is part of a valid UTF-8 sequence,
+/// false otherwise. The empty string is valid.
+NOM_EXPORT bool valid_utf8( const std::string& s );
+
 /// \}
 
 /// \brief Exception type used to report filesystem errors.

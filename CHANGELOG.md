@@ -147,6 +147,13 @@
   documenting the current multi-window capabilities and blockers in
   `nom::RenderWindow` / `nom::Renderer`.
 
+* Fixed `examples/nom_app_ex` spawning all windows on the same display.
+  The requested `display_index` is now wrapped modulo the number of available
+  displays, and after each window is created it is explicitly centered on its
+  target display using `RenderWindow::display_bounds()` and
+  `RenderWindow::set_position()` so the compositor cannot ignore the
+  per-display hint.
+
 * Updated `AGENTS.md` to document installing a preset with `cmake --install`
   and to note that `examples/nom_font` accepts both relative and absolute
   font file paths.

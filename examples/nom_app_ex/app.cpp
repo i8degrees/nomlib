@@ -289,6 +289,16 @@ class App: public nom::SDLApp
           return false;
         }
 
+        // Make sure the window is really centered on the target display. Some
+        // compositors / drivers ignore the display hinted during creation, so we
+        // use SDL_GetDisplayBounds + SDL_SetWindowPosition explicitly.
+        auto bounds = this->window[idx].display_bounds();
+        auto win_size = this->window[idx].size();
+        nom::Point2i center_pos;
+        center_pos.x = bounds.x + ( bounds.w - win_size.w ) / 2;
+        center_pos.y = bounds.y + ( bounds.h - win_size.h ) / 2;
+        this->window[idx].set_position( center_pos );
+
         if( this->window[idx].set_window_icon(RESOURCE_ICON ) == false ) {
           nom::DialogMessageBox(  APP_NAME,
                                   "Could not load window icon: " +
@@ -296,8 +306,8 @@ class App: public nom::SDLApp
           return false;
         }
 
-        if( display_index < num_video_displays ) {
-          ++display_index;
+        if( num_video_displays > 0 ) {
+          display_index = ( display_index + 1 ) % num_video_displays;
         }
       }
 

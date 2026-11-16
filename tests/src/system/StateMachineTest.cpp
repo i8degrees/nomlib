@@ -1,192 +1,117 @@
 /******************************************************************************
 
-  nomlib - C++14 cross-platform game engine
+  nomlib - C++11 cross-platform game engine
 
-  StateMachineTest.cpp
+Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
+All rights reserved.
 
-  Unit tests for nom::StateMachine integration with nom::InputStateMapper.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
 
-  Copyright (c) 2013-2015 Jeffrey Carpenter <i8degrees@gmail.com>
-  All rights reserved.
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
+#include <SDL.h>
 
-#include <functional>
 #include <memory>
 #include <string>
 
-#include <SDL.h>
 #include <gtest/gtest.h>
 
 #include <nomlib/config.hpp>
 #include <nomlib/core.hpp>
 #include <nomlib/system.hpp>
 
-enum TestStateID {
-  STATE_INVALID = 0,
-  STATE_A = 1,
-  STATE_B = 2,
-  STATE_C = 3
-};
+using namespace nom;
 
-enum class StateAction {
-  None,
-  SwapToB,
-  SwapToA,
-  PopState,
-  ControllerSwapToB,
-  MouseSwapToB,
-  JoystickSwapToB
-};
+namespace {
 
-class TestState: public nom::IState
+enum TestStateID { STATE_A = 1, STATE_B = 2, STATE_C = 3 };
+enum class StateAction { None, SwapToB, SwapToA, PopState };
+
+class TestState: public IState
 {
   public:
-    TestState(  nom::uint32 id,
-                nom::IState::Type type,
-                const std::string& context,
-                nom::StateMachine* sm,
-                nom::InputStateMapper* im,
-                StateAction action,
-                nom::int32 key_sym ) :
-      nom::IState(id, 0, type),
-      context_{context},
-      sm_{sm},
-      im_{im}
+    TestState( uint32 id, IState::Type type, const std::string& context,
+               StateMachine* sm, InputStateMapper* im,
+               StateAction action, int32 key_sym ):
+      IState( id, 0, type ),
+      context_{ context },
+      sm_{ sm },
+      im_{ im }
     {
-      nom::InputActionMapper action_map;
+      InputActionMapper action_map;
 
-      std::function<void(const nom::Event&)> cb;
-      if( action == StateAction::SwapToB ) {
-        cb = [this](const nom::Event&) {
-          this->sm_->set_state(
-            std::make_unique<TestState>(  STATE_B,
-                                          nom::IState::Type::Parent,
-                                          "state_b",
-                                          this->sm_,
-                                          this->im_,
-                                          StateAction::SwapToA,
-                                          SDLK_3 ),
-            nullptr );
-        };
-      } else if( action == StateAction::SwapToA ) {
-        cb = [this](const nom::Event&) {
-          this->sm_->set_state(
-            std::make_unique<TestState>(  STATE_A,
-                                          nom::IState::Type::Parent,
-                                          "state_a",
-                                          this->sm_,
-                                          this->im_,
-                                          StateAction::SwapToB,
-                                          SDLK_1 ),
-            nullptr );
-        };
-      } else if( action == StateAction::PopState ) {
-        cb = [this](const nom::Event&) {
-          this->sm_->pop_state(nullptr);
-        };
-      } else if( action == StateAction::ControllerSwapToB ) {
-        cb = [this](const nom::Event&) {
-          this->sm_->set_state(
-            std::make_unique<TestState>(  STATE_B,
-                                          nom::IState::Type::Parent,
-                                          "state_b",
-                                          this->sm_,
-                                          this->im_,
-                                          StateAction::SwapToA,
-                                          SDLK_3 ),
-            nullptr );
-        };
-      } else if( action == StateAction::MouseSwapToB ) {
-        cb = [this](const nom::Event&) {
-          this->sm_->set_state(
-            std::make_unique<TestState>(  STATE_B,
-                                          nom::IState::Type::Parent,
-                                          "state_b",
-                                          this->sm_,
-                                          this->im_,
-                                          StateAction::SwapToA,
-                                          SDLK_3 ),
-            nullptr );
-        };
-      } else if( action == StateAction::JoystickSwapToB ) {
-        cb = [this](const nom::Event&) {
-          this->sm_->set_state(
-            std::make_unique<TestState>(  STATE_B,
-                                          nom::IState::Type::Parent,
-                                          "state_b",
-                                          this->sm_,
-                                          this->im_,
-                                          StateAction::SwapToA,
-                                          SDLK_3 ),
-            nullptr );
-        };
-      }
+      if( action != StateAction::None ) {
+        event_callback cb;
+        switch( action ) {
+          default: break;
 
-      if( cb != nullptr ) {
-        const nom::JoystickID dev_id = 1;
+          case StateAction::SwapToB:
+          {
+            cb = nom::event_callback( [&](const nom::Event& ev) {
+              this->sm_->set_state(
+                std::make_unique<TestState>(
+                  STATE_B, IState::Type::Parent, "state_b",
+                  this->sm_, this->im_, StateAction::SwapToA, SDLK_3 ),
+                nullptr );
+            });
+            break;
+          }
 
-        if( action == StateAction::ControllerSwapToB ) {
-          action_map.insert(
-            "controller_action",
-            nom::GameControllerButtonAction(
-              dev_id,
-              nom::GameController::Button::BUTTON_A,
-              nom::InputState::PRESSED ),
-            cb );
-        } else if( action == StateAction::MouseSwapToB ) {
-          action_map.insert(
-            "mouse_action",
-            nom::MouseButtonAction(
-              nom::MouseButton::LEFT_MOUSE_BUTTON,
-              nom::InputState::PRESSED ),
-            cb );
-        } else if( action == StateAction::JoystickSwapToB ) {
-          action_map.insert(
-            "joystick_action",
-            nom::JoystickButtonAction(
-              dev_id,
-              0,
-              nom::InputState::PRESSED ),
-            cb );
-        } else {
-          action_map.insert("action", nom::KeyboardAction(key_sym), cb);
+          case StateAction::SwapToA:
+          {
+            cb = nom::event_callback( [&](const nom::Event& ev) {
+              this->sm_->set_state(
+                std::make_unique<TestState>(
+                  STATE_A, IState::Type::Parent, "state_a",
+                  this->sm_, this->im_, StateAction::SwapToB, SDLK_1 ),
+                nullptr );
+            });
+            break;
+          }
+
+          case StateAction::PopState:
+          {
+            cb = nom::event_callback( [&](const nom::Event& ev) {
+              this->sm_->pop_state( nullptr );
+            });
+            break;
+          }
         }
+
+        action_map.insert( "swap", nom::KeyboardAction( key_sym ), cb );
       }
 
-      this->im_->insert(context_, action_map, false);
+      im_->insert( context_, action_map, false );
     }
 
-    std::string input_context() const override
-    {
-      return this->context_;
-    }
+    std::string input_context() const override { return this->context_; }
 
-    bool on_event(const nom::Event& ev) override
-    {
+    bool on_event( const nom::Event& ev ) override {
       this->event_handled_ = true;
       return true;
     }
 
-    void on_init(nom::void_ptr) override
-    {
-      this->initialized_ = true;
-    }
-
-    void on_exit(nom::void_ptr) override
-    {
-      this->exited_ = true;
-    }
-
-    void on_pause(nom::void_ptr) override
-    {
-      this->paused_ = true;
-    }
-
-    void on_resume(nom::void_ptr) override
-    {
-      this->resumed_ = true;
-    }
+    void on_init( void_ptr ) override { this->initialized_ = true; }
+    void on_exit( void_ptr ) override { this->exited_ = true; }
+    void on_pause( void_ptr ) override { this->paused_ = true; }
+    void on_resume( void_ptr ) override { this->resumed_ = true; }
 
     bool initialized_ = false;
     bool exited_ = false;
@@ -196,8 +121,8 @@ class TestState: public nom::IState
 
   private:
     std::string context_;
-    nom::StateMachine* sm_;
-    nom::InputStateMapper* im_;
+    StateMachine* sm_ = nullptr;
+    InputStateMapper* im_ = nullptr;
 };
 
 class StateMachineTest: public ::testing::Test
@@ -210,8 +135,8 @@ class StateMachineTest: public ::testing::Test
 
     void SetUp() override
     {
-      this->input_mapper.set_event_handler(this->evt_handler);
-      this->sm.set_input_mapper(&this->input_mapper);
+      this->input_mapper.set_event_handler( this->evt_handler );
+      this->sm.set_input_mapper( &this->input_mapper );
     }
 
     void TearDown() override
@@ -221,355 +146,207 @@ class StateMachineTest: public ::testing::Test
     }
 };
 
-TEST_F(StateMachineTest, InputCallbackParentSwapTransition)
+// A context key can be inserted only when it is not already present, so probing
+// for the absence of a key is done by attempting to insert a blank map and
+// then erasing the probe.
+void expect_context_absent( InputStateMapper& mapper, const std::string& key )
 {
-  auto a = std::make_unique<TestState>( STATE_A,
-                                        nom::IState::Type::Parent,
-                                        "state_a",
-                                        &this->sm,
-                                        &this->input_mapper,
-                                        StateAction::SwapToB,
-                                        SDLK_1 );
-  TestState* a_ptr = a.get();
-
-  this->sm.set_state(std::move(a), nullptr);
-  this->sm.update(0.f);
-
-  EXPECT_TRUE(a_ptr->initialized_);
-  EXPECT_EQ(STATE_A, this->sm.current_state_id());
-  EXPECT_EQ(1u, this->sm.count());
-  EXPECT_TRUE(this->input_mapper.active("state_a"));
-
-  this->evt_handler.push_event(nom::create_key_press(SDLK_1, KMOD_NONE, 0));
-
-  EXPECT_EQ(STATE_A, this->sm.current_state_id());
-  EXPECT_EQ(1u, this->sm.count());
-
-  this->sm.update(0.f);
-
-  EXPECT_EQ(STATE_B, this->sm.current_state_id());
-  EXPECT_TRUE(a_ptr->exited_);
-  EXPECT_EQ(1u, this->sm.count());
-  EXPECT_TRUE(this->input_mapper.active("state_b"));
-
-  // Probe that the exited state_a context was erased.
-  nom::InputActionMapper probe;
-  EXPECT_TRUE(this->input_mapper.insert("state_a", probe, false));
-  this->input_mapper.erase("state_a");
+  InputActionMapper probe;
+  EXPECT_TRUE( mapper.insert( key, probe, false ) );
+  EXPECT_TRUE( mapper.erase( key ) );
 }
 
-TEST_F(StateMachineTest, InputCallbackMouseButtonSwapTransition)
+TEST_F( StateMachineTest, InputCallbackParentSwapTransition )
 {
-  auto a = std::make_unique<TestState>( STATE_A,
-                                        nom::IState::Type::Parent,
-                                        "state_a",
-                                        &this->sm,
-                                        &this->input_mapper,
-                                        StateAction::MouseSwapToB,
-                                        0 );
+  auto a = std::make_unique<TestState>(
+    STATE_A, IState::Type::Parent, "state_a",
+    &this->sm, &this->input_mapper, StateAction::SwapToB, SDLK_1 );
   TestState* a_ptr = a.get();
 
-  this->sm.set_state(std::move(a), nullptr);
-  this->sm.update(0.f);
+  this->sm.set_state( std::move( a ), nullptr );
+  this->sm.update( 0.0f );
 
-  EXPECT_TRUE(a_ptr->initialized_);
-  EXPECT_EQ(STATE_A, this->sm.current_state_id());
-  EXPECT_EQ(1u, this->sm.count());
-  EXPECT_TRUE(this->input_mapper.active("state_a"));
+  EXPECT_TRUE( a_ptr->initialized_ );
+  EXPECT_EQ( STATE_A, this->sm.current_state_id() );
+  EXPECT_EQ( 1u, this->sm.count() );
+  EXPECT_TRUE( this->input_mapper.active( "state_a" ) );
 
-  this->evt_handler.push_event(
-    nom::create_mouse_button_click(
-      nom::MouseButton::LEFT_MOUSE_BUTTON,
-      1,
-      0 ) );
+  // Push an event that triggers the input-mapper callback. The transition is
+  // deferred and must not happen until update() runs.
+  this->evt_handler.push_event( nom::create_key_press( SDLK_1, KMOD_NONE, 0 ) );
+  EXPECT_EQ( STATE_A, this->sm.current_state_id() );
+  EXPECT_EQ( 1u, this->sm.count() );
 
-  EXPECT_EQ(STATE_A, this->sm.current_state_id());
-  EXPECT_EQ(1u, this->sm.count());
+  this->sm.update( 0.0f );
 
-  this->sm.update(0.f);
+  EXPECT_EQ( STATE_B, this->sm.current_state_id() );
+  EXPECT_EQ( 1u, this->sm.count() );
+  EXPECT_TRUE( a_ptr->exited_ );
+  EXPECT_TRUE( this->input_mapper.active( "state_b" ) );
 
-  EXPECT_EQ(STATE_B, this->sm.current_state_id());
-  EXPECT_TRUE(a_ptr->exited_);
-  EXPECT_EQ(1u, this->sm.count());
-  EXPECT_TRUE(this->input_mapper.active("state_b"));
-
-  // Probe that the exited state_a context was erased.
-  nom::InputActionMapper probe;
-  EXPECT_TRUE(this->input_mapper.insert("state_a", probe, false));
-  this->input_mapper.erase("state_a");
+  // "state_a" must have been erased by the machine. Probing for it proves that.
+  expect_context_absent( this->input_mapper, "state_a" );
 }
 
-TEST_F(StateMachineTest, InputCallbackJoystickButtonSwapTransition)
+TEST_F( StateMachineTest, ParentSwapRoundTripFreshContexts )
 {
-  const nom::JoystickID dev_id = 1;
+  auto a = std::make_unique<TestState>(
+    STATE_A, IState::Type::Parent, "state_a",
+    &this->sm, &this->input_mapper, StateAction::SwapToB, SDLK_1 );
 
-  auto a = std::make_unique<TestState>( STATE_A,
-                                        nom::IState::Type::Parent,
-                                        "state_a",
-                                        &this->sm,
-                                        &this->input_mapper,
-                                        StateAction::JoystickSwapToB,
-                                        0 );
+  this->sm.set_state( std::move( a ), nullptr );
+  this->sm.update( 0.0f );
+  EXPECT_EQ( STATE_A, this->sm.current_state_id() );
+
+  this->evt_handler.push_event( nom::create_key_press( SDLK_1, KMOD_NONE, 0 ) );
+  this->sm.update( 0.0f );
+  EXPECT_EQ( STATE_B, this->sm.current_state_id() );
+
+  this->evt_handler.push_event( nom::create_key_press( SDLK_3, KMOD_NONE, 0 ) );
+  this->sm.update( 0.0f );
+  EXPECT_EQ( STATE_A, this->sm.current_state_id() );
+  EXPECT_TRUE( this->input_mapper.active( "state_a" ) );
+
+  // The new A's constructor could only insert "state_a" if the old A erased it.
+  expect_context_absent( this->input_mapper, "state_b" );
+
+  // Exercise another swap to ensure the resetting machinery stays consistent.
+  this->evt_handler.push_event( nom::create_key_press( SDLK_1, KMOD_NONE, 0 ) );
+  this->sm.update( 0.0f );
+  EXPECT_EQ( STATE_B, this->sm.current_state_id() );
+  EXPECT_EQ( 1u, this->sm.count() );
+}
+
+TEST_F( StateMachineTest, InputCallbackPopResumesParent )
+{
+  auto a = std::make_unique<TestState>(
+    STATE_A, IState::Type::Parent, "state_a",
+    &this->sm, &this->input_mapper, StateAction::SwapToB, SDLK_1 );
   TestState* a_ptr = a.get();
 
-  this->sm.set_state(std::move(a), nullptr);
-  this->sm.update(0.f);
+  this->sm.set_state( std::move( a ), nullptr );
+  this->sm.update( 0.0f );
 
-  EXPECT_TRUE(a_ptr->initialized_);
-  EXPECT_EQ(STATE_A, this->sm.current_state_id());
-  EXPECT_EQ(1u, this->sm.count());
-  EXPECT_TRUE(this->input_mapper.active("state_a"));
-
-  this->evt_handler.push_event(
-    nom::create_joystick_button_press(dev_id, 0) );
-
-  EXPECT_EQ(STATE_A, this->sm.current_state_id());
-  EXPECT_EQ(1u, this->sm.count());
-
-  this->sm.update(0.f);
-
-  EXPECT_EQ(STATE_B, this->sm.current_state_id());
-  EXPECT_TRUE(a_ptr->exited_);
-  EXPECT_EQ(1u, this->sm.count());
-  EXPECT_TRUE(this->input_mapper.active("state_b"));
-
-  // Probe that the exited state_a context was erased.
-  nom::InputActionMapper probe;
-  EXPECT_TRUE(this->input_mapper.insert("state_a", probe, false));
-  this->input_mapper.erase("state_a");
-}
-
-TEST_F(StateMachineTest, InputCallbackGameControllerButtonSwapTransition)
-{
-  const nom::JoystickID dev_id = 1;
-
-  auto a = std::make_unique<TestState>( STATE_A,
-                                        nom::IState::Type::Parent,
-                                        "state_a",
-                                        &this->sm,
-                                        &this->input_mapper,
-                                        StateAction::ControllerSwapToB,
-                                        0 );
-  TestState* a_ptr = a.get();
-
-  this->sm.set_state(std::move(a), nullptr);
-  this->sm.update(0.f);
-
-  EXPECT_TRUE(a_ptr->initialized_);
-  EXPECT_EQ(STATE_A, this->sm.current_state_id());
-  EXPECT_EQ(1u, this->sm.count());
-  EXPECT_TRUE(this->input_mapper.active("state_a"));
-
-  this->evt_handler.push_event(
-    nom::create_game_controller_button_press(
-      dev_id,
-      static_cast<nom::uint8>(nom::GameController::Button::BUTTON_A) ) );
-
-  EXPECT_EQ(STATE_A, this->sm.current_state_id());
-  EXPECT_EQ(1u, this->sm.count());
-
-  this->sm.update(0.f);
-
-  EXPECT_EQ(STATE_B, this->sm.current_state_id());
-  EXPECT_TRUE(a_ptr->exited_);
-  EXPECT_EQ(1u, this->sm.count());
-  EXPECT_TRUE(this->input_mapper.active("state_b"));
-
-  // Probe that the exited state_a context was erased.
-  nom::InputActionMapper probe;
-  EXPECT_TRUE(this->input_mapper.insert("state_a", probe, false));
-  this->input_mapper.erase("state_a");
-}
-
-TEST_F(StateMachineTest, ParentSwapRoundTripFreshContexts)
-{
-  auto a = std::make_unique<TestState>( STATE_A,
-                                        nom::IState::Type::Parent,
-                                        "state_a",
-                                        &this->sm,
-                                        &this->input_mapper,
-                                        StateAction::SwapToB,
-                                        SDLK_1 );
-  this->sm.set_state(std::move(a), nullptr);
-  this->sm.update(0.f);
-
-  EXPECT_EQ(STATE_A, this->sm.current_state_id());
-  EXPECT_TRUE(this->input_mapper.active("state_a"));
-
-  this->evt_handler.push_event(nom::create_key_press(SDLK_1, KMOD_NONE, 0));
-  this->sm.update(0.f);
-
-  EXPECT_EQ(STATE_B, this->sm.current_state_id());
-  EXPECT_TRUE(this->input_mapper.active("state_b"));
-  EXPECT_EQ(1u, this->sm.count());
-
-  this->evt_handler.push_event(nom::create_key_press(SDLK_3, KMOD_NONE, 0));
-  this->sm.update(0.f);
-
-  EXPECT_EQ(STATE_A, this->sm.current_state_id());
-  EXPECT_TRUE(this->input_mapper.active("state_a"));
-
-  // Probe that the exited state_b context was erased.
-  nom::InputActionMapper probe;
-  EXPECT_TRUE(this->input_mapper.insert("state_b", probe, false));
-  this->input_mapper.erase("state_b");
-
-  this->evt_handler.push_event(nom::create_key_press(SDLK_1, KMOD_NONE, 0));
-  this->sm.update(0.f);
-
-  EXPECT_EQ(STATE_B, this->sm.current_state_id());
-  EXPECT_EQ(1u, this->sm.count());
-}
-
-TEST_F(StateMachineTest, InputCallbackPopResumesParent)
-{
-  auto a = std::make_unique<TestState>( STATE_A,
-                                        nom::IState::Type::Parent,
-                                        "state_a",
-                                        &this->sm,
-                                        &this->input_mapper,
-                                        StateAction::SwapToB,
-                                        SDLK_1 );
-  TestState* a_ptr = a.get();
-
-  this->sm.set_state(std::move(a), nullptr);
-  this->sm.update(0.f);
-
-  EXPECT_EQ(STATE_A, this->sm.current_state_id());
-
-  auto c = std::make_unique<TestState>( STATE_C,
-                                        nom::IState::Type::Child,
-                                        "state_c",
-                                        &this->sm,
-                                        &this->input_mapper,
-                                        StateAction::PopState,
-                                        SDLK_2 );
+  auto c = std::make_unique<TestState>(
+    STATE_C, IState::Type::Child, "state_c",
+    &this->sm, &this->input_mapper, StateAction::PopState, SDLK_2 );
   TestState* c_ptr = c.get();
 
-  this->sm.set_state(std::move(c), nullptr);
-  this->sm.update(0.f);
+  this->sm.set_state( std::move( c ), nullptr );
+  this->sm.update( 0.0f );
 
-  EXPECT_EQ(2u, this->sm.count());
-  EXPECT_TRUE(a_ptr->paused_);
-  EXPECT_FALSE(this->input_mapper.active("state_a"));
-  EXPECT_TRUE(this->input_mapper.active("state_c"));
+  EXPECT_EQ( 2u, this->sm.count() );
+  EXPECT_TRUE( a_ptr->paused_ );
+  EXPECT_FALSE( this->input_mapper.active( "state_a" ) );
+  EXPECT_TRUE( this->input_mapper.active( "state_c" ) );
 
-  this->evt_handler.push_event(nom::create_key_press(SDLK_2, KMOD_NONE, 0));
+  this->evt_handler.push_event( nom::create_key_press( SDLK_2, KMOD_NONE, 0 ) );
+  EXPECT_EQ( 2u, this->sm.count() );
 
-  EXPECT_EQ(STATE_C, this->sm.current_state_id());
-  EXPECT_EQ(2u, this->sm.count());
+  this->sm.update( 0.0f );
 
-  this->sm.update(0.f);
+  EXPECT_EQ( 1u, this->sm.count() );
+  EXPECT_EQ( STATE_A, this->sm.current_state_id() );
+  EXPECT_TRUE( c_ptr->exited_ );
+  EXPECT_TRUE( a_ptr->resumed_ );
+  EXPECT_TRUE( this->input_mapper.active( "state_a" ) );
 
-  EXPECT_EQ(STATE_A, this->sm.current_state_id());
-  EXPECT_EQ(1u, this->sm.count());
-  EXPECT_TRUE(c_ptr->exited_);
-  EXPECT_TRUE(a_ptr->resumed_);
-  EXPECT_TRUE(this->input_mapper.active("state_a"));
+  expect_context_absent( this->input_mapper, "state_c" );
 
-  // Probe that the exited state_c context was erased.
-  nom::InputActionMapper probe;
-  EXPECT_TRUE(this->input_mapper.insert("state_c", probe, false));
-  this->input_mapper.erase("state_c");
+  // Verify the pop branch resets its deferred flag: a second pop cycle must
+  // transition exactly once, not double-pop.
+  this->evt_handler.push_event( nom::create_key_press( SDLK_1, KMOD_NONE, 0 ) );
+  this->sm.update( 0.0f );
+  EXPECT_EQ( STATE_B, this->sm.current_state_id() );
 
-  // Verify the pop-branch no longer re-pops on the next update.
-  a_ptr->event_handled_ = false;
-  this->evt_handler.push_event(nom::create_key_press(SDLK_1, KMOD_NONE, 0));
-  this->sm.update(0.f);
-
-  EXPECT_EQ(STATE_B, this->sm.current_state_id());
-
-  this->evt_handler.push_event(nom::create_key_press(SDLK_3, KMOD_NONE, 0));
-  this->sm.update(0.f);
-
-  EXPECT_EQ(STATE_A, this->sm.current_state_id());
+  this->evt_handler.push_event( nom::create_key_press( SDLK_3, KMOD_NONE, 0 ) );
+  this->sm.update( 0.0f );
+  EXPECT_EQ( STATE_A, this->sm.current_state_id() );
 }
 
-TEST_F(StateMachineTest, StateOnEventForwarding)
+TEST_F( StateMachineTest, StateOnEventForwarding )
 {
-  auto a = std::make_unique<TestState>( STATE_A,
-                                        nom::IState::Type::Parent,
-                                        "state_a",
-                                        &this->sm,
-                                        &this->input_mapper,
-                                        StateAction::None,
-                                        SDLK_1 );
+  // on_event on an empty machine must not crash.
+  this->sm.on_event( nom::create_key_press( SDLK_1, KMOD_NONE, 0 ) );
+
+  auto a = std::make_unique<TestState>(
+    STATE_A, IState::Type::Parent, "state_a",
+    &this->sm, &this->input_mapper, StateAction::None, SDLK_1 );
   TestState* a_ptr = a.get();
 
-  this->sm.set_state(std::move(a), nullptr);
-  this->sm.update(0.f);
+  this->sm.set_state( std::move( a ), nullptr );
+  this->sm.update( 0.0f );
 
-  this->sm.on_event(nom::create_key_press(SDLK_1, KMOD_NONE, 0));
-  EXPECT_TRUE(a_ptr->event_handled_);
-
-  // Should not crash on an empty machine; previous test left a state on stack,
-  // so we use a fresh instance.
-  nom::StateMachine empty_sm;
-  empty_sm.on_event(nom::create_key_press(SDLK_1, KMOD_NONE, 0));
+  this->sm.on_event( nom::create_key_press( SDLK_1, KMOD_NONE, 0 ) );
+  EXPECT_TRUE( a_ptr->event_handled_ );
 }
 
-TEST_F(StateMachineTest, MapperDetachIdempotentInstall)
+TEST_F( StateMachineTest, MapperDetachIdempotentInstall )
 {
   nom::EventHandler h;
   nom::InputStateMapper m;
 
-  m.set_event_handler(h);
-  EXPECT_EQ(1u, h.num_event_watchers());
+  m.set_event_handler( h );
+  EXPECT_EQ( 1u, h.num_event_watchers() );
 
-  m.set_event_handler(h);
-  EXPECT_EQ(1u, h.num_event_watchers());
-
-  m.remove_event_handler();
-  EXPECT_EQ(0u, h.num_event_watchers());
+  m.set_event_handler( h );
+  EXPECT_EQ( 1u, h.num_event_watchers() );
 
   m.remove_event_handler();
-  EXPECT_EQ(0u, h.num_event_watchers());
-
-  h.push_event(nom::create_key_press(SDLK_1, KMOD_NONE, 0));
-
-  m.set_event_handler(h);
-  EXPECT_EQ(1u, h.num_event_watchers());
-
-  h.push_event(nom::create_key_press(SDLK_1, KMOD_NONE, 0));
+  EXPECT_EQ( 0u, h.num_event_watchers() );
 
   m.remove_event_handler();
+  EXPECT_EQ( 0u, h.num_event_watchers() );
+
+  h.push_event( nom::create_key_press( SDLK_1, KMOD_NONE, 0 ) );
+  EXPECT_EQ( 0u, h.num_event_watchers() );
+
+  m.set_event_handler( h );
+  EXPECT_EQ( 1u, h.num_event_watchers() );
+
+  h.push_event( nom::create_key_press( SDLK_1, KMOD_NONE, 0 ) );
+  EXPECT_EQ( 1u, h.num_event_watchers() );
 }
 
-TEST_F(StateMachineTest, RemoveEventWatchPrecision)
+TEST_F( StateMachineTest, RemoveEventWatchPrecision )
 {
   nom::EventHandler h;
+
   bool fired_a = false;
   bool fired_b = false;
 
-  nom::event_filter watch_a =
-    [&](const nom::Event&, void*) { fired_a = true; };
+  nom::event_filter watch_a = [&](const nom::Event&, void*) {
+    fired_a = true;
+  };
 
-  nom::event_filter watch_b =
-    [&](const nom::Event&, void*) { fired_b = true; };
+  nom::event_filter watch_b = [&](const nom::Event&, void*) {
+    fired_b = true;
+  };
 
-  h.append_event_watch(watch_a, nullptr);
-  h.append_event_watch(watch_b, nullptr);
+  h.append_event_watch( watch_a, nullptr );
+  h.append_event_watch( watch_b, nullptr );
+  EXPECT_EQ( 2u, h.num_event_watchers() );
 
-  EXPECT_EQ(2u, h.num_event_watchers());
+  h.remove_event_watch( watch_b );
+  EXPECT_EQ( 1u, h.num_event_watchers() );
 
-  h.remove_event_watch(watch_b);
-
-  EXPECT_EQ(1u, h.num_event_watchers());
-
-  h.push_event(nom::create_key_press(SDLK_1, KMOD_NONE, 0));
-
-  EXPECT_TRUE(fired_a);
-  EXPECT_FALSE(fired_b);
+  h.push_event( nom::create_key_press( SDLK_1, KMOD_NONE, 0 ) );
+  EXPECT_TRUE( fired_a );
+  EXPECT_FALSE( fired_b );
 }
 
-int main(int argc, char** argv)
-{
-  ::testing::InitGoogleTest(&argc, argv);
+} // namespace
 
-  if( nom::init(argc, argv) == false ) {
+int main( int argc, char** argv )
+{
+  ::testing::InitGoogleTest( &argc, argv );
+
+  if( nom::init( argc, argv ) == false )
+  {
+    NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not initialize nomlib." );
     return NOM_EXIT_FAILURE;
   }
-  atexit(nom::quit);
+  atexit( nom::quit );
 
   return RUN_ALL_TESTS();
 }

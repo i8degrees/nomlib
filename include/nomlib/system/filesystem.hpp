@@ -291,10 +291,41 @@ NOM_EXPORT bool exists( const path& p );
 /// \brief Test if the path resolves to an existing directory.
 NOM_EXPORT bool is_directory( const path& p );
 
-/// \brief Test if the path resolves to an existing regular file.
+/// \\brief Test if the path resolves to an existing regular file.
 NOM_EXPORT bool is_regular_file( const path& p );
 
-/// \brief Create a single directory.
+/// \brief Test if the path resolves to a symbolic link.
+///
+/// \remarks On platforms without native symlink support, this always returns
+/// false.
+NOM_EXPORT bool is_symlink( const path& p );
+
+/// \brief Test if the path exists without following symbolic links.
+///
+/// \remarks This returns true for a dangling symbolic link, since the link
+/// itself exists. On platforms without native symlink support, this behaves
+/// like exists().
+NOM_EXPORT bool exists_symlink( const path& p );
+
+/// \brief Test if the path is a symbolic link pointing to a directory.
+///
+/// \remarks Returns false for dangling links and on platforms without
+/// native symlink support.
+NOM_EXPORT bool is_symlink_directory( const path& p );
+
+/// \brief Test if the path is a symbolic link pointing to a regular file.
+///
+/// \remarks Returns false for dangling links and on platforms without
+/// native symlink support.
+NOM_EXPORT bool is_symlink_regular_file( const path& p );
+
+/// \brief Size of the symbolic link itself, without following it.
+///
+/// \returns The length of the symlink target path (in bytes). Returns 0 for
+/// a non-link or on platforms without native symlink support.
+NOM_EXPORT std::uintmax_t file_size_symlink( const path& p );
+
+/// \\brief Create a single directory.
 ///
 /// \returns true if the directory was newly created; false if it already
 /// exists or could not be created.

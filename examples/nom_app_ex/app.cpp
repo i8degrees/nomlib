@@ -321,7 +321,7 @@ class App: public nom::SDLApp
       // Initialize the core of libRocket; these are the core dependencies that
       // libRocket depends on for successful initialization.
       Rocket::Core::FileInterface* fs =
-        new nom::RocketFileInterface( filesystem::path(MESSAGEBOX_RML).parent_path().native() );
+        new nom::RocketFileInterface( filesystem::path(MESSAGEBOX_RML).parent_path().native() + "/" );
 
       Rocket::Core::SystemInterface* sys =
         new nom::RocketSDL2SystemInterface();
@@ -360,7 +360,7 @@ class App: public nom::SDLApp
 
       if( this->desktop.load_font(OPENSANS_FONT_BOLD) == false )
       {
-        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not load font file:", OPENSANS_FONT_BOLD);;
+        NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION, "Could not load font file:", OPENSANS_FONT_BOLD);
         return false;
       }
 
@@ -382,12 +382,16 @@ class App: public nom::SDLApp
         return false;
       }
 
-      if( this->sprite_tex.load( sprite_frames.sheet_filename(), false, 
+      const std::string sheet_img =
+        ( filesystem::path( RESOURCE_SPRITE_SHEET ).parent_path()
+          / sprite_frames.sheet_filename() ).native();
+
+      if( this->sprite_tex.load( sheet_img, false,
           nom::Texture::Access::Streaming ) == false )
       {
         nom::DialogMessageBox(  APP_NAME,
                                 "Could not load sprite texture: " +
-                                sprite_frames.sheet_filename() );
+                                sheet_img );
         return false;
       }
 
@@ -404,11 +408,11 @@ class App: public nom::SDLApp
       // another texture source would be OK, too, if we didn't care about
       // preserving the original scale of the sprite here for testing purposes.
       // this->ani_sprite.set_texture( *this->sprite_tex.clone() );
-      if( ani_sprite_tex->load(sprite_frames.sheet_filename() ) == false )
+      if( ani_sprite_tex->load( sheet_img ) == false )
       {
         nom::DialogMessageBox(  APP_NAME,
                                 "Could not load sprite texture: " +
-                                sprite_frames.sheet_filename() );
+                                sheet_img );
         return false;
       }
 
@@ -463,7 +467,7 @@ class App: public nom::SDLApp
 
       // info_box[1]
       this->info_box[1].set_context(&this->desktop);
-      if( this->info_box[1].load_document_file( "messagebox.rml" ) == false )
+      if( this->info_box[1].load_document_file(MESSAGEBOX_RML) == false )
       {
         NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION,
                       "UIMessageBox should not be invalid; is the context and document file valid?" );
@@ -851,7 +855,7 @@ nom::int32 main ( nom::int32 argc, char* argv[] )
                   "Could not disable Spaces support." );
   }
 
-  // Locate the GameOfLife resources relative to the executable before
+  // Locate the nom_app_ex resources relative to the executable before
   // nom::init changes the working directory.
   init_resource_paths( argv[0] );
 

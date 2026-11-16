@@ -100,9 +100,11 @@
   `nom_gamecontroller_ev`: executable directory is normalized with `realpath()`
   on POSIX, CMake copies `Resources/examples/app` and `Resources/tests/gui`
   next to the built binary, and assets are listed as target sources. Also fixed
-  the libRocket file-interface root: it now receives the parent directory of
-  `messagebox.rml`, not the full file path, so relative template and RCSS
-  references resolve correctly.
+  the libRocket file-interface root to be the `Resources/tests/gui` directory
+  (with trailing separator), migrated the second `info_box` document load to
+  `MESSAGEBOX_RML`, resolved the sprite sheet image path relative to the JSON
+  file parent directory, corrected install destination directories to match the
+  runtime search layout, and fixed a double-semicolon log statement.
 
 * Switched `FileInterfaceTest` file creation to a platform-aware
   `open_output_stream()` helper so UTF-8 filenames use the wide-character

@@ -128,6 +128,10 @@
   `examples/nom_devinfo` to log the linked libvorbis version when
   `USE_LIBOGG` is enabled.
 
+* Fixed `examples/nom_devinfo` so it initializes an OpenAL context before
+  querying `alGetString()`. The example now prints the real OpenAL version,
+  renderer, vendor, and extension list when the audio unit is built.
+
 * Improved `examples/nom_font` startup: failure to load the requested font
   now terminates the example with a non-zero exit code instead of continuing
   with an invalid font.

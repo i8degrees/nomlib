@@ -240,15 +240,25 @@ void libs_version_info()
 
   libsndfile_version_info();
   std::cout << std::endl;
-  
+
   vorbis_version_info();
   std::cout << std::endl;
+
+#if defined(NOM_USE_OPENAL)
+  // alGetString requires an active OpenAL context. We initialize the audio
+  // renderer here so the following OpenAL_version() call returns real values.
+  nom::audio::AudioDeviceLocator::instance();
+#endif
 
   auto audio_info = OpenAL_version();
   NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL version: ", audio_info.version );
   NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL renderer: ", audio_info.renderer );
   NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL vendor: ", audio_info.vendor );
   NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL extensions: ", audio_info.extensions );
+
+#if defined(NOM_USE_OPENAL)
+  nom::audio::AudioDeviceLocator::release();
+#endif
 
   std::cout << std::endl;
 

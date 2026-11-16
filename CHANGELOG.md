@@ -106,12 +106,11 @@
   file parent directory, corrected install destination directories to match the
   runtime search layout, and fixed a double-semicolon log statement.
 
-* Removed the unused `Resources/examples/audio.json` and
-  `Resources/SharedSupport/InputDevices.json` resource descriptors.
-  `examples/nom_aplay` and `examples/nom_astream` no longer copy a static
-  JSON asset, and `examples/nom_gamecontroller_ev` resolves
-  `Resources/SharedSupport` as a directory rather than requiring
-  `InputDevices.json`.
+* Refactored `examples/nom_font/renderfont.cpp` to use `nom::filesystem`
+  instead of `nom::File`/`nom::Path`. The font path is now resolved to an
+  absolute path before engine initialization, so `nom_font` accepts both
+  relative and absolute font file paths. The BMFont file root is set to the
+  absolute parent directory of the resolved font file.
 
 * Switched `FileInterfaceTest` file creation to a platform-aware
   `open_output_stream()` helper so UTF-8 filenames use the wide-character

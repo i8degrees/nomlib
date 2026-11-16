@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/math.hpp>
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
+#include <nomlib/system/filesystem.hpp>
 
 using namespace nom;
 
@@ -143,12 +144,22 @@ class FontRenderingApp: public nom::SDLApp
 
       SDLApp::set_event_handler(this->evt_handler);
 
-      nom::File fp;
-      nom::Path p;
+      // Resolve the absolute font path so relative command-line arguments
+      // survive nom::init changing the working directory to the executable's
+      // parent directory.
+      filesystem::path font_path( this->opts.filename );
+
+      std::string font_root = font_path.parent_path().native();
+      if ( font_root.empty() == false ) {
+        font_root += filesystem::path::preferred_separator;
+      } else {
+        font_root = filesystem::current_path().native() + filesystem::path::preferred_separator;
+      }
+
       // Used by nom::BMFont interface; this sets the relative file root for
       // filenames given in .FNT files to be loaded from, using the pages tag's
       // 'file' field.
-      nom::set_file_root( fp.path(this->opts.filename) + p.native() );
+      nom::set_file_root( font_root );
 
       this->load_font();
 
@@ -304,6 +315,21 @@ class FontRenderingApp: public nom::SDLApp
     }
 }; // end class FontRenderingApp
 
+/// \brief Resolve a relative or absolute font path to an absolute path.
+///
+/// This must be evaluated before nom::init changes the working directory to
+/// the executable's parent directory.
+filesystem::path resolve_font_path( const std::string& filename )
+{
+  filesystem::path p( filename );
+
+  if ( p.is_absolute() == true ) {
+    return p;
+  }
+
+  return filesystem::current_path() / p;
+}
+
 // ./renderfont --text 'Hello, World!' ~/Projects/nomlib.git/Resources/tests/graphics/BitmapFontTest/VIII.png 72
 // ./renderfont --text 'Hello, World!' ~/Projects/nomlib.git/Resources/tests/graphics/TrueTypeFontTest/OpenSans-Regular.ttf 72
 // ./renderfont --text 'Hello, World!' ~/Projects/nomlib.git/Resources/tests/graphics/BMFontTest/gameover.fnt 72
@@ -417,6 +443,9 @@ nom::int32 main ( nom::int32 argc, char* argv[] )
 
     exit(NOM_EXIT_FAILURE);
   }
+
+  // Resolve relative paths before nom::init changes the working directory.
+  opts.filename = resolve_font_path( opts.filename ).native();
 
   // Engine init
   if( nom::init(argc, argv) == false ) {

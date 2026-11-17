@@ -28,8 +28,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include <SDL.h>
 
+#include <chrono>
 #include <memory>
 #include <string>
+#include <thread>
+#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -123,6 +126,58 @@ class TestState: public IState
     std::string context_;
     StateMachine* sm_ = nullptr;
     InputStateMapper* im_ = nullptr;
+};
+
+// Shared trackers for the multi-state lifecycle test.
+std::vector<uint32> g_init_order;
+std::vector<uint32> g_resume_order;
+std::vector<uint32> g_exit_order;
+
+class CountingChildState: public IState
+{
+  public:
+    CountingChildState( uint32 id, StateMachine* sm ):
+      IState( id, 0, IState::Type::Child ),
+      sm_{ sm }
+    {
+    }
+
+    std::string input_context() const override { return ""; }
+
+    void on_init( void_ptr ) override {
+      g_init_order.push_back( this->id() );
+      NOM_LOG_DEBUG( NOM_LOG_CATEGORY_STATES, "CountingChildState", this->id(), "init: counter =", this->counter_ );
+    }
+
+    void on_resume( void_ptr ) override {
+      // Each state prints starting at 1 when it becomes active.
+      this->counter_ = 1;
+      g_resume_order.push_back( this->id() );
+      NOM_LOG_DEBUG( NOM_LOG_CATEGORY_STATES, "CountingChildState", this->id(), "resume: counter =", this->counter_ );
+    }
+
+    void on_update( float delta ) override {
+      this->elapsed_ += delta;
+      if( this->elapsed_ >= 1.0f ) {
+        this->elapsed_ -= 1.0f;
+        NOM_LOG_DEBUG( NOM_LOG_CATEGORY_STATES, "CountingChildState", this->id(), "tick:", this->counter_ );
+        ++this->counter_;
+      }
+    }
+
+    void on_pause( void_ptr ) override {
+      NOM_LOG_DEBUG( NOM_LOG_CATEGORY_STATES, "CountingChildState", this->id(), "pause" );
+    }
+
+    void on_exit( void_ptr ) override {
+      g_exit_order.push_back( this->id() );
+      NOM_LOG_DEBUG( NOM_LOG_CATEGORY_STATES, "CountingChildState", this->id(), "exit" );
+    }
+
+  private:
+    StateMachine* sm_ = nullptr;
+    int counter_ = 1;
+    float elapsed_ = 0.0f;
 };
 
 class StateMachineTest: public ::testing::Test
@@ -306,6 +361,53 @@ TEST_F( StateMachineTest, MapperDetachIdempotentInstall )
 
   h.push_event( nom::create_key_press( SDLK_1, KMOD_NONE, 0 ) );
   EXPECT_EQ( 1u, h.num_event_watchers() );
+}
+
+TEST_F( StateMachineTest, SixConcurrentStates )
+{
+  g_init_order.clear();
+  g_resume_order.clear();
+  g_exit_order.clear();
+
+  // Bump log priority so the lifecycle is visible when the test runs.
+  nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_STATES,
+                                          NOM_LOG_PRIORITY_DEBUG );
+
+  // Build a stack of six child states: one through six.
+  for( uint32 id = 1; id <= 6; ++id ) {
+    this->sm.set_state(
+      std::make_unique<CountingChildState>( id, &this->sm ),
+      nullptr );
+    this->sm.update( 0.0f );
+  }
+
+  EXPECT_EQ( 6u, this->sm.count() );
+  EXPECT_EQ( 6u, g_init_order.size() );
+  EXPECT_EQ( 0u, g_resume_order.size() ); // nothing to resume until we pop
+
+  // Each second, tick the active top state (it logs its current counter,
+  // starting at 1), then pop it so the state below resumes and starts at 1.
+  for( uint32 step = 1; step <= 6; ++step ) {
+    std::this_thread::sleep_for( std::chrono::seconds( 1 ) );
+    this->sm.update( 1.0f );
+
+    if( step < 6 ) {
+      this->sm.pop_state( nullptr );
+      this->sm.update( 0.0f );
+    }
+  }
+
+  // The API refuses to pop the last state, so the bottom state remains.
+  EXPECT_EQ( 1u, this->sm.count() );
+  EXPECT_EQ( 5u, g_exit_order.size() );
+  EXPECT_EQ( 5u, g_resume_order.size() );
+
+  // Exit order should be top-down: 6, 5, 4, 3, 2.
+  uint32 expected_id = 6;
+  for( auto id : g_exit_order ) {
+    EXPECT_EQ( expected_id, id );
+    --expected_id;
+  }
 }
 
 TEST_F( StateMachineTest, RemoveEventWatchPrecision )

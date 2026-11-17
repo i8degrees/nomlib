@@ -163,7 +163,9 @@
   disables, and erases that context across on_init / on_pause / on_resume /
   on_exit. Also fixed the `StateMachine::update()` pop/resume branch so it
   resets `next_state_`, preventing a double-pop on subsequent updates. A new
-  unit test, `StateMachineTest`, exercises all six scenarios.
+  unit test, `StateMachineTest`, exercises all six scenarios plus a
+  `SixConcurrentStates` case in which six stacked child states print their
+  first counter at one-second intervals while being popped back down.
 
 * Updated `AGENTS.md` to document installing a preset with `cmake --install`
   and to note that `examples/nom_font` accepts both relative and absolute

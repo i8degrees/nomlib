@@ -2,30 +2,6 @@
 
 ## Unreleased ##
 
-* Merged upstream `dev` branch changes into `feature/AudioEngine-v2`:
-
-  - POSIX filesystem paths: added `user_documents_path`,
-    `user_app_support_path`, `user_home_path`, `system_path`,
-    `system_temp_path`, `system_library_path`, and `system_fonts_path`
-    with implementations in `src/system/unix/UnixFile.cpp`.
-
-  - CMake: added `NOM_USE_CXX17` option, improved CMake export via
-    `NOM_INSTALL_CMAKE_REGISTRY` option, and fixed googletest vendor paths.
-
-  - macOS: added `CMAKE_FRAMEWORK` option, copied framework dependencies into
-    app bundles, and fixed bundle resource install paths.
-
-  - Windows: fixed test executable builds, added missing OpenGL library link,
-    corrected `declspec` usage, and added Windows icon assets for nomlib and
-    GameOfLife.
-
-  - Build system: restructured macOS templates, updated CMake templates path,
-    removed duplicate template entries, and cleaned up revision generation
-    remnants.
-
-  - Examples: fixed resource paths in `GameOfLife`, `nom_jsonpp` and other
-    non-bundle examples.
-
 * Fixed `nom::EventHandler::remove_event_watch` matching by using
   `std::function::target_type()` instead of the broken `target<event_filter>()`
   comparison. Distinct lambda-backed watchers are now removed precisely.

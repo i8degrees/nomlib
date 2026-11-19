@@ -239,6 +239,12 @@ class App: public nom::SDLApp
     /// \brief Device ID of the currently active controller.
     nom::JoystickID current_controller_id() const { return this->current_controller_id_; }
 
+    /// \brief Set the window title for the active application mode.
+    void set_window_title(const std::string& title) { this->window_.set_window_title(title); this->title_ = title; }
+
+    /// \brief Title shown when no pause overlay is active.
+    const std::string& active_title() const { return this->title_; }
+
     // Layout constants used by state rendering
     const nom::Size2i AXIS_X_RECT_DIMS = nom::Size2i(16, 16);
     const nom::Size2i AXIS_Y_RECT_DIMS = nom::Size2i(16, 16);
@@ -264,6 +270,8 @@ class App: public nom::SDLApp
 
     nom::GameControllerEventHandler joystick_evt;
     nom::JoystickID current_controller_id_ = -1;
+
+    std::string title_;
 };
 
 // AppState implementation is header-only above.
@@ -342,7 +350,7 @@ void PlayingState::on_init( nom::void_ptr data )
   this->app_->input_mapper().activate("game_controller_buttons");
   this->app_->input_mapper().activate("game_controller_axes");
 
-  this->app_->window().set_window_title("Gamecontroller is connected");
+  this->app_->set_window_title("Gamecontroller is connected");
 }
 
 void PlayingState::on_exit( nom::void_ptr data )
@@ -451,8 +459,8 @@ void PauseState::on_init( nom::void_ptr data )
 
 void PauseState::on_exit( nom::void_ptr data )
 {
-  // Restore the PlayingState title when the pause overlay is popped.
-  this->app_->window().set_window_title("Gamecontroller is connected");
+  // Restore the previous active title when the pause overlay is popped.
+  this->app_->window().set_window_title(this->app_->active_title());
 }
 
 void PauseState::on_draw( nom::RenderWindow& target )
@@ -827,7 +835,7 @@ bool App::on_init()
   if( nom::Joystick::num_joysticks() < 1 ) {
     NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
                   "No joystick devices are available!" );
-    this->window_.set_window_title("Waiting on a gamecontroller to be connected...");
+    this->set_window_title("Waiting on a gamecontroller to be connected...");
   } else {
     this->on_game_controller_add(0);
     this->state_machine_.update(0.f);
@@ -875,7 +883,7 @@ int App::Run()
                           "No joystick devices are available!" );
 
             this->state_machine_.pop_to_parent( STATE_WAITING );
-            this->window_.set_window_title("Waiting on a gamecontroller to be connected...");
+            this->set_window_title("Waiting on a gamecontroller to be connected...");
           }
         } break;
       }

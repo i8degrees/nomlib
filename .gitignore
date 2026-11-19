@@ -53,3 +53,11 @@ tmp/*
 dist/*
 !dist/.placeholder
 
+#################################
+# AI Hidden Runtime & Scratchpad
+#################################
+
+.agent/observations/
+.agent/memory/
+.agent/security/
+

@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <algorithm>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 /// Uses the AdvanceMAME bitmap scaling algorithm known as scale2x to scale
@@ -64,6 +65,7 @@ namespace nom {
 /// like: 8, 16, 24, 32.
 ///
 /// \todo IMPLEMENT ME
+NOM_EXPORT
 bool scale2x  ( void* source_buffer, void* destination_buffer,
                 const int32 source_width, const int32 source_height,
                 const int32 bits_per_pixel,
@@ -75,6 +77,7 @@ bool scale2x  ( void* source_buffer, void* destination_buffer,
 /// like: 8, 16, 24, 32.
 ///
 /// \todo IMPLEMENT ME
+NOM_EXPORT
 bool scale3x  ( void* source_buffer, void* destination_buffer,
                 const int32 source_width, const int32 source_height,
                 const int32 bits_per_pixel,
@@ -86,6 +89,7 @@ bool scale3x  ( void* source_buffer, void* destination_buffer,
 /// like: 8, 16, 24, 32.
 ///
 /// \todo IMPLEMENT ME
+NOM_EXPORT
 bool scale4x  ( void* source_buffer, void* destination_buffer,
                 const int32 source_width, const int32 source_height,
                 const int32 bits_per_pixel,

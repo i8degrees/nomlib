@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <vector>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/actions/IActionObject.hpp"
 
@@ -44,7 +45,7 @@ class Sprite;
 typedef std::vector<std::shared_ptr<Texture>> texture_frames;
 
 /// \brief Animate changes to a sprite's texture
-class AnimateTexturesAction: public virtual IActionObject
+class NOM_EXPORT AnimateTexturesAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.

@@ -38,6 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <sstream>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/graphics/fonts/IFont.hpp"
@@ -52,7 +53,7 @@ namespace nom {
 // Forward declarations
 class Image;
 
-class BitmapFont: public IFont
+class NOM_EXPORT BitmapFont: public IFont
 {
   public:
     typedef BitmapFont self_type;

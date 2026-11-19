@@ -29,58 +29,88 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_OPENAL_HEADERS
 #define NOMLIB_OPENAL_HEADERS
 
-#include <iostream>
-#include <string>
-#include <ctime>
-
 #include "nomlib/config.hpp"
-#include "nomlib/core/clock.hpp"
 
-#if defined(NOM_PLATFORM_OSX) // Use platform-distributed OpenAL headers
-  #include <OpenAL/al.h>
-  #include <OpenAL/alc.h>
-#elif defined(NOM_PLATFORM_LINUX)
+#if defined(NOM_USE_CREATIVE_OPENAL) || defined(NOM_USE_OPENAL_SOFT)
+  // Use OpenAL-soft distributed SDK headers
   #include <AL/al.h>
   #include <AL/alc.h>
+  #include <AL/alext.h>
+#elif defined(NOM_PLATFORM_OSX) && defined(NOM_USE_APPLE_OPENAL)
+  // Use Apple's distributed OpenAL SDK headers
+  #include <OpenAL/al.h>
+  #include <OpenAL/alc.h>
+  #include <OpenAL/MacOSX_OALExtensions.h>
 #else // As per the header inclusion path that FindOpenAL.cmake gives us
   #include <al.h>
   #include <alc.h>
+  #include <alext.h>
 #endif
 
-#if defined(NOM_DEBUG)
-  // IMPORTANT: This macro is DEPRECATED, in favor of AL_CHECK_ERR_VOID.
-  // The rationale for this decision is readability (clarity); the argument,
-  // "function", serves no purpose and therefore can be misleading in its use.
-  #define AL_CHECK_ERR(Function) \
-    ( (Function), nom::priv::al_err(NOM_FUNC, __FILE__, __LINE__) )
+// OpenAL error checking macro for all but the audio context error handling
+// The OpenAL function call is wrapped inside of this macro that needs
+// checking.
+#define AL_CHECK_ERR(Function) \
+  ( Function, al_err(NOM_FUNC, __FILE__, __LINE__) )
 
-  // TODO: Rename this macro to AL_CHECK_ERR after we have phased AL_CHECK_ERR
-  // out of the code base
-  #define AL_CHECK_ERR_VOID() \
-    ( nom::priv::al_err(NOM_FUNC, __FILE__, __LINE__) )
-#else
-  #define AL_CHECK_ERR(Function) (Function)
-  #define AL_CHECK_ERR_VOID()
-#endif
+// OpenAL error checking macro for audio context error handling
+// The OpenAL function call is wrapped inside of this macro that needs
+// checking. This macro additionally requires the OpenAL device handle to be
+// given.
+#define ALC_CHECK_ERR(Function, device) \
+  ( Function, alc_err(NOM_FUNC, __FILE__, __LINE__, device) )
 
-// Clear the error state of OpenAL
-//
-// TODO: Clear the error state before calling functions that we check err state
-// on -- the err messages we see are potentially out of sync otherwise!
+// Clear the error state of OpenAL -- this must be done right before a
+// AL_CHECK_ERR macro is used.
 #define AL_CLEAR_ERR() alGetError();
 
-namespace nom {
+// Clear the error state of OpenAL (context specific) -- this must be done
+// right before a ALC_CHECK_ERR macro is used.
+#define ALC_CLEAR_ERR(device) alcGetError(device);
 
-/// Optimal sound frame size (in bytes); used by libsndfile
-const nom::uint32 BUFFER_SIZE = 4096;
-const nom::uint32 NUM_SOURCES = 16; // not implemented
+// #define AL_CLEAR_ERR()
+// #define ALC_CLEAR_ERR()
+// #define AL_CHECK_ERR()
+// #define ALC_CHECK_ERR()
 
-namespace priv {
+// namespace nom {
+// namespace priv {
 
-void al_err(const std::string& func, const std::string& file, uint32 line);
+NOM_EXPORT
+ALenum al_err(const std::string& func, const std::string& file, uint32_t line);
 
-} // namespace priv
-} // namespace nom
+NOM_EXPORT
+ALenum alc_err(const std::string& func, const std::string& file, uint32_t line,
+  ALCdevice* dev = nullptr);
+
+// } // namespace priv
+// } // namespace nom
+
+// namespace nom {
+// namespace audio {
+
+// enum AudioError
+// {
+//   ERR_NO_ERROR = 0,
+//   ERR_SYSTEM_CALL_FAILURE,
+//   ERR_OUT_OF_MEMORY,
+//   ERR_INVALID_OPERATION,
+// };
+
+// struct err_t
+// {
+//   uint32 error_code = 0;
+// };
+
+// // uint32 err(err_t* err);
+// uint32 err();
+// const char* err_str(uint32 errno);
+
+// void set_err(uint32 errno);
+// void set_err(err_t* err);
+
+// } // namespace audio
+// } // namespace nom
 
 #endif // NOMLIB_OPENAL_HEADERS defined
 

@@ -1,105 +1,131 @@
 # nomlib-serializers library
 
-# Library headers inclusion path
-include_directories( "${INC_ROOT_DIR}" )
-
-# Library name
-set( NOM_SERIALIZERS_LIBRARY "nomlib-serializers" )
-
-set(  NOM_SERIALIZERS_SOURCE
-      ${INC_DIR}/serializers.hpp
-
-      ${SRC_DIR}/serializers/IConfigFile.cpp
-      ${INC_DIR}/serializers/IConfigFile.hpp
-
-      ${INC_DIR}/serializers/IValueDeserializer.hpp
-      ${INC_DIR}/serializers/IValueSerializer.hpp
-
-      ${SRC_DIR}/serializers/JsonConfigFile.cpp
-      ${INC_DIR}/serializers/JsonConfigFile.hpp
-
-      ${SRC_DIR}/serializers/JsonCppDeserializer.cpp
-      ${INC_DIR}/serializers/JsonCppDeserializer.hpp
-
-      ${SRC_DIR}/serializers/JsonCppSerializer.cpp
-      ${INC_DIR}/serializers/JsonCppSerializer.hpp
-
-      ${SRC_DIR}/serializers/MiniHTML.cpp
-      ${INC_DIR}/serializers/MiniHTML.hpp
-
-      ${SRC_DIR}/serializers/RapidXmlDeserializer.cpp
-      ${INC_DIR}/serializers/RapidXmlDeserializer.hpp
-
-      ${SRC_DIR}/serializers/RapidXmlSerializer.cpp
-      ${INC_DIR}/serializers/RapidXmlSerializer.hpp
-
-      ${SRC_DIR}/serializers/SearchPath.cpp
-      ${INC_DIR}/serializers/SearchPath.hpp
-
-      ${INC_DIR}/serializers/serializers_config.hpp
-)
-
 # Platform-specific implementations & dependencies
 
-# Absolute path to project's third-party 'common' directory
-#
-# See also: nomlib's third-party/README.md
-set( NOM_THIRD_PARTY_COMMON_DIR "${PROJECT_SOURCE_DIR}/third-party/common" )
-
-set( JSONCPP_ROOT_DIR "${NOM_THIRD_PARTY_COMMON_DIR}/jsoncpp" )
-set( RAPIDXML_INCLUDE_DIR "${NOM_THIRD_PARTY_COMMON_DIR}/rapidxml" )
-
-if( NOT EXISTS ${JSONCPP_ROOT_DIR} )
-  message(  FATAL_ERROR
-            "Could not find source tree for JsonCpp at ${JSONCPP_ROOT_DIR}; "
-            "see nomlib's third-party/README.md for help obtaining this "
-            "required dependency."
-  )
-else( EXISTS ${JSONCPP_ROOT_DIR} )
-  message( STATUS "Found JsonCpp: ${JSONCPP_ROOT_DIR}" )
-endif( NOT EXISTS ${JSONCPP_ROOT_DIR} )
-
-if( NOT EXISTS ${RAPIDXML_INCLUDE_DIR} )
-  message(  FATAL_ERROR
-            "Could not find source tree for RapidXml at ${RAPIDXML_INCLUDE_DIR}; "
-            "see nomlib's third-party/README.md for help obtaining this "
-            "required dependency."
-  )
-else( EXISTS ${RAPIDXML_INCLUDE_DIR} )
-  message( STATUS "Found RapidXml: ${RAPIDXML_INCLUDE_DIR}" )
-endif( NOT EXISTS ${RAPIDXML_INCLUDE_DIR} )
-
-set( JSONCPP_SOURCE
-      ${JSONCPP_ROOT_DIR}/jsoncpp.cpp
-      ${JSONCPP_ROOT_DIR}/json.h
-)
-
-# RapidXml is headers-only
-set(  RAPIDXML_SOURCE
-      ${RAPIDXML_INCLUDE_DIR}/rapidxml.hpp
-      ${RAPIDXML_INCLUDE_DIR}/rapidxml_iterators.hpp
-      ${RAPIDXML_INCLUDE_DIR}/rapidxml_print.hpp
-      ${RAPIDXML_INCLUDE_DIR}/rapidxml_utils.hpp
-)
-
-# JsonCpp is built as part of our library source tree
-list( APPEND NOM_SERIALIZERS_SOURCE ${JSONCPP_SOURCE} ${RAPIDXML_SOURCE} )
-
-# third-party headers inclusion for JsonCpp and RapidXml
-include_directories("${NOM_THIRD_PARTY_COMMON_DIR}")
-
-# Separate third-party sources for IDE project files
-source_group( "third-party\\JsonCpp" FILES ${JSONCPP_SOURCE} )
-source_group( "third-party\\RapidXml" FILES ${RAPIDXML_SOURCE} )
-
-# Common on all platforms
-set( NOM_SERIALIZERS_DEPS nomlib-core nomlib-file nomlib-ptree )
-
 # Add and link the library
-nom_add_library(  ${NOM_SERIALIZERS_LIBRARY} ${LIBRARY_OUTPUT_TYPE}
-                  "${NOM_SERIALIZERS_SOURCE}" ""
-                  "${NOM_SERIALIZERS_DEPS}" )
+add_library(nomlib-serializers
+  ${LIBRARY_OUTPUT_TYPE}
+)
 
-# Re-declare globally, so other build units that depend on us can refer to this
-# variable
-# set( NOM_SERIALIZERS_LIBRARY ${NOM_SERIALIZERS_LIBRARY} PARENT_SCOPE )
+set_target_properties(nomlib-serializers
+  PROPERTIES
+    VERSION ${PROJECT_VERSION}
+    SOVERSION ${PROJECT_VERSION_MAJOR}
+    DEBUG_POSTFIX "-d"
+)
+
+if(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
+  # Skip dllimport/dllexport logic when building as a static library target
+  target_compile_definitions(nomlib-serializers
+    PUBLIC
+      NOM_STATIC_DEFINE
+  )
+  # Ensure that our target can be cleanly combined or linked by shared
+  # library targets; this adds -fPIC to the build for this unit
+  set_target_properties(nomlib-serializers
+    PROPERTIES
+      POSITION_INDEPENDENT_CODE ON
+  )
+endif(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
+
+target_sources(nomlib-serializers
+  PRIVATE
+  ${SRC_DIR}/serializers/IConfigFile.cpp
+  ${SRC_DIR}/serializers/JsonConfigFile.cpp
+  ${SRC_DIR}/serializers/JsonCppDeserializer.cpp
+  ${SRC_DIR}/serializers/JsonCppSerializer.cpp
+  ${SRC_DIR}/serializers/MiniHTML.cpp
+  ${SRC_DIR}/serializers/RapidXmlDeserializer.cpp
+  ${SRC_DIR}/serializers/RapidXmlSerializer.cpp
+  ${SRC_DIR}/serializers/SearchPath.cpp
+  # jsoncpp v0.7.0
+  ${JSONCPP_SOURCE_DIR}/jsoncpp.cpp
+  # RapidXml by discord - v1.x
+  ${RAPIDXML_INCLUDE_DIR}/rapidxml.hpp
+  ${RAPIDXML_INCLUDE_DIR}/rapidxml_iterators.hpp
+  ${RAPIDXML_INCLUDE_DIR}/rapidxml_print.hpp
+  ${RAPIDXML_INCLUDE_DIR}/rapidxml_utils.hpp
+  PUBLIC
+    FILE_SET HEADERS
+    BASE_DIRS ${HDR_BASE}
+    FILES
+    ${HDR_BASE}/serializers.hpp
+    ${HDR_BASE}/serializers/IConfigFile.hpp
+    ${HDR_BASE}/serializers/JsonConfigFile.hpp
+    ${HDR_BASE}/serializers/JsonCppDeserializer.hpp
+    ${HDR_BASE}/serializers/JsonCppSerializer.hpp
+    ${HDR_BASE}/serializers/IValueSerializer.hpp
+    ${HDR_BASE}/serializers/IValueDeserializer.hpp
+    ${HDR_BASE}/serializers/MiniHTML.hpp
+    ${HDR_BASE}/serializers/RapidXmlDeserializer.hpp
+    ${HDR_BASE}/serializers/RapidXmlSerializer.hpp
+    ${HDR_BASE}/serializers/SearchPath.hpp
+    ${HDR_BASE}/serializers/serializers_config.hpp
+)
+
+target_include_directories(nomlib-serializers
+  PRIVATE
+  ${PROJECT_SOURCE_DIR}/include # include/nomlib
+  ${SDL2_INCLUDE_DIR} # SDL.h
+  ${JSONCPP_INCLUDE_DIR} # Jsoncpp v0.7.0 - headers only
+  ${RAPIDXML_INCLUDE_DIR} # RapidXML v1.x - headers only
+)
+
+target_compile_features(nomlib-serializers
+  PRIVATE
+    ${nom_cxx_std}
+)
+
+target_link_libraries(nomlib-serializers
+  PUBLIC
+    nomlib-core
+    nomlib-file
+    nomlib-ptree
+    # FIXME: Once nomlib-file is a complete library target, we can remove this dep!
+    nomlib-system
+  PRIVATE
+    project_warnings
+)
+
+# MacOSX Framework bundle support
+set_target_properties(nomlib-serializers
+  PROPERTIES
+    FRAMEWORK TRUE
+    MACOSX_FRAMEWORK_INFO_PLIST
+      "${CMAKE_TEMPLATE_PATH}/framework.plist.in"
+    MACOSX_FRAMEWORK_NAME
+      nomlib-serializers
+    MACOSX_FRAMEWORK_BUNDLE_VERSION
+      "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_BUILD_TYPE}"
+    MACOSX_FRAMEWORK_SHORT_VERSION_STRING
+      "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+    MACOSX_FRAMEWORK_IDENTIFIER
+      "net.i8degrees.nomlib-serializers"
+    XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY
+      ""
+    MACOSX_RPATH TRUE
+)
+
+# MacOSX framework bundle support - public header files
+if(APPLE)
+  install(TARGETS nomlib-serializers
+    FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      COMPONENT Runtime
+    FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_LIBDIR}/nomlib-serializers.framework/Headers"
+      COMPONENT Development
+  )
+endif(APPLE)
+
+install(TARGETS nomlib-serializers
+  EXPORT libtarget
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT Runtime
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT Runtime
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT Runtime
+  FILE_SET HEADERS DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+    COMPONENT Development
+  FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT Runtime
+)

@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <vector>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point2.hpp"
 #include "nomlib/math/Size2.hpp"
@@ -43,7 +44,7 @@ namespace nom {
 ///
 /// \remarks This interface exists to ease the mapping & sync of keyboard, mouse
 /// and joystick inputs.
-class UIQuestionDialogBox: public UIMessageBox
+class NOM_EXPORT UIQuestionDialogBox: public UIMessageBox
 {
   public:
     typedef UIQuestionDialogBox self_type;

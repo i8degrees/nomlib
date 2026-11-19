@@ -10,9 +10,9 @@ modification, are permitted provided that the following conditions are met:
 
 1. Redistributions of source code must retain the above copyright notice, this
    list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
+2. Redistributions in binary form must reproduce the above copyright notice, this
+   list of conditions and the following disclaimer in the documentation and/or
+   other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -32,64 +32,46 @@ namespace nom {
 
 void Path::init( void )
 {
-  #if defined( NOM_PLATFORM_WINDOWS )
-    path_separator = "\\";
-  #elif defined( NOM_PLATFORM_POSIX )
-    path_separator = "/";
-  #else // Hope that we are running on a POSIX-compliant platform!
-    path_separator = "/";
-    #pragma message ( "nomlib cannot detect the platform it is being compiled on; assuming POSIX-compliant path delimiters..." )
-  #endif
+  // No-op: the separator is now provided by filesystem::path when requested.
 }
 
-Path::Path( void )
+Path::Path ( void ) :
+  p_()
 {
-  // NOM_LOG_TRACE( NOM ):
-
-  this->init();
+  // Nothing to do.
 }
 
-Path::~Path( void )
+Path::~Path ( void )
 {
-  // NOM_LOG_TRACE( NOM ):
+  // Nothing to do.
 }
 
 Path::Path( const std::string& p ) :
-  pathname( p )
+  p_( p )
 {
-  // NOM_LOG_TRACE( NOM ):
-
-  this->init();
+  // Nothing to do.
 }
 
 const Path::value_type& Path::native ( void ) const
 {
-  return this->path_separator;
+  static const value_type separator( 1, filesystem::path::preferred_separator );
+  return separator;
 }
 
 const std::string& Path::path ( void ) const
 {
-  return this->pathname;
+  return this->p_.native();
 }
 
 Path& Path::operator =( const Path& rhs )
 {
-  this->path_separator = rhs.native();
-  this->pathname = rhs.path();
-
+  this->p_ = rhs.p_;
   return *this;
 }
 
 std::string Path::prepend( const std::string& path ) const
 {
-  if( this->path().substr( this->path().size() - 1, 1 ) == this->native() )
-  {
-    return this->path() + path;
-  }
-  else
-  {
-    return this->path() + this->native() + path;
-  }
+  return ( this->p_ / path ).string();
 }
 
 } // namespace nom

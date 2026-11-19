@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/gui/IDecorator.hpp"
 #include "nomlib/gui/Drawables.hpp"
@@ -42,7 +43,7 @@ namespace nom {
 /// \todo Implement interface for calculating and providing border dimensions
 /// so that our widget(s) are able to better account for their own size
 /// requirements.
-class Decorator: public IDecorator
+class NOM_EXPORT Decorator: public IDecorator
 {
   public:
     typedef Decorator self_type;

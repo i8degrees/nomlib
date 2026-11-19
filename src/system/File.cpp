@@ -55,9 +55,9 @@ File::~File()
   //
 }
 
-std::string File::extension(const std::string& file) const
+std::string File::extension(const std::string& filename) const
 {
-  return this->file->extension(file);
+  return this->file->extension(filename);
 }
 
 int32 File::size(const std::string& file_path) const

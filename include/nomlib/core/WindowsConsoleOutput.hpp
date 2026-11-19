@@ -31,10 +31,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
-// #include <cstdio>
 #include <windows.h>
 #include <winnt.h>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/core/ConsoleOutput.hpp"
 
@@ -43,7 +43,7 @@ namespace nom {
 /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/ms682088(v=vs.85).aspx#_win32_character_attributes
 /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/ms686047%28v=vs.85%29.aspx
 /// \see http://msdn.microsoft.com/en-us/library/windows/desktop/ms683171%28v=vs.85%29.aspx
-class WindowsConsoleOutput: public ConsoleOutput
+class NOM_EXPORT WindowsConsoleOutput: public ConsoleOutput
 {
   public:
     WindowsConsoleOutput();

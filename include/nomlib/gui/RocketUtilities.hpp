@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Rocket/Core/ElementDocument.h>
 #include <Rocket/Core/Element.h>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -49,7 +50,7 @@ using namespace Rocket::Core;
 typedef std::shared_ptr<rocket::Element> rocket_element;
 
 // void free_document( rocket::ElementDocument* doc );
-void free_element( rocket::Element* element );
+NOM_EXPORT void free_element( rocket::Element* element );
 
 } // namespace nom
 

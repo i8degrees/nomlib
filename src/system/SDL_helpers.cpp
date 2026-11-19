@@ -30,8 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Private headers (third-party)
 #include <SDL_image.h>
-
-// Forward declarations
 #include <SDL_ttf.h>
 
 namespace nom {
@@ -275,7 +273,7 @@ void FreeSurface ( SDL_Surface* video_buffer )
   }
 }
 
-void TTF_FreeFont ( _TTF_Font* font )
+void TTF_FreeFont ( TTF_Font* font )
 {
   if ( font != nullptr )
   {

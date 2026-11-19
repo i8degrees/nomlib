@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -40,7 +41,7 @@ const std::string POINT_DELIMITER = ", ";
 
 /// \brief 2D point container
 template <typename T>
-struct Point2
+struct NOM_EXPORT Point2
 {
   /// Default constructor; initialize values to Point2<T>::null
   Point2 ( void ) :
@@ -106,6 +107,7 @@ struct Point2
 ///
 ///     128, 144
 template <typename T>
+NOM_EXPORT
 inline std::ostream& operator << ( std::ostream& os, const Point2<T>& pos )
 {
   os
@@ -125,6 +127,7 @@ inline std::ostream& operator << ( std::ostream& os, const Point2<T>& pos )
 ///
 /// \returns True if left operand is equal to the right operand.
 template <typename T>
+NOM_EXPORT
 inline bool operator == ( const Point2<T>& lhs, const Point2<T>& rhs )
 {
   return  ( lhs.x == rhs.x )  &&  ( lhs.y == rhs.y );
@@ -135,6 +138,7 @@ inline bool operator == ( const Point2<T>& lhs, const Point2<T>& rhs )
 /// \param lhs Left operand.
 /// \param rhs Right operand.
 template <typename T>
+NOM_EXPORT
 inline bool operator <( const Point2<T> lhs, const Point2<T>& rhs )
 {
   return  ( lhs.x < rhs.x ) && ( lhs.y < rhs.y );
@@ -145,6 +149,7 @@ inline bool operator <( const Point2<T> lhs, const Point2<T>& rhs )
 /// \param lhs Left operand.
 /// \param rhs Right operand.
 template <typename T>
+NOM_EXPORT
 inline bool operator >( const Point2<T>& lhs, const Point2<T>& rhs )
 {
   return  ( rhs.x < lhs.x ) && ( rhs.y < lhs.y );
@@ -155,6 +160,7 @@ inline bool operator >( const Point2<T>& lhs, const Point2<T>& rhs )
 /// \param lhs Left operand.
 /// \param rhs Right operand.
 template <typename T>
+NOM_EXPORT
 inline bool operator <=( const Point2<T>& lhs, const Point2<T>& rhs )
 {
   return  ( lhs.x <= rhs.x ) && ( lhs.y <= rhs.y );
@@ -165,6 +171,7 @@ inline bool operator <=( const Point2<T>& lhs, const Point2<T>& rhs )
 /// \param lhs Left operand.
 /// \param rhs Right operand.
 template <typename T>
+NOM_EXPORT
 inline bool operator >=( const Point2<T>& lhs, const Point2<T>& rhs )
 {
   return  ( rhs.x <= lhs.x ) && ( rhs.y <= lhs.y );
@@ -179,6 +186,7 @@ inline bool operator >=( const Point2<T>& lhs, const Point2<T>& rhs )
 ///
 /// \returns True if left operand is not equal to the right operand.
 template <typename T>
+NOM_EXPORT
 inline bool operator != ( const Point2<T>& lhs, const Point2<T>& rhs )
 {
   return ! ( lhs == rhs );
@@ -191,6 +199,7 @@ inline bool operator != ( const Point2<T>& lhs, const Point2<T>& rhs )
 ///
 /// \returns Addition of both objects.
 template <typename T>
+NOM_EXPORT
 inline Point2<T> operator + ( const Point2<T>& lhs, const Point2<T>& rhs )
 {
   return Point2<T>  ( lhs.x + rhs.x,
@@ -205,6 +214,7 @@ inline Point2<T> operator + ( const Point2<T>& lhs, const Point2<T>& rhs )
 ///
 /// \returns Addition of both objects.
 template <typename T>
+NOM_EXPORT
 inline Point2<T> operator +(int lhs, const Point2<T>& rhs)
 {
   return Point2<T>(lhs + rhs.x, lhs + rhs.y);
@@ -217,6 +227,7 @@ inline Point2<T> operator +(int lhs, const Point2<T>& rhs)
 ///
 /// \returns Addition of both objects.
 template <typename T>
+NOM_EXPORT
 inline Point2<T> operator +(const Point2<T>& lhs, int rhs)
 {
   return Point2<T>(lhs.x + rhs, lhs.y + rhs);
@@ -228,6 +239,7 @@ inline Point2<T> operator +(const Point2<T>& lhs, int rhs)
 ///
 /// \returns Addition of the right operand.
 template <typename T>
+NOM_EXPORT
 inline Point2<T> operator ++ ( Point2<T>& rhs )
 {
   return Point2<T>  ( ++rhs.x,
@@ -241,6 +253,7 @@ inline Point2<T> operator ++ ( Point2<T>& rhs )
 ///
 /// \returns Opposite of the object.
 template <typename T>
+NOM_EXPORT
 inline Point2<T> operator - ( const Point2<T>& rhs )
 {
   return Point2<T>  ( -rhs.x,
@@ -255,6 +268,7 @@ inline Point2<T> operator - ( const Point2<T>& rhs )
 ///
 /// \returns Subtraction of both objects.
 template <typename T>
+NOM_EXPORT
 inline Point2<T> operator - ( const Point2<T>& lhs, const Point2<T>& rhs )
 {
   return Point2<T>  ( lhs.x - rhs.x,
@@ -269,6 +283,7 @@ inline Point2<T> operator - ( const Point2<T>& lhs, const Point2<T>& rhs )
 ///
 /// \returns Subtraction of both objects.
 template <typename T>
+NOM_EXPORT
 inline Point2<T> operator -(int lhs, const Point2<T>& rhs)
 {
   return Point2<T>(lhs - rhs.x, lhs - rhs.y);
@@ -281,6 +296,7 @@ inline Point2<T> operator -(int lhs, const Point2<T>& rhs)
 ///
 /// \returns Subtraction of both objects.
 template <typename T>
+NOM_EXPORT
 inline Point2<T> operator -(const Point2<T>& lhs, int rhs)
 {
   return Point2<T>(lhs.x - rhs, lhs.y - rhs);
@@ -292,6 +308,7 @@ inline Point2<T> operator -(const Point2<T>& lhs, int rhs)
 ///
 /// \returns Subtraction of the right operand.
 template <typename T>
+NOM_EXPORT
 inline Point2<T> operator -- ( Point2<T>& rhs )
 {
   return Point2<T>  ( --rhs.x,
@@ -306,6 +323,7 @@ inline Point2<T> operator -- ( Point2<T>& rhs )
 ///
 /// \returns Multiplication of the right operand.
 template <typename T>
+NOM_EXPORT
 inline Point2<T> operator * ( const Point2<T>& lhs, const Point2<T>& rhs )
 {
   return Point2<T>  ( lhs.x * rhs.x,
@@ -320,6 +338,7 @@ inline Point2<T> operator * ( const Point2<T>& lhs, const Point2<T>& rhs )
 ///
 /// \returns Multiplication of the right operand.
 template <typename T>
+NOM_EXPORT
 inline Point2<T> operator *(int lhs, const Point2<T>& rhs)
 {
   return Point2<T>(lhs * rhs.x, lhs * rhs.y);
@@ -332,6 +351,7 @@ inline Point2<T> operator *(int lhs, const Point2<T>& rhs)
 ///
 /// \returns Multiplication of the right operand.
 template <typename T>
+NOM_EXPORT
 inline Point2<T> operator *(const Point2<T>& lhs, int rhs)
 {
   return Point2<T>(lhs.x * rhs, lhs.y * rhs);
@@ -346,11 +366,42 @@ inline Point2<T> operator *(const Point2<T>& lhs, int rhs)
 ///
 /// \returns Reference to the left operand.
 template <typename T>
+NOM_EXPORT
 inline Point2<T> operator / ( const Point2<T>& lhs, const Point2<T>& rhs )
 {
   return Point2<T>  ( lhs.x / rhs.x,
                       lhs.y / rhs.y
                     );
+}
+
+/// \brief Method overload of binary operator / (Division)
+///
+/// \param rhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Division of both objects; result is assigned to the left operand.
+///
+/// \returns Reference to the left operand.
+template <typename T>
+NOM_EXPORT
+inline Point2<T> operator /(int lhs, const Point2<T>& rhs)
+{
+  return Point2<T>(lhs / rhs.x, lhs / rhs.y);
+}
+
+/// \brief Method overload of binary operator / (Division)
+///
+/// \param rhs Left operand.
+/// \param rhs Right operand.
+///
+/// \remarks Division of both objects; result is assigned to the left operand.
+///
+/// \returns Reference to the left operand.
+template <typename T>
+NOM_EXPORT
+inline Point2<T> operator /(const Point2<T>& lhs, int rhs)
+{
+  return Point2<T>(lhs.x / rhs, lhs.y / rhs);
 }
 
 /// \brief Method overload of binary operator / (Division)
@@ -391,6 +442,7 @@ inline Point2<T> operator /(const Point2<T>& lhs, int rhs)
 ///
 /// \returns Reference to left operand,
 template <typename T>
+NOM_EXPORT
 inline Point2<T>& operator += ( Point2<T>& lhs, const Point2<T>& rhs )
 {
   lhs.x += rhs.x;
@@ -409,6 +461,7 @@ inline Point2<T>& operator += ( Point2<T>& lhs, const Point2<T>& rhs )
 ///
 /// \returns Reference to left operand,
 template <typename T>
+NOM_EXPORT
 inline Point2<T>& operator +=(int lhs, const Point2<T>& rhs)
 {
   lhs += rhs.x;
@@ -427,6 +480,7 @@ inline Point2<T>& operator +=(int lhs, const Point2<T>& rhs)
 ///
 /// \returns Reference to left operand,
 template <typename T>
+NOM_EXPORT
 inline Point2<T>& operator +=(Point2<T>& lhs, int rhs)
 {
   lhs.x += rhs;
@@ -445,6 +499,7 @@ inline Point2<T>& operator +=(Point2<T>& lhs, int rhs)
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Point2<T>& operator -= ( Point2<T>& lhs, const Point2<T>& rhs )
 {
   lhs.x -= rhs.x;
@@ -463,6 +518,7 @@ inline Point2<T>& operator -= ( Point2<T>& lhs, const Point2<T>& rhs )
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Point2<T>& operator -=(int lhs, const Point2<T>& rhs)
 {
   lhs -= rhs.x;
@@ -481,6 +537,7 @@ inline Point2<T>& operator -=(int lhs, const Point2<T>& rhs)
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Point2<T>& operator -=(Point2<T>& lhs, int rhs)
 {
   lhs.x -= rhs;
@@ -499,6 +556,7 @@ inline Point2<T>& operator -=(Point2<T>& lhs, int rhs)
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Point2<T>& operator *= ( Point2<T>& lhs, const Point2<T>& rhs )
 {
   lhs.x *= rhs.x;
@@ -517,6 +575,7 @@ inline Point2<T>& operator *= ( Point2<T>& lhs, const Point2<T>& rhs )
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Point2<T>& operator *=(int lhs, const Point2<T>& rhs)
 {
   lhs *= rhs.x;
@@ -535,6 +594,7 @@ inline Point2<T>& operator *=(int lhs, const Point2<T>& rhs)
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Point2<T>& operator *=(Point2<T>& lhs, int rhs)
 {
   lhs.x *= rhs;
@@ -553,6 +613,7 @@ inline Point2<T>& operator *=(Point2<T>& lhs, int rhs)
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Point2<T>& operator /= ( Point2<T>& lhs, Point2<T>& rhs )
 {
   lhs.x /= rhs.x;
@@ -571,6 +632,7 @@ inline Point2<T>& operator /= ( Point2<T>& lhs, Point2<T>& rhs )
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Point2<T>& operator /=(int lhs, Point2<T>& rhs)
 {
   lhs /= rhs.x;
@@ -589,6 +651,7 @@ inline Point2<T>& operator /=(int lhs, Point2<T>& rhs)
 ///
 /// \returns Reference to left operand.
 template <typename T>
+NOM_EXPORT
 inline Point2<T>& operator /=(Point2<T>& lhs, int rhs)
 {
   lhs.x /= rhs;
@@ -605,6 +668,25 @@ typedef Point2<float> Point2f;
 
 /// Point2 object defined using double precision floating-point numbers
 typedef Point2<double> Point2d;
+
+/// Null value for a nom::Point2 using signed integers
+template <> NOM_EXPORT const Point2i Point2i::null;
+
+/// Null value for a nom::Point2 using floating point numbers
+template <> NOM_EXPORT const Point2f Point2f::null;
+
+/// Null value for a nom::Point2 using double precision floating point numbers
+template <> NOM_EXPORT const Point2d Point2d::null;
+
+/// \brief Zero value for a nom::Point2 using signed integers
+template <> NOM_EXPORT const Point2i Point2i::zero;
+
+/// \brief Zero value for a nom::Point2 using floating point numbers.
+template <> NOM_EXPORT const Point2f Point2f::zero;
+
+/// \brief Zero value for a nom::Point2 using double precision floating point
+/// numbers.
+template <> NOM_EXPORT const Point2d Point2d::zero;
 
 } // namespace nom
 

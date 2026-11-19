@@ -3,25 +3,43 @@
 set( NOM_BUILD_ACTION_TESTS ON )
 set( NOM_BUILD_ACTION_TIMING_CURVES_TESTS ON )
 
-if( EXISTS "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
-  include( "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
-endif()
-
 if( NOM_BUILD_ACTION_TESTS )
 
-  set(  ACTION_SRC
-        ${ACTION_SRC}
-        "ActionTest.cpp"
-        "ActionTest_ActionPlayer.cpp"
-        "ActionTest_AlphaBlending.cpp"
-        "ActionTest_Reversed.cpp"
-        "ActionTest_Demos.cpp"
-        "ActionTest_Repeating.cpp"
+  add_executable(ActionTest
+    #WIN32 # gui app
+    ActionTest.cpp
+    ActionTest_ActionPlayer.cpp
+    ActionTest_AlphaBlending.cpp
+    ActionTest_Reversed.cpp
+    ActionTest_Demos.cpp
+    ActionTest_Repeating.cpp
   )
 
-  add_executable( ActionTest ${ACTION_SRC} )
+  add_dependencies(ActionTest gtest)
 
-  target_link_libraries( ActionTest nomlib-visual-unit-test nomlib-graphics )
+  target_include_directories(ActionTest
+    PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
+      ${PROJECT_SOURCE_DIR}/tests/include
+    PRIVATE
+      ${GTEST_INCLUDE_DIR}
+      ${SDL2_INCLUDE_DIR}
+      # TCLAP v1.2.1-release-final headers only distribution
+      ${TCLAP_INCLUDE_DIR}
+  )
+
+  target_link_libraries(ActionTest
+    PUBLIC
+      nomlib-actions
+      nomlib-core
+      nomlib-graphics
+      nomlib-visual-unit-test
+    PRIVATE
+      Threads::Threads
+      ${GTEST_LIBRARY}
+      $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+      $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+  )
 
   set( ACTION_TEST_BIN "${TESTS_INSTALL_DIR}/ActionTest" )
 
@@ -87,26 +105,47 @@ if( NOM_BUILD_ACTION_TESTS )
   nom_add_test( ActionTest_QuintEaseInOut ${ACTION_TEST_BIN}
                 ${ACTION_TEST_ARGS} --timing-mode quint_ease_in_out )
 
-  # Copy resource files for the test
-  install(  FILES
-            "${NOM_TESTS_RESOURCES_DIR}/actions/ActionTest.json"
-            DESTINATION "${TESTS_INSTALL_DIR}" )
+  # For development: Copy resource files for the test
+  add_custom_command(TARGET ActionTest POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${NOM_TESTS_RESOURCES_DIR}/actions/ActionTest.json"
+    $<TARGET_FILE_DIR:ActionTest>
+  )
 
 endif( NOM_BUILD_ACTION_TESTS )
 
 if( NOM_BUILD_ACTION_TIMING_CURVES_TESTS )
 
-  set(  ACTION_TIMING_CURVES_SRC
-        ${ACTION_TIMING_CURVES_SRC}
-        "ActionTimingCurvesTest.cpp" )
+  add_executable(ActionTimingCurvesTest
+    #WIN32 # console app
+    ActionTimingCurvesTest.cpp
+  )
 
-  add_executable( ActionTimingCurvesTest ${ACTION_TIMING_CURVES_SRC} )
+  add_dependencies(ActionTimingCurvesTest gtest)
 
-  target_link_libraries(  ActionTimingCurvesTest nomlib-graphics
-                          nomlib-unit-test )
+  target_include_directories(ActionTimingCurvesTest
+    PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
+      ${PROJECT_SOURCE_DIR}/tests/include
+    PRIVATE
+      ${GTEST_INCLUDE_DIR}
+      ${SDL2_INCLUDE_DIR}
+  )
+
+  target_link_libraries(ActionTimingCurvesTest
+    PUBLIC
+      nomlib-actions
+      nomlib-core
+      nomlib-unit-test
+    PRIVATE
+      Threads::Threads
+      ${GTEST_LIBRARY}
+      $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+      $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+  )
 
   GTEST_ADD_TESTS(  ${TESTS_INSTALL_DIR}/ActionTimingCurvesTest
                     "" # args
-                    ${ACTION_TIMING_CURVES_SRC} )
+                    ActionTimingCurvesTest.cpp)
 
 endif( NOM_BUILD_ACTION_TIMING_CURVES_TESTS )

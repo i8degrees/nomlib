@@ -32,13 +32,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // #include <memory>
 #include <vector>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Size2.hpp"
 
 namespace nom {
 
 /// \brief Container for describing a video display mode
-struct DisplayMode
+struct NOM_EXPORT DisplayMode
 {
   /// \brief The pixel format of the display video mode.
   ///
@@ -59,22 +60,22 @@ struct DisplayMode
 typedef std::vector<DisplayMode> DisplayModeList;
 
 /// \brief Compare two video modes for equality.
-bool operator ==(const DisplayMode& lhs, const DisplayMode& rhs);
+NOM_EXPORT bool operator ==(const DisplayMode& lhs, const DisplayMode& rhs);
 
 /// \brief Compare two video modes for inequality.
-bool operator !=(const DisplayMode& lhs, const DisplayMode& rhs);
+NOM_EXPORT bool operator !=(const DisplayMode& lhs, const DisplayMode& rhs);
 
 /// \brief Compare two video modes for lesser than.
-bool operator <(const DisplayMode& lhs, const DisplayMode& rhs);
+NOM_EXPORT bool operator <(const DisplayMode& lhs, const DisplayMode& rhs);
 
 /// \brief Compare two video modes for greater than.
-bool operator >(const DisplayMode& lhs, const DisplayMode& rhs);
+NOM_EXPORT bool operator >(const DisplayMode& lhs, const DisplayMode& rhs);
 
 /// \brief Compare two video modes for lesser than or equal to.
-bool operator <=(const DisplayMode& lhs, const DisplayMode& rhs);
+NOM_EXPORT bool operator <=(const DisplayMode& lhs, const DisplayMode& rhs);
 
 /// \brief Compare two video modes for greater than or equal to.
-bool operator >=(const DisplayMode& lhs, const DisplayMode& rhs);
+NOM_EXPORT bool operator >=(const DisplayMode& lhs, const DisplayMode& rhs);
 
 } // namespace nom
 

@@ -31,12 +31,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
 
 /// \brief Container structure for global font metric data
-struct FontMetrics
+struct NOM_EXPORT FontMetrics
 {
   /// Default constructor
   FontMetrics ( void )  :

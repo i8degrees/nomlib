@@ -12,7 +12,24 @@
 set( TESTS_SRC_DIR "${PROJECT_SOURCE_DIR}/tests/src" )
 
 # Header file inclusion root (directory); must be an absolute path.
-set( TESTS_INC_DIR "${PROJECT_SOURCE_DIR}/tests/include" )
+set( TESTS_HDR_BASE "${PROJECT_SOURCE_DIR}/tests/include" )
+
+# Use common build output directories for MSVCPP && Xcode project files.
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/opt")
+
+# This path is used for the local installation of required dependencies for
+# running unit tests, such as dependent resource files. Additionally, when
+# building on Windows, this will be the path that dependent DLLs are copied to.
+#
+# IMPORTANT: This path serves a vital role in the *consistent* usage of CTest
+# and GTest across the supported CMake project generators -- Unix Makefiles,
+# Xcode and MSVCPP. The path **must** be prepended on every unit test
+# executable created using the add_test and GTEST_ADD_TESTS commands.
+
+#set(TESTS_INSTALL_DIR "${CMAKE_INSTALL_DATAROOTDIR}")
+set(TESTS_INSTALL_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 
 # Use common build output directories for MSVCPP && Xcode project files.
 #
@@ -66,137 +83,202 @@ set( NOM_BUILD_GUI_TESTS ON )
 set( NOM_BUILD_UNIT_TEST_TESTS ON )
 set( NOM_BUILD_VTEST_TESTS ON )
 
-if( EXISTS "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
-  include( "${CMAKE_CURRENT_LIST_DIR}/local_env.cmake" )
-endif()
+# GoogleTest; add_test macros
+include(GoogleTest)
 
-# Project headers files inclusions; our header files namespace, 'nomlib'
-include_directories( "${INC_ROOT_DIR}" )
+if(NOM_BUILD_UNIT_TEST_UNIT)
 
-# Third-party dependencies
-
-# Absolute path to project's third-party 'common' directory
-set( NOM_THIRD_PARTY_COMMON_DIR "${PROJECT_SOURCE_DIR}/third-party/common" )
-
-# nomlib-core external deps
-find_package( SDL2 REQUIRED )
-if( SDL2_FOUND )
-  # Add development header files; SDL.h & friends
-  include_directories( ${SDL2_INCLUDE_DIR} )
-endif( SDL2_FOUND )
-
-# nomlib-audio external deps
-if( PLATFORM_WINDOWS )
-  find_package( OpenAL REQUIRED )
-  if( OPENAL_FOUND )
-    # Add development header files; al.h, alc.h
-    include_directories( ${OPENAL_INCLUDE_DIR} )
-  endif( OPENAL_FOUND )
-endif( PLATFORM_WINDOWS )
-
-# nomlib-gui external deps
-find_package( LibRocket REQUIRED )
-if( LIBROCKET_FOUND )
-  # Add development header files
-  include_directories( ${LIBROCKET_INCLUDE_DIRS} )
-endif( LIBROCKET_FOUND )
-
-# third-party, headers-only dependency TCLAP
-set( TCLAP_INCLUDE_DIR "${NOM_THIRD_PARTY_COMMON_DIR}/tclap" )
-
-if( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
-  message(  FATAL_ERROR
-            "Could not find header file ${TCLAP_INCLUDE_DIR} for TCLAP; "
-            "see nomlib's third-party/README.md for help obtaining this "
-            "required dependency."
-  )
-else( EXISTS ${TCLAP_INCLUDE_DIR} )
-  message( STATUS "TCLAP headers found: ${TCLAP_INCLUDE_DIR}" )
-endif( NOT EXISTS ${TCLAP_INCLUDE_DIR} )
-
-# Header file inclusion; third-party -- TCLAP
-include_directories("${NOM_THIRD_PARTY_COMMON_DIR}")
-
-if ( NOM_BUILD_AUDIO_TESTS )
-  find_package( libsndfile OPTIONAL )
-  if ( NOT LIBSNDFILE_FOUND )
-    message ( STATUS "libsndfile library not found" )
-  else ( LIBSNDFILE_FOUND )
-    message ( STATUS "libsndfile library found: ${LIBSNDFILE_LIBRARY}" )
-  endif ()
-endif ( NOM_BUILD_AUDIO_TESTS )
-
-# Unit test dependencies (common / global)
-if( PLATFORM_OSX )
-  set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/osx/gtest" )
-elseif( PLATFORM_WINDOWS )
-  set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/windows/gtest" )
-elseif( PLATFORM_LINUX )
-  set( GTEST_ROOT "${NOMLIB_DEPS_DIR}/linux/gtest" )
-endif( PLATFORM_OSX )
-
-find_package ( GTest REQUIRED )
-if ( GTEST_FOUND )
-  message( STATUS "Found GoogleTest ${GTEST_ROOT}." )
-else ( NOT GTEST_FOUND )
-  message( FATAL_ERROR "Missing GoogleTest library at ${GTEST_ROOT}." )
-endif ( GTEST_FOUND )
-
-include_directories("${GTEST_INCLUDE_DIR}")
-
-set(  NOM_TESTS_UNIT_TEST_SOURCE
-      ${TESTS_SRC_DIR}/UnitTest/UnitTest.cpp
-      ${TESTS_INC_DIR}/nomlib/tests/UnitTest/UnitTest.hpp
-)
-
-set(  NOM_TESTS_VTEST_SOURCE
-      ${TESTS_SRC_DIR}/VisualUnitTest/ImageTestSet.cpp
-      ${TESTS_INC_DIR}/nomlib/tests/VisualUnitTest/ImageTestSet.hpp
-
-      ${TESTS_SRC_DIR}/VisualUnitTest/VisualUnitTest.cpp
-      ${TESTS_INC_DIR}/nomlib/tests/VisualUnitTest/VisualUnitTest.hpp
-
-      ${TESTS_SRC_DIR}/VisualUnitTest/ImageDiff.cpp
-      ${TESTS_INC_DIR}/nomlib/tests/VisualUnitTest/ImageDiff.hpp
-
-      ${TESTS_SRC_DIR}/VisualUnitTest/TestResultWriter.cpp
-      ${TESTS_INC_DIR}/nomlib/tests/VisualUnitTest/TestResultWriter.hpp
-
-      ${TESTS_SRC_DIR}/VisualUnitTest/VisualUnitTestResultWriter.cpp
-      ${TESTS_INC_DIR}/nomlib/tests/VisualUnitTest/VisualUnitTestResultWriter.hpp
-
-      ${TESTS_SRC_DIR}/VisualUnitTest/HTMLTestResultWriter.cpp
-      ${TESTS_INC_DIR}/nomlib/tests/VisualUnitTest/HTMLTestResultWriter.hpp
-
-      ${TESTS_SRC_DIR}/VisualUnitTest/MinimalTestResultWriter.cpp
-      ${TESTS_INC_DIR}/nomlib/tests/VisualUnitTest/MinimalTestResultWriter.hpp
-)
-
-if( NOM_BUILD_UNIT_TEST_UNIT )
-  set( NOM_UNIT_TEST_LIBRARY_DEPS nomlib-core nomlib-file )
-  
-  if( PLATFORM_WINDOWS )
-    list( APPEND NOM_UNIT_TEST_LIBRARY_DEPS ${SDL2MAIN_LIBRARY} )
-  endif( PLATFORM_WINDOWS )
-  
-  # >> this will include GoogleTest script and calls test discovery function 
-  # >>  defined in it, so you donot have to create main function for tests, 
+  # >> this will include GoogleTest script and calls test discovery function
+  # >>  defined in it, so you donot have to create main function for tests,
   #  >> they will be auto discovered
-  add_library(  nomlib-unit-test ${LIBRARY_OUTPUT_TYPE}
-                ${NOM_TESTS_UNIT_TEST_SOURCE} )
+
+  add_library(nomlib-unit-test
+    ${LIBRARY_OUTPUT_TYPE} # STATIC || SHARED
+  )
+
+  # CMake generates our NOM_EXPORT macros, i.e.: __declspec(dllexport)
+  # generate_export_header(nomlib-unit-test
+  #   BASE_NAME
+  #     NOM
+  #   EXPORT_FILE_NAME
+  #     export.hpp
+  # )
+
+  target_sources(nomlib-unit-test
+    PRIVATE
+    ${TESTS_SRC_DIR}/UnitTest/UnitTest.cpp
+    PUBLIC
+      FILE_SET HEADERS
+      BASE_DIRS ${TESTS_HDR_BASE}
+      FILES
+      ${TESTS_HDR_BASE}/nomlib/tests/UnitTest.hpp
+      ${TESTS_HDR_BASE}/nomlib/tests/UnitTest/UnitTest.hpp
+      # FILE_SET generated_headers
+      # TYPE HEADERS
+      # BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}
+      # FILES ${CMAKE_CURRENT_BINARY_DIR}/export.hpp
+  )
+
+  add_dependencies(nomlib-unit-test gtest)
+
+  target_include_directories(nomlib-unit-test
+    PUBLIC
+    ${PROJECT_SOURCE_DIR}/include # include/nomlib
+    ${PROJECT_SOURCE_DIR}/tests/include
+    PRIVATE
+    ${SDL2_INCLUDE_DIR}
+    ${GTEST_INCLUDE_DIR}
+    # TCLAP v1.2.1-release-final headers only distribution
+    ${TCLAP_INCLUDE_DIR}
+  )
+
+  target_compile_features(nomlib-unit-test
+    PRIVATE
+      cxx_std_17
+  )
+
+  set_target_properties(nomlib-unit-test
+    PROPERTIES
+      VERSION ${PROJECT_VERSION}
+      SOVERSION ${PROJECT_VERSION_MAJOR}
+      DEBUG_POSTFIX "-d"
+      # >> No support for building test libraries as a shared library target
+      # >> on WIN32
+      CXX_VISIBILITY_PRESET default
+      VISIBILITY_INLINES_HIDDEN FALSE
+  )
+
+  if(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
+    # Skip dllimport/dllexport logic when building as a static library target
+    target_compile_definitions(nomlib-unit-test
+      PUBLIC
+        NOM_STATIC_DEFINE
+    )
+    # Ensure that our target can be cleanly combined or linked by shared
+    # library targets; this adds -fPIC to the build for this unit
+    set_target_properties(nomlib-unit-test
+      PROPERTIES
+        POSITION_INDEPENDENT_CODE ON
+    )
+  endif(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
+
+  # >> nomlib requires C++14 but GTest 10.x requires min of C++17
+  target_compile_features(nomlib-unit-test
+    PRIVATE
+      cxx_std_17
+  )
+
   # >> Link nomlib-unit-test to GTest
-  target_link_libraries(nomlib-unit-test ${GTEST_LIBRARY} ${NOM_UNIT_TEST_LIBRARY_DEPS} )
-endif( NOM_BUILD_UNIT_TEST_UNIT )
+  target_link_libraries(nomlib-unit-test
+    PUBLIC
+      nomlib-core
+      nomlib-file
+      # !! This library target can be removed once nomlib-file becomes a proper
+      # !! library target?
+      nomlib-system
+    PRIVATE
+      project_warnings
+      Threads::Threads
+      ${GTEST_LIBRARY}
+  )
+endif(NOM_BUILD_UNIT_TEST_UNIT)
 
-if( NOM_BUILD_VISUAL_UNIT_TEST_UNIT )
-  set( NOM_VISUAL_UNIT_TEST_LIBRARY_DEPS nomlib-unit-test nomlib-graphics )
-  add_library(  nomlib-visual-unit-test
-                ${LIBRARY_OUTPUT_TYPE} ${NOM_TESTS_VTEST_SOURCE} )
-  target_link_libraries(nomlib-visual-unit-test ${GTEST_LIBRARY} ${NOM_VISUAL_UNIT_TEST_LIBRARY_DEPS} )
-endif( NOM_BUILD_VISUAL_UNIT_TEST_UNIT )
+if(NOM_BUILD_VISUAL_UNIT_TEST_UNIT)
+  add_library(nomlib-visual-unit-test
+    ${LIBRARY_OUTPUT_TYPE} # STATIC || SHARED
+  )
 
-# >> tests dev headers
-include_directories("${TESTS_INC_DIR}")
+  # CMake generates our NOM_EXPORT macros, i.e.: __declspec(dllexport)
+  # generate_export_header(nomlib-visual-unit-test
+  #   BASE_NAME
+  #     NOM
+  #   EXPORT_FILE_NAME
+  #     export.hpp
+  # )
+
+  target_sources(nomlib-visual-unit-test
+  PRIVATE
+    ${TESTS_SRC_DIR}/VisualUnitTest/ImageTestSet.cpp
+    ${TESTS_SRC_DIR}/VisualUnitTest/VisualUnitTest.cpp
+    ${TESTS_SRC_DIR}/VisualUnitTest/ImageDiff.cpp
+    ${TESTS_SRC_DIR}/VisualUnitTest/TestResultWriter.cpp
+    ${TESTS_SRC_DIR}/VisualUnitTest/VisualUnitTestResultWriter.cpp
+    ${TESTS_SRC_DIR}/VisualUnitTest/HTMLTestResultWriter.cpp
+    ${TESTS_SRC_DIR}/VisualUnitTest/MinimalTestResultWriter.cpp
+    PUBLIC
+    FILE_SET HEADERS
+    BASE_DIRS ${TESTS_HDR_BASE}
+    FILES
+    ${TESTS_HDR_BASE}/nomlib/tests/VisualUnitTest/ImageTestSet.hpp
+    ${TESTS_HDR_BASE}/nomlib/tests/VisualUnitTest/VisualUnitTest.hpp
+    ${TESTS_HDR_BASE}/nomlib/tests/VisualUnitTest/ImageDiff.hpp
+    ${TESTS_HDR_BASE}/nomlib/tests/VisualUnitTest/TestResultWriter.hpp
+    ${TESTS_HDR_BASE}/nomlib/tests/VisualUnitTest/VisualUnitTestResultWriter.hpp
+    ${TESTS_HDR_BASE}/nomlib/tests/VisualUnitTest/HTMLTestResultWriter.hpp
+    ${TESTS_HDR_BASE}/nomlib/tests/VisualUnitTest/MinimalTestResultWriter.hpp
+    # FILE_SET generated_headers
+    # TYPE HEADERS
+    # BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}
+    # FILES ${CMAKE_CURRENT_BINARY_DIR}/export.hpp
+  )
+  add_dependencies(nomlib-visual-unit-test gtest)
+
+  target_include_directories(nomlib-visual-unit-test
+    PUBLIC
+    ${PROJECT_SOURCE_DIR}/include # include/nomlib
+    ${PROJECT_SOURCE_DIR}/tests/include
+    PRIVATE
+    ${SDL2_INCLUDE_DIR}
+    ${GTEST_INCLUDE_DIR}
+    # TCLAP v1.2.1-release-final headers only distribution
+    ${TCLAP_INCLUDE_DIR}
+  )
+
+  set_target_properties(nomlib-visual-unit-test
+    PROPERTIES
+      VERSION ${PROJECT_VERSION}
+      SOVERSION ${PROJECT_VERSION_MAJOR}
+      DEBUG_POSTFIX "-d"
+      # >> No support for building test libraries as a shared library target
+      # >> on WIN32
+      CXX_VISIBILITY_PRESET default
+      VISIBILITY_INLINES_HIDDEN FALSE
+  )
+
+  if(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
+    # Skip dllimport/dllexport logic when building as a static library target
+    target_compile_definitions(nomlib-visual-unit-test
+      PUBLIC
+        NOM_STATIC_DEFINE
+    )
+    # Ensure that our target can be cleanly combined or linked by shared
+    # library targets; this adds -fPIC to the build for this unit
+    set_target_properties(nomlib-visual-unit-test
+      PROPERTIES
+        POSITION_INDEPENDENT_CODE ON
+    )
+  endif(LIBRARY_OUTPUT_TYPE MATCHES "STATIC")
+
+  # >> nomlib requires C++14 but GTest 10.x requires min of C++17
+  target_compile_features(nomlib-visual-unit-test
+    PRIVATE
+      cxx_std_17
+  )
+
+  target_link_libraries(nomlib-visual-unit-test
+    PUBLIC
+      nomlib-core
+      nomlib-math
+      nomlib-graphics
+      nomlib-ptree
+      nomlib-serializers
+      nomlib-unit-test
+    PRIVATE
+      project_warnings
+      Threads::Threads
+      ${GTEST_LIBRARY}
+  )
+endif(NOM_BUILD_VISUAL_UNIT_TEST_UNIT)
 
 if( NOM_BUILD_UNIT_TEST_TESTS )
   add_subdirectory("src/UnitTest")
@@ -210,9 +292,9 @@ if( NOM_BUILD_CORE_TESTS )
   add_subdirectory("src/core")
 endif( NOM_BUILD_CORE_TESTS )
 
-if( NOM_BUILD_AUDIO_TESTS )
+if(NOM_BUILD_AUDIO_UNIT AND NOM_BUILD_AUDIO_TESTS)
   add_subdirectory("src/audio")
-endif( NOM_BUILD_AUDIO_TESTS )
+endif()
 
 if( NOM_BUILD_GRAPHICS_TESTS )
   add_subdirectory("src/graphics")
@@ -242,29 +324,9 @@ if( NOM_BUILD_SERIALIZERS_TESTS )
   add_subdirectory("src/serializers")
 endif( NOM_BUILD_SERIALIZERS_TESTS )
 
-# Install library dependencies into tests output directory so we can always
-# execute the binaries with the proper dependency versions.
-if ( PLATFORM_WINDOWS )
-
-  if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
-    set( GTEST_LIBRARY_REDIST_DLL "${GTEST_ROOT}/lib/gtestd.dll" )
-  else()
-    set( GTEST_LIBRARY_REDIST_DLL "${GTEST_ROOT}/lib/gtest.dll" )
-  endif()
-
-  install(  FILES ${GTEST_LIBRARY_REDIST_DLL}
-            DESTINATION ${TESTS_INSTALL_DIR}
-            RENAME "gtest.dll" )
-
-  install ( DIRECTORY
-            ${SDL2_REDIST_DIR}
-            ${SDL2_IMAGE_REDIST_DIR}
-            ${SDL2_TTF_REDIST_DIR}
-            ${OPENAL_REDIST_DIR}
-            ${LIBSNDFILE_REDIST_DIR}
-            ${MSVCPP_REDIST_DIR}
-            DESTINATION
-            ${TESTS_INSTALL_DIR}
-            FILES_MATCHING PATTERN "*.dll"
-          )
-endif ( PLATFORM_WINDOWS )
+# Resources/tests -> <out>/tests/Resources
+#install(DIRECTORY
+#  "${NOM_TESTS_RESOURCES_DIR}"
+#  DESTINATION
+#  "${TESTS_INSTALL_DIR}/Resources"
+#)

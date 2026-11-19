@@ -29,13 +29,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_GRAPHICS_SHAPES_SHAPE_HPP
 #define NOMLIB_GRAPHICS_SHAPES_SHAPE_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/math/Color4.hpp"
 
 namespace nom {
 
-class Shape: public Transformable
+class NOM_EXPORT Shape: public Transformable
 {
   public:
     typedef Shape self_type;
@@ -54,7 +55,7 @@ class Shape: public Transformable
     /// \brief Re-implements the IObject::type method.
     ///
     /// \remarks This uniquely identifies the object's type.
-    ObjectTypeInfo type( void ) const;
+    ObjectTypeInfo type() const override;
 
     /// \brief Obtain the outline color used in rendering a shape.
     const Color4i& outline_color ( void ) const;

@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <vector>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/system/IFile.hpp"
 
@@ -51,14 +52,14 @@ namespace nom {
 class IFile;
 
 /// \brief Platform-agnostic file system interface
-class File
+class NOM_EXPORT File
 {
   public:
     File();
     ~File();
 
     /// Re-implements nom::IFile::extension
-    std::string extension(const std::string& file) const;
+    std::string extension(const std::string& filename) const;
 
     /// Re-implements nom::IFile::size
     int32 size(const std::string& file_path) const;
@@ -111,12 +112,9 @@ class File
 
     /// \see UnixFile::env, WinFile::env.
     std::string env(const std::string& path) const;
-<<<<<<< HEAD
 
     /// \see UnixFile::num_files, WinFile::num_files
     nom::size_type num_files(const std::string& path) const;
-=======
->>>>>>> b78691cf (File: Add const onto the end of methods)
 
   private:
     std::unique_ptr<IFile> file;
@@ -125,7 +123,7 @@ class File
 namespace priv {
 
 /// \brief The root directory path.
-extern std::string file_root_;
+NOM_EXPORT extern std::string file_root_;
 
 } // namespace priv
 
@@ -134,7 +132,7 @@ extern std::string file_root_;
 /// \returns A string containing the directory path root.
 ///
 /// \see nom::set_file_root.
-std::string file_root();
+NOM_EXPORT std::string file_root();
 
 /// \brief Set the root directory path.
 ///
@@ -144,7 +142,7 @@ std::string file_root();
 /// prepend onto a file name to form a complete, absolute path.
 ///
 /// \see nom::BMFont::build
-void set_file_root(const std::string& root);
+NOM_EXPORT void set_file_root(const std::string& root);
 
 } // namespace nom
 

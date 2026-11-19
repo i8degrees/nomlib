@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/actions/IActionObject.hpp"
 #include "nomlib/math/Point2.hpp"
@@ -41,7 +42,7 @@ namespace nom {
 class Sprite;
 
 /// \brief Move a sprite relative to its current position
-class MoveByAction: public virtual IActionObject
+class NOM_EXPORT MoveByAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.

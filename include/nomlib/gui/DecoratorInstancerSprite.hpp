@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_GUI_DECORATOR_INSTANCER_SPRITE_HPP
 #define NOMLIB_GUI_DECORATOR_INSTANCER_SPRITE_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 #include <Rocket/Core/DecoratorInstancer.h>
@@ -39,7 +40,7 @@ namespace nom {
 /// \see http://librocket.com/wiki/documentation/RCSS/Decorators
 ///
 /// \see nom::DecoratorSpriteBatch
-class DecoratorInstancerSprite: public Rocket::Core::DecoratorInstancer
+class NOM_EXPORT DecoratorInstancerSprite: public Rocket::Core::DecoratorInstancer
 {
   public:
     /// \brief Default constructor.

@@ -2,7 +2,7 @@
 
   nomlib - C++11 cross-platform game engine
 
-Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
+Copyright (c) 2013, 2014, 2015 Jeffrey Carpenter <i8degrees@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -31,11 +31,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <sstream>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
 
-struct err
+struct NOM_EXPORT err
 {
   err();
   ~err();
@@ -43,28 +44,37 @@ struct err
   err(const err& rhs);
 
   std::stringstream message;
+  // const char* message = nullptr;
 };
 
-inline std::stringstream& operator <<(std::stringstream& os, const err& error);
+NOM_EXPORT inline std::stringstream& operator <<(std::stringstream& os, const err& error);
+
+/// \brief Get the error state (whether or not an error is set)
+NOM_EXPORT bool error_state();
 
 /// \brief Get the current error.
-std::string error();
+NOM_EXPORT std::string error();
 
 /// \brief Create an error.
-err make_error(const char* message);
+NOM_EXPORT err make_error(const char* message);
 
 /// \brief Set the error message.
 ///
 /// \remarks The global error buffer is cleared.
-void set_error(const err& error);
+NOM_EXPORT void set_error(const err& error);
 
 /// \brief Set the error message.
 ///
 /// \remarks The global error buffer is cleared.
-void set_error(const char* message);
+NOM_EXPORT void set_error(const char* message);
+
+/// \brief Set the error message.
+///
+/// \remarks The global error buffer is cleared.
+NOM_EXPORT void set_error(const std::string& message);
 
 /// \brief Clears the global error buffer.
-void clear_error();
+NOM_EXPORT void clear_error();
 
 // Common error types
 
@@ -92,3 +102,30 @@ const err NULL_ARGUMENT_ERR =
 /// nom::set_error(error);
 /// NOM_LOG_ERR( NOM_LOG_CATEGORY_APPLICATION, nom::error() );
 ///
+/// \brief Get the sampling rate of audio playback.
+///
+/// \see http://www.opensource.apple.com/source/OpenAL/OpenAL-54/Source/OpenAL/READ_ME
+NOM_EXPORT real64 osx_sample_rate();
+
+/// \brief Set the sampling rate of audio playback.
+///
+/// \remarks This allows us to optimize the audio mixing performance based on
+/// the sampling rate of its audio assets.
+///
+/// \see http://www.opensource.apple.com/source/OpenAL/OpenAL-54/Source/OpenAL/READ_ME
+NOM_EXPORT void osx_set_sample_rate(real64 sample_rate);
+
+/// \brief Get the maximum number of simultaneous playing audio buffers.
+///
+/// \see http://www.opensource.apple.com/source/OpenAL/OpenAL-54/Source/OpenAL/READ_ME
+NOM_EXPORT int osx_max_sources();
+
+/// \brief Set the maximum number of simultaneous playing audio buffers.
+///
+/// \see http://www.opensource.apple.com/source/OpenAL/OpenAL-54/Source/OpenAL/READ_ME
+NOM_EXPORT void osx_set_max_sources(int num_sources);
+
+} // namespace audio
+} // namespace nom
+
+#endif // include guard defined

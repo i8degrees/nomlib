@@ -28,11 +28,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "nomlib/serializers/JsonCppDeserializer.hpp"
 
-#include "nomlib/core/helpers.hpp"
+#include "nomlib/core/unique_ptr.hpp"
+#include "nomlib/core/strings.hpp"
 
 // Private headers (third-party)
-#include "jsoncpp/json.h"
-
+#include "json/json.h"
 namespace nom {
 
 JsonCppDeserializer::JsonCppDeserializer( void ) :

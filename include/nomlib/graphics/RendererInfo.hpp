@@ -33,13 +33,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <vector>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 
 namespace nom {
 
 /// \brief Container class for the current renderer driver capabilities
-struct RendererInfo
+struct NOM_EXPORT RendererInfo
 {
   public:
     /// Raw pointer type
@@ -94,6 +95,7 @@ struct RendererInfo
 };
 
 /// Pretty print the available device capabilities
+NOM_EXPORT
 std::ostream& operator << ( std::ostream& os, const RendererInfo& info );
 
 } // namespace nom

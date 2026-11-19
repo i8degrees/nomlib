@@ -1,0 +1,20 @@
+# nomlib.pc.in:jeff
+#
+# pkg-config conf for nomlib
+#
+
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
+
+Name: @PROJECT_NAME@
+Description: @PROJECT_DESC@
+Version: @PROJECT_VERSION@
+Requires:
+Requires.private: @PROJECT_DEPS_PRIVATE@
+Libs.private: -lmp3lame
+
+Cflags: -I${includedir}
+Libs: -L${libdir} @PROJECT_LIBS@
+

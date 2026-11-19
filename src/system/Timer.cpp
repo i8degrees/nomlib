@@ -132,7 +132,9 @@ const std::string Timer::ticksAsString ( void ) const
 
 real32 Timer::to_seconds() const
 {
-  real32 result = this->ticks() / 1000.0f;
+  real32 elapsed_ticks = this->ticks();
+
+  real32 result = this->to_seconds(elapsed_ticks);
 
   return result;
 }
@@ -146,7 +148,7 @@ uint32 Timer::to_milliseconds(real32 seconds)
 
 real32 Timer::to_seconds(uint32 ticks)
 {
-  real32 result = (ticks / 1000.0f);
+  real32 result = (ticks / 1000.0f) * 1.0f;
 
   return result;
 }

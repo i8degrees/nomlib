@@ -29,12 +29,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_SYSTEM_HIGH_RESOLUTION_TIMER_HPP
 #define NOMLIB_SYSTEM_HIGH_RESOLUTION_TIMER_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
 
 /// \brief High-granularity time keeper
-class HighResolutionTimer
+class NOM_EXPORT HighResolutionTimer
 {
   public:
     /// \brief Default constructor.
@@ -70,6 +71,13 @@ class HighResolutionTimer
     ///
     /// \see ::ticks, nom::hires_ticks
     static real64 to_milliseconds(uint64 hires_ticks);
+
+    /// \brief Convert a high resolution timing value to seconds.
+    ///
+    /// \param hires_ticks A high resolution timing value to convert.
+    ///
+    /// \see ::ticks, nom::hires_ticks
+    real64 to_seconds() const;
 
     /// \brief Convert a high resolution timing value to seconds.
     ///

@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Private helpers
 #include "nomlib/core/err.hpp"
-#include "nomlib/core/helpers.hpp"
+#include "nomlib/core/unique_ptr.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 
 // Forward declarations

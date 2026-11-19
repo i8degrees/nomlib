@@ -52,6 +52,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// so we have had to resort to forking a copy of the original source to get
 /// this working.
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/math_helpers.hpp"
 
@@ -73,6 +74,7 @@ namespace nom {
 /* RGB to YUV lookup table */
 extern uint32 RGBtoYUV[16777216];
 
+NOM_NO_EXPORT
 static inline uint32 rgb_to_yuv(uint32 c)
 {
     // Mask against MASK_RGB to discard the alpha channel
@@ -87,18 +89,21 @@ static inline uint32 rgb_to_yuv(uint32 c)
 /// (Original integer types were unsigned integers).
 /// Jeffrey Carpenter <i8degrees@gmail.com> @ 2013-10-01
 /* Test if there is difference in color */
+NOM_NO_EXPORT
 static inline int yuv_diff(int yuv1, int yuv2) {
     return (( abs((yuv1 & Ymask) - (yuv2 & Ymask)) > trY ) ||
             ( abs((yuv1 & Umask) - (yuv2 & Umask)) > trU ) ||
             ( abs((yuv1 & Vmask) - (yuv2 & Vmask)) > trV ) );
 }
 
+NOM_NO_EXPORT
 static inline int32 Diff(uint32 c1, uint32 c2)
 {
     return yuv_diff(rgb_to_yuv(c1), rgb_to_yuv(c2));
 }
 
 /* Interpolate functions */
+NOM_NO_EXPORT
 static inline uint32 Interpolate_2(uint32 c1, int w1, uint32 c2, int32 w2, int32 s)
 {
     if (c1 == c2) {
@@ -110,6 +115,7 @@ static inline uint32 Interpolate_2(uint32 c1, int w1, uint32 c2, int32 w2, int32
         ((((c1 & MASK_13) * w1 + (c2 & MASK_13) * w2) >> s) & MASK_13);
 }
 
+NOM_NO_EXPORT
 static inline uint32 Interpolate_3(uint32 c1, int32 w1, uint32 c2, int32 w2, uint32 c3, int32 w3, int32 s)
 {
     return
@@ -118,60 +124,70 @@ static inline uint32 Interpolate_3(uint32 c1, int32 w1, uint32 c2, int32 w2, uin
         ((((c1 & MASK_13) * w1 + (c2 & MASK_13) * w2 + (c3 & MASK_13) * w3) >> s) & MASK_13);
 }
 
+NOM_NO_EXPORT
 static inline uint32 Interp1(uint32 c1, uint32 c2)
 {
     //(c1*3+c2) >> 2;
     return Interpolate_2(c1, 3, c2, 1, 2);
 }
 
+NOM_NO_EXPORT
 static inline uint32 Interp2(uint32 c1, uint32 c2, uint32 c3)
 {
     //(c1*2+c2+c3) >> 2;
     return Interpolate_3(c1, 2, c2, 1, c3, 1, 2);
 }
 
+NOM_NO_EXPORT
 static inline uint32 Interp3(uint32 c1, uint32 c2)
 {
     //(c1*7+c2)/8;
     return Interpolate_2(c1, 7, c2, 1, 3);
 }
 
+NOM_NO_EXPORT
 static inline uint32 Interp4(uint32 c1, uint32 c2, uint32 c3)
 {
     //(c1*2+(c2+c3)*7)/16;
     return Interpolate_3(c1, 2, c2, 7, c3, 7, 4);
 }
 
+NOM_NO_EXPORT
 static inline uint32 Interp5(uint32 c1, uint32 c2)
 {
     //(c1+c2) >> 1;
     return Interpolate_2(c1, 1, c2, 1, 1);
 }
 
+NOM_NO_EXPORT
 static inline uint32 Interp6(uint32 c1, uint32 c2, uint32 c3)
 {
     //(c1*5+c2*2+c3)/8;
     return Interpolate_3(c1, 5, c2, 2, c3, 1, 3);
 }
 
+NOM_NO_EXPORT
 static inline uint32 Interp7(uint32 c1, uint32 c2, uint32 c3)
 {
     //(c1*6+c2+c3)/8;
     return Interpolate_3(c1, 6, c2, 1, c3, 1, 3);
 }
 
+NOM_NO_EXPORT
 static inline uint32 Interp8(uint32 c1, uint32 c2)
 {
     //(c1*5+c2*3)/8;
     return Interpolate_2(c1, 5, c2, 3, 3);
 }
 
+NOM_NO_EXPORT
 static inline uint32 Interp9(uint32 c1, uint32 c2, uint32 c3)
 {
     //(c1*2+(c2+c3)*3)/8;
     return Interpolate_3(c1, 2, c2, 3, c3, 3, 3);
 }
 
+NOM_NO_EXPORT
 static inline uint32 Interp10(uint32 c1, uint32 c2, uint32 c3)
 {
     //(c1*14+c2+c3)/16;
@@ -179,30 +195,36 @@ static inline uint32 Interp10(uint32 c1, uint32 c2, uint32 c3)
 }
 
 /// Internal function for rescaling using hq2x algorithm
+NOM_NO_EXPORT
 void hq2x_32_rb( uint32* sp, uint32 srb, uint32* dp, uint32 drb, int32 Xres, int32 Yres );
 
 /// Internal function for rescaling using hq3x algorithm
+NOM_NO_EXPORT
 void hq3x_32_rb( uint32* sp, uint32 srb, uint32* dp, uint32 drb, int32 Xres, int32 Yres );
 
 /// Internal function for rescaling using hq4x algorithm
+NOM_NO_EXPORT
 void hq4x_32_rb( uint32* sp, uint32 srb, uint32* dp, uint32 drb, int32 Xres, int32 Yres );
 
 /// Public interface for initialization of hqx algorithm
-void hqxInit ( void );
+NOM_EXPORT void hqxInit ( void );
 
 /// Public interface for scaling a video surface with the hq2x algorithm
 ///
 /// Note that we expect a *source* width & height.
+NOM_EXPORT
 void hq2x_32 ( uint32* src, uint32* dest, int32 width, int32 height );
 
 /// Public interface for scaling a video surface with the hq3x algorithm
 ///
 /// Note that we expect a *source* width & height.
+NOM_EXPORT
 void hq3x_32 ( uint32* src, uint32* dest, int32 width, int32 height );
 
 /// Public interface for scaling a video surface with the hq4x algorithm
 ///
 /// Note that we expect a *source* width & height.
+NOM_EXPORT
 void hq4x_32 ( uint32* src, uint32* dest, int32 width, int32 height );
 
 

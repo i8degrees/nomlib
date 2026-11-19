@@ -12,9 +12,11 @@ C++11 2D game framework using SDL2
 
 First, ensure that you have the following core dependencies installed:
 
-* [cmake v2.8.12+](http://www.cmake.org/)
+* [cmake v3.24 to cmake v4.2.3](http://www.cmake.org/)
+    - `cmake v4.4.x` is **not supported** when building on Mac OSX
 * [git](http://git-scm.com/download/)
 * [doxygen v1.8.x](http://www.stack.nl/~dimitri/doxygen/) and [graphviz](http://www.graphviz.org/) only if you want to generate developer documentation.
+* [vcpkg](https://github.com/microsoft/vcpkg.git)
 
 Next, you should visit the dependencies section for your platform. After these mundane chores are complete, you should be ready to start the building process for your platform!
 
@@ -41,12 +43,11 @@ Upon a successful build, you should have the library modules built as OS X frame
 
 A Linux build is presently under way and can be tracked via the `feature/LinuxPort` git branch. Back in development years of nomlib, circa 2014, `clang` was not a viable build platform (yet!) for Linux. But, now in 2025, the switch over to has aided my porting work. I now have approximately `90%` of the porting work completed.
 
-- 2016 
+- 2016
   - ~~My current platform build options for the feature/LinuxPort branch~~
 
 ```shell
 # 2016
-cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DDEBUG=on -DDEBUG_ASSERT=on -DEXAMPLES=off -DNOM_BUILD_TESTS=on
 # My current platform build options for the feature/LinuxPort branch
 cmake -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DDEBUG=on -DDEBUG_ASSERT=on -DEXAMPLES=off -DNOM_BUILD_TESTS=on -DCMAKE_POLICY_VERSION_MINIMUM=3.5 ..
 make
@@ -58,9 +59,21 @@ make
 
 ```shell
 # 2026
-cmake -S /mnt/fs1/Projects/nomlib.git -B /tmp/nom-debug \
+cmake -S /home/jeff/Projects/nomlib.git -B /tmp/nom-debug \
 -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DDEBUG=on -DDEBUG_ASSERT=on -DEXAMPLES=on -DNOM_BUILD_TESTS=on
 #-DGTEST_ROOT= -DGTEST_INCLUDE_DIR= -DGTEST_LIBRARY=
+```
+
+```shell
+# debug
+cmake -S /home/jeff/Projects/nomlib.git -B /tmp/nomlib-debug \
+-DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DDEBUG=on -DDEBUG_ASSERT=on -DEXAMPLES=on -DNOM_BUILD_TESTS=on
+#-DGTEST_ROOT=/home/jeff/Projects/nomlib.git/third-party/linux/gtest -DGTEST_INCLUDE_DIR=/home/jeff/Projects/nomlib.git/third-party/linux/gtest/include -DGTEST_LIBRARY=/home/jeff/Projects/nomlib.git/third-party/linux/gtest/lib/libgtest.a
+
+# release
+cmake -S /home/jeff/Projects/nomlib.git -B /tmp/nomlib-release \
+-DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DDEBUG=off -DDEBUG_ASSERT=off -DEXAMPLES=on -DNOM_BUILD_TESTS=on
+-DGTEST_ROOT=/home/jeff/Projects/nomlib.git/third-party/linux/gtest -DGTEST_INCLUDE_DIR=/home/jeff/Projects/nomlib.git/third-party/linux/gtest/include -DGTEST_LIBRARY=/home/jeff/Projects/nomlib.git/third-party/linux/gtest/lib/libgtest.a
 ```
 
 ~~Until I get around to writing the proper instructions, you may take a look at my
@@ -70,11 +83,18 @@ cmake -S /mnt/fs1/Projects/nomlib.git -B /tmp/nom-debug \
 
 **NOTE:** Alpha build quality. This has only been tested on MS Windows 7.
 
-After you have the dependencies taken care of, execute the following commands at the DOS prompt:
+```console
+# Download engine dependencies (binaries only)
+set NOM_DEPS_URL="http://downloads.sourceforge.net/project/nomlib/windows/2015-03-15_nomlib-ed23aff_windows-dependencies.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fnomlib%2Ffiles%2Fwindows%2F&ts=1448178827&use_mirror=iweb"
 
-```shell
-git clone https://github.com/i8degrees/nomlib
+wget -O c:\temp\deps.zip %NOM_DEPS_URL%
+
+git clone https://github.com/i8degrees/nomlib.git
 cd nomlib
+
+# Install dependency binaries
+7z x c:\temp\deps.zip -othird-party
+
 mkdir build && cd build
 cmake -G"Visual Studio 12" -DARCH_32=on -DDEBUG=on -DDEBUG_ASSERT=on -DEXAMPLES=off -DNOM_BUILD_TESTS=on ..
 ```
@@ -92,7 +112,7 @@ cmake -D CMAKE_INSTALL_PREFIX=~/Library/Frameworks ..
   - Installation path: -D CMAKE_INSTALL_PREFIX=**\<DIRECTORY_PREFIX\>**
     * Defaults to your current **build** directory
 
-  - Documentation: -D DOCS=**\<BOOLEAN\>**
+  - Documentation: -DNOM_BUILD_DOCS=**\<BOOLEAN\>**
     * Defaults to **OFF**
     * When built (**ON**), the resulting documentation will reside in a new directory named **docs**
 
@@ -120,15 +140,29 @@ See **third-party/README.md** for where to obtain pre-packaged libraries and how
 
 Required version: Microsoft Windows Vista
 
-**NOTE**: This has not been verified.
-
 See **third-party/README.md** for where to obtain pre-packaged libraries and how to install them.
 
-* [Microsoft Visual Studio Express 2013 for Windows](http://www.microsoft.com/visualstudio/eng#downloads)
+### setting up build env
+
+1. [Download and install the Microsoft Visual Studio Build Tools 2022][101].
+The [direct download link][100].
+
+2. In the installer that appears, select the **Desktop Environment with C++**
+workload, and under the *Installation Details* to the right, select
+**C++ Clang Tools for Windows**.
+
+3. Proceed with the install; a restart may be necessary.
+4. From the Start menu, open the **Developer PowerShell for VS 2022**. This sets up the environment variables for you.
+5. Verify that `clang-cl.exe --version` is installed.
 
   - Required software tools in your system PATH
-    * MSVSCPP -- **\<MSVSCPP_INSTALL_PATH\>\bin**
-    * CMake -- **\<CMAKE_INSTALL_PATH\>\bin**
-    * Git -- **\<GIT_INSTALL_PATH\>\bin**
+    * MSVSCPP - `msbuild` & `cl.exe`
+    * CMake - `cmake.exe`
+    * Git - `git.exe`
+    * `vcpkg` - [Install & use packages with CMake][102]
+        * setup `%VCPKG_ROOT%` AKA `$env:VCPKG_ROOT=C:/vcpkg.git` and `$env:PATH += $env:VCPKG_ROOT`
+        * `git clone https://github.com/microsoft/vcpkg.git c:/vcpkg.git`
 
-If this is your first time installing the tools, you might be happy to know that the official installers can do this task for you automatically.
+[100]: https://aka.ms/vs/17/releases/vs_buildtools.exe)
+[101]: https://learn.microsoft.com/en-us/visualstudio/releases/2022/
+[102]: https://learn.microsoft.com/en-us/vcpkg/get_started/get-started?pivots=shell-powershell

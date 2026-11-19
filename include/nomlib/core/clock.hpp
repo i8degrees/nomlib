@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <algorithm>  // std::max
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -52,7 +53,7 @@ const nom::size_type TIME_STRING_SIZE = 26;
 ///
 /// \see http://en.cppreference.com/w/cpp/chrono/c/strftime
 /// \see http://msdn.microsoft.com/en-us/library/fe06s4ak(v=vs.71).aspx
-std::string time( const std::string& format );
+NOM_EXPORT std::string time( const std::string& format );
 
 /// \brief Get the current date and time.
 ///
@@ -64,7 +65,7 @@ std::string time( const std::string& format );
 /// \code
 /// 2014-06-02 02:52:42
 /// \endcode
-std::string timestamp( void );
+NOM_EXPORT std::string timestamp( void );
 
 /// \brief Get the current date and time, made friendly towards use in a file
 /// name.
@@ -77,18 +78,18 @@ std::string timestamp( void );
 /// \code
 /// 2014-06-19_13-25-21
 /// \endcode
-std::string file_timestamp( void );
+NOM_EXPORT std::string file_timestamp( void );
 
 /// SDL helper function
 ///
 /// Wrapper for SDL_GetTicks.
-uint32 ticks( void );
-std::string ticks_as_string( void );
+NOM_EXPORT uint32 ticks( void );
+NOM_EXPORT std::string ticks_as_string( void );
 
 /// SDL_Delay wrapper
 ///
 /// Values below 10 milliseconds are clamped to 10
-void sleep( uint32 milliseconds );
+NOM_EXPORT void sleep( uint32 milliseconds );
 
 /// \brief Get the current value of the high resolution counter.
 ///
@@ -100,7 +101,7 @@ void sleep( uint32 milliseconds );
 ///
 /// \note This is a function wrapper for SDL_GetPerformanceCounter.
 /// \see https://wiki.libsdl.org/SDL_GetPerformanceCounter?highlight=%28%5CbCategoryTimer%5Cb%29%7C%28CategoryEnum%29%7C%28CategoryStruc%29
-uint64 hires_ticks();
+NOM_EXPORT uint64 hires_ticks();
 
 /// \brief Get the count per second of the high resolution counter.
 ///
@@ -110,7 +111,7 @@ uint64 hires_ticks();
 ///
 /// \note This is a function wrapper for SDL_GetPerformanceFrequency.
 /// \see https://wiki.libsdl.org/SDL_GetPerformanceFrequency
-uint64 hires_frequency();
+NOM_EXPORT uint64 hires_frequency();
 
 } // namespace nom
 

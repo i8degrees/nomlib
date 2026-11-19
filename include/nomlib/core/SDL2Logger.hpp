@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_CORE_SDL2_LOGGER_HPP
 #define NOMLIB_CORE_SDL2_LOGGER_HPP
 
+#include "export.hpp"
 #include <sstream>
 #include <string>
 
@@ -169,7 +170,7 @@ namespace priv {
 ///
 /// \remarks This output function supports color output for UNIX (POSIX) and
 /// Windows platforms.
-void log_message( void* ptr, int cat, SDL_LogPriority prio, const char* msg );
+NOM_EXPORT void log_message( void* ptr, int cat, SDL_LogPriority prio, const char* msg );
 
 } // namespace priv
 
@@ -180,13 +181,13 @@ void log_message( void* ptr, int cat, SDL_LogPriority prio, const char* msg );
 /// in the debug output as 255 without explicitly setting the precision to
 /// five (5) or greater.
 template<typename Type>
-void write_debug_output( std::ostream& out, const Type& f )
+NOM_EXPORT void write_debug_output( std::ostream& out, const Type& f )
 {
   out << f;
 }
 
 /// \brief Category & priority message logging API
-class SDL2Logger
+class NOM_EXPORT SDL2Logger
 {
   public:
     typedef SDL2Logger self_type;
@@ -346,7 +347,7 @@ class SDL2Logger
 /// and is intended to be fully compatible & consistent with except where
 /// explicitly stated otherwise.
 ///
-/// \remarks Logging priorities are reset upon a call to SDL_Quit.
+/// \remarks Logging priorities are reset wupon a call to SDL_Quit.
 ///
 /// \see [SDL2 Logging API](https://wiki.libsdl.org/CategoryLog)
 ///

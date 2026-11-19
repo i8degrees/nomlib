@@ -31,13 +31,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/system/Timer.hpp"
 
 namespace nom {
 
 /// \brief FPS timer
-class FPS: public Timer
+class NOM_EXPORT FPS: public Timer
 {
   public:
     FPS ( void );

@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_GRAPHICS_TRANSFORMABLE_HPP
 #define NOMLIB_GRAPHICS_TRANSFORMABLE_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Size2.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
@@ -37,7 +38,7 @@ namespace nom {
 
 // TODO: Consider upgrading containers to Point3f ..?
 
-class Transformable: public virtual IDrawable
+class NOM_EXPORT Transformable: public virtual IDrawable
 {
   public:
     typedef Transformable self_type;
@@ -54,7 +55,7 @@ class Transformable: public virtual IDrawable
     /// \brief Re-implements the IObject::type method.
     ///
     /// \remarks This uniquely identifies the object's type.
-    ObjectTypeInfo type( void ) const;
+    ObjectTypeInfo type() const override;
 
     /// \brief Getter for stored positioning coordinates.
     const Point2i& position( void ) const;

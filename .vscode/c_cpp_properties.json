@@ -1,0 +1,50 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+
+                "${workspaceFolder}/build/debug/vcpkg_installed/x64-linux-dynamic/include**",
+                "${workspaceFolder}/build/debug/vcpkg_installed/x64-linux-dynamic/include/SDL2**",
+                "${workspaceFolder}/build/debug-dynamic/vcpkg_installed/x64-linux-dynamic/include**",
+                "${workspaceFolder}/build/debug-dynamic/vcpkg_installed/x64-linux-dynamic/include/SDL2**",
+                "${workspaceFolder}/build/release/vcpkg_installed/x64-linux-dynamic/include**",
+                "${workspaceFolder}/build/release/vcpkg_installed/x64-linux-dynamic/include/SDL2**",
+                "${workspaceFolder}/build/release-dynamic/vcpkg_installed/x64-linux-dynamic/include**",
+                "${workspaceFolder}/build/release-dynamic/vcpkg_installed/x64-linux-dynamic/include/SDL2**",
+                "${workspaceFolder}/include**",
+                "${workspaceFolder}/tests/include**",
+                "${workspaceFolder}/vendor/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "linux-clang-x64",
+            "configurationProvider": "ms-vscode.makefile-tools",
+            "macFrameworkPath": [
+
+            ]
+        },
+        {
+            "name": "MacOS",
+            "includePath": [
+                "${workspaceFolder}/include/**",
+                "${workspaceFolder}/third-party/osx/**",
+                "${workspaceFolder}/vendor/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "macos-clang-x64",
+            "configurationProvider": "ms-vscode.makefile-tools",
+            "macFrameworkPath": [
+                "${workspaceFolder}/third-party/**",
+                "~/Library/Frameworks",
+                "/usr/local/Frameworks"
+            ]
+        }
+    ],
+    "version": 4
+}

@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/system/Timer.hpp"
 
@@ -48,7 +49,7 @@ class StateMachine;
 ///
 /// \note http://docs.wxwidgets.org/trunk/classwx_app.html
 /// \note http://doc.qt.digia.com/4.6/qapplication.html
-class SDLApp
+class NOM_EXPORT SDLApp
 {
   public:
     typedef SDLApp self_type;
@@ -212,11 +213,8 @@ class SDLApp
     virtual void on_render_targets_reset(const Event& ev);
 
     /// \remarks This is applicable only to Direct3D renderers.
-
-// NOTE: Not available until the release of SDL 2.0.4
-#if 0
+    // NOTE: Not available until the release of SDL 2.0.4
     virtual void on_render_device_reset(const Event& ev);
-#endif
 
     // NOTE: Proposed naming scheme for iOS / Android event handlers
     // virtual void on_app_destroy(const Event& ev);

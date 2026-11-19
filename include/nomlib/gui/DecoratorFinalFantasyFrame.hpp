@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Rocket/Core/Decorator.h>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Rect.hpp"
 
@@ -41,7 +42,7 @@ class IDecorator;
 
 /// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Decorators
 /// \see http://librocket.com/wiki/documentation/RCSS/Decorators
-class DecoratorFinalFantasyFrame : public Rocket::Core::Decorator
+class NOM_EXPORT DecoratorFinalFantasyFrame : public Rocket::Core::Decorator
 {
   public:
     DecoratorFinalFantasyFrame();

@@ -32,11 +32,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
 
-class Timer
+class NOM_EXPORT Timer
 {
   public:
     Timer ( void );

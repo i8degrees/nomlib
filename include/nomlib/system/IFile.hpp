@@ -34,12 +34,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstring>
 #include <vector>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
 
 /// \brief Abstract interface class for Platform-agnostic file access
-class IFile
+class NOM_EXPORT IFile
 {
   public:
     IFile ( void ) {}
@@ -48,7 +49,7 @@ class IFile
     /// Returns the file extension of the input file path
     ///
     /// \returns a null terminated string on err
-    virtual const std::string extension ( const std::string& file ) = 0;
+    virtual const std::string extension ( const std::string& filename ) = 0;
 
     /// Uses stat(2) to determine input file size (in bytes)
     ///
@@ -90,12 +91,13 @@ class IFile
 
     virtual const std::string resource_path( const std::string& identifier = "\0" ) = 0;
 
-    virtual const std::string user_documents_path( void ) = 0;
+    virtual const std::string user_documents_path() = 0;
 
-    virtual const std::string user_app_support_path( void ) = 0;
+    virtual const std::string user_app_support_path() = 0;
 
-    virtual const std::string user_home_path( void ) = 0;
-    virtual const std::string system_path( void ) = 0;
+    virtual const std::string user_home_path() = 0;
+    virtual const std::string system_path() = 0;
+    virtual const std::string system_temp_path() = 0;
 
     virtual bool mkdir( const std::string& path ) = 0;
     virtual bool recursive_mkdir( const std::string& path ) = 0;

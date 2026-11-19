@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <map>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Color4.hpp"
 
@@ -40,7 +41,7 @@ namespace nom {
 /// \brief Container for accessing colors by name (string)
 ///
 /// \see Inspired by http://docs.wxwidgets.org/trunk/classwx_colour_database.html
-class ColorDatabase
+class NOM_EXPORT ColorDatabase
 {
   public:
     typedef ColorDatabase self_type;

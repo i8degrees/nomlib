@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/gui/Decorator.hpp"
 #include "nomlib/gui/FinalFantasyFrame.hpp"
@@ -38,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Minimalistic widget theme style -- a frame (border) box.
-class MinimalDecorator: public Decorator
+class NOM_EXPORT MinimalDecorator: public Decorator
 {
   public:
     typedef MinimalDecorator self_type;

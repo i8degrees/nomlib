@@ -2,9 +2,12 @@
 config.hpp
 version.hpp
 revision.cpp
+nomlib.pc
 
 # project
-build/
+build.*/
+build/*
+!build.*/.placeholder
 .loc.yml
 install_options
 *.sublime-workspace
@@ -14,12 +17,35 @@ install_options
 *.tags_sorted_by_file
 local_env.cmake
 
-# nomlib's github wiki
-wiki
-
 *local_env.cmake*
 
-# TODO(JEFF): Should we even be ignoring user presets???
-#.vscode/CMakeUserPresets.json
+*CMakeUserPresets.json*
 
 node_modules
+
+# Visual Code search index extension
+index.js
+
+# auto-generated documentation
+docs/html/*
+!docs/.placeholder
+
+vendor/prebuilt/**
+third-party*/
+
+# vcpkg related
+vcpkg_installed/*
+!vcpkg-lock.json
+
+# loc env
+report.json
+report.yaml
+
+inference/
+tmp/*
+!tmp/.placeholder
+
+# vim backup state
+.*
+*~*
+

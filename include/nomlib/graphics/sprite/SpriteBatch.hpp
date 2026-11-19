@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_GRAPHICS_SPRITE_BATCH_HPP
 #define NOMLIB_GRAPHICS_SPRITE_BATCH_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Rect.hpp"
 #include "nomlib/graphics/sprite/Sprite.hpp"
@@ -39,7 +40,7 @@ namespace nom {
 // TODO: Consider compositing from nom::Sprite instead of inheriting!
 
 /// \brief Extended sprite rendering using sprite sheets
-class SpriteBatch: public Sprite
+class NOM_EXPORT SpriteBatch: public Sprite
 {
   public:
     typedef SpriteBatch self_type;
@@ -68,7 +69,7 @@ class SpriteBatch: public Sprite
     /// \brief Re-implements the IObject::type method.
     ///
     /// \remarks This uniquely identifies the object's type.
-    ObjectTypeInfo type() const;
+    ObjectTypeInfo type() const override;
 
     /// \brief Implements the required IDrawable::clone method.
     SpriteBatch* clone() const;

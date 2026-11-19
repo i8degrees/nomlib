@@ -31,6 +31,7 @@ Easing algorithms are Copyright (c) 2001 Robert Penner
 #ifndef NOMLIB_ACTIONS_ACTION_TIMING_CURVES_HPP
 #define NOMLIB_ACTIONS_ACTION_TIMING_CURVES_HPP
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 #include <functional>
@@ -42,7 +43,7 @@ namespace nom {
 /// \brief The standard Linear easing class.
 ///
 /// \note This easing class uses a power of one (1).
-struct Linear
+struct NOM_EXPORT Linear
 {
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -51,7 +52,7 @@ struct Linear
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -60,7 +61,7 @@ struct Linear
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -69,13 +70,13 @@ struct Linear
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
 /// \brief The standard Quad easing class.
 ///
 /// \note This easing class uses a power of two (2).
-struct Quad
+struct NOM_EXPORT Quad
 {
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -84,7 +85,7 @@ struct Quad
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -93,7 +94,7 @@ struct Quad
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -102,13 +103,13 @@ struct Quad
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
 /// \brief The standard Cubic easing class.
 ///
 /// \note This easing class uses a power of three (3).
-struct Cubic
+struct NOM_EXPORT Cubic
 {
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -117,7 +118,7 @@ struct Cubic
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -126,7 +127,7 @@ struct Cubic
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -135,13 +136,13 @@ struct Cubic
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
 /// \brief The standard Quart easing class.
 ///
 /// \note This easing class uses a power of four (4).
-struct Quart
+struct NOM_EXPORT Quart
 {
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -150,7 +151,7 @@ struct Quart
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -159,7 +160,7 @@ struct Quart
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -168,13 +169,13 @@ struct Quart
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
 /// \brief The standard Quint easing class -- also known as "Strong".
 ///
 /// \note This easing class uses a power of five (5).
-struct Quint
+struct NOM_EXPORT Quint
 {
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -183,7 +184,7 @@ struct Quint
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -192,7 +193,7 @@ struct Quint
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -201,12 +202,12 @@ struct Quint
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
 // Additional easing classes
 
-struct Back
+struct NOM_EXPORT Back
 {
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -215,7 +216,7 @@ struct Back
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -224,7 +225,7 @@ struct Back
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -233,10 +234,10 @@ struct Back
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
-struct Bounce
+struct NOM_EXPORT Bounce
 {
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -245,7 +246,7 @@ struct Bounce
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -254,7 +255,7 @@ struct Bounce
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -263,10 +264,10 @@ struct Bounce
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
-struct Circ
+struct NOM_EXPORT Circ
 {
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -275,7 +276,7 @@ struct Circ
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -284,7 +285,7 @@ struct Circ
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -293,10 +294,10 @@ struct Circ
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
-struct Elastic
+struct NOM_EXPORT Elastic
 {
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -305,7 +306,7 @@ struct Elastic
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -314,7 +315,7 @@ struct Elastic
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -323,11 +324,11 @@ struct Elastic
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
 /// \note This easing class uses a power of ten (10).
-struct Expo
+struct NOM_EXPORT Expo
 {
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -336,7 +337,7 @@ struct Expo
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -345,7 +346,7 @@ struct Expo
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -354,10 +355,10 @@ struct Expo
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
-struct Sine
+struct NOM_EXPORT Sine
 {
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -366,7 +367,7 @@ struct Sine
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -375,7 +376,7 @@ struct Sine
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_out(real32 t, real32 b, real32 c, real32 d);
 
   /// \param t The elapsed time.
   /// \param b The initial value to interpolate from.
@@ -384,9 +385,10 @@ struct Sine
   ///
   /// \remarks The elapsed time and total duration time must be expressed in
   /// the same time units.
-  static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
+  NOM_EXPORT static real32 ease_in_out(real32 t, real32 b, real32 c, real32 d);
 };
 
+NOM_EXPORT
 std::function<real32(real32, real32, real32, real32)>
 make_timing_curve_from_string(const std::string& timing_mode);
 

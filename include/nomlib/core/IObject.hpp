@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace nom {
 
 /// \brief Root object hierarchy for object type identification (RTTI).
-class IObject
+class NOM_EXPORT IObject
 {
   public:
     typedef IObject self_type;
@@ -116,13 +116,13 @@ class IObject
 };
 
 /// \brief Equality comparison operator.
-inline bool operator ==( const IObject& lhs, const IObject& rhs )
+NOM_EXPORT inline bool operator ==( const IObject& lhs, const IObject& rhs )
 {
   return( &lhs == &rhs );
 }
 
 /// \brief In-equality comparison operator.
-inline bool operator !=( const IObject& lhs, const IObject& rhs )
+NOM_EXPORT inline bool operator !=( const IObject& lhs, const IObject& rhs )
 {
   return ! ( &lhs == &rhs );
 }

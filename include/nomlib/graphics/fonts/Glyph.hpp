@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <map>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Rect.hpp"
 
@@ -40,7 +41,7 @@ namespace nom {
 const std::string GLYPH_DELIMITER = ", ";
 
 /// \brief Container structure for font data
-struct Glyph
+struct NOM_EXPORT Glyph
 {
   Glyph ( void );
 
@@ -67,15 +68,19 @@ struct Glyph
 typedef std::map<uint32, Glyph> GlyphAtlas;
 
 /// Pretty print the glyph
+NOM_EXPORT
 inline std::ostream& operator << ( std::ostream& os, const Glyph& mode );
 
 /// Compare two glyphs for equality
+NOM_EXPORT
 inline bool operator == ( const Glyph& lhs, const Glyph& rhs );
 
 /// Compare two glyphs for less-than equality
+NOM_EXPORT
 inline bool operator < ( const Glyph& lhs, const Glyph& rhs );
 
 /// Compare two glyphs for greater-than equality
+NOM_EXPORT
 inline bool operator > ( const Glyph& lhs, const Glyph& rhs );
 
 } // namespace nom

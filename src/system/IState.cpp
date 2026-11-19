@@ -86,6 +86,11 @@ IState::Type IState::type( void ) const
   return this->type_;
 }
 
+std::string IState::input_context() const
+{
+  return "";
+}
+
 bool IState::on_event(const Event& ev)
 {
   // User-defined virtual

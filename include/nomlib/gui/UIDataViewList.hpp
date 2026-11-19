@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point2.hpp"
 #include "nomlib/math/Size2.hpp"
@@ -48,7 +49,7 @@ namespace Controls {
 namespace nom {
 
 /// \see http://librocket.com/wiki/documentation/tutorials/Datagrid
-class UIDataViewList: public nom::UIWidget
+class NOM_EXPORT UIDataViewList: public nom::UIWidget
 {
   public:
     /// \brief Default constructor; initialize default selection.

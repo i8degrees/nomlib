@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point2.hpp"
 #include "nomlib/math/Size2.hpp"
@@ -56,7 +57,7 @@ class IUIEventHandler;
 /// \brief libRocket context abstraction
 ///
 /// \todo Consider inheriting off nom::IDrawable?
-class UIContext
+class NOM_EXPORT UIContext
 {
   public:
     typedef UIContext self_type;

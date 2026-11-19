@@ -91,6 +91,7 @@ elseif( CMAKE_SYSTEM_NAME STREQUAL "Windows" )
   set( NOM_PLATFORM_WINDOWS TRUE )
 elseif( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
   set( NOM_PLATFORM_LINUX TRUE )
+  set( NOM_PLATFORM_POSIX TRUE )
 endif( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
 
 # The path **prefixes** used in the search for nomlib library components; used

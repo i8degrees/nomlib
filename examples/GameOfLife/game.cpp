@@ -1,0 +1,497 @@
+/******************************************************************************
+
+  nomlib - C++11 cross-platform game engine
+
+Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+******************************************************************************/
+
+//
+//  GameOfLife
+//
+//  Created by Fielding Johnston on 3/11/13.
+//
+// https://github.com/justfielding/GameOfLife
+//
+//
+
+#include <iostream>
+#include <string>
+#include <random> // FIXME
+#include <vector>
+
+// Pubic nomlib interface headers
+#include "nomlib/math.hpp"
+#include "nomlib/system.hpp"
+#include "nomlib/graphics.hpp"
+
+using namespace nom;
+
+#define GAMEOFLIFE_DEBUG 0
+
+/// Resolve the GameOfLife resource directory relative to the executable.
+///
+/// Candidate layouts include:
+///   - <exe>/Resources/GameOfLife
+///   - <exe>/../Resources/GameOfLife             (macOS bundle)
+///   - <exe>/../../Resources/GameOfLife            (development build/<cfg>)
+///   - <exe>/../../../Resources/GameOfLife          (CMake build/<cfg>/bin)
+///   - <exe>/../share/nomlib/Resources/GameOfLife   (installed prefix layout)
+filesystem::path find_resource_dir( const char* argv0 )
+{
+  filesystem::path argv_path( argv0 );
+  filesystem::path exe_dir;
+
+  if( argv_path.is_absolute() )
+  {
+    exe_dir = argv_path.parent_path();
+  }
+  else
+  {
+    exe_dir = ( filesystem::current_path() / argv_path ).parent_path();
+  }
+
+  const std::vector<filesystem::path> candidates = {
+    exe_dir / "Resources" / "GameOfLife",
+    exe_dir / ".." / "Resources" / "GameOfLife",
+    exe_dir / ".." / ".." / "Resources" / "GameOfLife",
+    exe_dir / ".." / ".." / ".." / "Resources" / "GameOfLife",
+    exe_dir / ".." / "share" / "nomlib" / "Resources" / "GameOfLife"
+  };
+
+  for( const auto& c : candidates ) {
+    if( filesystem::is_directory( c ) ) {
+      return c;
+    }
+  }
+
+  // Preserve the preferred fallback even when nothing exists.
+  return candidates.at(0);
+}
+
+/// \brief Resource path helpers; populated at runtime from executable location.
+std::string RESOURCE_ICON;
+std::string IMG_CREEP;
+std::string BG_LIGHT;
+std::string BG_DARK;
+
+/// Initialize resource paths using the executable's filesystem location.
+void init_resource_paths( const char* argv0 )
+{
+  filesystem::path base = find_resource_dir( argv0 );
+
+  RESOURCE_ICON = ( base / "assets" / "icn" / "creep.png" ).native();
+  IMG_CREEP = ( base / "assets" / "img" / "creep_16.png" ).native();
+  BG_LIGHT = ( base / "assets" / "img" / "bglight.png" ).native();
+  BG_DARK = ( base / "assets" / "img" / "bgdark.png" ).native();
+}
+
+/// \brief Relative filename path to saved screen shot example
+///
+/// Default path should resolve to the same directory as the app example
+/// executable
+const std::string OUTPUT_SCREENSHOT_FILENAME = "screenshot.png";
+
+/// \brief Name of our application.
+const std::string APP_NAME = "GameOfLife";
+
+/// \brief Length and width for the square viewing area
+///
+/// \remarks WINDOW_WIDTH & WINDOW_HEIGHT
+const nom::int32 BOARD_SIZE = 2048;
+
+/// \brief length and width (in pixels) for the square cells
+const nom::sint CELL_SIZE = 16;
+
+/// \brief Maximum number of active windows we will attempt to spawn in this
+/// example.
+const nom::int32 MAXIMUM_WINDOWS = 1;
+
+/// \brief Usage example
+class App: public nom::SDLApp
+{
+  public:
+    App( nom::int32 argc, char* argv[] )
+    {
+      NOM_LOG_TRACE( NOM );
+
+      // Locate the GameOfLife resources relative to the executable before
+      // nom::init changes the working directory.
+      init_resource_paths( argv[0] );
+
+      // Fatal error; if we are not able to complete this step, it means that
+      // we probably cannot rely on our resource paths!
+      if( nom::init( argc, argv ) == false )
+      {
+        nom::DialogMessageBox( APP_NAME, "ERROR: Could not initialize nomlib." );
+        exit( NOM_EXIT_FAILURE );
+      }
+
+      atexit( nom::quit );
+    } // end App
+
+    ~App( void )
+    {
+      NOM_LOG_TRACE( NOM );
+    } // end ~App
+
+    bool on_init( void ) override
+    {
+      nom::uint32 window_flags = SDL_WINDOW_RESIZABLE;
+
+      if(this->window.create(APP_NAME,
+        Point2i(0,0), 0,
+        Size2i(BOARD_SIZE, BOARD_SIZE), window_flags) == false) {
+        return false;
+      }
+
+      if(this->window.set_window_icon(RESOURCE_ICON) == false) {
+        nom::DialogMessageBox( APP_NAME, "ERROR: Could not load window icon: " + RESOURCE_ICON );
+        return false;
+      }
+
+      auto window_size = this->window.size();
+      auto window_width = window_size.w;
+      auto window_height = window_size.h;
+      // Scale window contents up by the new width & height
+      this->window.set_logical_size(window_size);
+
+      if( this->creep.load( IMG_CREEP ) == false )
+      {
+        nom::DialogMessageBox( APP_NAME, "ERROR: Could not load resource file: " + IMG_CREEP );
+        return false;
+      }
+
+      if( this->bg_light.load( BG_LIGHT ) == false )
+      {
+        nom::DialogMessageBox( APP_NAME, "ERROR: Could not load resource file: " + BG_LIGHT );
+        return false;
+      }
+
+      if( this->bg_dark.load( BG_DARK ) == false )
+      {
+        nom::DialogMessageBox( APP_NAME, "ERROR: Could not load resource file: " + BG_DARK );
+        return false;
+      }
+
+      SDLApp::set_event_handler(this->evt_handler);
+
+      this->spawn();
+
+      return true;
+    } // end on_init
+
+    void on_update( float ) override
+    {
+      // Rules:
+      // 1. Any live cell with fewer than two live neighbours dies, as if caused by under-population.
+      // 2. Any live cell with two or three live neighbours lives on to the next generation.
+      // 3. Any live cell with more than three live neighbours dies, as if by overcrowding.
+      // 4. Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+      for ( int x = 0; x < BOARD_SIZE / CELL_SIZE; x++ )
+      {
+        for ( int y = 0; y < BOARD_SIZE / CELL_SIZE; y++ )
+        {
+          int neighbors = checkNeighbors( x, y );
+
+          if ( neighbors < 2 && grid[x][y] == 1 )
+          {
+            if( GAMEOFLIFE_DEBUG ){ std::cout<<x<<","<<y<<" has died from under-population!\n"; }
+            bufferGrid[x][y] = 0;
+          } else if ( (neighbors == 2 || neighbors == 3) && grid[x][y] == 1)
+          {
+            if( GAMEOFLIFE_DEBUG ){ std::cout<<x<<","<<y<<" has a healthy amount of neighbors and lives on!\n"; }
+            bufferGrid[x][y] = 1;
+          } else if ( neighbors > 3 && grid[x][y] == 1)
+          {
+            if( GAMEOFLIFE_DEBUG ){ std::cout<<x<<","<<y<<" has died from overcrowding!\n"; }
+            bufferGrid[x][y] = 0;
+
+          } else if ( neighbors == 3 && grid[x][y] == 0)
+          {
+            if( GAMEOFLIFE_DEBUG ){ std::cout<<"A new cell has been born at "<<x<<","<<y<<"!\n"; }
+            bufferGrid[x][y] = 1;
+          }
+        }
+      }
+
+      for ( int x = 0; x < BOARD_SIZE / CELL_SIZE; x++ )
+      {
+        for ( int y = 0; y < BOARD_SIZE / CELL_SIZE; y++ )
+        {
+          grid[x][y] = bufferGrid[x][y];
+        }
+      }
+    }
+
+    void on_draw( nom::IDrawable::RenderTarget& target )
+    {
+      for ( int x = 0; x < BOARD_SIZE / CELL_SIZE; x++ )
+      {
+        for ( int y = 0; y < BOARD_SIZE / CELL_SIZE; y++ )
+        {
+          nom::Point2i offset;
+          offset.x = x * CELL_SIZE;
+          offset.y = y * CELL_SIZE;
+
+          if ( grid[x][y] == 1 )
+          {
+            this->creep.set_position( offset );
+            this->creep.draw( target );
+          }
+          else
+          {
+            if ( y % 2 != 0 && x % 2 == 0 )
+            {
+              this->bg_dark.set_position( offset );
+              this->bg_dark.draw( target );
+            }
+            else
+            {
+              this->bg_light.set_position( offset );
+              this->bg_light.draw( target );
+            }
+          }
+        }
+      }
+    }
+
+    /// \brief The default event handler for input events.
+    void on_input_event(const nom::Event& ev) override
+    {
+      switch(ev.type)
+      {
+        default: break;
+
+        case nom::Event::KEY_PRESS:
+        {
+          this->on_key_down(ev);
+        } break;
+
+        case nom::Event::MOUSE_WHEEL:
+        {
+          this->on_mouse_wheel(ev);
+        } break;
+        case nom::Event::MOUSE_BUTTON_CLICK:
+        {
+          std::cout << "mouse x = " << ev.mouse.x << " mouse y = " << ev.mouse.y << std::endl;
+          spawn(nom::Point2i(ev.mouse.x, ev.mouse.y));
+
+        } break;
+      } // end switch key
+    } // onKeyDown
+
+    nom::sint Run(void) override
+    {
+      this->fps_update.start();
+      this->fps.start();
+
+      //while( this->evt_handler.poll_event(evt) == true ) {}
+
+      // 1. Events
+      // 2. Logic
+      // 3. Render
+      while( this->running() == true )
+      {
+        nom::Event evt;
+        while( this->evt_handler.poll_event(evt) == true ) {}
+        // while( this->evt_handler.poll_event(evt) == true ) {
+          // NOTE: Pending events will be handled by the event listeners that
+          // were given an EventHandler object via ::set_event_handler.
+        // }
+
+        this->window.update();
+        this->fps.update();
+
+        // Refresh the frames per second at 1 second intervals
+        if (this->fps_update.ticks() > 1000) {
+          if(this->show_fps() == true) {
+            this->window.set_window_title( APP_NAME + " - " + this->fps.asString() + ' ' + "fps" );
+          }
+          else {
+            this->window.set_window_title( APP_NAME + " [" + std::to_string(this->window.window_id()) + "]" + " - " + "Display" + ' ' + std::to_string ( this->window.window_display_id() ) );
+          }
+
+          this->fps_update.restart();
+        } // end refresh cycle
+
+        this->on_update(nom::ticks());
+        this->window.fill(nom::Color4i::Black);
+        this->on_draw(this->window);
+
+        // nom::sleep( 500 ); // wait .5 seconds
+
+      } // end while SDLApp::running() is true
+
+      return NOM_EXIT_SUCCESS;
+    } // end Run()
+
+  private:
+    /// \brief Event handler for key down actions
+    ///
+    /// \remarks Implements nom::Input::on_key_down
+    void on_key_down( const nom::Event& ev )
+    {
+      switch(ev.key.sym)
+      {
+        default: break;
+
+        // Use inherited SDLApp::on_app_quit method -- you may also provide your
+        // own event handler for this.
+        case SDLK_ESCAPE:
+        case SDLK_q: this->on_app_quit( ev ); break;
+
+        case SDLK_BACKSLASH:
+        {
+          if ( this->toggle_fps() )
+          {
+            // Stub for doing something cool here
+          }
+          else
+          {
+            // Stub for doing something cool here
+          }
+          break;
+        }
+
+        case SDLK_F1:
+        {
+          if( this->window.save_screenshot(OUTPUT_SCREENSHOT_FILENAME) == false) {
+            nom::DialogMessageBox( APP_NAME, "ERROR: Could not save screenshot");
+          } // end save_screenshot err check
+        } break;
+
+        // Toggle full-screen
+        case SDLK_f:
+        {
+          this->window.toggle_fullscreen();
+        } break; // end SDLK_f
+      } // end switch key
+    } // end on_key_down
+
+    void on_mouse_wheel(const nom::Event& ev)
+    {
+      if(ev.wheel.y > 0) {
+        // Up move
+      } else if(ev.wheel.y < 0) {
+        // Down move
+      }
+    }
+
+    void spawn(const Point2i& init_pos, int32 board_width = BOARD_SIZE,
+      int32 board_height = BOARD_SIZE)
+    {
+
+      // fill the array with random cells
+      int rando = 0;
+      srand( NOM_SCAST(uint, time( nullptr ) ) ); // FIXME
+
+      for ( int x = init_pos.x; x < board_width / CELL_SIZE; x++ )
+      {
+        for ( int y = init_pos.y; y < board_height / CELL_SIZE; y++ )
+        {
+          // rando = rand() % 2;
+          rando = rando + 1;
+          grid[x][y] = rando;
+          std::cout<<"Setting square at "<<x<<","<<y<<" to "<<grid[x][y]<<"\n";
+        }
+      }
+    }
+
+    void spawn() {
+      // fill the array with random cells
+      int rando = 0;
+      srand( NOM_SCAST(uint, time( nullptr ) ) ); // FIXME
+
+      for ( int x = 0; x < BOARD_SIZE / CELL_SIZE; x++ )
+      {
+        for ( int y = 0; y < BOARD_SIZE / CELL_SIZE; y++ )
+        {
+          rando = rand() % 2;
+          grid[x][y] = rando;
+          if ( GAMEOFLIFE_DEBUG ){ std::cout<<"Setting square at "<<x<<","<<y<<" to "<<grid[x][y]<<"\n"; }
+        }
+      }
+    }
+
+    int checkNeighbors( int x, int y )
+    {
+      int ncount = 0;
+      if ( GAMEOFLIFE_DEBUG ){ std::cout<<"Checking neighbor cells for " << x << "," << y << ".\n"; }
+      for ( int a = x - 1; a <= x + 1; a++ )
+      {
+        for ( int b = y - 1; b <= y + 1; b++)
+        {
+          if ( grid[a][b] == 1 && a >= 0 && a <= ( BOARD_SIZE / CELL_SIZE - 1 ) && b >= 0 && b <= ( BOARD_SIZE / CELL_SIZE - 1 ) )
+          {
+            ncount++;
+          }
+        }
+      }
+
+      if ( grid[x][y] ) { ncount--; } // subtract self from neighbor count if currently living
+      if ( GAMEOFLIFE_DEBUG ){ std::cout<<x<<","<<y<<" has "<< ncount << " current neighbor cells.\n"; }
+
+      return ncount;
+    }
+
+    // Create a grid based on total board size and each cell size
+    nom::sint grid[BOARD_SIZE / CELL_SIZE][BOARD_SIZE / CELL_SIZE] = {{ 0 }};
+    nom::sint bufferGrid[BOARD_SIZE / CELL_SIZE][BOARD_SIZE / CELL_SIZE] = {{ 0 }};
+
+    /// \brief Window handles
+    ///
+    /// \TODO Use std::vector?
+    //nom::RenderWindow window[MAXIMUM_WINDOWS];
+    nom::RenderWindow window;
+
+    nom::Point2i window_size;
+
+    /// \brief Interval at which we refresh the frames per second counter
+    nom::Timer fps_update;
+
+    /// \brief Timer for tracking frames per second
+    nom::FPS fps;
+
+    nom::Texture creep;
+    nom::Texture bg_light;
+    nom::Texture bg_dark;
+
+    nom::EventHandler evt_handler;
+}; // end class App
+
+nom::sint main( nom::int32 argc, char* argv[] )
+{
+  App game( argc, argv );
+
+  if( game.on_init() == false )
+  {
+    nom::DialogMessageBox( APP_NAME, "ERROR: Could not initialize application." );
+    return NOM_EXIT_FAILURE;
+  }
+
+  return game.Run();
+
+  // ...Goodbye cruel world!
+}

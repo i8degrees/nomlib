@@ -1,0 +1,43 @@
+
+#include "nomlib/audio/init.hpp"
+#include "nomlib/audio/ALAudioRenderer.hpp"
+#include "nomlib/audio/AudioDeviceLocator.hpp"
+#include "nomlib/audio/SoundManager.hpp"
+
+#include <iostream>
+
+using namespace nom;
+
+namespace nom {
+namespace audio {
+
+bool init_audio(uint32 channels)
+{
+  auto dev = new ALAudioRenderer(channels);
+  if(dev == nullptr) {
+    std::cerr << "Failed to allocate memory for audio system." << std::endl;
+    return false;
+  }
+
+  AudioDeviceLocator::setup_provider(dev);
+  return true;
+}
+
+void shutdown_audio()
+{
+  NOM_LOG_TRACE(NOM);
+  // Release the renderer first so it detaches any sound sources that still
+  // reference managed Sound objects.
+  AudioDeviceLocator::release();
+  SoundManager::free_sounds();
+}
+
+#if defined(EXPERIMENTAL)
+bool init_audio_input(uint32 channels)
+{
+  auto dev = new ALAudioRenderer();
+}
+#endif
+
+} // namespace audio
+} // namespace nom

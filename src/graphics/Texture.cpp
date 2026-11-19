@@ -355,7 +355,7 @@ NOM_LOG_ERR ( NOM, SDL_GetError() );
   return format;
 }
 
-const SDL_BlendMode Texture::blend_mode ( void ) const
+SDL_BlendMode Texture::blend_mode ( void ) const
 {
   SDL_BlendMode blend;
 

@@ -33,12 +33,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <iterator>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 
 namespace nom {
 
-class Drawables
+class NOM_EXPORT Drawables
 {
   public:
     typedef Drawables self_type;

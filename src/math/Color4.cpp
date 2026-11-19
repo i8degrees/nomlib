@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/math/Color4.hpp"
 
 // Private headers
-#include "nomlib/core/helpers.hpp"
+#include "nomlib/core/strings.hpp"
 
 namespace nom {
 
@@ -74,7 +74,66 @@ template <> const Color4f Color4f::Yellow (1.0f, 1.0f, 0.0f);
 template <> const Color4f Color4f::Magenta (1.0f, 0.0f, 1.0f);
 template <> const Color4f Color4f::Cyan (0.0f, 1.0f, 1.0f);
 
-Color4i make_color_from_string(const std::string& color)
+Color4i
+make_color_from_hex_string(const std::string& hex_encoding)
+{
+  std::string hex_str = hex_encoding;
+  auto hex_str_len = hex_encoding.length();
+  nom::size_type pos = 1;               // string position
+  const nom::size_type NUM_CHARS = 2;   // increment by
+  Color4i result = Color4i::Black;      // catch-all case
+
+  if(hex_str.empty() == true) {
+    return result;
+  }
+
+  if(hex_str[0] != '#') {
+    pos = 0;
+  }
+
+  std::string red_str;
+  std::string green_str;
+  std::string blue_str;
+
+  if(hex_str_len < 2) {
+    red_str = "0";
+  } else {
+    red_str = hex_encoding.substr(pos, NUM_CHARS);
+    pos += NUM_CHARS;
+  }
+
+  red_str = "0x" + red_str;
+
+  if(hex_str_len < 3) {
+    green_str = "0";
+  } else {
+    green_str = hex_encoding.substr(pos, NUM_CHARS);
+    pos += NUM_CHARS;
+  }
+
+  green_str = "0x" + green_str;
+
+  if(hex_str_len < 6) {
+    blue_str = "0";
+  } else {
+    blue_str = hex_encoding.substr(pos, NUM_CHARS);
+  }
+
+  blue_str = "0x" + blue_str;
+
+  int red_channel = nom::string_to_int(red_str.c_str());
+  int green_channel = nom::string_to_int(green_str.c_str());
+  int blue_channel = nom::string_to_int(blue_str.c_str());
+
+  result.r = red_channel;
+  result.g = green_channel;
+  result.b = blue_channel;
+
+  return result;
+}
+
+Color4i
+make_color_from_string(const std::string& color)
 {
   Color4i result(Color4i::Transparent);
 

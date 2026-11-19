@@ -50,4 +50,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/actions/GroupAction.hpp>
 #include <nomlib/actions/ActionPlayer.hpp>
 
+// Audio actions are disabled pending migration to the new nomlib-audio API.
+// #include <nomlib/actions/FadeAudioGainBy.hpp>
+// #include <nomlib/actions/PlayAudioSource.hpp>
+
 #endif // include guard defined

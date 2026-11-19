@@ -112,6 +112,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #define NOM_RDTSC() nom::rdtsc()
 #endif // MS Windows && MSVCPP
 
+#include "export.hpp"
+
 namespace nom {
 
 enum Platform
@@ -124,7 +126,7 @@ enum Platform
   NUM_PLATFORMS,          /// Total number of platforms
 };
 
-struct PlatformSpec
+struct NOM_EXPORT PlatformSpec
 {
   /// \brief The platform name.
   const char* name = "Unknown";
@@ -142,7 +144,7 @@ struct PlatformSpec
   int total_ram = 0;
 };
 
-PlatformSpec platform_info();
+NOM_EXPORT PlatformSpec platform_info();
 
 } // namespace nom
 

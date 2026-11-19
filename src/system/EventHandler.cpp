@@ -31,7 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Private headers
 #include "nomlib/core/err.hpp"
 #include "nomlib/core/clock.hpp"
-#include "nomlib/core/helpers.hpp"
+#include "nomlib/core/strings.hpp"
+#include "nomlib/core/unique_ptr.hpp"
 #include "nomlib/system/SDL_helpers.hpp"
 #include "nomlib/system/JoystickEventHandler.hpp"
 #include "nomlib/system/GameControllerEventHandler.hpp"
@@ -75,7 +76,7 @@ EventHandler::~EventHandler()
                       NOM_LOG_PRIORITY_VERBOSE );
 
   auto enable_report = nom::hint("NOM_EVENT_QUEUE_STATISTICS");
-  if( nom::string_to_integer(enable_report) != 0 ) {
+  if( nom::string_to_int(enable_report.c_str()) != 0 ) {
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_APPLICATION,
                     "num_events:", this->num_events() );
     NOM_LOG_DEBUG(  NOM_LOG_CATEGORY_APPLICATION,
@@ -229,10 +230,11 @@ void EventHandler::remove_event_watch(const event_filter& filter)
   auto& evt_watch = this->event_watchers_;
   for( auto itr = evt_watch.begin(); itr != evt_watch.end(); ++itr ) {
 
-    event_filter* callback = (*itr)->callback.target<event_filter>();
-    const event_filter* arg = filter.target<event_filter>();
-
-    if( callback == arg ) {
+    // Match on the stored callable type; watches created from distinct
+    // lambda expressions have distinct target types.
+    if( (*itr)->callback != nullptr &&
+        (*itr)->callback.target_type() == filter.target_type() )
+    {
       evt_watch.erase(itr);
       return;
     }
@@ -884,15 +886,14 @@ void EventHandler::process_event(const SDL_Event* ev)
       event.timestamp = nom::ticks();
     } break;
 
-// NOTE: Not available until the release of SDL 2.0.4
-#if 0
+    // NOTE: Not available until the release of SDL 2.0.4
     case SDL_RENDER_DEVICE_RESET:
     {
       Event event;
       event.type = Event::RENDER_DEVICE_RESET;
       event.timestamp = nom::ticks();
     } break;
-#endif
+
     case SDL_USEREVENT:
     {
       nom::Event event;

@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <iterator>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/ptree/ptree_config.hpp"
 #include "nomlib/ptree/ptree_types.hpp"
@@ -40,7 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
-class ValueIteratorBase
+class NOM_EXPORT ValueIteratorBase
 {
   public:
     typedef ValueIteratorBase SelfType;

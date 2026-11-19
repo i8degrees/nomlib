@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/sprite/SpriteSheet.hpp"
 
 // Private headers
-#include "nomlib/core/helpers.hpp"
+#include "nomlib/core/unique_ptr.hpp"
 #include "nomlib/serializers/JsonCppSerializer.hpp"
 #include "nomlib/serializers/JsonCppDeserializer.hpp"
 

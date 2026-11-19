@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Forward declarations
 #include "nomlib/system/IState.hpp"
 #include "nomlib/system/Event.hpp"
+#include "nomlib/system/InputMapper/InputStateMapper.hpp"
 #include "nomlib/graphics/RenderWindow.hpp"
 
 namespace nom {
@@ -61,6 +62,58 @@ StateMachine::~StateMachine()
 uint32 StateMachine::count() const
 {
   return this->states_.size();
+}
+
+void StateMachine::set_input_mapper( InputStateMapper* mapper )
+{
+  this->input_mapper_ = mapper;
+}
+
+InputStateMapper* StateMachine::input_mapper() const
+{
+  return this->input_mapper_;
+}
+
+void StateMachine::activate_input_context( const IState& state )
+{
+  if( this->input_mapper_ == nullptr ) {
+    return;
+  }
+
+  const std::string ctx = state.input_context();
+  if( ctx.empty() ) {
+    return;
+  }
+
+  this->input_mapper_->activate( ctx );
+}
+
+void StateMachine::disable_input_context( const IState& state )
+{
+  if( this->input_mapper_ == nullptr ) {
+    return;
+  }
+
+  const std::string ctx = state.input_context();
+  if( ctx.empty() ) {
+    return;
+  }
+
+  this->input_mapper_->disable( ctx );
+}
+
+void StateMachine::erase_input_context( const IState& state )
+{
+  if( this->input_mapper_ == nullptr ) {
+    return;
+  }
+
+  const std::string ctx = state.input_context();
+  if( ctx.empty() ) {
+    return;
+  }
+
+  this->input_mapper_->erase( ctx );
 }
 
 uint32 StateMachine::current_state_id( void ) const
@@ -176,11 +229,13 @@ void StateMachine::update( float delta )
         if( ! this->states_.empty() )
         {
           this->states_.back()->on_exit( this->next_state_.data );
+          this->erase_input_context( *this->states_.back() );
           this->states_.pop_back();
         }
 
         this->states_.push_back( std::move( this->next_state_.state ) );
         this->states_.back()->on_init( this->next_state_.data );
+        this->activate_input_context( *this->states_.back() );
 
         // Next state is now in existence; no longer a pending state
         this->next_state_.deferred = false;
@@ -196,10 +251,12 @@ void StateMachine::update( float delta )
         if( ! this->states_.empty() )
         {
           this->states_.back()->on_pause( this->next_state_.data );
+          this->disable_input_context( *this->states_.back() );
         }
 
         this->states_.push_back( std::move( this->next_state_.state ) );
         this->states_.back()->on_init( this->next_state_.data );
+        this->activate_input_context( *this->states_.back() );
 
         // Next state is now in existence; no longer a pending state
         this->next_state_.deferred = false;
@@ -217,9 +274,14 @@ void StateMachine::update( float delta )
       if( this->states_.size() > 1 )
       {
         this->states_.back()->on_exit( this->next_state_.data );
+        this->erase_input_context( *this->states_.back() );
         this->states_.pop_back();
         this->states_.back()->on_resume( this->next_state_.data );
+        this->activate_input_context( *this->states_.back() );
       }
+
+      this->next_state_.deferred = false;
+      this->next_state_.data = nullptr;
     }
   } // end if next_state is deferred
 }

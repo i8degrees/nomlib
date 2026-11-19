@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <map>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/system/Event.hpp"
 
@@ -43,7 +44,7 @@ class InputAction;
 /// \brief High-level API for associating names with input actions.
 ///
 /// \remarks See also, nom::InputAction.
-class InputActionMapper
+class NOM_EXPORT InputActionMapper
 {
   public:
     friend class InputStateMapper;

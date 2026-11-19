@@ -31,13 +31,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/actions/IActionObject.hpp"
 
 namespace nom {
 
 /// \brief Repeats an action forever
-class RepeatForeverAction: public virtual IActionObject
+class NOM_EXPORT RepeatForeverAction: public virtual IActionObject
 {
   public:
     /// \brief Allow access into our private parts for unit testing.

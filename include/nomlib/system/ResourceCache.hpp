@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <functional>
 // #include <type_traits>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/system/File.hpp"
 #include "nomlib/system/Path.hpp"
@@ -44,7 +45,7 @@ namespace nom {
 
 /// \brief Resources management
 template <typename ResourceType>
-class ResourceCache
+class NOM_EXPORT ResourceCache
 {
   public:
     typedef ResourceCache self_type;

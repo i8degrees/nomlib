@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <fstream>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/system/IFile.hpp"
 
@@ -44,7 +45,7 @@ namespace nom {
 /// \brief Platform-specific interface for file based access in Unix
 ///
 /// \see http://www.gnu.org/software/libc/manual/html_node/File-System-Interface.html#File-System-Interface
-class UnixFile: public IFile
+class NOM_EXPORT UnixFile: public IFile
 {
   public:
     UnixFile ( void );
@@ -164,7 +165,7 @@ class UnixFile: public IFile
     /// "/usr/home" (BSD).
     ///
     /// \see http://stackoverflow.com/questions/19404239/locating-mac-os-x-folders-using-urlfordirectory-instead-of-fsfindfolder
-    const std::string user_home_path( void );
+    const std::string user_home_path();
 
     /// \brief Get the platform-defined system path.
     ///
@@ -173,25 +174,25 @@ class UnixFile: public IFile
     /// "/bin" (Linux/BSD).
     ///
     /// \see http://stackoverflow.com/questions/19404239/locating-mac-os-x-folders-using-urlfordirectory-instead-of-fsfindfolder
-    const std::string system_path( void );
+    const std::string system_path();
 
     // TODO: Implement getter method for platform's system temporary files path;
     // (/tmp on POSIX and C:\Windows\Temp on Windows).
-    // const std::string system_temp_path( void );
+    const std::string system_temp_path();
 
     // \brief Get the platform-defined system path.
     //
     // \returns Under Mac OS X: a directory path in the format of:
     // "/System/Library". Under POSIX-compliant Unix (not verified):
     // "/bin" (Linux/BSD). Under Windows: "<drive>:\Windows".
-    // const std::string system_library_path( void );
+    const std::string system_library_path();
 
     // \brief Get the platform-defined system fonts path.
     //
     // \returns Under Mac OS X: a directory path in the format of:
     // "/System/Library/Fonts". Under POSIX-compliant Unix (not verified):
     // "/usr/share/fonts" (Linux/BSD). Under Windows: "<drive>:\Windows\Fonts".
-    // const std::string system_fonts_path( void );
+    const std::string system_fonts_path();
 
     /// \brief Create a directory entry.
     ///

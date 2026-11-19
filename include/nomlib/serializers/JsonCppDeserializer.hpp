@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sstream>
 #include <fstream>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/serializers/serializers_config.hpp"
 #include "nomlib/serializers/IValueDeserializer.hpp"
@@ -54,7 +55,7 @@ namespace nom {
 
 /// \brief Restoring of nom::Value objects from JSON documents using the
 /// JsonCpp library.
-class JsonCppDeserializer: public IValueDeserializer
+class NOM_EXPORT JsonCppDeserializer: public IValueDeserializer
 {
   public:
     /// \brief Default constructor; initialize the parser to strict mode
@@ -109,6 +110,7 @@ class JsonCppDeserializer: public IValueDeserializer
     bool read_object( const Json::Value& object, Value& dest ) const;
 };
 
+NOM_EXPORT
 std::unique_ptr<IValueDeserializer> make_unique_json_deserializer();
 
 } // namespace nom

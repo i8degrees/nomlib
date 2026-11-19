@@ -456,7 +456,7 @@ const Color4i Image::colorkey ( void ) const
   return nom::pixel ( transparent_color, buffer->format ); // SDL_helper function
 }
 
-const SDL_BlendMode Image::blend_mode ( void ) const
+SDL_BlendMode Image::blend_mode ( void ) const
 {
   SDL_BlendMode blend;
 

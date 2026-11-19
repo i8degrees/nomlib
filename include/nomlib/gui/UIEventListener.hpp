@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Rocket/Core/EventListener.h>
 // #include <Rocket/Core/Types.h>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -46,7 +47,7 @@ namespace nom {
 ///
 /// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Events
 /// \see http://www.librocket.com/wiki/documentation/PythonManual/AttachingToEvents
-class UIEventListener: public Rocket::Core::EventListener
+class NOM_EXPORT UIEventListener: public Rocket::Core::EventListener
 {
   public:
     typedef UIEventListener self_type;

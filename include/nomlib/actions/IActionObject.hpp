@@ -32,13 +32,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <functional>
 #include <vector>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/system/Timer.hpp"
 
 namespace nom {
 
 /// \brief Pure virtual base class interface for actions.
-class IActionObject
+class NOM_EXPORT IActionObject
 {
   public:
     typedef IActionObject self_type;
@@ -221,7 +222,7 @@ typedef std::vector<std::shared_ptr<IActionObject>> action_list;
 ///
 /// \relates nom::IActionObject
 template<typename ObjectType, typename... ObjectArgs>
-std::shared_ptr<ObjectType> create_action(ObjectArgs&&... args)
+NOM_EXPORT std::shared_ptr<ObjectType> create_action(ObjectArgs&&... args)
 {
   // IMPORTANT: We risk object slicing if we use std::make_shared here! The
   // problem occurs when the end-user tries to return the created action
@@ -248,7 +249,7 @@ std::shared_ptr<ObjectType> create_action(ObjectArgs&&... args)
 ///
 /// \relates nom::IActionObject
 template<typename ObjectType>
-std::shared_ptr<ObjectType>
+NOM_EXPORT std::shared_ptr<ObjectType>
 create_action(const action_list& actions)
 {
   // IMPORTANT: We risk object slicing if we use std::make_shared here! The

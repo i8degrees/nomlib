@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef NOMLIB_MATH_POINT3_HEADERS
 #define NOMLIB_MATH_POINT3_HEADERS
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -38,7 +39,7 @@ const std::string POINT3_DELIMITER = ", ";
 
 /// \brief 3D Point class
 template <typename T>
-struct Point3
+struct NOM_EXPORT Point3
 {
   /// Default constructor; initialize values to Point3<T>::null
   Point3() :
@@ -79,7 +80,7 @@ struct Point3
   }
 
   /// \brief Obtain a reference of the object.
-  inline const Point3<T>& get() const
+  NOM_EXPORT inline const Point3<T>& get() const
   {
     return *this;
   }
@@ -87,14 +88,14 @@ struct Point3
   /// \brief Null value
   ///
   /// \remarks  Null value implementation depends on signed (negative) numbers.
-  static const Point3 null;
+  NOM_EXPORT static const Point3 null;
 
   /// \brief Zero value constant.
-  static const Point3 zero;
+  NOM_EXPORT static const Point3 zero;
 
-  T x;
-  T y;
-  T z;
+  NOM_EXPORT T x;
+  NOM_EXPORT T y;
+  NOM_EXPORT T z;
 };
 
 /// Pretty print a Point3 object using the following formatting:
@@ -105,6 +106,7 @@ struct Point3
 ///
 ///     128, 144, 0
 template <typename T>
+NOM_EXPORT
 inline std::ostream& operator << ( std::ostream& os, const Point3<T>& pos )
 {
   os
@@ -118,12 +120,14 @@ inline std::ostream& operator << ( std::ostream& os, const Point3<T>& pos )
 }
 
 template <typename T>
+NOM_EXPORT
 inline bool operator == ( const Point3<T>& lhs, const Point3<T>& rhs )
 {
   return  ( lhs.x == rhs.x )  &&  ( lhs.y == rhs.y )  && ( lhs.z == rhs.z );
 }
 
 template <typename T>
+NOM_EXPORT
 inline bool operator != ( const Point3<T>& lhs, const Point3<T>& rhs )
 {
   return ! ( lhs == rhs );
@@ -137,6 +141,25 @@ typedef Point3<real32> Point3f;
 
 /// Point3 object defined using double precision floating-point numbers
 typedef Point3<real64> Point3d;
+
+/// Null value for a nom::Point3 using signed integers
+template <> NOM_EXPORT const Point3i Point3i::null;
+
+/// Null value for a nom::Point3 using floating point numbers
+template <> NOM_EXPORT const Point3f Point3f::null;
+
+/// Null value for a nom::Point3 using double precision floating point numbers
+template <> NOM_EXPORT const Point3d Point3d::null;
+
+/// \brief Zero value for a nom::Point3 using signed integers
+template <> NOM_EXPORT const Point3i Point3i::zero;
+
+/// \brief Zero value for a nom::Point3 using 32-bit floating-point numbers.
+template <> NOM_EXPORT const Point3f Point3f::zero;
+
+/// \brief Zero value for a nom::Point3 using double precision (64-bit)
+/// floating-point numbers.
+template <> NOM_EXPORT const Point3d Point3d::zero;
 
 } // namespace nom
 

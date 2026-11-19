@@ -43,6 +43,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/graphics/Image.hpp"
 #include "nomlib/graphics/RenderWindow.hpp"
 
+// >> Newer versions of libRocket, such as 1.3.0.0 no longer define
+// >> ROCKET_UNUSED_PARAMETER for us, so this should take care of forward
+// >> compatibility for us.
+#ifndef ROCKET_UNUSED_PARAMETER
+  #define ROCKET_UNUSED_PARAMETER ROCKET_UNUSED(x)
+#endif
+
 namespace nom {
 
 DecoratorPhotograph::~DecoratorPhotograph()
@@ -107,7 +114,8 @@ Rocket::Core::DecoratorDataHandle DecoratorPhotograph::GenerateElementData(Rocke
 {
   ROCKET_UNUSED(element);
 
-  return Rocket::Core::Decorator::INVALID_DECORATORDATAHANDLE;
+  return 0;
+  // return Rocket::Core::Decorator::INVALID_DECORATORDATAHANDLE;
 }
 
 void DecoratorPhotograph::ReleaseElementData(Rocket::Core::DecoratorDataHandle ROCKET_UNUSED_PARAMETER(element_data))

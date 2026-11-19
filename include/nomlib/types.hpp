@@ -43,12 +43,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         known as stdint.h. MSVCPP2013 & llvm-clang are fine with it).
 */
 
-// IMPORTANT(JEFF): These declarations, too, will integrate into our (CMake) 
+// IMPORTANT(JEFF): These declarations, too, will integrate into our (CMake)
 // platform detection routines some day.
 #if defined(__GNUC__)
   #include <cstdint>
-#elif defined(__llvm__)
+#elif defined(__llvm__) && defined(__clang__)
   #include <sys/types.h>
+  #include <cstdint>
+#elif defined(_MSC_VER) // Microsoft Visual C++
+                        // STUB
 #endif
 
 // FIXME: The following declaration is necessary in order to avoid a very
@@ -234,7 +237,10 @@ enum Anchor: uint32
   BottomRight = Y_BOTTOM | X_RIGHT      // Hex: 0x44, Dec: 68
 };
 
-const nom::size_type NOM_BYTE = 1024;
+static_assert(sizeof(nom::uint8) == 1, "nom::uint8");
+static_assert(sizeof(nom::int8) == 1, "nom::int8");
+
+static const nom::size_type NOM_BYTE = sizeof(uint8); // 1024;
 
 inline
 nom::size_type kilobyte(nom::size_type bytes)
@@ -271,9 +277,6 @@ nom::size_type terabyte(nom::size_type bytes)
 } // namespace nom
 
 /// Ensure our data types have the right sizes using C++11 compile-time asserts.
-static_assert ( sizeof ( nom::uint8 ) == 1, "nom::uint8" );
-static_assert ( sizeof ( nom::int8 ) == 1, "nom::int8" );
-
 static_assert ( sizeof ( nom::uint16 ) == 2, "nom::uint16" );
 static_assert ( sizeof ( nom::int16 ) == 2, "nom::int16" );
 
@@ -288,22 +291,18 @@ static_assert ( sizeof ( nom::real64 ) == 8, "nom::real64" );
 
 static_assert ( sizeof ( nom::uchar ) == 1, "nom::uchar" );
 
-// Blindly assumes we are on either a 64-bit or 32-bit platform.
 // TODO: Relocate this def to run-time (cmake gen)
 #if defined(NOM_PLATFORM_ARCH_X86_64)
-  static_assert( sizeof ( nom::ulong ) == 8, "nom::ulong" );
+  #if defined(__WIN32__) || defined(_WIN32)
+    static_assert(sizeof(nom::ulong) == 4, "nom::ulong");
+  #else
+    static_assert(sizeof(nom::ulong) == 8, "nom::ulong");
+  #endif // __WIN32__
   static_assert( sizeof ( nom::size_type ) == 8, "nom::size_type" );
-#else // #elif defined( NOM_PLATFORM_ARCH_X86_86 )
-  static_assert( sizeof ( nom::ulong ) == 4, "nom::ulong" );
-  static_assert( sizeof ( nom::size_type ) == 4, "nom::size_type" );
-#endif
-
-// Blindly assumes we are on either a 64-bit or 32-bit platform.
-#if defined(NOM_PLATFORM_ARCH_X86_64)
   static_assert( sizeof(nom::int_ptr) == 8, "nom::int_ptr" );
   static_assert( sizeof(nom::uint_ptr) == 8, "nom::uint_ptr" );
-  static_assert( sizeof ( nom::int32_ptr ) == ( sizeof(long) ), "nom::int32_ptr" );
-  static_assert( sizeof ( nom::uint32_ptr ) == ( sizeof(nom::ulong) ), "nom::uint32_ptr" );
+  static_assert( sizeof ( nom::int32_ptr ) == (8), "nom::int32_ptr" );
+  static_assert( sizeof ( nom::uint32_ptr ) == (8), "nom::uint32_ptr" );
 #else // #elif defined(NOM_PLATFORM_ARCH_X86)
   static_assert( sizeof(nom::int_ptr) == 4, "nom::int_ptr" );
   static_assert( sizeof(nom::uint_ptr) == 4, "nom::uint_ptr" );

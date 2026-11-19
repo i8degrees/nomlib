@@ -1,0 +1,18 @@
+{
+  "image": "docker.io/i8degrees/nomlib-builder:0.13.1-amd64",
+  "features": {},
+  "postCreateCommand": "cmake --version",
+  "mounts": [
+    //"source=${localWorkspaceFolder},target=/app,type=bind,consistency=cached",
+    "source=nomlib-bashhistory,target=/commandhistory/.bash_history,type=volume"
+  ],
+  "workspaceMount": "source=nomlib-project,target=/workspace,type=volume",
+  "remoteUser": "jeff",
+  "containerUser": "jeff",
+  "workspaceFolder": "/app",
+  "containerEnv": {
+    "NOM_GIT_URL": "https://github.com/i8degrees/nomlib.git",
+    "CC": "/usr/bin/clang",
+    "CXX": "/usr/bin/clang++"
+  }
+}

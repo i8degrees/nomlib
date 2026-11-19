@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 // Forward declarations (third-party)
@@ -71,16 +72,16 @@ const int16 JOYSTICK_TRIGGER_THRESHOLD = 30;
 /// \returns Boolean TRUE if the joystick subsystem was successfully
 /// initialized, and boolean FALSE if the joystick subsystem was **not**
 /// successfully initialized.
-bool init_joystick_subsystem();
+NOM_EXPORT bool init_joystick_subsystem();
 
 /// \brief Shutdown the joystick subsystem.
-void shutdown_joystick_subsystem();
+NOM_EXPORT void shutdown_joystick_subsystem();
 
 /// \brief Custom deleter for SDL_Joystick pointers.
-void JoystickDeleter(SDL_Joystick* dev);
+NOM_EXPORT void JoystickDeleter(SDL_Joystick* dev);
 
 /// \brief SDL2 joystick interface
-class Joystick
+class NOM_EXPORT Joystick
 {
   public:
     /// \brief Joystick axis definitions.
@@ -326,11 +327,11 @@ class Joystick
     joystick_dev device_;
 };
 
-std::unique_ptr<Joystick> make_unique_joystick();
-std::shared_ptr<Joystick> make_shared_joystick();
+NOM_EXPORT std::unique_ptr<Joystick> make_unique_joystick();
+NOM_EXPORT std::shared_ptr<Joystick> make_shared_joystick();
 
-JoystickGUID convert_SDL_JoystickGUID(SDL_JoystickGUID dev_guid);
-SDL_JoystickGUID convert_SDL_JoystickGUID(JoystickGUID dev_guid);
+NOM_EXPORT JoystickGUID convert_SDL_JoystickGUID(SDL_JoystickGUID dev_guid);
+NOM_EXPORT SDL_JoystickGUID convert_SDL_JoystickGUID(JoystickGUID dev_guid);
 
 } // namespace nom
 

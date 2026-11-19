@@ -1,55 +1,43 @@
-/******************************************************************************
+#pragma once
 
-  nomlib - C++11 cross-platform game engine
-
-Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-******************************************************************************/
-#ifndef NOMLIB_AUDIO_IAUDIO_DEVICE_HPP
-#define NOMLIB_AUDIO_IAUDIO_DEVICE_HPP
-
-#include <string>
-#include <memory>
-
-#include "nomlib/config.hpp"
+#include "export.hpp"
+#include "nomlib/types.hpp"
+#include "nomlib/math/Matrix.hpp"
+#include "nomlib/audio/ISoundSource.hpp"
 
 namespace nom {
+namespace audio {
 
-/// \brief Abstract audio device interface
-class IAudioDevice
+//class RenderWindow;
+class Sound;
+
+// Pure abstract interface class
+// ?? Rename to IAudioDriver
+class NOM_EXPORT IAudioDevice
 {
   public:
-    virtual ~IAudioDevice( void )
-    {
-      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_AUDIO, LogPriority::NOM_LOG_PRIORITY_VERBOSE );
-    }
+    virtual ~IAudioDevice() {}
 
-    // virtual std::shared_ptr<ALCdevice> getAudioDevice( void ) const = 0;
-    virtual std::string getDeviceName() const = 0;
-    virtual bool isExtensionSupported ( const std::string& extension ) const = 0;
+    virtual void release() = 0;
+
+    virtual void update(nom::real32 delta) = 0;
+
+    virtual void add_source(ISoundSource* node) = 0;
+    virtual void play_sound(Sound* s) = 0;
+    virtual void play_sound(Sound* s, const nom::Point3f& pos) = 0;
+    virtual void play_sound(Sound* s, SoundPriority p) = 0;
+    virtual void play_sound(Sound* s, nom::real32 gain) = 0;
+
+    virtual Matrix4& listener() { return this->listener_; }
+    virtual void set_listener(const Matrix4& node) { this->listener_ = node; }
+    virtual void set_master_volume(nom::real32 gain) = 0;
+
+  protected:
+    IAudioDevice() {}
+
+  private:
+    Matrix4 listener_;
 };
 
+} // namespace audio
 } // namespace nom
-
-#endif // include guard defined

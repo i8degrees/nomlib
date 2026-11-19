@@ -34,13 +34,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Size2.hpp"
 #include "nomlib/math/Transformable.hpp"
 #include "nomlib/math/Color4.hpp"
 #include "nomlib/graphics/IDrawable.hpp"
 #include "nomlib/graphics/shapes/Rectangle.hpp"
-#include "nomlib/core/helpers.hpp"
+#include "nomlib/core/unique_ptr.hpp"
 
 namespace nom {
 
@@ -48,7 +49,7 @@ namespace nom {
 class Texture;
 
 /// \brief Rectangle fill class with dithered, linear gradient colors.
-class Gradient: public Transformable
+class NOM_EXPORT Gradient: public Transformable
 
 {
   public:

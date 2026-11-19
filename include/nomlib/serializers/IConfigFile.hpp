@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <map>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/ptree/Value.hpp"
 
@@ -49,7 +50,7 @@ class IValueSerializer;
 ///
 /// \remarks http://www.gamedev.net/page/resources/_/technical/game-programming/configuration-and-tweaking-r3154
 /// \remarks http://docs.wxwidgets.org/trunk/classwx_config_base.html
-class IConfigFile
+class NOM_EXPORT IConfigFile
 {
   public:
     typedef IConfigFile self_type;

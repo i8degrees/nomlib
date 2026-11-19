@@ -1,92 +1,85 @@
-/******************************************************************************
+#pragma once
 
-  nomlib - C++11 cross-platform game engine
-
-Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-******************************************************************************/
-#ifndef NOMLIB_AUDIO_ISOUND_SOURCE_HPP
-#define NOMLIB_AUDIO_ISOUND_SOURCE_HPP
-
-#include "nomlib/config.hpp"
+#include "export.hpp"
+#include "nomlib/types.hpp"
 #include "nomlib/math/Point3.hpp"
+#include <vector>
+
 
 namespace nom {
+namespace audio {
 
 // Forward declarations
-class ISoundBuffer;
+class Sound;
 
-/// Sound source is one of the three states: stopped, paused or playing
-enum SoundStatus
-{
-  Stopped = 0,
-  Paused = 1,
-  Playing = 2
+struct OALSource {
+  nom::uint32 source;
+  bool used;
+
+  OALSource(nom::uint32 src) {
+    source = src;
+    used = false;
+  }
 };
 
-class ISoundSource
+enum SoundPriority: nom::uint32 {
+  SOUND_PRIORITY_LOW = 0x00,
+  SOUND_PRIORITY_MEDIUM = 0x02,
+  SOUND_PRIORITY_HIGH = 0x04,
+  SOUND_PRIORITY_ALWAYS = 0x6,
+};
+
+// SoundNode
+class NOM_EXPORT ISoundSource
 {
   public:
-    virtual ~ISoundSource( void )
-    {
-      NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE_AUDIO, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
-    }
+    virtual void reset();
+    virtual ~ISoundSource();
 
-    virtual real32 volume() const = 0;
-    virtual real32 min_volume() const = 0;
-    virtual real32 max_volume() const = 0;
-    virtual real32 getPitch() const = 0;
-    virtual bool getLooping() const = 0;
-    virtual Point3f position() const = 0;
-    virtual Point3f velocity() const = 0;
-    virtual bool getPositionRelativeToListener() const = 0;
-    virtual real32 getMinDistance() const = 0;
-    virtual real32 getAttenuation() const = 0;
-    virtual int32 getBufferID() const = 0;
-    virtual real32 getPlayPosition() const = 0;
-    virtual SoundStatus getStatus() const = 0;
-    virtual void set_volume(real32 gain) = 0;
-    virtual void set_min_volume(real32 gain) = 0;
-    virtual void set_max_volume(real32 gain) = 0;
-    virtual void setPitch(real32 pitch) = 0;
-    virtual void setLooping(bool loops) = 0;
-    virtual void setPosition(real32 x, real32 y, real32 z) = 0;
-    virtual void setPosition(const Point3f& position) = 0;
-    virtual void set_velocity(real32 x, real32 y, real32 z) = 0;
-    virtual void set_velocity(const Point3f& velocity) = 0;
-    virtual void setPositionRelativeToListener(bool position) = 0;
-    virtual void setMinDistance(real32 distance) = 0;
-    virtual void setAttenuation(real32 attenuation) = 0;
-    virtual void setPlayPosition(real32 seconds) = 0;
+    Sound* sound();
+    SoundPriority priority();
 
-    virtual void setBuffer(const ISoundBuffer& copy) = 0;
-    virtual void Play() = 0;
-    virtual void Stop() = 0;
-    virtual void Pause() = 0;
-    virtual void togglePause() = 0;
+    nom::uint32 state();
+    nom::real32 volume();
+    nom::real32 pitch();
+    nom::real32 radius();
+    bool looping();
+    bool global();
+    nom::real64 time_left();
+    nom::Point3f& position();
+
+    void set_priority(SoundPriority p);
+    virtual void set_volume(nom::real32 gain);
+    void set_pitch(nom::real32 pitch);
+    void set_looping(bool state);
+    void set_radius(nom::real32 value);
+    void set_global(bool state);
+    void set_position(const nom::Point3f& pos);
+    void set_position(nom::real32 x, nom::real32 y, nom::real32 z);
+
+    // Update(real32);
+    virtual void update(nom::real32 delta) = 0;
+    virtual void update_state(nom::real32 delta) = 0;
+    virtual void attach_source(OALSource* s) = 0;
+    virtual void detach_source() = 0;
+    virtual OALSource* source() = 0;
+    virtual void set_sound(Sound *s) = 0;
+  protected:
+    ISoundSource();
+
+    Sound* sound_;
+    SoundPriority priority_;
+    nom::uint32 state_;
+    nom::real32 volume_;
+    nom::real32 pitch_;
+    nom::real32 radius_;
+    bool looping_;
+    bool global_;
+    nom::real64 time_left_;
+    nom::Point3f position_;
 };
 
-} // namespace nom
+using SoundSourceIterator = std::vector<ISoundSource*>::iterator;
 
-#endif // include guard defined
+} // namespace audio
+} // namespace nom

@@ -33,20 +33,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 #include <memory>
 
+#include "export.hpp"
+#include "nomlib/core/IObject.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/version.hpp"
 #include "nomlib/math/Rect.hpp"
-#include "nomlib/ptree.hpp"
 
 // #define NOM_DEBUG_SPRITE_SHEET_JSON_LOAD
 
 namespace nom {
 
+// Forward declarations
+class Value;
+
 /// \brief Container class for deserialized sprite sheet data
-class SpriteSheet
+class NOM_EXPORT SpriteSheet: public virtual IObject
 {
   public:
-    static const VersionInfo VERSION;
+    NOM_EXPORT static const VersionInfo VERSION;
 
     typedef SpriteSheet self_type;
 

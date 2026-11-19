@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -42,7 +43,7 @@ struct Glyph;
 struct FontMetrics;
 
 /// \brief Pure abstract interface for a font resource
-class IFont
+class NOM_EXPORT IFont
 {
   public:
     typedef IFont self_type;

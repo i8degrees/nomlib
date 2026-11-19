@@ -1,71 +1,71 @@
-/******************************************************************************
 
-  nomlib - C++11 cross-platform game engine
 
-Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-******************************************************************************/
 #include "nomlib/audio/AudioDeviceLocator.hpp"
+#include "nomlib/audio/IAudioDevice.hpp" // IAudioRenderer
+#include "nomlib/audio/ALAudioRenderer.hpp"
+#include "nomlib/audio/ALAudioContext.hpp"
+
+// Private forward declarations
+class IAudioRenderer;
+
+using namespace nom;
+using namespace nom::audio;
 
 namespace nom {
+namespace audio {
 
 // Static initializations
-IAudioDevice* AudioDeviceLocator::audio_ = nullptr;
-NullAudioDevice AudioDeviceLocator::null_audio_;
+ptr_renderer AudioDeviceLocator::audio_ = nullptr;
 
-AudioDeviceLocator::~AudioDeviceLocator( void )
+AudioDeviceLocator::~AudioDeviceLocator()
 {
-  NOM_DELETE_PTR( AudioDeviceLocator::audio_ );
+  NOM_LOG_TRACE(NOM);
+
+  AudioDeviceLocator::release();
 }
 
-void AudioDeviceLocator::initialize( void )
+// static
+void AudioDeviceLocator::release()
 {
-  AudioDeviceLocator::audio_ = &AudioDeviceLocator::null_audio_;
+  NOM_LOG_TRACE(NOM);
+
+  delete AudioDeviceLocator::audio_;
+  AudioDeviceLocator::audio_ = nullptr;
 }
 
-IAudioDevice& AudioDeviceLocator::audio_device( void )
+// static
+void AudioDeviceLocator::initialize()
 {
-  // if( AudioDeviceLocator::audio_ == nullptr )
-  // {
-    // NOM_LOG_INFO( NOM_LOG_CATEGORY_AUDIO, "AudioDevice was not yet initialized. Initializing..." );
-    // AudioDeviceLocator::initialize();
-  // }
-
-  return *AudioDeviceLocator::audio_;
+  NOM_LOG_TRACE(NOM);
+  AudioDeviceLocator::audio_ = create_audio_renderer(128);
 }
 
-void AudioDeviceLocator::set_provider( IAudioDevice* service )
-{
-  if( service == nullptr )
-  {
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Audio Service given was NULL; initializing NullAudioDevice..." );
+// static
+ptr_renderer AudioDeviceLocator::instance() {
+  if(AudioDeviceLocator::audio_ == nullptr) {
     AudioDeviceLocator::initialize();
   }
-  else
-  {
-    AudioDeviceLocator::audio_ = service;
-  }
+
+  return AudioDeviceLocator::audio_;
 }
 
+// static
+void AudioDeviceLocator::setup_provider(ptr_renderer service)
+{
+  NOM_LOG_TRACE(NOM);
+
+  if(service == nullptr) {
+    AudioDeviceLocator::initialize();
+  }
+
+  AudioDeviceLocator::audio_ = service;
+}
+
+// private function
+ptr_renderer create_audio_renderer(uint32 channels)
+{
+  return(new ALAudioRenderer(channels));
+}
+
+} // namespace audio
 } // namespace nom

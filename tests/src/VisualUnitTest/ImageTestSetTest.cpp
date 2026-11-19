@@ -50,7 +50,7 @@ TEST( ImageTestSetTest, DefaultConstructor )
   EXPECT_EQ( "", obj.test_name() )
   << "Test name should be a null-terminated string";
 
-  EXPECT_EQ( nom::revision(), obj.version() )
+  EXPECT_EQ( NOM_VERSION.version_string() + "-" + nom::revision(), obj.version() )
   << "Version string should match the constructor's recorded engine version";
 
   EXPECT_EQ( "", obj.timestamp() )
@@ -89,7 +89,7 @@ TEST( ImageTestSetTest, InitializeConstructor )
   EXPECT_EQ( "InitializeTestSetConstructor", obj.test_name() )
   << "Test name should match";
 
-  EXPECT_EQ( nom::revision(), obj.version() )
+  EXPECT_EQ( NOM_VERSION.version_string() + "-" + nom::revision(), obj.version() )
   << "Version string should match";
 
   EXPECT_EQ( ts, obj.timestamp() )
@@ -293,7 +293,7 @@ TEST( ImageTestSetTest, LoadFile )
   EXPECT_EQ( "SaveImageTestSet", obj.test_name() )
   << "Test name should match";
 
-  EXPECT_EQ( nom::revision(), obj.version() )
+  EXPECT_EQ( NOM_VERSION.version_string() + "-" + nom::revision(), obj.version() )
   << "Version string should match";
 
   EXPECT_EQ( ts, obj.timestamp() )

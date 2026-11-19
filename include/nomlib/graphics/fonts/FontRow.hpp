@@ -31,12 +31,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <vector>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
 
 /// \brief Container structure for a row of glyphs
-struct FontRow
+struct NOM_EXPORT FontRow
 {
   /// Default constructor
   FontRow ( void ) :

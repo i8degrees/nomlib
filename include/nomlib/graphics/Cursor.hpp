@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 #include "nomlib/math/Point2.hpp"
 
@@ -41,11 +42,11 @@ namespace nom {
 
 namespace priv {
 
-void free_cursor( SDL_Cursor* c );
+NOM_EXPORT void free_cursor( SDL_Cursor* c );
 
 } // namespace priv
 
-struct MouseState
+struct NOM_EXPORT MouseState
 {
   /// \brief The X & Y coordinates of the mouse cursor position, relative to
   /// the focused window.
@@ -59,7 +60,7 @@ struct MouseState
 ///
 /// \todo Implement interfacing for SDL_CreateCursor and SDL_CreateSystemCursor.
 /// \see https://wiki.libsdl.org/CategoryMouse
-class Cursor
+class NOM_EXPORT Cursor
 {
   public:
     typedef Cursor self_type;
@@ -110,7 +111,7 @@ class Cursor
     /// \brief Retrieve the current state of the mouse.
     ///
     /// \see https://wiki.libsdl.org/SDL_GetMouseState?highlight=%28%5CbCategoryMouse%5Cb%29%7C%28CategoryEnum%29%7C%28CategoryStruct%29
-    static MouseState mouse_state( void );
+    NOM_EXPORT static MouseState mouse_state( void );
 
     Type system_cursor( void ) const;
 

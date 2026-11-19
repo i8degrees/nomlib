@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <memory>
 
+#include "export.hpp"
 #include "nomlib/config.hpp"
 
 namespace nom {
@@ -40,12 +41,12 @@ namespace nom {
 /// \brief Descriptor of a file-based resource
 ///
 /// \see nom::ResourceCache.
-class ResourceFile
+class NOM_EXPORT ResourceFile
 {
   public:
     typedef ResourceFile self_type;
 
-    static const ResourceFile null;
+    NOM_EXPORT static const ResourceFile null;
 
     enum Type
     {

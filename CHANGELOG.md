@@ -2,6 +2,15 @@
 
 ## Unreleased ##
 
+* Added `nom::filesystem::path::lexically_normal()` plus free
+  `nom::filesystem::absolute()`, `canonical()`, and `weakly_canonical()`.
+  These mirror `std::filesystem`'s path resolution operations:
+  `lexically_normal()` collapses `.` and `..` syntactically,
+  `canonical()` resolves symlinks and normalizes existing paths, and
+  `weakly_canonical()` canonicalizes the existing prefix while preserving
+  missing trailing components. POSIX implementations use `realpath()`;
+  Windows implementations use `GetFinalPathNameByHandleW()`.
+
 * Fixed `nom::EventHandler::remove_event_watch` matching by using
   `std::function::target_type()` instead of the broken `target<event_filter>()`
   comparison. Distinct lambda-backed watchers are now removed precisely.

@@ -64,6 +64,11 @@ uint32 StateMachine::count() const
   return this->states_.size();
 }
 
+bool StateMachine::empty() const
+{
+  return this->states_.empty();
+}
+
 void StateMachine::set_input_mapper( InputStateMapper* mapper )
 {
   this->input_mapper_ = mapper;
@@ -118,16 +123,20 @@ void StateMachine::erase_input_context( const IState& state )
 
 uint32 StateMachine::current_state_id( void ) const
 {
-  NOM_ASSERT( this->states_.empty() == false );
+  if( this->states_.empty() == true ) {
+    return 0;
+  }
 
   return this->states_.back()->id();
 }
 
 uint32 StateMachine::next_state_id( void ) const
 {
-  NOM_ASSERT( this->states_.empty() == false );
+  if( this->next_state_.deferred == true && this->next_state_.state != nullptr ) {
+    return this->next_state_.state->id();
+  }
 
-  return this->states_.front()->id();
+  return this->current_state_id();
 }
 
 void StateMachine::set_state( std::unique_ptr<IState> state, void_ptr data )
@@ -202,11 +211,13 @@ void StateMachine::update( float delta )
   if ( ! this->states_.empty() )
   {
     // Honor user's request to update the state behind us first.
-    if ( this->states_.back()->flags() & IState::Flags::BackUpdate )
+    if ( this->states_.size() >= 2 &&
+         ( this->states_.back()->flags() & IState::Flags::BackUpdate ) )
     {
-      NOM_ASSERT ( this->states_.front() );
+      const size_t prev = this->states_.size() - 2;
+      NOM_ASSERT ( this->states_[prev] );
 
-      this->states_.front()->on_update ( delta );
+      this->states_[prev]->on_update ( delta );
     }
 
     // Let the state update the scene with regard to the delta time
@@ -293,11 +304,13 @@ void StateMachine::draw( RenderWindow& target )
   {
     // Honor user's request to draw the state behind us first; this allows the
     // current state to use the previous state's rendering as a background.
-    if ( this->states_.back()->flags() & IState::Flags::BackRender )
+    if ( this->states_.size() >= 2 &&
+         ( this->states_.back()->flags() & IState::Flags::BackRender ) )
     {
-      NOM_ASSERT ( this->states_.front() );
+      const size_t prev = this->states_.size() - 2;
+      NOM_ASSERT ( this->states_[prev] );
 
-      this->states_.front()->on_draw ( target );
+      this->states_[prev]->on_draw ( target );
     }
 
     // Let the state draw the scene onto the display

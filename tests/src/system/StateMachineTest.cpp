@@ -38,6 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <nomlib/config.hpp>
 #include <nomlib/core.hpp>
+#include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
 
 using namespace nom;
@@ -180,6 +181,35 @@ class CountingChildState: public IState
     float elapsed_ = 0.0f;
 };
 
+// Lightweight state that records its own update/draw calls into shared vectors.
+// This avoids the need to inspect StateMachine's private state stack.
+class RecorderState: public IState
+{
+  public:
+    RecorderState( uint32 id, uint32 flags, IState::Type type,
+                   std::vector<uint32>& updates_out,
+                   std::vector<uint32>& draws_out ):
+      IState( id, flags, type ),
+      updates_{ updates_out },
+      draws_{ draws_out }
+    {
+    }
+
+    std::string input_context() const override { return ""; }
+
+    void on_update( float delta ) override {
+      this->updates_.get().push_back( this->id() );
+    }
+
+    void on_draw( RenderWindow& target ) override {
+      this->draws_.get().push_back( this->id() );
+    }
+
+  private:
+    std::reference_wrapper<std::vector<uint32>> updates_;
+    std::reference_wrapper<std::vector<uint32>> draws_;
+};
+
 class StateMachineTest: public ::testing::Test
 {
   protected:
@@ -319,6 +349,113 @@ TEST_F( StateMachineTest, InputCallbackPopResumesParent )
   EXPECT_EQ( STATE_A, this->sm.current_state_id() );
 }
 
+TEST_F( StateMachineTest, BackUpdateTargetsImmediatePredecessor )
+{
+  std::vector<uint32> root_updates;
+  std::vector<uint32> middle_updates;
+  std::vector<uint32> top_updates;
+  std::vector<uint32> dummy_draws;
+
+  // Stack: root <- pause <- back-update. The BackUpdate flag on the top
+  // state must update the state directly beneath it, not the root.
+  auto root = std::make_unique<RecorderState>(
+    STATE_A, 0, IState::Type::Parent, root_updates, dummy_draws );
+  auto middle = std::make_unique<RecorderState>(
+    STATE_B, 0, IState::Type::Child, middle_updates, dummy_draws );
+  auto top = std::make_unique<RecorderState>(
+    STATE_C, IState::Flags::BackUpdate, IState::Type::Child, top_updates, dummy_draws );
+
+  this->sm.set_state( std::move( root ), nullptr );
+  this->sm.update( 0.0f );
+
+  this->sm.set_state( std::move( middle ), nullptr );
+  this->sm.update( 0.0f );
+
+  this->sm.set_state( std::move( top ), nullptr );
+  this->sm.update( 0.0f );
+
+  EXPECT_EQ( 3u, this->sm.count() );
+
+  this->sm.update( 1.0f );
+
+  // The top state is updated once after it becomes active. The middle state
+  // is its immediate predecessor, so BackUpdate updates middle (not root).
+  // Note: transitions are applied after the update phase, so each state's
+  // first update happens in the frame after it is pushed.
+  EXPECT_EQ( std::vector<uint32>( { STATE_C } ), top_updates );
+  EXPECT_EQ( std::vector<uint32>( { STATE_B, STATE_B } ), middle_updates );
+  EXPECT_EQ( std::vector<uint32>( { STATE_A } ), root_updates );
+}
+
+TEST_F( StateMachineTest, BackRenderTargetsImmediatePredecessor )
+{
+  std::vector<uint32> root_draws;
+  std::vector<uint32> middle_draws;
+  std::vector<uint32> top_draws;
+  std::vector<uint32> dummy_updates;
+
+  // Same stack shape as BackUpdate, but verify on_draw reaches the immediate
+  // predecessor of the flagged state.
+  auto root = std::make_unique<RecorderState>(
+    STATE_A, 0, IState::Type::Parent, dummy_updates, root_draws );
+  auto middle = std::make_unique<RecorderState>(
+    STATE_B, 0, IState::Type::Child, dummy_updates, middle_draws );
+  auto top = std::make_unique<RecorderState>(
+    STATE_C, IState::Flags::BackRender, IState::Type::Child, dummy_updates, top_draws );
+
+  this->sm.set_state( std::move( root ), nullptr );
+  this->sm.update( 0.0f );
+
+  this->sm.set_state( std::move( middle ), nullptr );
+  this->sm.update( 0.0f );
+
+  this->sm.set_state( std::move( top ), nullptr );
+  this->sm.update( 0.0f );
+
+  EXPECT_EQ( 3u, this->sm.count() );
+
+  nom::RenderWindow rw;
+  this->sm.draw( rw );
+
+  EXPECT_EQ( std::vector<uint32>( { STATE_C } ), top_draws );
+  EXPECT_EQ( std::vector<uint32>( { STATE_B } ), middle_draws );
+  EXPECT_TRUE( root_draws.empty() );
+}
+
+TEST_F( StateMachineTest, EmptyStackIdAccessors )
+{
+  EXPECT_TRUE( this->sm.empty() );
+  EXPECT_EQ( 0u, this->sm.count() );
+  EXPECT_EQ( 0u, this->sm.current_state_id() );
+  EXPECT_EQ( 0u, this->sm.next_state_id() );
+}
+
+TEST_F( StateMachineTest, NextStateIdReflectsDeferredTransition )
+{
+  auto a = std::make_unique<TestState>(
+    STATE_A, IState::Type::Parent, "state_a",
+    &this->sm, &this->input_mapper, StateAction::None, SDLK_1 );
+
+  auto b = std::make_unique<TestState>(
+    STATE_B, IState::Type::Parent, "state_b",
+    &this->sm, &this->input_mapper, StateAction::None, SDLK_1 );
+  TestState* b_ptr = b.get();
+
+  this->sm.set_state( std::move( a ), nullptr );
+  this->sm.update( 0.0f );
+  EXPECT_EQ( STATE_A, this->sm.current_state_id() );
+  EXPECT_EQ( STATE_A, this->sm.next_state_id() );
+
+  this->sm.set_state( std::move( b ), nullptr );
+  EXPECT_EQ( STATE_A, this->sm.current_state_id() );
+  EXPECT_EQ( STATE_B, this->sm.next_state_id() );
+
+  this->sm.update( 0.0f );
+  EXPECT_EQ( STATE_B, this->sm.current_state_id() );
+  EXPECT_EQ( STATE_B, this->sm.next_state_id() );
+  EXPECT_TRUE( b_ptr->initialized_ );
+}
+
 TEST_F( StateMachineTest, StateOnEventForwarding )
 {
   // on_event on an empty machine must not crash.
@@ -385,10 +522,9 @@ TEST_F( StateMachineTest, SixConcurrentStates )
   EXPECT_EQ( 6u, g_init_order.size() );
   EXPECT_EQ( 0u, g_resume_order.size() ); // nothing to resume until we pop
 
-  // Each second, tick the active top state (it logs its current counter,
-  // starting at 1), then pop it so the state below resumes and starts at 1.
+  // Tick and pop each state. CountingChildState increments its counter each
+  // second of elapsed delta, so update(1.0f) is sufficient without sleeping.
   for( uint32 step = 1; step <= 6; ++step ) {
-    std::this_thread::sleep_for( std::chrono::seconds( 1 ) );
     this->sm.update( 1.0f );
 
     if( step < 6 ) {

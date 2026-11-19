@@ -187,6 +187,7 @@ if( NOM_BUILD_STATE_MACHINE_TESTS )
     PUBLIC
     nomlib-core
     nomlib-system
+    nomlib-graphics
     PRIVATE
     Threads::Threads
     ${GTEST_LIBRARY}

@@ -75,20 +75,26 @@ class NOM_EXPORT StateMachine
     /// \returns Total number of states in the stack.
     uint32 count() const;
 
+    /// \brief Check if the state stack is empty.
+    bool empty() const;
+
     /// \brief Obtain the current state's identifier
     ///
-    /// \returns The identifier of the state, or an assertion on
-    /// failure, such as if the the states stack is empty.
+    /// \returns The identifier of the active (top-most) state, or 0 if the
+    /// stack is empty.
     ///
-    /// \remarks The state identifier is user-defined.
+    /// \remarks The state identifier is user-defined. A state with id 0 is
+    /// indistinguishable from the empty-stack sentinel.
     uint32 current_state_id( void ) const;
 
-    /// \brief Obtain the next state's identifier
+    /// \brief Obtain the next pending state's identifier.
     ///
-    /// \returns The identifier of the next state (in the stack), or an
-    /// assertion on failure, such as if the the states stack is empty.
+    /// \returns The identifier of the state queued by set_state/pop_state if a
+    /// transition is pending; otherwise the identifier of the current active
+    /// state, or 0 if the stack is empty.
     ///
-    /// \remarks The state identifier is user-defined.
+    /// \remarks This reflects the deferred transition target, not the state
+    /// immediately below the active one on the stack.
     uint32 next_state_id( void ) const;
 
     /// \brief Install the input mapper used to auto-manage per-state input

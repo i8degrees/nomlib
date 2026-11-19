@@ -155,9 +155,11 @@ class WaitingState: public AppState
 
 /// \brief State shown when at least one game controller is connected.
 ///
-/// Installs keyboard, game controller button and game controller axis input
-/// contexts. The StateMachine disables the contexts when the controller is
-/// disconnected and erases them when the state exits.
+/// Installs a single "playing" input context containing keyboard, game
+/// controller button and game controller axis bindings. The StateMachine
+/// activates and disables that context as the state is entered and paused,
+/// so the start button cannot re-trigger the pause overlay while it is
+/// already active.
 class PlayingState: public AppState
 {
   public:
@@ -165,9 +167,6 @@ class PlayingState: public AppState
 
     std::string input_context() const override;
 
-    /// \remarks Each PlayingState owns three distinct input context keys.
-    /// The state machine only activates the primary key returned here; the
-    /// on_init callback activates the companion keys explicitly.
     void on_init( nom::void_ptr data ) override;
     void on_exit( nom::void_ptr data ) override;
     void on_draw( nom::RenderWindow& target ) override;
@@ -323,45 +322,29 @@ PlayingState::PlayingState( App* app, nom::JoystickID dev_id ) :
 
 std::string PlayingState::input_context() const
 {
-  return "keyboard";
+  return "playing";
 }
 
 void PlayingState::on_init( nom::void_ptr data )
 {
-  // Insert contexts here, after the previous state's on_exit has erased its
-  // keys. Inserting in the constructor would fail because the old state's
-  // contexts are still present until the next update().
-  nom::InputActionMapper key;
-  this->insert_keyboard_bindings(key);
-  this->app_->input_mapper().insert("keyboard", key, false);
+  // Insert the context here, after the previous state's on_exit has erased
+  // its keys. Inserting in the constructor would fail because the old state's
+  // context is still present until the next update().
+  nom::InputActionMapper map;
+  this->insert_keyboard_bindings(map);
+  this->insert_button_bindings(this->dev_id_, map);
+  this->insert_axis_bindings(this->dev_id_, map);
 
-  nom::InputActionMapper buttons;
-  this->insert_button_bindings(this->dev_id_, buttons);
   this->app_->input_mapper().insert(
-    "game_controller_buttons", buttons, false );
-
-  nom::InputActionMapper axes;
-  this->insert_axis_bindings(this->dev_id_, axes);
-  this->app_->input_mapper().insert(
-    "game_controller_axes", axes, false );
-
-  // Activate the companion contexts alongside the primary "keyboard" context
-  // that the state machine already activated.
-  this->app_->input_mapper().activate("game_controller_buttons");
-  this->app_->input_mapper().activate("game_controller_axes");
+    this->input_context(), map, false );
 
   this->app_->set_window_title("Gamecontroller is connected");
 }
 
 void PlayingState::on_exit( nom::void_ptr data )
 {
-  // Diagnostics-only: the StateMachine already erases the primary context.
-  // The companion contexts are erased automatically by the machine because
-  // they share this state's input_context() key? No -- they have distinct keys
-  // and were inserted in the constructor. They will be erased by on_exit
-  // because we erase all three keys here explicitly to keep the example tidy.
-  this->app_->input_mapper().erase("game_controller_buttons");
-  this->app_->input_mapper().erase("game_controller_axes");
+  // Diagnostics-only: the StateMachine erases the "playing" context after
+  // this returns.
 }
 
 void PlayingState::on_draw( nom::RenderWindow& target )

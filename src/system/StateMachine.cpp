@@ -195,7 +195,7 @@ StateSymbol StateMachine::current_state_symbol() const
   return this->states_.back()->symbol();
 }
 
-IState::unique_ptr StateMachine::make_state( StateSymbol symbol ) const
+IState::unique_ptr StateMachine::make_state( StateSymbol symbol, void_ptr data ) const
 {
   auto it = this->registry_.find( symbol );
   if( it == this->registry_.end() ) {
@@ -204,7 +204,7 @@ IState::unique_ptr StateMachine::make_state( StateSymbol symbol ) const
   }
 
   NOM_ASSERT( it->second.factory );
-  return it->second.factory();
+  return it->second.factory( data );
 }
 
 bool StateMachine::can_push_child( StateSymbol child, StateSymbol parent ) const
@@ -226,7 +226,7 @@ void StateMachine::register_state( const StateDescriptor& desc )
 
 void StateMachine::push_state( StateSymbol symbol, void_ptr data )
 {
-  auto state = this->make_state( symbol );
+  auto state = this->make_state( symbol, data );
   if( ! state ) {
     return;
   }
@@ -252,7 +252,7 @@ void StateMachine::push_child( StateSymbol child, void_ptr data )
     return;
   }
 
-  auto state = this->make_state( child );
+  auto state = this->make_state( child, data );
   if( ! state ) {
     return;
   }
@@ -276,7 +276,7 @@ void StateMachine::pop_to_parent( StateSymbol parent, void_ptr data )
 
 void StateMachine::replace_state( StateSymbol symbol, void_ptr data )
 {
-  auto state = this->make_state( symbol );
+  auto state = this->make_state( symbol, data );
   if( ! state ) {
     return;
   }

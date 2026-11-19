@@ -110,7 +110,11 @@ struct NOM_EXPORT StateDescriptor
   StateSymbol parent = NO_STATE;
 
   /// Factory function that constructs the state instance.
-  std::function<IState::unique_ptr()> factory;
+  ///
+  /// \param data User-defined data passed from the push/replace request. Use
+  /// this for per-instance construction arguments that are not known when
+  /// the state is registered.
+  std::function<IState::unique_ptr( void* data )> factory;
 };
 
 /// \brief A transition table keyed by active state, event, and stack top.
@@ -347,9 +351,12 @@ class NOM_EXPORT StateMachine
 
     /// \brief Construct a registered state by symbol.
     ///
+    /// \param symbol Registered symbol to construct.
+    /// \param data   User-defined data passed to the registered factory.
+    ///
     /// \returns A valid state instance, or nullptr if the symbol is not
     /// registered.
-    IState::unique_ptr make_state( StateSymbol symbol ) const;
+    IState::unique_ptr make_state( StateSymbol symbol, void_ptr data = nullptr ) const;
 
     /// \brief Validate that child is declared as a child of the given parent.
     bool can_push_child( StateSymbol child, StateSymbol parent ) const;

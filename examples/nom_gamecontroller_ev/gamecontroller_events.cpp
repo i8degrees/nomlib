@@ -33,6 +33,7 @@
 
 ******************************************************************************/
 #include <climits>
+#include <cstdint>
 #include <cstdlib>
 #include <limits.h>
 
@@ -48,7 +49,8 @@ using namespace nom;
 /// \brief Application state identifiers.
 enum StateID {
   STATE_WAITING = 1,
-  STATE_PLAYING = 2
+  STATE_PLAYING = 2,
+  STATE_PAUSE = 3
 };
 
 constexpr nom::size_type MAX_BUTTONS =
@@ -107,6 +109,21 @@ class App;
 ///
 /// Holds onto a non-owning pointer back to App so that input callbacks can
 /// mutate the rendering state (joystick axis & button positions).
+/// \brief Encode a non-negative JoystickID as a void pointer.
+///
+/// JoystickID is a small integer; this lets it pass through StateMachine's
+/// user-data pointer for per-instance construction arguments.
+nom::void_ptr encode_joystick_id( nom::JoystickID id )
+{
+  return reinterpret_cast<nom::void_ptr>( static_cast<intptr_t>( id ) );
+}
+
+/// \brief Decode a JoystickID from a void pointer encoded by encode_joystick_id.
+nom::JoystickID decode_joystick_id( nom::void_ptr data )
+{
+  return static_cast<nom::JoystickID>( reinterpret_cast<intptr_t>( data ) );
+}
+
 class AppState: public nom::IState
 {
   public:
@@ -165,6 +182,24 @@ class PlayingState: public AppState
     nom::JoystickID dev_id_;
 };
 
+/// \brief Pause overlay pushed on top of PlayingState.
+///
+/// Pressing the start button pops back to PlayingState. The example uses
+/// push_child/pop_to_parent so the PlayingState remains on the stack and
+/// resumes automatically.
+class PauseState: public AppState
+{
+  public:
+    PauseState( App* app );
+
+    std::string input_context() const override;
+    void on_init( nom::void_ptr data ) override;
+    void on_draw( nom::RenderWindow& target ) override;
+
+  private:
+    void insert_start_button_binding( nom::InputActionMapper& map );
+};
+
 class App: public nom::SDLApp
 {
   public:
@@ -189,6 +224,7 @@ class App: public nom::SDLApp
     nom::event_callback x_axis_action;
     nom::event_callback y_axis_action;
     nom::event_callback button_action;
+    nom::event_callback pause_action;
 
     // State machine integration
     nom::StateMachine& state_machine() { return this->state_machine_; }
@@ -198,6 +234,9 @@ class App: public nom::SDLApp
 
     /// \brief Store the executable path for runtime resource discovery.
     void set_program_path( const char* argv0 );
+
+    /// \brief Device ID of the currently active controller.
+    nom::JoystickID current_controller_id() const { return this->current_controller_id_; }
 
     // Layout constants used by state rendering
     const nom::Size2i AXIS_X_RECT_DIMS = nom::Size2i(16, 16);
@@ -223,6 +262,7 @@ class App: public nom::SDLApp
     nom::StateMachine state_machine_;
 
     nom::GameControllerEventHandler joystick_evt;
+    nom::JoystickID current_controller_id_ = -1;
 };
 
 // AppState implementation is header-only above.
@@ -300,6 +340,8 @@ void PlayingState::on_init( nom::void_ptr data )
   // that the state machine already activated.
   this->app_->input_mapper().activate("game_controller_buttons");
   this->app_->input_mapper().activate("game_controller_axes");
+
+  this->app_->window().set_window_title("Gamecontroller is connected");
 }
 
 void PlayingState::on_exit( nom::void_ptr data )
@@ -360,6 +402,12 @@ void PlayingState::insert_button_bindings(  nom::JoystickID dev_id,
 {
   nom::InputAction action;
 
+  // Start button pauses the game by pushing the pause overlay.
+  action = nom::GameControllerButtonAction(
+              dev_id, nom::GameController::BUTTON_START,
+              nom::InputState::PRESSED );
+  map.insert("pause", action, this->app_->pause_action);
+
   for( auto button_idx = 0; button_idx != MAX_BUTTONS; ++button_idx ) {
 
     std::stringstream desc;
@@ -375,6 +423,53 @@ void PlayingState::insert_button_bindings(  nom::JoystickID dev_id,
                 dev_id, button, nom::InputState::RELEASED );
     map.insert(desc.str(), action, this->app_->button_action);
   }
+}
+
+// PauseState implementation
+
+PauseState::PauseState( App* app ) :
+  AppState(STATE_PAUSE, app)
+{
+}
+
+std::string PauseState::input_context() const
+{
+  return "paused";
+}
+
+void PauseState::on_init( nom::void_ptr data )
+{
+  nom::InputActionMapper map;
+  this->insert_start_button_binding(map);
+
+  this->app_->input_mapper().insert(
+    this->input_context(), map, false );
+
+  this->app_->window().set_window_title("Paused...");
+}
+
+void PauseState::on_draw( nom::RenderWindow& target )
+{
+  // PauseState intentionally leaves the visual feedback from PlayingState
+  // untouched; the PlayingState renders behind the pause context.
+  (void)target;
+}
+
+void PauseState::insert_start_button_binding( nom::InputActionMapper& map )
+{
+  nom::InputAction action;
+
+  // Resume by popping back to the PlayingState parent.
+  action = nom::GameControllerButtonAction(
+              this->app_->current_controller_id(),
+              nom::GameController::BUTTON_START,
+              nom::InputState::PRESSED );
+
+  nom::event_callback resume = nom::event_callback( [this](const nom::Event&) {
+    this->app_->state_machine().pop_to_parent( STATE_PLAYING );
+  });
+
+  map.insert("resume", action, resume);
 }
 
 void PlayingState::insert_axis_bindings(  nom::JoystickID dev_id,
@@ -428,6 +523,41 @@ App::App()
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
 
   this->state_machine_.set_input_mapper(&this->input_mapper_);
+
+  // Register the two application states with the StateMachine. The Playing
+  // state is constructed with the device ID supplied via the user data pointer
+  // at transition time.
+  this->state_machine_.register_state(
+    {
+      STATE_WAITING,
+      NO_STATE,
+      [this]( nom::void_ptr ) {
+        return std::make_unique<WaitingState>( this );
+      }
+    }
+  );
+
+  this->state_machine_.register_state(
+    {
+      STATE_PLAYING,
+      STATE_WAITING,
+      [this]( nom::void_ptr data ) {
+        auto dev_id = static_cast<nom::JoystickID>(
+          reinterpret_cast<intptr_t>( data ) );
+        return std::make_unique<PlayingState>( this, dev_id );
+      }
+    }
+  );
+
+  this->state_machine_.register_state(
+    {
+      STATE_PAUSE,
+      STATE_PLAYING,
+      [this]( nom::void_ptr ) {
+        return std::make_unique<PauseState>( this );
+      }
+    }
+  );
 
   // quit_app
   this->quit_app = nom::event_callback( [=](const nom::Event& evt) {
@@ -550,6 +680,11 @@ App::App()
     if( button < MAX_BUTTONS ) {
       this->button_rectangle_pos[button] = rect_pos;
     }
+  });
+
+  // Pause / resume via the controller start button.
+  this->pause_action = nom::event_callback( [=](const nom::Event& evt) {
+    this->state_machine_.push_child( STATE_PAUSE );
   });
 }
 
@@ -679,14 +814,16 @@ bool App::on_init()
 
   // Begin in the waiting state. If a controller is already connected, the
   // first GAME_CONTROLLER_ADDED event will transition us to PlayingState.
-  this->state_machine_.set_state(
-    std::make_unique<WaitingState>(this), nullptr );
+  this->state_machine_.push_state( STATE_WAITING );
   this->state_machine_.update(0.f);
 
   if( nom::Joystick::num_joysticks() < 1 ) {
     NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
                   "No joystick devices are available!" );
     this->window_.set_window_title("Waiting on a gamecontroller to be connected...");
+  } else {
+    this->on_game_controller_add(0);
+    this->state_machine_.update(0.f);
   }
 
   return true;
@@ -717,8 +854,6 @@ int App::Run()
           this->on_game_controller_add(device_index);
 
           this->test_simulated_events();
-
-          this->window_.set_window_title("Gamecontroller is connected");
         } break;
 
         case nom::Event::GAME_CONTROLLER_REMOVED:
@@ -732,6 +867,7 @@ int App::Run()
             NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
                           "No joystick devices are available!" );
 
+            this->state_machine_.pop_to_parent( STATE_WAITING );
             this->window_.set_window_title("Waiting on a gamecontroller to be connected...");
           }
         } break;
@@ -742,12 +878,21 @@ int App::Run()
     // updates and renders the frame.
     this->state_machine_.update(0.f);
 
+    // A controller was removed while another remains: rejoin PlayingState
+    // after the pop_to_parent(STATE_WAITING) completed.
+    if( this->state_machine_.current_state_symbol() == STATE_WAITING &&
+        nom::Joystick::num_joysticks() > 0 ) {
+      this->on_game_controller_add(0);
+    }
+
     this->window_.update();
 
     this->window_.fill(nom::Color4i::SkyBlue);
 
-    // Only render controller feedback when a controller is connected.
-    if( this->state_machine_.current_state_id() == STATE_PLAYING ) {
+    // Render the state stack. PlayingState draws the visual feedback; if
+    // PauseState is active, PlayingState renders behind the pause overlay.
+    if( this->state_machine_.current_state_symbol() == STATE_PLAYING ||
+        this->state_machine_.current_state_symbol() == STATE_PAUSE ) {
       this->state_machine_.draw(this->window_);
     }
   } // end outer while
@@ -760,13 +905,17 @@ void App::on_game_controller_add( nom::JoystickIndex dev_index )
   auto dev_name = nom::Joystick::name(dev_index);
   auto dev_id = nom::GameController::device_id(dev_index);
 
-  if( this->state_machine_.current_state_id() == STATE_PLAYING ) {
-    // Already in playing state; just update the active context's device id.
-    // For simplicity, we insert a fresh PlayingState so mappings are rebound.
-  }
+  this->current_controller_id_ = dev_id;
 
-  this->state_machine_.set_state(
-    std::make_unique<PlayingState>(this, dev_id), nullptr );
+  const auto active = this->state_machine_.current_state_symbol();
+  if( active == STATE_PLAYING || active == STATE_PAUSE ) {
+    // A different controller has been plugged in while already playing. Pop
+    // back to Waiting so the main loop will push a fresh Playing state for
+    // the new controller.
+    this->state_machine_.pop_to_parent( STATE_WAITING );
+  } else {
+    this->state_machine_.push_child( STATE_PLAYING, encode_joystick_id(dev_id) );
+  }
 
   NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
                 "Initialized game controller bindings for",
@@ -777,6 +926,8 @@ void App::on_game_controller_remove( nom::JoystickIndex dev_index )
 {
   auto dev_name = nom::Joystick::name(dev_index);
   auto dev_id = nom::GameController::device_id(dev_index);
+
+  this->current_controller_id_ = -1;
 
   NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
                 "Removed game controller", dev_name,

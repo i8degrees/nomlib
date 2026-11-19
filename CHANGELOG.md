@@ -33,6 +33,19 @@
   covering replace/push/pop transitions, multi-pop `pop_to_parent()`,
   hierarchy-validated `push_child()`, and wildcard transitions.
 
+* Changed `StateDescriptor::factory` to `std::function<IState::unique_ptr(void*)>`
+  so registered state factories can receive per-instance data from
+  `push_state()`, `push_child()`, and `replace_state()`.
+
+* Refactored `examples/nom_gamecontroller_ev/gamecontroller_events.cpp` to
+  use the new PDA API. `WaitingState` and `PlayingState` are now registered
+  via `register_state()` and transitioned with `push_state()`,
+  `push_child()`, `pop_to_parent()`, and `replace_state()`. Device IDs are
+  passed to the `PlayingState` factory through the user-data pointer. Added a
+  `PauseState` overlay pushed by the start button from `PlayingState` and
+  popped back to `PlayingState` with the start button, demonstrating the
+  `push_child`/`pop_to_parent` stack pattern.
+
 * Fixed `release-dynamic` and install generation missing CMake resource helpers.
   Added `install_resource_dir()` and `install_resource_file()` to
   `cmake/functions.cmake`, defined `NOMLIB_RESOURCES_DIR` and

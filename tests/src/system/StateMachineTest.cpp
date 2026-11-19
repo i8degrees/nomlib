@@ -597,14 +597,14 @@ TEST_F( StateMachineTest, PDAReplaceTransition )
     {
       static_cast<nom::StateSymbol>( PDASymbol::Gameplay ),
       NO_STATE,
-      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ), NO_STATE ); }
+      [](void*) { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ), NO_STATE ); }
     }
   );
   this->sm.register_state(
     {
       static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ),
       NO_STATE,
-      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), NO_STATE ); }
+      [](void*) { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), NO_STATE ); }
     }
   );
 
@@ -633,14 +633,14 @@ TEST_F( StateMachineTest, PDAPushAndPopTransition )
     {
       static_cast<nom::StateSymbol>( PDASymbol::Gameplay ),
       NO_STATE,
-      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ), NO_STATE ); }
+      [](void*) { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ), NO_STATE ); }
     }
   );
   this->sm.register_state(
     {
       static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ),
       static_cast<nom::StateSymbol>( PDASymbol::Gameplay ),
-      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), static_cast<nom::StateSymbol>( PDASymbol::Gameplay ) ); }
+      [](void*) { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), static_cast<nom::StateSymbol>( PDASymbol::Gameplay ) ); }
     }
   );
 
@@ -677,21 +677,21 @@ TEST_F( StateMachineTest, PDAPopToParentUnwindsChildren )
     {
       static_cast<nom::StateSymbol>( PDASymbol::Gameplay ),
       NO_STATE,
-      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ), NO_STATE ); }
+      [](void*) { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ), NO_STATE ); }
     }
   );
   this->sm.register_state(
     {
       static_cast<nom::StateSymbol>( PDASymbol::ChildA ),
       static_cast<nom::StateSymbol>( PDASymbol::Gameplay ),
-      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::ChildA ), static_cast<nom::StateSymbol>( PDASymbol::Gameplay ) ); }
+      [](void*) { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::ChildA ), static_cast<nom::StateSymbol>( PDASymbol::Gameplay ) ); }
     }
   );
   this->sm.register_state(
     {
       static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ),
       static_cast<nom::StateSymbol>( PDASymbol::ChildA ),
-      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), static_cast<nom::StateSymbol>( PDASymbol::ChildA ) ); }
+      [](void*) { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), static_cast<nom::StateSymbol>( PDASymbol::ChildA ) ); }
     }
   );
 
@@ -720,14 +720,14 @@ TEST_F( StateMachineTest, PDAHierarchyValidatedPush )
     {
       static_cast<nom::StateSymbol>( PDASymbol::Gameplay ),
       NO_STATE,
-      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ), NO_STATE ); }
+      [](void*) { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ), NO_STATE ); }
     }
   );
   this->sm.register_state(
     {
       static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ),
       static_cast<nom::StateSymbol>( PDASymbol::Gameplay ),
-      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), static_cast<nom::StateSymbol>( PDASymbol::Gameplay ) ); }
+      [](void*) { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), static_cast<nom::StateSymbol>( PDASymbol::Gameplay ) ); }
     }
   );
 
@@ -758,14 +758,14 @@ TEST_F( StateMachineTest, PDAWildcardTransition )
     {
       static_cast<nom::StateSymbol>( PDASymbol::Gameplay ),
       NO_STATE,
-      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ), NO_STATE ); }
+      [](void*) { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ), NO_STATE ); }
     }
   );
   this->sm.register_state(
     {
       static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ),
       NO_STATE,
-      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), NO_STATE ); }
+      [](void*) { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), NO_STATE ); }
     }
   );
 

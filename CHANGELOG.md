@@ -1,6 +1,12 @@
 # Change Log #
 
-## Unreleased ##
+## v0.14.0 (2026-11-18) ##
+
+* Merged `feature/AudioEngine-v2` into `dev` for the `0.14.0` release.
+  This consolidates the new libsndfile-based audio2 subsystem,
+  `nom::filesystem` enhancements, `nom::StateMachine` / `nom::InputStateMapper`
+  integration, and the `nom_paint`, `nom_app_ex`, `nom_gamecontroller_ev`
+  example updates.
 
 * Added `nom::filesystem::path::lexically_normal()` plus free
   `nom::filesystem::absolute()`, `canonical()`, and `weakly_canonical()`.

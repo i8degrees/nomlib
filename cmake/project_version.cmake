@@ -10,5 +10,5 @@
 # and should always be updated every time we publish a new engine version by
 # creating a release branch or tag the branch with the version.
 set( VERSION_MAJOR 0 )
-set( VERSION_MINOR 13 )
-set( VERSION_PATCH 1 )
+set( VERSION_MINOR 14 )
+set( VERSION_PATCH 0 )

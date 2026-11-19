@@ -36,6 +36,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace nom {
 
+/// Sentinel value for an undefined state or event symbol.
+enum : uint32 { NO_STATE = 0 };
+
+/// \brief Symbolic identifiers used for state and event names.
+using StateSymbol = uint32;
+using EventSymbol = uint32;
+
 // Forward declarations
 class RenderWindow;
 struct Event;
@@ -104,6 +111,15 @@ class NOM_EXPORT IState
     /// \remarks It is not required that the state has an identifier set.
     uint32 id ( void ) const;
 
+    /// \brief Obtain the stack symbol for this state.
+    ///
+    /// \returns The symbol used by nom::StateMachine to identify this state
+    /// in its registered state table and transition table.
+    ///
+    /// \remarks Defaults to the state's id(). Override this in subclasses
+    /// when the state identifier and stack symbol should differ.
+    virtual StateSymbol symbol() const;
+
     /// \brief Obtain the recorded time stamp of the state.
     ///
     /// \returns Number of ticks recorded at the time of construction
@@ -122,6 +138,11 @@ class NOM_EXPORT IState
     ///
     /// \returns One of the IState::Type enumeration values.
     IState::Type type( void ) const;
+
+    /// \brief Set the type of state.
+    ///
+    /// \param type One of the IState::Type enumeration values.
+    void set_type( IState::Type type );
 
     /// \brief The nom::InputStateMapper context key associated with this state.
     ///

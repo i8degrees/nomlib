@@ -19,6 +19,20 @@
   `next_state_id()` deferred transitions. Replaced the wall-clock sleeps in
   `SixConcurrentStates` with deterministic `update(1.0f)` calls.
 
+* Added event-driven pushdown-automaton support to `nom::StateMachine`.
+  Introduced `StateSymbol`, `EventSymbol`, `TransitionAction`, `Transition`,
+  `StateDescriptor`, `TransitionTable`, and `IState::symbol()` / `set_type()`.
+  Added `register_state()`, `push_state()`, `push_child()`, `pop_state()`,
+  `pop_to_parent()`, `replace_state()`, `current_state_symbol()`, and
+  overloads for event-driven transitions with
+  `on_event(EventSymbol, const Event*)`. Implemented hierarchy validation
+  for `push_child()`, exact/wildcard transition lookups, optional fallback
+  resolver, and multi-pop `pop_to_parent()` in `update()`.
+
+* Extended `tests/src/system/StateMachineTest.cpp` with PDA regression tests
+  covering replace/push/pop transitions, multi-pop `pop_to_parent()`,
+  hierarchy-validated `push_child()`, and wildcard transitions.
+
 * Fixed `release-dynamic` and install generation missing CMake resource helpers.
   Added `install_resource_dir()` and `install_resource_file()` to
   `cmake/functions.cmake`, defined `NOMLIB_RESOURCES_DIR` and

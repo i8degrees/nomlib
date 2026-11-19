@@ -71,6 +71,11 @@ uint32 IState::id ( void ) const
   return this->id_;
 }
 
+StateSymbol IState::symbol() const
+{
+  return this->id_;
+}
+
 uint32 IState::timestamp ( void ) const
 {
   return this->timestamp_;
@@ -84,6 +89,11 @@ uint32 IState::flags ( void ) const
 IState::Type IState::type( void ) const
 {
   return this->type_;
+}
+
+void IState::set_type( IState::Type type )
+{
+  this->type_ = type;
 }
 
 std::string IState::input_context() const

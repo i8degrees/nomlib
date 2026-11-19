@@ -546,6 +546,243 @@ TEST_F( StateMachineTest, SixConcurrentStates )
   }
 }
 
+enum class PDASymbol : nom::StateSymbol
+{
+  Gameplay = 10,
+  PauseMenu = 20,
+  Inventory = 30,
+  ChildA = 40
+};
+
+enum class PDAEvent : nom::EventSymbol
+{
+  Pause = 1,
+  Back,
+  InventoryOpen
+};
+
+class PDAState: public IState
+{
+  public:
+    PDAState( nom::StateSymbol symbol, nom::StateSymbol parent ):
+      IState( static_cast<uint32>( symbol ), 0, IState::Type::Parent ),
+      symbol_{ symbol },
+      parent_{ parent }
+    {
+    }
+
+    nom::StateSymbol symbol() const override { return this->symbol_; }
+    nom::StateSymbol parent_symbol() const { return this->parent_; }
+
+    std::string input_context() const override { return ""; }
+
+    void on_init( void_ptr ) override { this->initialized_ = true; }
+    void on_exit( void_ptr ) override { this->exited_ = true; }
+    void on_pause( void_ptr ) override { this->paused_ = true; }
+    void on_resume( void_ptr ) override { this->resumed_ = true; }
+
+    bool initialized_ = false;
+    bool exited_ = false;
+    bool paused_ = false;
+    bool resumed_ = false;
+
+  private:
+    nom::StateSymbol symbol_;
+    nom::StateSymbol parent_;
+};
+
+TEST_F( StateMachineTest, PDAReplaceTransition )
+{
+  this->sm.register_state(
+    {
+      static_cast<nom::StateSymbol>( PDASymbol::Gameplay ),
+      NO_STATE,
+      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ), NO_STATE ); }
+    }
+  );
+  this->sm.register_state(
+    {
+      static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ),
+      NO_STATE,
+      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), NO_STATE ); }
+    }
+  );
+
+  this->sm.add_transition(
+    static_cast<nom::StateSymbol>( PDASymbol::Gameplay ),
+    static_cast<nom::EventSymbol>( PDAEvent::Pause ),
+    { TransitionAction::Replace, static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ) }
+  );
+
+  this->sm.push_state( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ) );
+  this->sm.update( 0.0f );
+
+  EXPECT_EQ( 1u, this->sm.count() );
+  EXPECT_EQ( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ), this->sm.current_state_symbol() );
+
+  this->sm.on_event( static_cast<nom::EventSymbol>( PDAEvent::Pause ), nullptr );
+  this->sm.update( 0.0f );
+
+  EXPECT_EQ( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), this->sm.current_state_symbol() );
+  EXPECT_EQ( 1u, this->sm.count() );
+}
+
+TEST_F( StateMachineTest, PDAPushAndPopTransition )
+{
+  this->sm.register_state(
+    {
+      static_cast<nom::StateSymbol>( PDASymbol::Gameplay ),
+      NO_STATE,
+      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ), NO_STATE ); }
+    }
+  );
+  this->sm.register_state(
+    {
+      static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ),
+      static_cast<nom::StateSymbol>( PDASymbol::Gameplay ),
+      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), static_cast<nom::StateSymbol>( PDASymbol::Gameplay ) ); }
+    }
+  );
+
+  this->sm.add_transition(
+    static_cast<nom::StateSymbol>( PDASymbol::Gameplay ),
+    static_cast<nom::EventSymbol>( PDAEvent::Pause ),
+    { TransitionAction::Push, static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ) }
+  );
+
+  this->sm.add_transition(
+    static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ),
+    static_cast<nom::EventSymbol>( PDAEvent::Back ),
+    { TransitionAction::Pop }
+  );
+
+  this->sm.push_state( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ) );
+  this->sm.update( 0.0f );
+  EXPECT_EQ( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ), this->sm.current_state_symbol() );
+
+  this->sm.on_event( static_cast<nom::EventSymbol>( PDAEvent::Pause ), nullptr );
+  this->sm.update( 0.0f );
+  EXPECT_EQ( 2u, this->sm.count() );
+  EXPECT_EQ( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), this->sm.current_state_symbol() );
+
+  this->sm.on_event( static_cast<nom::EventSymbol>( PDAEvent::Back ), nullptr );
+  this->sm.update( 0.0f );
+  EXPECT_EQ( 1u, this->sm.count() );
+  EXPECT_EQ( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ), this->sm.current_state_symbol() );
+}
+
+TEST_F( StateMachineTest, PDAPopToParentUnwindsChildren )
+{
+  this->sm.register_state(
+    {
+      static_cast<nom::StateSymbol>( PDASymbol::Gameplay ),
+      NO_STATE,
+      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ), NO_STATE ); }
+    }
+  );
+  this->sm.register_state(
+    {
+      static_cast<nom::StateSymbol>( PDASymbol::ChildA ),
+      static_cast<nom::StateSymbol>( PDASymbol::Gameplay ),
+      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::ChildA ), static_cast<nom::StateSymbol>( PDASymbol::Gameplay ) ); }
+    }
+  );
+  this->sm.register_state(
+    {
+      static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ),
+      static_cast<nom::StateSymbol>( PDASymbol::ChildA ),
+      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), static_cast<nom::StateSymbol>( PDASymbol::ChildA ) ); }
+    }
+  );
+
+  this->sm.push_state( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ) );
+  this->sm.update( 0.0f );
+
+  this->sm.push_child( static_cast<nom::StateSymbol>( PDASymbol::ChildA ) );
+  this->sm.update( 0.0f );
+
+  this->sm.push_child( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ) );
+  this->sm.update( 0.0f );
+
+  EXPECT_EQ( 3u, this->sm.count() );
+  EXPECT_EQ( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), this->sm.current_state_symbol() );
+
+  this->sm.pop_to_parent( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ) );
+  this->sm.update( 0.0f );
+
+  EXPECT_EQ( 1u, this->sm.count() );
+  EXPECT_EQ( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ), this->sm.current_state_symbol() );
+}
+
+TEST_F( StateMachineTest, PDAHierarchyValidatedPush )
+{
+  this->sm.register_state(
+    {
+      static_cast<nom::StateSymbol>( PDASymbol::Gameplay ),
+      NO_STATE,
+      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ), NO_STATE ); }
+    }
+  );
+  this->sm.register_state(
+    {
+      static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ),
+      static_cast<nom::StateSymbol>( PDASymbol::Gameplay ),
+      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), static_cast<nom::StateSymbol>( PDASymbol::Gameplay ) ); }
+    }
+  );
+
+  // push_child with no active state is rejected.
+  this->sm.push_child( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ) );
+  this->sm.update( 0.0f );
+  EXPECT_TRUE( this->sm.empty() );
+
+  this->sm.push_state( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ) );
+  this->sm.update( 0.0f );
+
+  // push_child while the correct parent is active succeeds.
+  this->sm.push_child( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ) );
+  this->sm.update( 0.0f );
+  EXPECT_EQ( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), this->sm.current_state_symbol() );
+
+  // push_child while the wrong "parent" is active fails.
+  this->sm.push_child( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ) );
+  this->sm.update( 0.0f );
+  EXPECT_EQ( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), this->sm.current_state_symbol() );
+
+  EXPECT_EQ( 2u, this->sm.count() );
+}
+
+TEST_F( StateMachineTest, PDAWildcardTransition )
+{
+  this->sm.register_state(
+    {
+      static_cast<nom::StateSymbol>( PDASymbol::Gameplay ),
+      NO_STATE,
+      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ), NO_STATE ); }
+    }
+  );
+  this->sm.register_state(
+    {
+      static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ),
+      NO_STATE,
+      []() { return std::make_unique<PDAState>( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), NO_STATE ); }
+    }
+  );
+
+  this->sm.add_transition(
+    static_cast<nom::StateSymbol>( PDASymbol::Gameplay ),
+    static_cast<nom::EventSymbol>( PDAEvent::Pause ),
+    { TransitionAction::Replace, static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ) }
+  );
+
+  this->sm.push_state( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ) );
+  this->sm.update( 0.0f );
+
+  this->sm.on_event( static_cast<nom::EventSymbol>( PDAEvent::Pause ), nullptr );
+  this->sm.update( 0.0f );
+  EXPECT_EQ( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), this->sm.current_state_symbol() );
+}
+
 TEST_F( StateMachineTest, RemoveEventWatchPrecision )
 {
   nom::EventHandler h;

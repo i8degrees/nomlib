@@ -270,6 +270,9 @@ class App: public nom::SDLApp
     nom::GameControllerEventHandler joystick_evt;
     nom::JoystickID current_controller_id_ = -1;
 
+    /// Index to reconnect after a deferred pop_to_parent.
+    nom::JoystickIndex pending_reconnect_index_ = -1;
+
     std::string title_;
 };
 
@@ -332,8 +335,15 @@ void PlayingState::on_init( nom::void_ptr data )
   // context is still present until the next update().
   nom::InputActionMapper map;
   this->insert_keyboard_bindings(map);
-  this->insert_button_bindings(this->dev_id_, map);
-  this->insert_axis_bindings(this->dev_id_, map);
+
+  // Listener mappings cover all currently connected game controllers, so
+  // switching controllers or adding a second one does not break the overlay.
+  const auto num_joysticks = nom::Joystick::num_joysticks();
+  for( auto idx = 0; idx != num_joysticks; ++idx ) {
+    const auto dev_id = nom::GameController::device_id(idx);
+    this->insert_button_bindings(dev_id, map);
+    this->insert_axis_bindings(dev_id, map);
+  }
 
   this->app_->input_mapper().insert(
     this->input_context(), map, false );
@@ -437,13 +447,17 @@ void PauseState::on_init( nom::void_ptr data )
   this->app_->input_mapper().insert(
     this->input_context(), map, false );
 
-  this->app_->window().set_window_title("Paused...");
+  this->app_->set_window_title("Paused...");
+
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Paused" );
 }
 
 void PauseState::on_exit( nom::void_ptr data )
 {
   // Restore the previous active title when the pause overlay is popped.
   this->app_->window().set_window_title(this->app_->active_title());
+
+  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Resumed from pause" );
 }
 
 void PauseState::on_draw( nom::RenderWindow& target )
@@ -455,19 +469,21 @@ void PauseState::on_draw( nom::RenderWindow& target )
 
 void PauseState::insert_start_button_binding( nom::InputActionMapper& map )
 {
-  nom::InputAction action;
+  // Resume by popping back to the PlayingState parent. Bind for every
+  // connected controller so any controller can dismiss the overlay.
+  const auto num_joysticks = nom::Joystick::num_joysticks();
+  for( auto idx = 0; idx != num_joysticks; ++idx ) {
+    nom::InputAction action = nom::GameControllerButtonAction(
+                nom::GameController::device_id(idx),
+                nom::GameController::BUTTON_START,
+                nom::InputState::PRESSED );
 
-  // Resume by popping back to the PlayingState parent.
-  action = nom::GameControllerButtonAction(
-              this->app_->current_controller_id(),
-              nom::GameController::BUTTON_START,
-              nom::InputState::PRESSED );
+    nom::event_callback resume = nom::event_callback( [this](const nom::Event&) {
+      this->app_->state_machine().pop_to_parent( STATE_PLAYING );
+    });
 
-  nom::event_callback resume = nom::event_callback( [this](const nom::Event&) {
-    this->app_->state_machine().pop_to_parent( STATE_PLAYING );
-  });
-
-  map.insert("resume", action, resume);
+    map.insert("resume", action, resume);
+  }
 }
 
 void PlayingState::insert_axis_bindings(  nom::JoystickID dev_id,
@@ -860,7 +876,7 @@ int App::Run()
           this->on_game_controller_remove(device_index);
 
           if( nom::Joystick::num_joysticks() > 0 ) {
-            this->on_game_controller_add(0);
+            this->pending_reconnect_index_ = 0;
           } else {
             NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
                           "No joystick devices are available!" );
@@ -881,6 +897,18 @@ int App::Run()
     if( this->state_machine_.current_state_symbol() == STATE_WAITING &&
         nom::Joystick::num_joysticks() > 0 ) {
       this->on_game_controller_add(0);
+    }
+
+    // Reconnect to a remaining controller after a deferred pop completed.
+    if( this->pending_reconnect_index_ != -1 ) {
+      if( this->state_machine_.current_state_symbol() == STATE_PLAYING ||
+          this->state_machine_.current_state_symbol() == STATE_PAUSE ) {
+        // A new controller was added while already active; the on_add handler
+        // already replaced the active state. Nothing to do.
+      } else if( this->state_machine_.current_state_symbol() == STATE_WAITING ) {
+        this->on_game_controller_add(this->pending_reconnect_index_);
+      }
+      this->pending_reconnect_index_ = -1;
     }
 
     this->window_.update();

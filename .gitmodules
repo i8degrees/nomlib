@@ -3,3 +3,6 @@
   url = https://github.com/i8degrees/nomlib.wiki.git
   ignore = all
   branch = master
+[submodule "vendor/vcpkg"]
+	path = vendor/vcpkg
+	url = https://github.com/microsoft/vcpkg

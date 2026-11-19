@@ -46,6 +46,18 @@
   popped back to `PlayingState` with the start button, demonstrating the
   `push_child`/`pop_to_parent` stack pattern.
 
+* Fixed `examples/nom_gamecontroller_ev` pause/resume overlay. Merged
+  `PlayingState` input actions into a single `input_context()` ("playing")
+  so the state machine disables all action bindings when `PauseState` is
+  pushed, preventing the start button from re-triggering the pause overlay.
+  Also made `PlayingState` and `PauseState` bind their actions for every
+  connected game controller instead of just the active one.
+
+* Fixed `examples/nom_gamecontroller_ev` controller reconnection when a
+  controller is removed while another remains. `Run()` now queues the
+  reconnect until after `pop_to_parent(STATE_WAITING)` completes, rather
+  than calling `on_game_controller_add()` directly from the removal event.
+
 * Fixed `release-dynamic` and install generation missing CMake resource helpers.
   Added `install_resource_dir()` and `install_resource_file()` to
   `cmake/functions.cmake`, defined `NOMLIB_RESOURCES_DIR` and

@@ -194,6 +194,7 @@ class PauseState: public AppState
 
     std::string input_context() const override;
     void on_init( nom::void_ptr data ) override;
+    void on_exit( nom::void_ptr data ) override;
     void on_draw( nom::RenderWindow& target ) override;
 
   private:
@@ -446,6 +447,12 @@ void PauseState::on_init( nom::void_ptr data )
     this->input_context(), map, false );
 
   this->app_->window().set_window_title("Paused...");
+}
+
+void PauseState::on_exit( nom::void_ptr data )
+{
+  // Restore the PlayingState title when the pause overlay is popped.
+  this->app_->window().set_window_title("Gamecontroller is connected");
 }
 
 void PauseState::on_draw( nom::RenderWindow& target )

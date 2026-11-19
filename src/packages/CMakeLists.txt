@@ -101,11 +101,10 @@ install(FILES
   COMPONENT Core
 )
 
-install(DIRECTORY
-  "${PROJECT_SOURCE_DIR}/licenses"
+install(FILES
+  "${PROJECT_SOURCE_DIR}/LICENSES.md"
   DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/nomlib"
   COMPONENT Core
-  PATTERN ".*" EXCLUDE
 )
 
 # Install the generated documentation files

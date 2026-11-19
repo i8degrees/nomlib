@@ -2,6 +2,9 @@
 
 ## Unreleased ##
 
+* Fixed `cmake --install` failing due to a missing `licenses` directory by
+  installing `LICENSES.md` from the project root instead.
+
 * Fixed `release-dynamic` and install generation missing CMake resource helpers.
   Added `install_resource_dir()` and `install_resource_file()` to
   `cmake/functions.cmake`, defined `NOMLIB_RESOURCES_DIR` and

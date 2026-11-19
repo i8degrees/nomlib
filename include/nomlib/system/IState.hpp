@@ -53,13 +53,17 @@ class NOM_EXPORT IState
     /// \remarks Multiple flags can be combined via bit masks.
     enum Flags
     {
-      /// Request to nom::StateMachine to let previous state continue updating
-      /// itself.
-      BackUpdate = 0x2,
+      /// Request to nom::StateMachine to let the previous state continue
+      /// updating itself. The name "BackUpdate" is retained as a deprecated
+      /// alias for source compatibility.
+      OpaqueUpdate = 0x2,
+      BackUpdate = OpaqueUpdate,
 
-      /// Request to nom::StateMachine to let previous state continue rendering
-      /// itself.
-      BackRender = 0x4
+      /// Request to nom::StateMachine to let the previous state continue
+      /// rendering itself. The name "BackRender" is retained as a deprecated
+      /// alias for source compatibility.
+      OpaqueRender = 0x4,
+      BackRender = OpaqueRender
     };
 
     /// \brief State type enumeration.

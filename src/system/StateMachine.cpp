@@ -212,7 +212,7 @@ void StateMachine::update( float delta )
   {
     // Honor user's request to update the state behind us first.
     if ( this->states_.size() >= 2 &&
-         ( this->states_.back()->flags() & IState::Flags::BackUpdate ) )
+         ( this->states_.back()->flags() & IState::Flags::OpaqueUpdate ) )
     {
       const size_t prev = this->states_.size() - 2;
       NOM_ASSERT ( this->states_[prev] );
@@ -305,7 +305,7 @@ void StateMachine::draw( RenderWindow& target )
     // Honor user's request to draw the state behind us first; this allows the
     // current state to use the previous state's rendering as a background.
     if ( this->states_.size() >= 2 &&
-         ( this->states_.back()->flags() & IState::Flags::BackRender ) )
+         ( this->states_.back()->flags() & IState::Flags::OpaqueRender ) )
     {
       const size_t prev = this->states_.size() - 2;
       NOM_ASSERT ( this->states_[prev] );

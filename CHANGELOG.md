@@ -6,15 +6,17 @@
   installing `LICENSES.md` from the project root instead.
 
 * Fixed `nom::StateMachine` stack-predecessor semantics and state id queries.
-  `BackUpdate` and `BackRender` now target the immediate predecessor state
-  (`states_[size() - 2]`) instead of the bottom of the stack. Added
+  The predecessor update/render flags are now named `OpaqueUpdate` and
+  `OpaqueRender` and still target the immediate predecessor state
+  (`states_[size() - 2]`). The old `BackUpdate` and `BackRender` names remain
+  as deprecated aliases for source compatibility. Added
   `StateMachine::empty()` and made `current_state_id()` return `0` on an empty
   stack instead of asserting. `next_state_id()` now reports the deferred
   transition target while one is queued.
 
 * Extended `tests/src/system/StateMachineTest.cpp` with regression tests for
-  the `BackUpdate`/`BackRender` predecessor behavior, empty-stack id accessors,
-  and `next_state_id()` deferred transitions. Replaced the wall-clock sleeps in
+  the predecessor update/render behavior, empty-stack id accessors, and
+  `next_state_id()` deferred transitions. Replaced the wall-clock sleeps in
   `SixConcurrentStates` with deterministic `update(1.0f)` calls.
 
 * Fixed `release-dynamic` and install generation missing CMake resource helpers.

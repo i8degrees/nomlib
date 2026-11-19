@@ -349,21 +349,21 @@ TEST_F( StateMachineTest, InputCallbackPopResumesParent )
   EXPECT_EQ( STATE_A, this->sm.current_state_id() );
 }
 
-TEST_F( StateMachineTest, BackUpdateTargetsImmediatePredecessor )
+TEST_F( StateMachineTest, OpaqueUpdateTargetsImmediatePredecessor )
 {
   std::vector<uint32> root_updates;
   std::vector<uint32> middle_updates;
   std::vector<uint32> top_updates;
   std::vector<uint32> dummy_draws;
 
-  // Stack: root <- pause <- back-update. The BackUpdate flag on the top
+  // Stack: root <- pause <- opaque-update. The OpaqueUpdate flag on the top
   // state must update the state directly beneath it, not the root.
   auto root = std::make_unique<RecorderState>(
     STATE_A, 0, IState::Type::Parent, root_updates, dummy_draws );
   auto middle = std::make_unique<RecorderState>(
     STATE_B, 0, IState::Type::Child, middle_updates, dummy_draws );
   auto top = std::make_unique<RecorderState>(
-    STATE_C, IState::Flags::BackUpdate, IState::Type::Child, top_updates, dummy_draws );
+    STATE_C, IState::Flags::OpaqueUpdate, IState::Type::Child, top_updates, dummy_draws );
 
   this->sm.set_state( std::move( root ), nullptr );
   this->sm.update( 0.0f );
@@ -379,7 +379,7 @@ TEST_F( StateMachineTest, BackUpdateTargetsImmediatePredecessor )
   this->sm.update( 1.0f );
 
   // The top state is updated once after it becomes active. The middle state
-  // is its immediate predecessor, so BackUpdate updates middle (not root).
+  // is its immediate predecessor, so OpaqueUpdate updates middle (not root).
   // Note: transitions are applied after the update phase, so each state's
   // first update happens in the frame after it is pushed.
   EXPECT_EQ( std::vector<uint32>( { STATE_C } ), top_updates );
@@ -387,21 +387,21 @@ TEST_F( StateMachineTest, BackUpdateTargetsImmediatePredecessor )
   EXPECT_EQ( std::vector<uint32>( { STATE_A } ), root_updates );
 }
 
-TEST_F( StateMachineTest, BackRenderTargetsImmediatePredecessor )
+TEST_F( StateMachineTest, OpaqueRenderTargetsImmediatePredecessor )
 {
   std::vector<uint32> root_draws;
   std::vector<uint32> middle_draws;
   std::vector<uint32> top_draws;
   std::vector<uint32> dummy_updates;
 
-  // Same stack shape as BackUpdate, but verify on_draw reaches the immediate
+  // Same stack shape as OpaqueUpdate, but verify on_draw reaches the immediate
   // predecessor of the flagged state.
   auto root = std::make_unique<RecorderState>(
     STATE_A, 0, IState::Type::Parent, dummy_updates, root_draws );
   auto middle = std::make_unique<RecorderState>(
     STATE_B, 0, IState::Type::Child, dummy_updates, middle_draws );
   auto top = std::make_unique<RecorderState>(
-    STATE_C, IState::Flags::BackRender, IState::Type::Child, dummy_updates, top_draws );
+    STATE_C, IState::Flags::OpaqueRender, IState::Type::Child, dummy_updates, top_draws );
 
   this->sm.set_state( std::move( root ), nullptr );
   this->sm.update( 0.0f );

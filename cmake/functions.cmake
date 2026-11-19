@@ -92,6 +92,37 @@ function(copy_framework_dep target)
   endforeach()
 endfunction()
 
+# \brief Install a directory of resource files into the install tree.
+#
+# Thin wrapper around CMake's install(DIRECTORY ...).
+#
+# \param dir Source directory to install; may be empty.
+# \param dest Destination directory, relative to ${CMAKE_INSTALL_PREFIX}.
+function(install_resource_dir dir dest)
+  if(NOT dir OR NOT EXISTS "${dir}")
+    return()
+  endif()
+  install(DIRECTORY "${dir}/"
+          DESTINATION "${dest}"
+          OPTIONAL
+          PATTERN ".*" EXCLUDE)
+endfunction()
+
+# \brief Install a single resource file into the install tree.
+#
+# Thin wrapper around CMake's install(FILES ...).
+#
+# \param file Source file to install.
+# \param dest Destination directory, relative to ${CMAKE_INSTALL_PREFIX}.
+function(install_resource_file file dest)
+  if(NOT file OR NOT EXISTS "${file}")
+    return()
+  endif()
+  install(FILES "${file}"
+          DESTINATION "${dest}"
+          OPTIONAL)
+endfunction()
+
 # Set target's @rpath
 #
 # \param target - library or executable

@@ -137,8 +137,11 @@ endif(NOM_INSTALL_PKGCONFIG_SUPPORT)
 set(HDR_BASE "${PROJECT_SOURCE_DIR}/include/nomlib")
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 
-# Unit testing resources path
+# Resource directories used by examples, tests and documentation
+set(NOMLIB_RESOURCES_DIR "${PROJECT_SOURCE_DIR}/Resources")
+set(NOM_EXAMPLES_RESOURCES_DIR "${PROJECT_SOURCE_DIR}/Resources/examples")
 set(NOM_TESTS_RESOURCES_DIR "${PROJECT_SOURCE_DIR}/Resources/tests")
+
 # Files used with documentation generation
 set(PROJECT_DOXYGEN_DIR "${NOMLIB_RESOURCES_DIR}/doxygen")
 

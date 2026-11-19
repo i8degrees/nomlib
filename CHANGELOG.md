@@ -1,5 +1,16 @@
 # Change Log #
 
+## Unreleased ##
+
+* Fixed `release-dynamic` and install generation missing CMake resource helpers.
+  Added `install_resource_dir()` and `install_resource_file()` to
+  `cmake/functions.cmake`, defined `NOMLIB_RESOURCES_DIR` and
+  `NOM_EXAMPLES_RESOURCES_DIR` in `CMakeLists.txt`, and corrected a typo in
+  `examples/nom_jsonpp/CMakeLists.txt` (`list(SET SHARED_ASSETS ...)` →
+  `set(SHARED_ASSETS ...)`). `cmake --install` now succeeds and emits
+  `libnomlib-*.so.0.14.0` plus headers, resources, pkg-config and CMake
+  config files.
+
 ## v0.14.0 (2026-11-18) ##
 
 * Merged `feature/AudioEngine-v2` into `dev` for the `0.14.0` release.

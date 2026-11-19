@@ -90,7 +90,13 @@ class NOM_EXPORT path
     /// separator in-place and return this path.
     path& make_preferred();
 
-    /// \name Iteration
+    /// \brief Return a normalized copy of this path.
+    ///
+    /// Collapses redundant separators, removes '.' components, and applies
+    /// '..' components lexically. The result does not consult the filesystem.
+    path lexically_normal() const;
+
+    /// \\name Iteration
     /// \{
     class iterator
     {
@@ -350,6 +356,26 @@ NOM_EXPORT path current_path();
 
 /// \brief Change the current working directory.
 NOM_EXPORT void current_path( const path& p );
+
+/// \brief Return an absolute path based on \a base for \a p.
+///
+/// If \a p is already absolute, it is returned unchanged. Otherwise the
+/// result is equivalent to `base / p`, where \a base is assumed to be an
+/// absolute path (if it is not, it is made absolute first).
+NOM_EXPORT path absolute( const path& p, const path& base = current_path() );
+
+/// \brief Return the canonical form of an existing path.
+///
+/// Resolves all symlinks and normalizes the result. \a base is used when
+/// \a p is relative. Throws filesystem_error if the path cannot be resolved.
+NOM_EXPORT path canonical( const path& p, const path& base = current_path() );
+
+/// \brief Return a normalized, symlink-resolved path without requiring the
+/// entire path to exist.
+///
+/// Existing portions are canonicalized; missing trailing components are
+/// appended lexically. \a base is used when \a p is relative.
+NOM_EXPORT path weakly_canonical( const path& p, const path& base = current_path() );
 
 /// \brief Validate that a byte string is well-formed UTF-8.
 ///

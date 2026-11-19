@@ -406,6 +406,73 @@ TEST_F( FileInterfaceTest, FilesystemCurrentPath )
   EXPECT_TRUE( is_directory(cwd) );
 }
 
+TEST_F( FileInterfaceTest, FilesystemLexicallyNormal )
+{
+  using namespace nom::filesystem;
+
+  EXPECT_EQ( path("/a").native(), path("/a/b/../c/..").lexically_normal().native() );
+  EXPECT_EQ( path("a/b").native(), path("a/./b").lexically_normal().native() );
+  EXPECT_EQ( path("a/c").native(), path("a/b/../c").lexically_normal().native() );
+}
+
+TEST_F( FileInterfaceTest, FilesystemPathResolve )
+{
+  using namespace nom::filesystem;
+
+  path cwd = current_path();
+  path tmp_dir = cwd / "nomlib_canonical_test";
+  path tmp_file = tmp_dir / "file.txt";
+  path missing_dir = tmp_dir / "missing";
+  path missing_file = missing_dir / "sub.txt";
+
+  // Defensive cleanup in case a prior run left the path behind.
+  if( exists(tmp_file) )
+  {
+    EXPECT_TRUE( remove(tmp_file) );
+  }
+  if( exists(tmp_dir) )
+  {
+    EXPECT_TRUE( remove(tmp_dir) );
+  }
+
+  ASSERT_TRUE( create_directory(tmp_dir) );
+
+  {
+    std::ofstream stream = open_output_stream(tmp_file);
+    stream << "test data";
+  }
+
+  ASSERT_TRUE( exists(tmp_file) );
+
+  // absolute()
+  path rel = path("nomlib_canonical_test/../nomlib_canonical_test/file.txt");
+  path abs_rel = absolute(rel);
+  EXPECT_TRUE( abs_rel.is_absolute() );
+  EXPECT_TRUE( abs_rel.native().find("nomlib_canonical_test/file.txt") != std::string::npos );
+  EXPECT_EQ( abs_rel.native(), abs_rel.lexically_normal().native() );
+
+  // canonical() of an existing directory
+  path canon_dir = canonical(tmp_dir);
+  EXPECT_TRUE( canon_dir.is_absolute() );
+  EXPECT_TRUE( exists(canon_dir) );
+  EXPECT_TRUE( is_directory(canon_dir) );
+
+  // canonical() from a relative path
+  path canon_file = canonical(path("nomlib_canonical_test/file.txt"));
+  EXPECT_EQ( canon_dir.native(), canon_file.parent_path().native() );
+
+  // weakly_canonical() does not require the full path to exist.
+  path weak = weakly_canonical(missing_file);
+  EXPECT_TRUE( weak.is_absolute() );
+  EXPECT_TRUE( weak.native().find("missing/sub.txt") != std::string::npos );
+
+  // canonical() of a missing path should throw.
+  EXPECT_THROW( canonical(missing_file), filesystem_error );
+
+  EXPECT_TRUE( remove(tmp_file) );
+  EXPECT_TRUE( remove(tmp_dir) );
+}
+
 TEST_F( FileInterfaceTest, FilesystemUtf8DirectoryOps )
 {
   using namespace nom::filesystem;

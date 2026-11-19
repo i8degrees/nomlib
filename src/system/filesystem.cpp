@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cctype>
 #include <cstdio>
 #include <cstdlib>
+#include <climits>
 #include <cstring>
 #include <memory>
 #include <utility>
@@ -925,6 +926,19 @@ path& path::make_preferred()
   return *this;
 }
 
+path path::lexically_normal() const
+{
+  path result( *this );
+  result.make_preferred();
+
+  // Avoid passing result.native() directly: parse() calls clear(), which
+  // would invalidate the const reference before reading it.
+  const string_type normalized = result.native();
+  result.parse( normalized );
+
+  return result;
+}
+
 std::vector<path> path::path_elements() const
 {
   std::vector<path> result;
@@ -1527,6 +1541,175 @@ void current_path( const path& p )
   }
 #endif
 }
+
+namespace detail {
+
+path make_absolute( const path& p, const path& base )
+{
+  if( p.is_absolute() )
+  {
+    return p.lexically_normal();
+  }
+
+  path abs_base = base;
+  if( !abs_base.is_absolute() )
+  {
+    abs_base = absolute( abs_base );
+  }
+
+  return ( abs_base / p ).lexically_normal();
+}
+
+#if defined( NOM_PLATFORM_WINDOWS )
+
+path canonical_windows( const path& p )
+{
+  // 1. Get the absolute, normalized wide path.
+  std::wstring wp = to_wide_path( p.native() );
+  if( wp.empty() )
+  {
+    throw filesystem_error( "canonical: empty path", p,
+                            std::error_code(ERROR_INVALID_NAME, std::system_category()) );
+  }
+
+  // Resolve symlinks via a file handle. Use FILE_FLAG_BACKUP_SEMANTICS so
+  // directories can be opened. If the path cannot be opened (e.g. it does
+  // not exist), canonical() fails.
+  HANDLE handle = ::CreateFileW(
+    wp.c_str(),
+    FILE_READ_ATTRIBUTES,
+    FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+    nullptr,
+    OPEN_EXISTING,
+    FILE_FLAG_BACKUP_SEMANTICS,
+    nullptr );
+
+  if( handle == INVALID_HANDLE_VALUE )
+  {
+    throw filesystem_error( "canonical: could not resolve path", p,
+                            std::error_code(::GetLastError(), std::system_category()) );
+  }
+
+  std::unique_ptr<std::remove_pointer<HANDLE>::type, decltype(&::CloseHandle)> guard(
+    handle, ::CloseHandle );
+
+  wchar_t resolved[MAX_PATH];
+  DWORD len = ::GetFinalPathNameByHandleW( handle, resolved, MAX_PATH, FILE_NAME_NORMALIZED );
+  if( len == 0 )
+  {
+    throw filesystem_error( "canonical: could not resolve final path", p,
+                            std::error_code(::GetLastError(), std::system_category()) );
+  }
+
+  if( len < MAX_PATH )
+  {
+    return path( std::wstring( resolved, len ) ).lexically_normal();
+  }
+
+  std::wstring buf( len, L'\0' );
+  len = ::GetFinalPathNameByHandleW( handle, &buf[0], len, FILE_NAME_NORMALIZED );
+  if( len == 0 || len >= buf.size() )
+  {
+    throw filesystem_error( "canonical: could not resolve final path", p,
+                            std::error_code(::GetLastError(), std::system_category()) );
+  }
+
+  buf.resize( len );
+  return path( buf ).lexically_normal();
+}
+
+#else
+
+path canonical_posix( const path& p )
+{
+  char resolved[PATH_MAX];
+  if( ::realpath( p.c_str(), resolved ) == nullptr )
+  {
+    throw filesystem_error( "canonical: could not resolve path", p,
+                            std::error_code(errno, std::system_category()) );
+  }
+
+  return path( resolved );
+}
+
+#endif
+
+} // namespace detail
+
+path absolute( const path& p, const path& base )
+{
+  if( p.is_absolute() )
+  {
+    return p.lexically_normal();
+  }
+
+  if( !base.is_absolute() )
+  {
+    return detail::make_absolute( p, base );
+  }
+
+  return ( base / p ).lexically_normal();
+}
+
+path canonical( const path& p, const path& base )
+{
+  path abs_p = absolute( p, base );
+
+#if defined( NOM_PLATFORM_WINDOWS )
+  return detail::canonical_windows( abs_p );
+#else
+  return detail::canonical_posix( abs_p );
+#endif
+}
+
+path weakly_canonical( const path& p, const path& base )
+{
+  path abs_p = absolute( p, base );
+  path result = abs_p.lexically_normal();
+
+  // Walk the lexically-normalized path, canonicalizing the longest existing
+  // prefix and appending the remaining (possibly missing) components.
+  std::vector<std::string> remaining;
+  while( !exists(result) )
+  {
+    path filename = result.filename();
+    if( filename.empty() )
+    {
+      break;
+    }
+    remaining.push_back( filename.native() );
+    result = result.parent_path();
+    if( result.empty() )
+    {
+      break;
+    }
+  }
+
+  if( !result.empty() && exists(result) )
+  {
+    try
+    {
+      result = canonical( result );
+    }
+    catch( const filesystem_error& )
+    {
+      // Fallback: keep the absolute, lexically-normalized prefix.
+    }
+  }
+
+  for( auto it = remaining.rbegin(); it != remaining.rend(); ++it )
+  {
+    result /= *it;
+  }
+
+  return result.lexically_normal();
+}
+
+namespace detail {
+
+path make_absolute( const path& p, const path& base ); // forward
+
+} // namespace detail
 
 filesystem_error::filesystem_error( const std::string& what_arg, const path& p1,
                                       std::error_code ec )

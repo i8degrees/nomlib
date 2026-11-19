@@ -49,3 +49,7 @@ tmp/*
 .*
 *~*
 
+# vcpkg export for nomlib sdk releases
+dist/*
+!dist/.placeholder
+

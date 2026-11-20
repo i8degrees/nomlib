@@ -79,6 +79,13 @@ cmake --install build/debug
   ```shell
   ALSOFT_LOGLEVEL=3 ./build/debug/bin/nom_astream
   ```
+- `nom_gamecontroller_ev`: run `scripts/virtual_gamepad.py` to exercise
+  pause/resume, buttons, axes, and the d-pad using a virtual Logitech F310.
+  Requires `python-evdev` and read/write access to `/dev/uinput` and the
+  system input event nodes (root or membership in the `input` group).
+  When built with `-DBUILD_TESTS=1`, CTest also registers this as
+  `GameControllerVirtualInput` on Linux systems with `python-evdev`.
+
 
 ### Public API documentation
 
@@ -89,6 +96,13 @@ cmake -S . --preset <preset> -DBUILD_DOCS=1
 Generated docs are in `build/<preset>/docs/html`.
 
 ## Conventions
+
+Whenever a subagent finishes or you complete a review pass, immediately
+write the output to disk using the `write` tool:
+
+- **Scout findings & observations:** Save to `.omp/reports/scout/<YYYY-MM-DD>-<topic>.md`
+- **Security reviews:** Save to `.omp/reports/security/<YYYY-MM-DD>-<scope>.md`
+- **General architectural observations:** Append to `.omp/reports/observations.md`
 
 - nomlib is split into these library targets, each under `src/<target>/CMakeLists.txt`:
   `nomlib-actions`, `nomlib-audio`, `nomlib-core`, `nomlib-file`, `nomlib-graphics`,
@@ -148,3 +162,4 @@ Before finishing a change, run the narrowest test or example that exercises
 it. If no existing test covers the new path, create one under `tests/src/<test_name>`
 and put headers under `tests/include/nomlib/<test_name>`. Tests must follow
 the Google Test v10.x API bundled with the project.
+

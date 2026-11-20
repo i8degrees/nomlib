@@ -60,4 +60,8 @@ dist/*
 .agent/observations/
 .agent/memory/
 .agent/security/
+# Oh My Pi transient artifacts
+.omp/reports/
+.omp/scouts/
+.omp/observations/
 

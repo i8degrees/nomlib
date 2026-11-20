@@ -272,6 +272,10 @@
   and to note that `examples/nom_font` accepts both relative and absolute
   font file paths.
 
+* Updated `AGENTS.md` to document `scripts/virtual_gamepad.py` for testing
+  `nom_gamecontroller_ev`, and moved subagent artifact-reporting instructions
+  into a new `AI Runtime Artifacts` section.
+
 * Added symlink-aware filesystem query functions to `nom::filesystem`:
   `is_symlink`, `exists_symlink`, `is_symlink_directory`,
   `is_symlink_regular_file`, and `file_size_symlink`. These use `lstat` where

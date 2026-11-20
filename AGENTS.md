@@ -97,13 +97,6 @@ Generated docs are in `build/<preset>/docs/html`.
 
 ## Conventions
 
-Whenever a subagent finishes or you complete a review pass, immediately
-write the output to disk using the `write` tool:
-
-- **Scout findings & observations:** Save to `.omp/reports/scout/<YYYY-MM-DD>-<topic>.md`
-- **Security reviews:** Save to `.omp/reports/security/<YYYY-MM-DD>-<scope>.md`
-- **General architectural observations:** Append to `.omp/reports/observations.md`
-
 - nomlib is split into these library targets, each under `src/<target>/CMakeLists.txt`:
   `nomlib-actions`, `nomlib-audio`, `nomlib-core`, `nomlib-file`, `nomlib-graphics`,
   `nomlib-gui`, `nomlib-math`, `nomlib-ptree`, `nomlib-serializers`, `nomlib-system`.
@@ -162,4 +155,13 @@ Before finishing a change, run the narrowest test or example that exercises
 it. If no existing test covers the new path, create one under `tests/src/<test_name>`
 and put headers under `tests/include/nomlib/<test_name>`. Tests must follow
 the Google Test v10.x API bundled with the project.
+
+## AI Runtime Artifacts
+
+Whenever a subagent finishes or you complete a review pass, immediately
+write the output to disk using the `write` tool:
+
+- **Scout findings & observations:** Save to `.omp/reports/scout/<YYYY-MM-DD>-<topic>.md`
+- **Security reviews:** Save to `.omp/reports/security/<YYYY-MM-DD>-<scope>.md`
+- **General architectural observations:** Append to `.omp/reports/observations.md`
 

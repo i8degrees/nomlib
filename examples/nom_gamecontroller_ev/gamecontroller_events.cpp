@@ -57,6 +57,25 @@ constexpr nom::size_type MAX_BUTTONS =
   nom::GameController::BUTTON_MAX;
 constexpr nom::size_type MAX_AXES = 2;
 
+/// \brief Map a joystick instance identifier to a player color.
+nom::Color4i player_color( nom::JoystickID id )
+{
+  static const nom::Color4i palette[] = {
+    nom::Color4i::Blue,
+    nom::Color4i::Red,
+    nom::Color4i::Green,
+    nom::Color4i::Orange,
+    nom::Color4i::Magenta,
+    nom::Color4i::Cyan,
+    nom::Color4i::Yellow,
+    nom::Color4i::White
+  };
+
+  auto idx = static_cast<size_t>( id ) %
+             ( sizeof(palette) / sizeof(palette[0]) );
+  return palette[idx];
+}
+
 /// Resolve the SharedSupport resource directory relative to the executable.
 ///
 /// Candidate layouts include:
@@ -255,6 +274,11 @@ class App: public nom::SDLApp
     nom::Point2i button_rectangle_pos[MAX_BUTTONS];
     nom::Point2i hat_rectangle_pos = nom::Point2i::zero;
 
+    // Color used to draw each rectangle; encodes which controller last
+    // updated it.
+    nom::Color4i axis_rectangle_color[MAX_AXES];
+    nom::Color4i button_rectangle_color[MAX_BUTTONS];
+
   private:
     std::string program_path_;
     std::string db_filename;
@@ -274,6 +298,9 @@ class App: public nom::SDLApp
     nom::JoystickIndex pending_reconnect_index_ = -1;
 
     std::string title_;
+
+    /// If true, log every game controller button/axis event for harness tests.
+    bool verbose_input_ = false;
 };
 
 // AppState implementation is header-only above.
@@ -359,18 +386,19 @@ void PlayingState::on_exit( nom::void_ptr data )
 
 void PlayingState::on_draw( nom::RenderWindow& target )
 {
+  (void)target;
   App* app = this->app_;
 
   for( auto axis_idx = 0; axis_idx != MAX_AXES; ++axis_idx ) {
     if( axis_idx == 0 ) {
       app->render_rectangle(  app->axis_rectangle_pos[axis_idx],
                               app->AXIS_X_RECT_DIMS,
-                              nom::Color4i::Green );
+                              app->axis_rectangle_color[axis_idx] );
     }
     if( axis_idx != 0 ) {
       app->render_rectangle(  app->axis_rectangle_pos[axis_idx],
                               app->AXIS_Y_RECT_DIMS,
-                              nom::Color4i::Orange );
+                              app->axis_rectangle_color[axis_idx] );
     }
   }
 
@@ -381,7 +409,7 @@ void PlayingState::on_draw( nom::RenderWindow& target )
   for( auto button_idx = 0; button_idx != MAX_BUTTONS; ++button_idx ) {
     app->render_rectangle(  app->button_rectangle_pos[button_idx],
                             app->BUTTON_RECT_DIMS,
-                            nom::Color4i::Blue );
+                            app->button_rectangle_color[button_idx] );
   }
 }
 
@@ -536,6 +564,20 @@ App::App()
 {
   NOM_LOG_TRACE_PRIO(NOM_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
 
+  for( auto i = 0u; i != MAX_AXES; ++i ) {
+    this->axis_rectangle_color[i] = ( i == 0 ? nom::Color4i::Green
+                                            : nom::Color4i::Orange );
+  }
+
+  for( auto i = 0u; i != MAX_BUTTONS; ++i ) {
+    this->button_rectangle_color[i] = nom::Color4i::Blue;
+  }
+
+  const char* verbose_env = std::getenv("NOM_GC_VERBOSE");
+  if( verbose_env != nullptr && std::string(verbose_env) == "1" ) {
+    this->verbose_input_ = true;
+  }
+
   this->state_machine_.set_input_mapper(&this->input_mapper_);
 
   // Register the two application states with the StateMachine. The Playing
@@ -617,16 +659,20 @@ App::App()
 
       if( axis < 2 ) {
         this->axis_rectangle_pos[0].x = rect_pos.x;
+        this->axis_rectangle_color[0] = player_color( evt.caxis.id );
       } else {
         this->axis_rectangle_pos[1].x = rect_pos.x;
+        this->axis_rectangle_color[1] = player_color( evt.caxis.id );
       }
     } else {
       if( axis < 2 ) {
         this->axis_rectangle_pos[0].x =
           (WINDOW_RESOLUTION.w - AXIS_X_RECT_DIMS.w) / 2;
+        this->axis_rectangle_color[0] = player_color( evt.caxis.id );
       } else {
         this->axis_rectangle_pos[1].x =
           (WINDOW_RESOLUTION.w - AXIS_X_RECT_DIMS.w) / 2;
+        this->axis_rectangle_color[1] = player_color( evt.caxis.id );
       }
     }
   });
@@ -660,16 +706,20 @@ App::App()
 
       if( axis < 2 ) {
         this->axis_rectangle_pos[0].y = rect_pos.y;
+        this->axis_rectangle_color[0] = player_color( evt.caxis.id );
       } else {
         this->axis_rectangle_pos[1].y = rect_pos.y;
+        this->axis_rectangle_color[1] = player_color( evt.caxis.id );
       }
     } else {
       if( axis < 2 ) {
         this->axis_rectangle_pos[0].y =
           (WINDOW_RESOLUTION.h - AXIS_Y_RECT_DIMS.h) / 2;
+        this->axis_rectangle_color[0] = player_color( evt.caxis.id );
       } else {
         this->axis_rectangle_pos[1].y =
           (WINDOW_RESOLUTION.h - AXIS_Y_RECT_DIMS.h) / 2;
+        this->axis_rectangle_color[1] = player_color( evt.caxis.id );
       }
     }
   });
@@ -693,6 +743,10 @@ App::App()
 
     if( button < MAX_BUTTONS ) {
       this->button_rectangle_pos[button] = rect_pos;
+
+      if( button_state == nom::InputState::PRESSED ) {
+        this->button_rectangle_color[button] = player_color( evt.cbutton.id );
+      }
     }
   });
 
@@ -825,6 +879,23 @@ bool App::on_init()
   // the input mapper so action callbacks are triggered.
   nom::SDLApp::set_event_handler(this->evt_handler);
   this->input_mapper_.set_event_handler(this->evt_handler);
+
+  if( this->verbose_input_ ) {
+    this->evt_handler.append_event_watch(
+      nom::event_filter([](const nom::Event& ev, void*) {
+        if( ev.type == nom::Event::GAME_CONTROLLER_BUTTON_PRESS ) {
+          NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
+                        "GC button event",
+                        static_cast<int>(ev.cbutton.button) );
+        } else if( ev.type == nom::Event::GAME_CONTROLLER_AXIS_MOTION ) {
+          NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
+                        "GC axis event",
+                        static_cast<int>(ev.caxis.axis),
+                        ev.caxis.value );
+        }
+        return false;
+      }), nullptr );
+  }
 
   // Begin in the waiting state. If a controller is already connected, the
   // first GAME_CONTROLLER_ADDED event will transition us to PlayingState.

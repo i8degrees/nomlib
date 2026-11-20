@@ -58,6 +58,25 @@
   reconnect until after `pop_to_parent(STATE_WAITING)` completes, rather
   than calling `on_game_controller_add()` directly from the removal event.
 
+* Added per-game-controller colors to `examples/nom_gamecontroller_ev`.
+  `App` now stores a color per button and axis rectangle; the input callbacks
+  update the color based on the joystick instance ID that produced the event,
+  so each player's input is visually distinct.
+
+* Added `NOM_GC_VERBOSE` environment variable to
+  `examples/nom_gamecontroller_ev/gamecontroller_events.cpp`. When set to `1`,
+  the example logs every game controller button press and axis motion event
+  for end-to-end verification.
+
+* Added `scripts/virtual_gamepad.py`, a python-evdev harness that creates a
+  virtual Logitech F310 controller and exercises pause/resume, each button,
+  each analog axis, and the d-pad in `nom_gamecontroller_ev`.
+
+* Added an optional CTest integration test `GameControllerVirtualInput` in
+  `tests/CMakeLists.txt` that runs `scripts/virtual_gamepad.py` against the
+  built `nom_gamecontroller_ev` executable on Linux systems with
+  python-evdev installed.
+
 * Fixed `release-dynamic` and install generation missing CMake resource helpers.
   Added `install_resource_dir()` and `install_resource_file()` to
   `cmake/functions.cmake`, defined `NOMLIB_RESOURCES_DIR` and

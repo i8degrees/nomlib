@@ -297,3 +297,29 @@ endif( NOM_BUILD_SERIALIZERS_TESTS )
 #  DESTINATION
 #  "${TESTS_INSTALL_DIR}/Resources"
 #)
+
+# Optional end-to-end integration test for nom_gamecontroller_ev using a virtual
+# Linux game controller.  Requires python-evdev and access to /dev/uinput.
+if(BUILD_EXAMPLES AND UNIX)
+  find_package(Python3 COMPONENTS Interpreter)
+  if(Python3_FOUND)
+    execute_process(
+      COMMAND ${Python3_EXECUTABLE} -c "import evdev"
+      RESULT_VARIABLE _have_evdev
+      OUTPUT_QUIET ERROR_QUIET
+    )
+    if(_have_evdev EQUAL 0 AND TARGET nom_gamecontroller_ev)
+      add_test(
+        NAME GameControllerVirtualInput
+        COMMAND ${Python3_EXECUTABLE}
+          "${PROJECT_SOURCE_DIR}/scripts/virtual_gamepad.py"
+          "$<TARGET_FILE:nom_gamecontroller_ev>"
+        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+      )
+      set_tests_properties(GameControllerVirtualInput PROPERTIES
+        ENVIRONMENT "PYTHONUNBUFFERED=1"
+        TIMEOUT 30
+      )
+    endif()
+  endif()
+endif()

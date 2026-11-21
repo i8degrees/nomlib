@@ -15,7 +15,7 @@ if(NOM_USE_LIBOGG)
       ${SRC_DIR}/audio/OggSound.cpp
     PUBLIC
       FILE_SET HEADERS
-      BASE_DIRS ${HDR_BASE}/audio
+      BASE_DIRS ${HDR_BASE}
       FILES
         ${HDR_BASE}/audio/OggSound.hpp
   )
@@ -25,6 +25,7 @@ endif()
 target_sources(nomlib-audio
   PRIVATE
     ${SRC_DIR}/audio/libsndfile/SoundFileReader.cpp
+    # FIXME(JEFF): Relocate this file to audio/OpenAL.cpp
     ${SRC_DIR}/audio/AL/OpenAL.cpp
     ${SRC_DIR}/audio/ALAudioContext.cpp
     ${SRC_DIR}/audio/ALAudioRenderer.cpp
@@ -38,8 +39,9 @@ target_sources(nomlib-audio
     ${SRC_DIR}/audio/vendor/Matrix4.cpp
   PUBLIC
     FILE_SET HEADERS
-    BASE_DIRS ${HDR_BASE}/audio
+    BASE_DIRS ${HDR_BASE}
     FILES
+      # FIXME(JEFF): Relocate this file to audio/OpenAL.hpp
       ${HDR_BASE}/audio/AL/OpenAL.hpp
       ${HDR_BASE}/audio/ALAudioContext.hpp
       ${HDR_BASE}/audio/ALAudioRenderer.hpp
@@ -74,6 +76,10 @@ if(NOM_USE_LIBOGG)
   )
 endif()
 
+# TODO(JEFF): These macro #defines need to be replaced with the NOM_LOG_XXX
+# equivalent logging macros. We can use the VERBOSE and DEBUG logging 
+# categories for the messages and then setup the logging filter in the 
+# example apps to control what we see.
 target_compile_definitions(nomlib-audio
   PUBLIC
     VERBOSE

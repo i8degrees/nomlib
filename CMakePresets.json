@@ -104,6 +104,7 @@
       "cacheVariables": {
       },
       "environment": {
+        "VCPKG_ROOT": "${sourceDir}/vendor/vcpkg",
         "DISTCC_VERBOSE": "1"
       }
     },

@@ -284,7 +284,7 @@ class NOM_EXPORT StateMachine
     ///
     /// \param child  Symbol of the child state to push.
     /// \param data   User-defined data passed to on_init.
-    void push_child( StateSymbol child, void_ptr data = nullptr );
+    void push( StateSymbol child, void_ptr data = nullptr );
 
     /// \brief Pop states until the requested parent state is active.
     ///
@@ -293,13 +293,13 @@ class NOM_EXPORT StateMachine
     ///
     /// \param parent Symbol of the parent state to make active.
     /// \param data   User-defined data passed to lifecycle hooks.
-    void pop_to_parent( StateSymbol parent, void_ptr data = nullptr );
+    void pop( StateSymbol parent, void_ptr data = nullptr );
 
     /// \brief Replace the active state with a registered state by symbol.
     ///
     /// \param symbol Symbol registered with register_state().
     /// \param data   User-defined data passed to lifecycle hooks.
-    void replace_state( StateSymbol symbol, void_ptr data = nullptr );
+    void replace( StateSymbol symbol, void_ptr data = nullptr );
 
     /// \brief Event handling logic for the active state.
     ///
@@ -359,7 +359,7 @@ class NOM_EXPORT StateMachine
     IState::unique_ptr make_state( StateSymbol symbol, void_ptr data = nullptr ) const;
 
     /// \brief Validate that child is declared as a child of the given parent.
-    bool can_push_child( StateSymbol child, StateSymbol parent ) const;
+    bool can_push( StateSymbol child, StateSymbol parent ) const;
 
     /// \brief The pending state to be set on the next frame update
     priv::DeferredState next_state_;

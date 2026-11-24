@@ -203,7 +203,7 @@ class PlayingState: public AppState
 /// \brief Pause overlay pushed on top of PlayingState.
 ///
 /// Pressing the start button pops back to PlayingState. The example uses
-/// push_child/pop_to_parent so the PlayingState remains on the stack and
+/// push/pop so the PlayingState remains on the stack and
 /// resumes automatically.
 class PauseState: public AppState
 {
@@ -294,7 +294,7 @@ class App: public nom::SDLApp
     nom::GameControllerEventHandler joystick_evt;
     nom::JoystickID current_controller_id_ = -1;
 
-    /// Index to reconnect after a deferred pop_to_parent.
+    /// Index to reconnect after a deferred pop.
     nom::JoystickIndex pending_reconnect_index_ = -1;
 
     std::string title_;
@@ -507,7 +507,7 @@ void PauseState::insert_start_button_binding( nom::InputActionMapper& map )
                 nom::InputState::PRESSED );
 
     nom::event_callback resume = nom::event_callback( [this](const nom::Event&) {
-      this->app_->state_machine().pop_to_parent( STATE_PLAYING );
+      this->app_->state_machine().pop( STATE_PLAYING );
     });
 
     map.insert("resume", action, resume);
@@ -752,7 +752,7 @@ App::App()
 
   // Pause / resume via the controller start button.
   this->pause_action = nom::event_callback( [=](const nom::Event& evt) {
-    this->state_machine_.push_child( STATE_PAUSE );
+    this->state_machine_.push( STATE_PAUSE );
   });
 }
 
@@ -952,7 +952,7 @@ int App::Run()
             NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
                           "No joystick devices are available!" );
 
-            this->state_machine_.pop_to_parent( STATE_WAITING );
+            this->state_machine_.pop( STATE_WAITING );
             this->set_window_title("Waiting on a gamecontroller to be connected...");
           }
         } break;
@@ -964,7 +964,7 @@ int App::Run()
     this->state_machine_.update(0.f);
 
     // A controller was removed while another remains: rejoin PlayingState
-    // after the pop_to_parent(STATE_WAITING) completed.
+    // after the pop(STATE_WAITING) completed.
     if( this->state_machine_.current_state_symbol() == STATE_WAITING &&
         nom::Joystick::num_joysticks() > 0 ) {
       this->on_game_controller_add(0);
@@ -1009,9 +1009,9 @@ void App::on_game_controller_add( nom::JoystickIndex dev_index )
     // A different controller has been plugged in while already playing. Pop
     // back to Waiting so the main loop will push a fresh Playing state for
     // the new controller.
-    this->state_machine_.pop_to_parent( STATE_WAITING );
+    this->state_machine_.pop( STATE_WAITING );
   } else {
-    this->state_machine_.push_child( STATE_PLAYING, encode_joystick_id(dev_id) );
+    this->state_machine_.push( STATE_PLAYING, encode_joystick_id(dev_id) );
   }
 
   NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,

@@ -207,11 +207,11 @@ IState::unique_ptr StateMachine::make_state( StateSymbol symbol, void_ptr data )
   return it->second.factory( data );
 }
 
-bool StateMachine::can_push_child( StateSymbol child, StateSymbol parent ) const
+bool StateMachine::can_push( StateSymbol child, StateSymbol parent ) const
 {
   auto it = this->registry_.find( child );
   if( it == this->registry_.end() ) {
-    NOM_LOG_ERR( NOM, "push_child: symbol", child, "is not registered." );
+    NOM_LOG_ERR( NOM, "push: symbol", child, "is not registered." );
     return false;
   }
 
@@ -239,16 +239,16 @@ void StateMachine::push_state( StateSymbol symbol, void_ptr data )
   this->set_deferred_state( std::move( state ), data );
 }
 
-void StateMachine::push_child( StateSymbol child, void_ptr data )
+void StateMachine::push( StateSymbol child, void_ptr data )
 {
   const StateSymbol parent = this->current_state_symbol();
   if( parent == NO_STATE ) {
-    NOM_LOG_ERR( NOM, "push_child requires an active parent state." );
+    NOM_LOG_ERR( NOM, "push requires an active parent state." );
     return;
   }
 
-  if( ! this->can_push_child( child, parent ) ) {
-    NOM_LOG_ERR( NOM, "push_child: symbol", child, "is not declared as a child of", parent );
+  if( ! this->can_push( child, parent ) ) {
+    NOM_LOG_ERR( NOM, "push: symbol", child, "is not declared as a child of", parent );
     return;
   }
 
@@ -261,10 +261,10 @@ void StateMachine::push_child( StateSymbol child, void_ptr data )
   this->set_deferred_state( std::move( state ), data );
 }
 
-void StateMachine::pop_to_parent( StateSymbol parent, void_ptr data )
+void StateMachine::pop( StateSymbol parent, void_ptr data )
 {
   if( this->states_.size() <= 1 ) {
-    NOM_LOG_ERR( NOM, "pop_to_parent: not enough states to unwind." );
+    NOM_LOG_ERR( NOM, "pop: not enough states to unwind." );
     return;
   }
 
@@ -274,7 +274,7 @@ void StateMachine::pop_to_parent( StateSymbol parent, void_ptr data )
   this->next_state_.pop_target = parent;
 }
 
-void StateMachine::replace_state( StateSymbol symbol, void_ptr data )
+void StateMachine::replace( StateSymbol symbol, void_ptr data )
 {
   auto state = this->make_state( symbol, data );
   if( ! state ) {
@@ -393,7 +393,7 @@ void StateMachine::on_event( EventSymbol event_symbol, const Event* ev )
 
     case TransitionAction::Replace:
     {
-      this->replace_state( transition.target, transition.data );
+      this->replace( transition.target, transition.data );
       break;
     }
 
@@ -411,7 +411,7 @@ void StateMachine::on_event( EventSymbol event_symbol, const Event* ev )
 
     case TransitionAction::PopToParent:
     {
-      this->pop_to_parent( transition.target, transition.data );
+      this->pop( transition.target, transition.data );
       break;
     }
   }

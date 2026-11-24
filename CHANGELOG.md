@@ -2,8 +2,28 @@
 
 ## Unreleased ##
 
+* Renamed the `nom::StateMachine` PDA transition methods: `pop_to_parent()` is
+  now `pop()`, `push_child()` is now `push()`, `replace_state()` is now
+  `replace()`, and the private `can_push_child()` helper is now `can_push()`.
+  The behavior of each method is unchanged. The
+  `nom::TransitionAction::PopToParent` enumeration member is unchanged, as it
+  names a distinct action from `TransitionAction::Pop` (which pops a single
+  state). Updated the call sites in
+  `examples/nom_gamecontroller_ev/gamecontroller_events.cpp` and
+  `tests/src/system/StateMachineTest.cpp`.
+
 * Fixed `cmake --install` failing due to a missing `licenses` directory by
   installing `LICENSES.md` from the project root instead.
+
+* Fixed the installed header layout for `nomlib-audio`. The `FILE_SET HEADERS`
+  `BASE_DIRS` entries for the OpenAL and OggSound headers now use
+  `${HDR_BASE}` instead of `${HDR_BASE}/audio`, so the headers install under
+  the correct `nomlib/` prefix. `include/nomlib/system/filesystem.hpp` now
+  includes the generated `export.hpp` as `"export.hpp"`, matching every other
+  public header.
+
+* Pointed the `VCPKG_ROOT` environment variable at the `vendor/vcpkg` git
+  submodule in `CMakePresets.json`.
 
 * Fixed `nom::StateMachine` stack-predecessor semantics and state id queries.
   The predecessor update/render flags are now named `OpaqueUpdate` and
@@ -22,29 +42,29 @@
 * Added event-driven pushdown-automaton support to `nom::StateMachine`.
   Introduced `StateSymbol`, `EventSymbol`, `TransitionAction`, `Transition`,
   `StateDescriptor`, `TransitionTable`, and `IState::symbol()` / `set_type()`.
-  Added `register_state()`, `push_state()`, `push_child()`, `pop_state()`,
-  `pop_to_parent()`, `replace_state()`, `current_state_symbol()`, and
+  Added `register_state()`, `push_state()`, `push()`, `pop_state()`,
+  `pop()`, `replace()`, `current_state_symbol()`, and
   overloads for event-driven transitions with
   `on_event(EventSymbol, const Event*)`. Implemented hierarchy validation
-  for `push_child()`, exact/wildcard transition lookups, optional fallback
-  resolver, and multi-pop `pop_to_parent()` in `update()`.
+  for `push()`, exact/wildcard transition lookups, optional fallback
+  resolver, and multi-pop `pop()` in `update()`.
 
 * Extended `tests/src/system/StateMachineTest.cpp` with PDA regression tests
-  covering replace/push/pop transitions, multi-pop `pop_to_parent()`,
-  hierarchy-validated `push_child()`, and wildcard transitions.
+  covering replace/push/pop transitions, multi-pop `pop()`,
+  hierarchy-validated `push()`, and wildcard transitions.
 
 * Changed `StateDescriptor::factory` to `std::function<IState::unique_ptr(void*)>`
   so registered state factories can receive per-instance data from
-  `push_state()`, `push_child()`, and `replace_state()`.
+  `push_state()`, `push()`, and `replace()`.
 
 * Refactored `examples/nom_gamecontroller_ev/gamecontroller_events.cpp` to
   use the new PDA API. `WaitingState` and `PlayingState` are now registered
   via `register_state()` and transitioned with `push_state()`,
-  `push_child()`, `pop_to_parent()`, and `replace_state()`. Device IDs are
+  `push()`, `pop()`, and `replace()`. Device IDs are
   passed to the `PlayingState` factory through the user-data pointer. Added a
   `PauseState` overlay pushed by the start button from `PlayingState` and
   popped back to `PlayingState` with the start button, demonstrating the
-  `push_child`/`pop_to_parent` stack pattern.
+  `push`/`pop` stack pattern.
 
 * Fixed `examples/nom_gamecontroller_ev` pause/resume overlay. Merged
   `PlayingState` input actions into a single `input_context()` ("playing")
@@ -55,7 +75,7 @@
 
 * Fixed `examples/nom_gamecontroller_ev` controller reconnection when a
   controller is removed while another remains. `Run()` now queues the
-  reconnect until after `pop_to_parent(STATE_WAITING)` completes, rather
+  reconnect until after `pop(STATE_WAITING)` completes, rather
   than calling `on_game_controller_add()` directly from the removal event.
 
 * Added per-game-controller colors to `examples/nom_gamecontroller_ev`.

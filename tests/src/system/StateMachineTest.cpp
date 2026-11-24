@@ -698,16 +698,16 @@ TEST_F( StateMachineTest, PDAPopToParentUnwindsChildren )
   this->sm.push_state( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ) );
   this->sm.update( 0.0f );
 
-  this->sm.push_child( static_cast<nom::StateSymbol>( PDASymbol::ChildA ) );
+  this->sm.push( static_cast<nom::StateSymbol>( PDASymbol::ChildA ) );
   this->sm.update( 0.0f );
 
-  this->sm.push_child( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ) );
+  this->sm.push( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ) );
   this->sm.update( 0.0f );
 
   EXPECT_EQ( 3u, this->sm.count() );
   EXPECT_EQ( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), this->sm.current_state_symbol() );
 
-  this->sm.pop_to_parent( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ) );
+  this->sm.pop( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ) );
   this->sm.update( 0.0f );
 
   EXPECT_EQ( 1u, this->sm.count() );
@@ -731,21 +731,21 @@ TEST_F( StateMachineTest, PDAHierarchyValidatedPush )
     }
   );
 
-  // push_child with no active state is rejected.
-  this->sm.push_child( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ) );
+  // push with no active state is rejected.
+  this->sm.push( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ) );
   this->sm.update( 0.0f );
   EXPECT_TRUE( this->sm.empty() );
 
   this->sm.push_state( static_cast<nom::StateSymbol>( PDASymbol::Gameplay ) );
   this->sm.update( 0.0f );
 
-  // push_child while the correct parent is active succeeds.
-  this->sm.push_child( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ) );
+  // push while the correct parent is active succeeds.
+  this->sm.push( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ) );
   this->sm.update( 0.0f );
   EXPECT_EQ( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), this->sm.current_state_symbol() );
 
-  // push_child while the wrong "parent" is active fails.
-  this->sm.push_child( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ) );
+  // push while the wrong "parent" is active fails.
+  this->sm.push( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ) );
   this->sm.update( 0.0f );
   EXPECT_EQ( static_cast<nom::StateSymbol>( PDASymbol::PauseMenu ), this->sm.current_state_symbol() );
 

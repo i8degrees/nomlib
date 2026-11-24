@@ -165,3 +165,22 @@ write the output to disk using the `write` tool:
 - **Security reviews:** Save to `.omp/reports/security/<YYYY-MM-DD>-<scope>.md`
 - **General architectural observations:** Append to `.omp/reports/observations.md`
 
+## local installation of vcpkg
+
+- This repository checks out the latest version of `vcpkg` via git submodule
+at `vendor/vcpkg`. Even if you find another existing copy of `vcpkg`, i.e.:
+`VCPKG_ROOT`, you must disregard this and use the vendored version supplied
+here.
+
+- bootstrap of vcpkg goes like this -- from this project's repository root:
+
+```bash
+git submodule sync
+git submodule update --init
+vendor/vcpkg/bootstrap-vcpkg.sh
+```
+Use vcpkg like this:
+
+```bash
+vendor/vcpkg/vcpkg version
+```

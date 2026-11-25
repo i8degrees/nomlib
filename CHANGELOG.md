@@ -2,6 +2,11 @@
 
 ## Unreleased ##
 
+* Corrected the project instructions in `AGENTS.md`: `export.hpp` is generated
+  into `build/<preset>/src/core/export.hpp` and installed to
+  `<prefix>/include/nomlib/export.hpp`, so it no longer appears in the list of
+  hand-editable source files; `src/revision.cpp` was added to that list.
+
 * Renamed the `nom::StateMachine` PDA transition methods: `pop_to_parent()` is
   now `pop()`, `push_child()` is now `push()`, `replace_state()` is now
   `replace()`, and the private `can_push_child()` helper is now `can_push()`.
@@ -21,6 +26,19 @@
   the correct `nomlib/` prefix. `include/nomlib/system/filesystem.hpp` now
   includes the generated `export.hpp` as `"export.hpp"`, matching every other
   public header.
+
+* Corrected the example- and test-related instructions in `AGENTS.md`: the
+  CTest `GameControllerVirtualInput` registration requires `BUILD_EXAMPLES=ON`
+  and `BUILD_TESTS=ON` on Linux with `python-evdev` and `/dev/uinput` access;
+  new tests should target the bundled Google Test v1.11.0 rather than v10.x;
+  and the `nom_jsonpp` example's input files are scoped to the build tree's
+  `bin` directory (e.g. `build/<preset>/bin/*.json`) so the third-party
+  fixtures fetched into `_deps` are not part of the check.
+
+* Documented in `AGENTS.md` that the dependencies declared in
+  `vendor/CMakeLists.txt` are fetched with CMake's FetchContent, including the
+  `gamecontroller_db` (SDL_GameControllerDB) download that happens on every
+  configure — `NOM_INSTALL_GCDB` no longer gates it.
 
 * Pointed the `VCPKG_ROOT` environment variable at the `vendor/vcpkg` git
   submodule in `CMakePresets.json`.

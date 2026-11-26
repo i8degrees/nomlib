@@ -28,7 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include <SDL.h>
 #include <SDL_opengl.h>
-#include "SDL_revision.h"
+
+#include <cstdlib>
+#include <iostream>
+#include <string>
 
 // Must be included before NOM_USE_* preprocessor definitions are checked
 #include "nomlib/config.hpp"
@@ -72,6 +75,16 @@ struct OpenALVersionInfo {
   std::string extensions = "N/A (engine was not built with NOM_BUILD_AUDIO_UNIT)";
 };
 
+void print_info(const std::string& key, const std::string& value)
+{
+  std::cout << key << " " << value << std::endl;
+}
+
+void print_info(const std::string& key, const int& value)
+{
+  std::cout << key << " " << value << std::endl;
+}
+
 void nomlib_version_info( void )
 {
   std::string build_type = "DYNAMIC";
@@ -85,108 +98,82 @@ void nomlib_version_info( void )
 #if defined(NOM_STATIC_DEFINE)
   build_type = "STATIC";
 #endif
-
-  NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION,
-    "nomlib version: ",
-    nom::NOM_VERSION.version_string(),
-    nom::revision(), "(vcs)",
-    "\n",
-    postfix, "|", build_type
-  );
+  print_info("nomlib version: ", nom::NOM_VERSION.version_string());
+  print_info("nomlib (vcs): ", nom::revision());
+  print_info("nomlib build type: ", postfix + "|" + build_type);
 }
 
 void SDL2_version_info( void )
 {
   SDL_version compiled_ver;
   SDL_version linked_ver;
-  SDL_VERSION( &compiled_ver );
-  SDL_GetVersion( &linked_ver );
+  SDL_VERSION(&compiled_ver);
+  SDL_GetVersion(&linked_ver);
 
-  NOM_LOG_INFO  (
-                  NOM_LOG_CATEGORY_APPLICATION,
-                  "SDL2 compiled against version: ",
-                  NOM_SCAST( int, compiled_ver.major ),
-                  ".",
-                  NOM_SCAST( int, compiled_ver.minor ),
-                  ".",
-                  NOM_SCAST( int, compiled_ver.patch )
-                );
+  std::string sdl2_link_version = (
+    std::to_string(linked_ver.major) + "." +
+    std::to_string(linked_ver.minor) + "." +
+    std::to_string(linked_ver.patch)
+  );
 
-  NOM_LOG_INFO  (
-                  NOM_LOG_CATEGORY_APPLICATION,
-                  "SDL2 linked against version: ",
-                  NOM_SCAST( int, linked_ver.major ),
-                  ".",
-                  NOM_SCAST( int, linked_ver.minor ),
-                  ".",
-                  NOM_SCAST( int, linked_ver.patch )
-                );
+  std::string sdl2_version = (
+    std::to_string(compiled_ver.major) + "." +
+    std::to_string(compiled_ver.minor) + "." +
+    std::to_string(compiled_ver.patch)
+  );
 
-  NOM_LOG_INFO  (
-                  NOM_LOG_CATEGORY_APPLICATION,
-                  "SDL2 source revision: ",
-                  SDL_GetRevision()
-                );
+  print_info("SDL2 compiled against version: ", sdl2_version);
+  print_info("SDL2 linked against version: ", sdl2_link_version);
+  print_info("SDL2 source rev: ", SDL_GetRevision());
 }
 
 void SDL2_image_version_info( void )
 {
-  #if defined( NOM_USE_SDL2_IMAGE )
+#if defined( NOM_USE_SDL2_IMAGE )
 
-    SDL_version compiled_ver;
-    const SDL_version *linked_ver = IMG_Linked_Version();
-    SDL_IMAGE_VERSION( &compiled_ver );
+  SDL_version compiled_ver;
+  const SDL_version *linked_ver = IMG_Linked_Version();
+  SDL_IMAGE_VERSION( &compiled_ver );
 
-    NOM_LOG_INFO  (
-                    NOM_LOG_CATEGORY_APPLICATION,
-                    "SDL2_image compiled version: ",
-                    NOM_SCAST( int, compiled_ver.major ),
-                    ".",
-                    NOM_SCAST( int, compiled_ver.minor ),
-                    ".",
-                    NOM_SCAST( int, compiled_ver.patch )
-                  );
+  std::string sdl2_image_link_version = (
+    std::to_string(linked_ver->major) + "." +
+    std::to_string(linked_ver->minor) + "." +
+    std::to_string(linked_ver->patch)
+  );
 
-    NOM_LOG_INFO  (
-                    NOM_LOG_CATEGORY_APPLICATION,
-                    "SDL2_image linked version: ",
-                    NOM_SCAST( int, linked_ver->major ),
-                    ".",
-                    NOM_SCAST( int, linked_ver->minor ),
-                    ".",
-                    NOM_SCAST( int, linked_ver->patch )
-                  );
-  #endif
+  std::string sdl2_image_version = (
+    std::to_string(compiled_ver.major) + "." +
+    std::to_string(compiled_ver.minor) + "." +
+    std::to_string(compiled_ver.patch)
+  );
+
+  print_info("SDL2_image compiled version: ", sdl2_image_version);
+  print_info("SDL2_image linked version: ", sdl2_image_link_version);
+#endif
 }
 
 void SDL2_ttf_version_info( void )
 {
-  #if defined( NOM_USE_SDL2_TTF )
+#if defined( NOM_USE_SDL2_TTF )
+  SDL_version compiled_ver;
+  const SDL_version *linked_ver = TTF_Linked_Version();
+  SDL_TTF_VERSION(&compiled_ver);
 
-    SDL_version compiled_ver;
-    const SDL_version *linked_ver = TTF_Linked_Version();
-    SDL_TTF_VERSION( &compiled_ver );
+  std::string sdl2_ttf_link_version = (
+    std::to_string(linked_ver->major) + "." +
+    std::to_string(linked_ver->minor) + "." +
+    std::to_string(linked_ver->patch)
+  );
 
-    NOM_LOG_INFO  (
-                    NOM_LOG_CATEGORY_APPLICATION,
-                    "SDL2_ttf compiled version: ",
-                    NOM_SCAST( int, compiled_ver.major ),
-                    ".",
-                    NOM_SCAST( int, compiled_ver.minor ),
-                    ".",
-                    NOM_SCAST( int, compiled_ver.patch )
-                  );
+  std::string sdl2_ttf_version = (
+    std::to_string(compiled_ver.major) + "." +
+    std::to_string(compiled_ver.minor) + "." +
+    std::to_string(compiled_ver.patch)
+  );
 
-    NOM_LOG_INFO  (
-                    NOM_LOG_CATEGORY_APPLICATION,
-                    "SDL2_ttf linked version: ",
-                    NOM_SCAST( int, linked_ver->major ),
-                    ".",
-                    NOM_SCAST( int, linked_ver->minor ),
-                    ".",
-                    NOM_SCAST( int, linked_ver->patch )
-                  );
-  #endif
+  print_info("SDL2_ttf compiled version: ", sdl2_ttf_version);
+  print_info("SDL2_ttf linked version: ", sdl2_ttf_link_version);
+#endif
 }
 
 OpenALVersionInfo OpenAL_version() {
@@ -213,29 +200,26 @@ OpenALVersionInfo OpenAL_version() {
 void libsndfile_version_info( void )
 {
   #if defined(NOM_USE_LIBSNDFILE)
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
-                  "libsndfile version:", nom::audio::libsndfile_version() );
+    print_info("libsndfile version:", nom::audio::libsndfile_version());
   #else
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
-                  "libsndfile version:", "N/A (engine was not built with NOM_BUILD_AUDIO_UNIT)");
+    print_info("libsndfile version:", "N/A (engine was not built with NOM_BUILD_AUDIO_UNIT)");
   #endif // defined(NOM_USE_LIBSNDFILE)
 }
 
 void vorbis_version_info()
 {
-  std::string vorbis_version_str = 
+  std::string vorbis_version_str =
     "N/A (engine was not built with NOM_BUILD_AUDIO_UNIT && NOM_USE_LIBOGG)";
+
 #if defined(NOM_USE_LIBOGG)
   vorbis_version_str = audio::OggSound::vorbis_version_string();
-#else
 #endif
-  NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION,
-      "vorbis version:", vorbis_version_str);
+
+  print_info("vorbis version:", vorbis_version_str);
 }
+
 void libs_version_info()
 {
-  std::string librocket_ver = "N/A (engine was not built with NOM_BUILD_GUI_UNIT)";
-
   std::cout << std::endl;
   nomlib_version_info();
   std::cout << std::endl;
@@ -259,27 +243,23 @@ void libs_version_info()
 #endif
 
   auto audio_info = OpenAL_version();
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL version: ", audio_info.version );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL renderer: ", audio_info.renderer );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL vendor: ", audio_info.vendor );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "OpenAL extensions: ", audio_info.extensions );
+  print_info("OpenAL version: ", audio_info.version);
+  print_info("OpenAL renderer: ", audio_info.renderer);
+  print_info("OpenAL vendor: ", audio_info.vendor);
+  print_info("OpenAL extensions: ", audio_info.extensions);
 
 #if defined(NOM_USE_OPENAL)
   nom::audio::AudioDeviceLocator::release();
 #endif
 
   std::cout << std::endl;
-
-  #if defined( NOM_USE_LIBROCKET )
-    librocket_ver = nom::version_librocket();
-  #endif
-  std::cout << "libRocket version: " << librocket_ver << std::endl;
 }
 
 } // namespace nom
 
 int main ( int argc, char* argv[] )
 {
+  std::string librocket_ver = "N/A (engine was not built with NOM_BUILD_GUI_UNIT)";
   using namespace nom;
 
   nom::RenderWindow window;
@@ -299,16 +279,10 @@ int main ( int argc, char* argv[] )
   atexit(nom::quit);
 
   auto spec = nom::platform_info();
-  NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION, "Platform name:", spec.name);
-  NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION, "Number of CPUs:",
-               spec.num_cpus);
-  NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION, "L1 Cache Size (bytes):",
-               spec.cpu_cache_size);
-  NOM_LOG_INFO(NOM_LOG_CATEGORY_APPLICATION, "System RAM (bytes):",
-               spec.total_ram);
-
-  // Output the versions used of nomlib and its dependencies.
-  libs_version_info();
+  print_info("Platform name:", spec.name);
+  print_info("Number of CPUs:", spec.num_cpus);
+  print_info("L1 Cache line size (bytes):", spec.cpu_cache_size);
+  print_info("System RAM (MiB):", spec.total_ram);
 
   // Fix for getting incorrect OpenGL version of 2.1 on my MacBook Air
   // (Mid 2011) -- when in reality, it is v3.3. We must request a core
@@ -322,27 +296,37 @@ int main ( int argc, char* argv[] )
     exit(NOM_EXIT_FAILURE);
   }
 
-  // OpenGL version
-  std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
+  // Output the versions used of nomlib and its dependencies.
+  libs_version_info();
+
+  // OpenGL version; used by SDL2, && libRocket
+  const GLubyte* gl_version = glGetString(GL_VERSION);
+  print_info("OpenGL version: ",
+             gl_version != nullptr
+               ? std::string(reinterpret_cast<const char*>(gl_version))
+               : std::string("N/A"));
+  #if defined(NOM_USE_LIBROCKET)
+    librocket_ver = nom::version_librocket();
+  #endif
+  print_info("libRocket version: ", librocket_ver);
 
   renderer_info = window.caps();
-
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
-                "Primary display name:", window.display_name() );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION,
-                "Refresh Rate:", window.refresh_rate() );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Renderer: ", renderer_info.name() );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "SDL_RENDERER_TARGETTEXTURE: ", renderer_info.target_texture() ? "YES" : "NO" );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "SDL_RENDERER_ACCELERATED: ", renderer_info.accelerated() ? "YES" : "NO" );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "SDL_RENDERER_PRESENTVSYNC: ", renderer_info.vsync() ? "YES" : "NO" );
-
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Maximum texture width: ", renderer_info.texture_width() );
-  NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, "Maximum texture height: ", renderer_info.texture_height() );
+  print_info("Renderer: ", renderer_info.name());
+  print_info("Primary display name: ", window.display_name());
+  print_info("Refresh Rate: ", window.refresh_rate());
+  print_info("Maximum texture width: ", renderer_info.texture_width());
+  print_info("Maximum texture height: ", renderer_info.texture_height());
+  print_info("SDL_RENDERER_TARGETTEXTURE: ",
+      renderer_info.target_texture() ? "YES" : "NO");
+  print_info("SDL_RENDERER_ACCELERATED: ",
+      renderer_info.accelerated() ? "YES" : "NO");
+  print_info("SDL_RENDERER_PRESENTVSYNC: ",
+      renderer_info.vsync() ? "YES" : "NO");
 
   nom::uint index = 0;
   for( auto itr = renderer_info.texture_formats.begin(); itr != renderer_info.texture_formats.end(); ++itr )
   {
-    NOM_LOG_INFO( NOM_LOG_CATEGORY_APPLICATION, nom::PIXEL_FORMAT_NAME( *itr ), index == 0 ? " (optimal)" : "" );
+    print_info(nom::PIXEL_FORMAT_NAME(*itr), index == 0 ? "(optimal)" : "");
     ++index;
   }
 

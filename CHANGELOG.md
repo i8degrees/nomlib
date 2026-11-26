@@ -2,6 +2,16 @@
 
 ## Unreleased ##
 
+* Fixed `examples/nom_devinfo/device_info.cpp`. The SDL2 version string was
+  assembled with the comma operator and an omitted `+`, which assigned an `int`
+  to `std::string` and broke the build. The OpenGL version was printed as a
+  single character read through `*glGetString()` without a null check; it is
+  now reported as the full string. The platform report labeled the CPU cache
+  line size as an L1 size and SDL's MiB system-RAM value as bytes. The example
+  also includes the standard library headers it uses (`<iostream>`, `<string>`,
+  `<cstdlib>`) instead of relying on transitive includes, and no longer has an
+  unused `SDL_revision.h` include or an empty `#else` branch.
+
 * Corrected the project instructions in `AGENTS.md`: `export.hpp` is generated
   into `build/<preset>/src/core/export.hpp` and installed to
   `<prefix>/include/nomlib/export.hpp`, so it no longer appears in the list of
